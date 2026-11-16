@@ -1,16 +1,10 @@
+import type { Metadata } from "next";
 import Formatter from "./formatter";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function Home() {
   return (
-    <>
-      <header className="border-b border-slate-200">
-        <nav aria-label="Main navigation" className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
-          <a href="/" className="text-xl font-black tracking-tight"><span className="text-emerald-700">Sell</span>Postly</a>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-slate-700">
-            <a href="#formatter">Post Formatter</a><a href="#guides">Seller Guides</a><a href="#extension">Chrome Extension</a><a href="#about">About</a>
-          </div>
-        </nav>
-      </header>
       <main>
         <section className="bg-emerald-50 px-5 py-16 text-center sm:py-24">
           <h1 className="mx-auto max-w-4xl text-4xl font-black tracking-tight sm:text-6xl">Turn One Product Into Ready-to-Post Ads in 10 Seconds</h1>
@@ -35,7 +29,6 @@ export default function Home() {
           <h2 className="text-2xl font-bold">Chrome Extension</h2><p className="mt-2 text-slate-600">Coming soon. The free web formatter is available now.</p>
         </section>
       </main>
-      <footer id="about" className="border-t border-slate-200 px-5 py-8"><div className="mx-auto max-w-6xl"><strong>About SellPostly</strong><p className="mt-2 text-sm text-slate-600">A free, browser-based post formatter for sellers and creators.</p></div></footer>
-    </>
   );
 }
+
