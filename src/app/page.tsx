@@ -11,7 +11,7 @@ export default function Home() {
           <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-700">Format once and copy-paste into WhatsApp Business, Instagram, Facebook Marketplace, and TikTok with zero API logins</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a className="rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white" href="#formatter">Use Free Web Tool</a>
-            <a className="rounded-lg border border-slate-300 bg-white px-5 py-3 font-semibold" href="#extension">Get Chrome Extension</a>
+            <a className="rounded-lg border border-slate-300 bg-white px-5 py-3 font-semibold" href="/extension">Get Chrome Extension</a>
           </div>
         </section>
         <section id="formatter" className="mx-auto max-w-6xl scroll-mt-6 px-5 py-14"><Formatter /></section>
@@ -26,9 +26,10 @@ export default function Home() {
           </div>
         </section>
         <section id="extension" className="mx-auto max-w-6xl px-5 py-10">
-          <h2 className="text-2xl font-bold">Chrome Extension</h2><p className="mt-2 text-slate-600">Coming soon. The free web formatter is available now.</p>
+          <h2 className="text-2xl font-bold">Chrome Extension</h2><p className="mt-2 text-slate-600">Format and copy posts from the Chrome toolbar.</p><a href="/extension" className="mt-3 inline-block font-semibold text-emerald-800 underline">Install the Chrome extension</a>
         </section>
       </main>
   );
 }
+
 

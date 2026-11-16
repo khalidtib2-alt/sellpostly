@@ -9,7 +9,7 @@ export function Header() {
   return <header className="border-b border-slate-200"><nav aria-label="Main navigation" className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
     <Link href="/" className="text-xl font-black tracking-tight"><span className="text-emerald-700">Sell</span>Postly</Link>
     <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-slate-700">
-      <Link href="/#formatter">Post Formatter</Link><Link href="/prompt-generator">Prompt Generator</Link><Link href="/guides">Seller Guides</Link><Link href="/#extension">Chrome Extension</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link>
+      <Link href="/#formatter">Post Formatter</Link><Link href="/prompt-generator">Prompt Generator</Link><Link href="/guides">Seller Guides</Link><Link href="/extension">Chrome Extension</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link>
     </div>
   </nav></header>;
 }
@@ -27,4 +27,5 @@ export function ContentPage({ title, intro, children }: { title: string; intro: 
     <div className="mt-10 grid gap-8 leading-relaxed text-slate-700">{children}</div>
   </main>;
 }
+
 

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SellPostly</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header><h1>SellPostly</h1></header>
+  <main>
+    <div class="modes" role="group" aria-label="Formatting mode">
+      <button type="button" data-mode="seller" aria-pressed="true">Seller Mode</button>
+      <button type="button" data-mode="creator" aria-pressed="false">Creator Mode</button>
+    </div>
+    <form id="seller">
+      <div class="fields">
+        <label>Product Name<input name="name" required maxlength="120"></label>
+        <label>Price<input name="price" placeholder="$29" maxlength="35"></label>
+      </div>
+      <label>Delivery / Location<input name="delivery" maxlength="200"></label>
+      <label>Key Features<textarea name="features" rows="3" maxlength="1200" placeholder="One feature per line"></textarea></label>
+      <button class="primary">Format Posts</button>
+    </form>
+    <form id="creator" hidden>
+      <label>Quick Post<textarea name="post" rows="5" required maxlength="3000" placeholder="Paste your post or hook"></textarea></label>
+      <button class="primary">Format Posts</button>
+    </form>
+    <section id="results" aria-label="Formatted posts" hidden>
+      <div id="tabs" role="tablist" aria-label="Platforms"></div>
+      <div id="panels"></div>
+    </section>
+    <p id="status" role="status"></p>
+  </main>
+  <footer>
+    <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer">SellPostly</a>
+    <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer">Web Formatter</a>
+    <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer">Seller Resources</a>
+  </footer>
+</body>
+</html>
