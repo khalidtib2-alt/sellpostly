@@ -21,10 +21,20 @@ const goals = {
   },
 } as const;
 
+const targetPresets = [
+  "Everyday Online Shoppers — Friendly & Clear",
+  "Impulse Buyers — Energetic & Urgent (TikTok/Reels)",
+  "Value-Conscious Buyers — Trustworthy & Practical (WhatsApp/FB)",
+  "Premium / Luxury Shoppers — Polished & Elegant",
+  "Tech & Gadget Enthusiasts — Sharp & Spec-Focused",
+  "B2B / Startup Founders — Professional & Authority-Driven",
+] as const;
+
 type Goal = keyof typeof goals;
 const inputClass = "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5";
 
 export default function PromptForm() {
+  const [targetPreset, setTargetPreset] = useState<string>(targetPresets[0]);
   const [prompt, setPrompt] = useState("");
   const [status, setStatus] = useState("");
 
@@ -32,7 +42,7 @@ export default function PromptForm() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const topic = String(data.get("topic") ?? "").trim();
-    const target = String(data.get("target") ?? "").trim();
+    const target = String(data.get(targetPreset === "custom" ? "customTarget" : "target") ?? "").trim();
     const goal = goals[data.get("goal") as Goal];
     if (!topic || !target) {
       setStatus("Enter a topic and a target tone or audience.");
@@ -66,9 +76,17 @@ export default function PromptForm() {
           {Object.entries(goals).map(([value, goal]) => <option key={value} value={value}>{goal.label}</option>)}
         </select>
       </label>
-      <label className="font-semibold">Target Tone/Audience
-        <input name="target" className={inputClass} placeholder="Practical and friendly for commuters" maxLength={300} required />
+      <label className="font-semibold">Target Tone / Audience
+        <select name="target" className={inputClass} value={targetPreset} onChange={(event) => setTargetPreset(event.target.value)}>
+          {targetPresets.map((preset) => <option key={preset} value={preset}>{preset}</option>)}
+          <option value="custom">Custom (Type your own)...</option>
+        </select>
       </label>
+      {targetPreset === "custom" && (
+        <label className="font-semibold">Custom Tone / Audience
+          <input name="customTarget" className={inputClass} placeholder="Practical and friendly for commuters" maxLength={300} required />
+        </label>
+      )}
       <button type="submit" className="justify-self-start rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white">Generate AI Prompt</button>
     </form>
     {prompt && <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
