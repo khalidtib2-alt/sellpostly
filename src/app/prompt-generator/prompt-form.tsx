@@ -1,5 +1,8 @@
 "use client";
 
+import { useLanguage } from "../language-context";
+import { ContentPage } from "../site-shell";
+import type { Message } from "../translations";
 import { useState, type FormEvent } from "react";
 
 const goals = {
@@ -34,28 +37,31 @@ type Goal = keyof typeof goals;
 const inputClass = "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5";
 
 export default function PromptForm() {
-  const [targetPreset, setTargetPreset] = useState<string>(targetPresets[0]);
-  const [prompt, setPrompt] = useState("");
-  const [status, setStatus] = useState("");
+  const { t } = useLanguage();
+  const [targetPreset, setTargetPreset] = useState("0");
+  const [request, setRequest] = useState<{ goal: Goal; topic: string; selection: string; custom: string }>();
+  const [status, setStatus] = useState<Message | "">("");
 
   function generate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const topic = String(data.get("topic") ?? "").trim();
-    const target = String(data.get(targetPreset === "custom" ? "customTarget" : "target") ?? "").trim();
-    const goal = goals[data.get("goal") as Goal];
-    if (!topic || !target) {
+    const custom = String(data.get("customTarget") ?? "").trim();
+    const goal = data.get("goal") as Goal;
+    if (!topic || (targetPreset === "custom" && !custom)) {
       setStatus("Enter a topic and a target tone or audience.");
       return;
     }
-    setPrompt([
-      goal.brief,
-      "Product or topic: " + topic,
-      "Target tone and audience: " + target,
-      "Use the supplied details as context. Keep claims specific and verifiable. Never invent prices, specs, testimonials, or results. Ask up to three focused questions if missing facts would materially change the draft. Otherwise use clearly marked placeholders and return the requested deliverables in order.",
-    ].join("\n\n"));
+    setRequest({ goal, topic, selection: targetPreset, custom });
     setStatus("Prompt generated.");
   }
+
+  const prompt = request ? [
+      t(goals[request.goal].brief),
+      t("Product or topic: ") + request.topic,
+      t("Target tone and audience: ") + (request.selection === "custom" ? request.custom : t(targetPresets[Number(request.selection)])),
+      t("Use the supplied details as context. Keep claims specific and verifiable. Never invent prices, specs, testimonials, or results. Ask up to three focused questions if missing facts would materially change the draft. Otherwise use clearly marked placeholders and return the requested deliverables in order."),
+    ].join("\n\n") : "";
 
   async function copy() {
     try {
@@ -66,34 +72,34 @@ export default function PromptForm() {
     }
   }
 
-  return <div className="grid gap-5">
+  return <ContentPage title={t("AI Prompt Generator")} intro={t("Build a prompt for product descriptions, short videos, ad hooks, or content planning. Copy it into ChatGPT, Claude, or Gemini.")}><div className="grid gap-5">
     <form onSubmit={generate} className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
-      <label className="font-semibold">Keyword or Product/Topic
-        <input name="topic" className={inputClass} placeholder="Wireless headphones" maxLength={300} required />
+      <label className="font-semibold">{t("Keyword or Product/Topic")}
+        <input name="topic" className={inputClass} dir="auto" placeholder={t("Wireless headphones")} maxLength={300} required />
       </label>
-      <label className="font-semibold">Goal
+      <label className="font-semibold">{t("Goal")}
         <select name="goal" className={inputClass}>
-          {Object.entries(goals).map(([value, goal]) => <option key={value} value={value}>{goal.label}</option>)}
+          {Object.entries(goals).map(([value, goal]) => <option key={value} value={value}>{t(goal.label)}</option>)}
         </select>
       </label>
-      <label className="font-semibold">Target Tone / Audience
+      <label className="font-semibold">{t("Target Tone / Audience")}
         <select name="target" className={inputClass} value={targetPreset} onChange={(event) => setTargetPreset(event.target.value)}>
-          {targetPresets.map((preset) => <option key={preset} value={preset}>{preset}</option>)}
-          <option value="custom">Custom (Type your own)...</option>
+          {targetPresets.map((preset, index) => <option key={preset} value={index}>{t(preset)}</option>)}
+          <option value="custom">{t("Custom (Type your own)...")}</option>
         </select>
       </label>
       {targetPreset === "custom" && (
-        <label className="font-semibold">Custom Tone / Audience
-          <input name="customTarget" className={inputClass} placeholder="Practical and friendly for commuters" maxLength={300} required />
+        <label className="font-semibold">{t("Custom Tone / Audience")}
+          <input name="customTarget" className={inputClass} dir="auto" placeholder={t("Practical and friendly for commuters")} maxLength={300} required />
         </label>
       )}
-      <button type="submit" className="justify-self-start rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white">Generate AI Prompt</button>
+      <button type="submit" className="justify-self-start rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white">{t("Generate AI Prompt")}</button>
     </form>
     {prompt && <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
-      <label htmlFor="generated-prompt" className="font-bold text-slate-900">Generated prompt</label>
-      <textarea id="generated-prompt" readOnly value={prompt} rows={12} className={inputClass + " text-sm"} />
-      <button type="button" onClick={copy} className="mt-3 rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white">Copy Prompt</button>
+      <label htmlFor="generated-prompt" className="font-bold text-slate-900">{t("Generated prompt")}</label>
+      <textarea id="generated-prompt" dir="auto" readOnly value={prompt} rows={12} className={inputClass + " text-sm"} />
+      <button type="button" onClick={copy} className="mt-3 rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white">{t("Copy Prompt")}</button>
     </section>}
-    <p role="status" className="text-sm text-emerald-800">{status}</p>
-  </div>;
+    <p role="status" className="text-sm text-emerald-800">{status && t(status)}</p>
+  </div></ContentPage>;
 }

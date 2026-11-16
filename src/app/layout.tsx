@@ -1,3 +1,4 @@
+import { LanguageProvider } from "./language-context";
 import { Header, Footer } from "./site-shell";
 import { siteUrl } from "./site";
 import type { Metadata } from "next";
@@ -10,6 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body><Header />{children}<Footer /></body></html>;
+  return <html lang="en"><body><LanguageProvider><Header />{children}<Footer /></LanguageProvider></body></html>;
 }
 
