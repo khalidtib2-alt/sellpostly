@@ -1,8 +1,10 @@
 "use client";
+import PromoImageStudio from "./promo-image-studio";
+
 
 import { useLanguage } from "./language-context";
 import type { Message } from "./translations";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
 type Post = { platform: string; text: string; url?: string };
 type Mode = "seller" | "creator";
@@ -25,6 +27,7 @@ function sellerPosts(data: FormData, t: (message: Message) => string): Post[] {
     { platform: "Instagram", url: "https://www.instagram.com/", text: [features[0] ? name + " — " + features[0] : t("Discover") + " " + name, join(price, location, bullets), order, [tag && "#" + tag, t("#ShopNow #ProductFinds")].filter(Boolean).join(" ")].filter(Boolean).join("\n\n") },
     { platform: "Facebook Marketplace", url: "https://www.facebook.com/marketplace/", text: join(t("Product") + ": " + name, price && t("Price") + ": " + price, location, bullets && t("Features") + ":\n" + bullets, order) },
     { platform: "TikTok", url: "https://www.tiktok.com/", text: join(caption, order.replace(/\s+/g, " ") + " " + t("#ShopNow #ProductFinds")) },
+    { platform: "Pinterest", url: "https://www.pinterest.com/", text: join(t("Pin Title") + ": " + name, t("SEO Pin Description") + ": " + join(name, bullets, order), [tag && "#"+tag, ...t("#Shopping #ProductIdeas #GiftIdeas #Style #Wishlist #Discoveries").split(" ").slice(tag?1:0)].join(" "), t("Recommended Board Name") + ": " + t("Product ideas") + " · " + name, t("Image Alt Text") + ": " + name) },
   ];
 }
 
@@ -70,10 +73,39 @@ function PostCard({ post }: { post: Post }) {
 
 export default function Formatter() {
   const { language, t } = useLanguage();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [image,setImage] = useState("");
+  const [draft,setDraft] = useState({name:"",price:""});
+  const [busy,setBusy] = useState(false);
+  const [importStatus,setImportStatus] = useState<Message | "">("");
+  const [productUrl,setProductUrl] = useState("");
+  const [currency,setCurrency] = useState("USD");
   const [mode, setMode] = useState<Mode>("seller");
   const [results, setResults] = useState<{ data: FormData | null; hook: string; version: number }>({ data: null, hook: "", version: 0 });
   const [error, setError] = useState<Message | "">("");
   const posts = results.data ? (mode === "seller" ? sellerPosts(results.data, t) : creatorPosts(results.hook, t)) : [];
+
+  async function importProduct() {
+    if(busy)return;
+    setBusy(true);setImportStatus("");
+    try {
+      const response=await fetch("/api/import-product",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:productUrl})});
+      if(!response.ok)throw Error();
+      const product=await response.json();
+      const form=formRef.current;
+      if(!form)return;
+      for(const [key,value] of Object.entries({name:product.name,price:product.price,features:product.description})) {
+        const input=form.elements.namedItem(key) as HTMLInputElement | HTMLTextAreaElement | null;
+        if(input)input.value=String(value??"");
+      }
+      const code=/^[A-Z]{3}$/.test(product.currency)?product.currency:"USD";
+      setCurrency(code);setImage(product.image||"");
+      setDraft({name:product.name,price:[product.price,code].filter(Boolean).join(" ")});
+      setImportStatus("Product imported. Review the details before publishing.");
+    } catch {setImportStatus("Import failed. The store may block access. Enter the details manually.");}
+    finally {setBusy(false);}
+  }
+
   function generate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -100,12 +132,20 @@ export default function Formatter() {
           </button>
         ))}
       </div>
-      <form key={mode} onSubmit={generate} className="mt-6 grid gap-4 text-sm font-medium sm:grid-cols-2">
+      {mode === "seller" && <div className="mt-5 rounded-lg border border-emerald-200 bg-white p-4">
+        <label className="font-semibold">{t("Auto-Fill From Product Link")}<input type="url" dir="ltr" aria-label={t("Public product URL")} placeholder="https://example.com/products/item" className={fieldStyle} value={productUrl} onChange={e=>setProductUrl(e.target.value)} /></label>
+        <button type="button" disabled={busy || !productUrl.trim()} onClick={importProduct} className="mt-2 rounded-lg bg-emerald-700 px-4 py-2 text-white disabled:opacity-50">{t(busy?"Importing…":"Import Product")}</button>
+        <p role="status">{importStatus && t(importStatus)}</p>
+      </div>}
+      <form ref={formRef} onChange={event=>{
+        const data=new FormData(event.currentTarget);
+        setDraft({name:String(data.get("name")||""),price:[data.get("price"),data.get("currency")].filter(Boolean).join(" ")});
+      }} key={mode} onSubmit={generate} className="mt-6 grid gap-4 text-sm font-medium sm:grid-cols-2">
         {mode === "seller" ? <>
           <label>{t("Product Name")}<input className={fieldStyle} name="name" dir="auto" placeholder={t("Wireless headphones")} required maxLength={120} /></label>
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <label>{t("Price")}<input className={fieldStyle} name="price" dir="auto" placeholder="29" inputMode="decimal" maxLength={30} /></label>
-            <label>{t("Currency")}<select className={fieldStyle} name="currency" defaultValue="USD">{["USD", "CAD", "EUR", "GBP", "AUD", "MAD", "INR", "NGN", "MXN"].map(currency => <option key={currency}>{currency}</option>)}</select></label>
+            <label>{t("Currency")}<select className={fieldStyle} name="currency" value={currency} onChange={e=>setCurrency(e.target.value)}>{Array.from(new Set([currency, "USD", "CAD", "EUR", "GBP", "AUD", "MAD", "INR", "NGN", "MXN"])).map(currency => <option key={currency}>{currency}</option>)}</select></label>
           </div>
           <label>{t("Delivery / Location Info")}<input className={fieldStyle} name="delivery" dir="auto" placeholder={t("Local pickup or shipping")} maxLength={240} /></label>
           <label>{t("Contact / Order Link")}<input className={fieldStyle} name="contact" dir="auto" placeholder={t("Order link or contact details")} maxLength={300} /></label>
@@ -116,6 +156,7 @@ export default function Formatter() {
           {error && <p role="alert" className="mt-2 text-red-700">{t(error)}</p>}
         </div>
       </form>
+      {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} importedImage={image} />}
       <p role="status" className="sr-only">{posts.length ? posts.length + " · " + t("Posts generated.") : ""}</p>
       {posts.length > 0 && <div className="mt-7 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} />)}</div>}
     </div>

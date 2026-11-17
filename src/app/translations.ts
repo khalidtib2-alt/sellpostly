@@ -765,6 +765,162 @@ export const translations = {
   "Paid partnership with [brand]. Here’s how [product] fits [use case].\nTap the product link for current pricing and options.": {
     "fr": "Partenariat rémunéré avec [marque]. Voyez comment [produit] répond à [usage].\nTouchez le lien produit pour connaître le prix actuel et les options.",
     "ar": "شراكة مدفوعة مع [العلامة]. شاهد كيف يناسب [المنتج] [الاستخدام].\nاضغط على رابط المنتج لمعرفة السعر الحالي والخيارات."
+  },
+  "Auto-Fill From Product Link": {
+    "fr": "Remplir depuis un lien produit",
+    "ar": "تعبئة البيانات من رابط المنتج"
+  },
+  "Import Product": {
+    "fr": "Importer le produit",
+    "ar": "استيراد المنتج"
+  },
+  "Importing…": {
+    "fr": "Importation…",
+    "ar": "جارٍ الاستيراد…"
+  },
+  "Import failed. The store may block access. Enter the details manually.": {
+    "fr": "Import impossible. La boutique peut bloquer l’accès. Saisissez les détails manuellement.",
+    "ar": "تعذّر الاستيراد. قد يمنع المتجر الوصول. أدخل التفاصيل يدويًا."
+  },
+  "Product imported. Review the details before publishing.": {
+    "fr": "Produit importé. Vérifiez les détails avant publication.",
+    "ar": "تم استيراد المنتج. راجع التفاصيل قبل النشر."
+  },
+  "Public product URL": {
+    "fr": "URL publique du produit",
+    "ar": "رابط عام للمنتج"
+  },
+  "Promo Image Studio": {
+    "fr": "Studio d’images promotionnelles",
+    "ar": "استوديو الصور الترويجية"
+  },
+  "Product image": {
+    "fr": "Image du produit",
+    "ar": "صورة المنتج"
+  },
+  "Format": {
+    "fr": "Format",
+    "ar": "الصيغة"
+  },
+  "Square 1:1": {
+    "fr": "Carré 1:1",
+    "ar": "مربع 1:1"
+  },
+  "Vertical 9:16": {
+    "fr": "Vertical 9:16",
+    "ar": "عمودي 9:16"
+  },
+  "Pinterest Pin 2:3": {
+    "fr": "Épingle Pinterest 2:3",
+    "ar": "دبوس Pinterest ‏2:3"
+  },
+  "Color theme": {
+    "fr": "Palette de couleurs",
+    "ar": "ألوان التصميم"
+  },
+  "Emerald": {
+    "fr": "Émeraude",
+    "ar": "زمردي"
+  },
+  "Midnight Slate": {
+    "fr": "Ardoise sombre",
+    "ar": "رمادي داكن"
+  },
+  "Warm Sand": {
+    "fr": "Sable chaud",
+    "ar": "رملي دافئ"
+  },
+  "Promo preview": {
+    "fr": "Aperçu promotionnel",
+    "ar": "معاينة الصورة الترويجية"
+  },
+  "Download Promo PNG": {
+    "fr": "Télécharger l’image PNG",
+    "ar": "تنزيل الصورة بصيغة PNG"
+  },
+  "Created with SellPostly.com": {
+    "fr": "Créé avec SellPostly.com",
+    "ar": "أُنشئت باستخدام SellPostly.com"
+  },
+  "Image unavailable. Upload a PNG, JPEG, or WebP under 10 MB.": {
+    "fr": "Image indisponible. Importez un fichier PNG, JPEG ou WebP de moins de 10 Mo.",
+    "ar": "الصورة غير متاحة. ارفع ملف PNG أو JPEG أو WebP أصغر من 10 ميغابايت."
+  },
+  "Pin Title": {
+    "fr": "Titre de l’épingle",
+    "ar": "عنوان الدبوس"
+  },
+  "SEO Pin Description": {
+    "fr": "Description de l’épingle",
+    "ar": "وصف الدبوس لمحركات البحث"
+  },
+  "Recommended Board Name": {
+    "fr": "Nom de tableau suggéré",
+    "ar": "اسم اللوحة المقترح"
+  },
+  "Image Alt Text": {
+    "fr": "Texte alternatif de l’image",
+    "ar": "النص البديل للصورة"
+  },
+  "Product ideas": {
+    "fr": "Idées produits",
+    "ar": "أفكار منتجات"
+  },
+  "#Shopping #ProductIdeas #GiftIdeas #Style #Wishlist #Discoveries": {
+    "fr": "#Shopping #IdeesProduits #IdeesCadeaux #Style #Envies #Decouvertes",
+    "ar": "#تسوق #أفكار_منتجات #أفكار_هدايا #أسلوب #قائمة_رغبات #اكتشافات"
+  },
+  "Pinterest Pin & Viral Board Marketing Strategy": {
+    "fr": "Stratégie marketing d’épingles et de tableaux Pinterest",
+    "ar": "استراتيجية تسويق دبابيس ولوحات Pinterest"
+  },
+  "Act as a Pinterest strategist. Create five keyword-focused Pin titles, two descriptions with six relevant search hashtags each, three board names with descriptions, image alt text based only on supplied visual details, and a four-week publishing plan. Avoid invented performance guarantees.": {
+    "fr": "Agis comme stratège Pinterest. Crée cinq titres ciblant des mots-clés, deux descriptions avec six hashtags pertinents chacune, trois noms et descriptions de tableaux, un texte alternatif fondé uniquement sur les détails visuels fournis et un calendrier de quatre semaines. N’invente aucune garantie de résultats.",
+    "ar": "تصرّف كخبير في Pinterest. أنشئ خمسة عناوين بكلمات مفتاحية، ووصفين مع ستة وسوم بحث مناسبة لكل وصف، وثلاثة أسماء لوحات مع أوصافها، ونصًا بديلًا يستند فقط إلى التفاصيل المرئية المتاحة، وخطة نشر لأربعة أسابيع. تجنّب ضمانات الأداء المختلقة."
+  },
+  "Pinterest Product Marketing Guide": {
+    "fr": "Guide du marketing produit sur Pinterest",
+    "ar": "دليل تسويق المنتجات عبر Pinterest"
+  },
+  "Create searchable Pins with clear product details and boards organized around buyer needs.": {
+    "fr": "Créez des épingles faciles à trouver et des tableaux organisés selon les besoins des acheteurs.",
+    "ar": "أنشئ دبابيس يسهل العثور عليها ولوحات منظّمة حسب احتياجات المشترين."
+  },
+  "Write a Pin title with a clear product keyword": {
+    "fr": "Rédiger un titre avec un mot-clé précis",
+    "ar": "اكتب عنوانًا يتضمّن كلمة دقيقة للمنتج"
+  },
+  "Lead with the product and its use case. Add a useful detail from the listing. Keep price and availability accurate and link to the matching product page.": {
+    "fr": "Commencez par le produit et son usage, puis ajoutez un détail utile de la fiche. Vérifiez le prix et la disponibilité et utilisez le lien vers le bon produit.",
+    "ar": "ابدأ بالمنتج واستخدامه وأضف تفصيلًا مفيدًا من صفحته. تحقّق من السعر والتوفر واربط الدبوس بصفحة المنتج الصحيح."
+  },
+  "Pin title: [product] for [use case]\nDescription: Discover [product] with [verified feature]. See [sizes/options] and current pricing at the product link.\nHashtags: #[product] #[use] #[category] #[style] #[occasion] #[brand]\nBoard: [use case] product ideas\nAlt text: [Describe the visible product, color, and setting.]": {
+    "fr": "Titre : [produit] pour [usage]\nDescription : Découvrez [produit] avec [caractéristique vérifiée]. Consultez [tailles/options] et le prix actuel via le lien produit.\nHashtags : #[produit] #[usage] #[categorie] #[style] #[occasion] #[marque]\nTableau : Idées produits pour [usage]\nTexte alternatif : [Décrire le produit visible, sa couleur et le décor.]",
+    "ar": "عنوان الدبوس: [المنتج] من أجل [الاستخدام]\nالوصف: اكتشف [المنتج] مع [ميزة موثّقة]. اطّلع على [المقاسات أو الخيارات] والسعر الحالي عبر رابط المنتج.\nالوسوم: #[المنتج] #[الاستخدام] #[الفئة] #[الأسلوب] #[المناسبة] #[العلامة]\nاللوحة: أفكار منتجات من أجل [الاستخدام]\nالنص البديل: [صف المنتج الظاهر ولونه والمكان.]"
+  },
+  "Organize boards around a shopping task": {
+    "fr": "Organiser les tableaux selon une tâche d’achat",
+    "ar": "نظّم اللوحات حسب حاجة الشراء"
+  },
+  "Group related Pins into focused boards such as small-desk accessories or weekend travel essentials. Explain what the board contains. Use a relevant destination for each Pin and avoid repeating unrelated keywords.": {
+    "fr": "Regroupez les épingles liées dans des tableaux précis, comme les accessoires pour petits bureaux ou les essentiels de voyage. Décrivez leur contenu. Choisissez une destination pertinente et évitez les mots-clés sans rapport.",
+    "ar": "اجمع الدبابيس المتصلة في لوحات محددة مثل ملحقات المكتب الصغير أو أساسيات السفر. وضّح محتوى اللوحة. استخدم وجهة مناسبة لكل دبوس وتجنّب الكلمات غير المرتبطة."
+  },
+  "Board name: [specific category] for [buyer/use]\nBoard description: Ideas for [task], including [product types] selected for [relevant feature].": {
+    "fr": "Nom du tableau : [catégorie précise] pour [public/usage]\nDescription : Idées pour [tâche], dont [types de produits] choisis pour [caractéristique pertinente].",
+    "ar": "اسم اللوحة: [فئة محددة] من أجل [الجمهور أو الاستخدام]\nوصف اللوحة: أفكار من أجل [المهمة] تشمل [أنواع المنتجات] المختارة بناءً على [ميزة مناسبة]."
+  },
+  "Match the image, description, and destination": {
+    "fr": "Faire correspondre l’image, le texte et la destination",
+    "ar": "طابق الصورة والوصف والوجهة"
+  },
+  "Use a vertical product image, a readable headline, and a direct product link. Describe only visible details in alt text. Publish useful variations and compare saves and outbound clicks before changing your approach.": {
+    "fr": "Utilisez une image verticale, un titre lisible et un lien produit direct. Limitez le texte alternatif aux détails visibles. Publiez des variantes utiles et comparez les enregistrements et les clics sortants avant d’ajuster votre approche.",
+    "ar": "استخدم صورة عمودية وعنوانًا مقروءًا ورابطًا مباشرًا للمنتج. اكتب في النص البديل التفاصيل المرئية فقط. انشر تنويعات مفيدة وقارن مرات الحفظ والنقرات على الروابط قبل تعديل خطتك."
+  },
+  "Image headline: [product benefit]\nPin title: [product + specific use]\nDescription: [One concrete feature]. Explore [options] at the link.\nAlt text: [Visible object and setting; avoid unsupported claims.]": {
+    "fr": "Titre sur l’image : [bénéfice produit]\nTitre de l’épingle : [produit + usage précis]\nDescription : [Caractéristique concrète]. Découvrez [options] via le lien.\nTexte alternatif : [Objet et décor visibles, sans promesse non vérifiée.]",
+    "ar": "عنوان الصورة: [فائدة المنتج]\nعنوان الدبوس: [المنتج والاستخدام المحدد]\nالوصف: [ميزة ملموسة]. اكتشف [الخيارات] عبر الرابط.\nالنص البديل: [العنصر والمكان الظاهران دون ادعاءات غير موثّقة.]"
   }
 } as const;
 export type Message = keyof typeof translations;

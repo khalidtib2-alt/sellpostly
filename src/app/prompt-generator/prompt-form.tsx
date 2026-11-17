@@ -6,6 +6,7 @@ import type { Message } from "../translations";
 import { useState, type FormEvent } from "react";
 
 const goals = {
+  pinterest: { label: "Pinterest Pin & Viral Board Marketing Strategy", brief: "Act as a Pinterest strategist. Create five keyword-focused Pin titles, two descriptions with six relevant search hashtags each, three board names with descriptions, image alt text based only on supplied visual details, and a four-week publishing plan. Avoid invented performance guarantees." },
   description: {
     label: "High-Converting Product Description",
     brief: "Act as an ecommerce copywriter. Produce a benefit-led headline, a 60–100 word description, four feature-to-benefit bullets, and a clear call to action. Address one likely buyer objection using only supplied facts. Make the result easy to skim on mobile.",

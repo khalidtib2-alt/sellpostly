@@ -1,1 +1,112 @@
-[["whatsapp-business-product-catalog-templates","WhatsApp Business Product Catalog Templates","Write a catalog listing and confirm cash-on-delivery orders without retyping the same details.",[["Build the catalog entry","Put the variant and price near the top. Use the catalog’s price field where available, and use the description to clarify what’s included, delivery areas, and how to order. If variants cost different amounts, give a price for each or create separate entries.","[Product] — [size/color]\nPrice: [amount + currency]\nIncludes: [items or quantity]\nOptions: [variants and prices]\nDelivery: [areas, fee, estimate]\nTo order, send the option and quantity you want."],["Confirm cash on delivery before dispatch","Confirm the full amount including shipping, the delivery window, and accepted payment at the door. Ask for the delivery address in a private chat after the customer confirms the order. If exact change is needed, say so upfront.","Order summary: [item × quantity]\nItems: [amount] | Delivery: [fee]\nTotal due at delivery: [amount + currency]\nExpected delivery: [day/window]\nPayment at the door: [cash/exact change policy]\nReply CONFIRM if these details are correct."],["Reply when a variant sells out","Update the catalog too so future buyers see the current options. Make the replacement and any price difference explicit before accepting the order.","[Requested option] is sold out. I have [available option] at [price]. Delivery to [area] is [fee]. Would you like that option, or should I let you know when the original is back?"]]],["facebook-marketplace-high-converting-descriptions","Facebook Marketplace Descriptions That Answer Buyer Questions","Use structured listings that settle condition, included items, and pickup logistics before the first message.",[["Write the first two lines for a buyer scanning on a phone","Lead with model, condition, and pickup area. Use the listing’s price field for the actual asking price. Keep your street address private until you arrange pickup.","[Brand/model] [item] — [condition], pickup in [neighborhood].\nAsking [price]; [firm / open to offers].\nSize: [W × D × H]\nIncluded: [items]\nCondition: [tested functions and visible wear]\nPickup: [days and windows]\nMessage with your preferred pickup window."],["Show flaws and compatibility in plain language","Photograph wear and identify missing parts. For furniture, measure the largest assembled piece and state whether it comes apart. For electronics, list model numbers and verified accessories.","Condition: Tested [functions]; see photo [number] for [flaw].\nModel: [number]. Includes [accessories].\nBuyer needs: [required part or space].\nPacking: [assembled/disassembled]; largest piece [dimensions]."],["Turn common DMs into listing updates","If several shoppers ask whether you deliver or accept offers, answer that in the listing. Update availability after a confirmed handoff and provide the pickup address privately.","Yes, [item] is available. Pickup is near [landmark] on [window A] or [window B]. Which works for you? I’ll send the exact meeting spot once we agree on a time."]]],["instagram-shopping-caption-hashtag-guide","Instagram Shopping Caption and Hashtag Guide","Write a clear hook, preserve useful line breaks, and choose hashtags that describe the product and buyer’s use case.",[["Start with the problem or a visible detail","Use a specific outcome the photo or video shows. For example, “A shelf that fits behind your bathroom door” gives shoppers something concrete to check.","Problem hook: [Common frustration]? [Product] helps by [specific feature].\nDemo hook: Watch [product] do [task] in [real setting].\nDetail hook: [Measurement/material] for [buyer use case]."],["Use a three-part caption","Keep the hook on its own line, then add one short block with the facts and a separate order instruction. Preview the published format on mobile. If you can tag the product, direct readers to the tag. Otherwise use a clear DM keyword or a link that actually exists in your profile.","A shelf that fits behind your bathroom door.\n\n4 inches deep, with two removable trays. $29 before shipping.\n\nDM SHELF for colors and shipping options.\n\n#BathroomStorage #SmallBathroomIdeas #OverDoorOrganizer"],["Pick hashtags for relevance","Start with a product term, a use case, and a location only for local sales. Treat tags as descriptors. Compare product taps, qualified DMs, or orders across several similar posts before keeping a set.","Product: #[SpecificProduct]\nUse case: #[BuyerUseCase]\nLocal pickup, if offered: #[City]Shopping\nBrand or collection, if useful: #[YourCollection]"]]],["tiktok-shop-short-video-caption-templates","TikTok Shop Short-Video Caption Templates","Pair a product demonstration with a two-line caption and one clear action.",[["Make the hook match the first shot","Open on the problem, the product in use, or the finished result. Save details that need more space for on-screen labels or the product listing. Only claim what the clip demonstrates.","[Product] solves [visible problem] in [setting].\nTap the product link to check [sizes/colors]."],["Write a caption for the video you filmed","A comparison can show which variant fits a real use case. A demo can call out a feature and let the footage show the work. Use the product link CTA only when the video has one.","Demo: Watch this packing cube fit into a 16-inch backpack.\nTap the product link for the exact dimensions.\n\nVariant comparison: Small pouch for cables. Large pouch for chargers.\nTap the product link to compare sizes."],["Check the offer and the next action","Make sure the linked listing matches the item in the clip. If you mention a price or promotion, confirm its terms and current availability. If you earn a commission or received the product free, disclose that clearly in the video and caption.","Paid partnership with [brand]. Here’s how [product] fits [use case].\nTap the product link for current pricing and options."]]]]
+[
+  [
+    "whatsapp-business-product-catalog-templates",
+    "WhatsApp Business Product Catalog Templates",
+    "Write a catalog listing and confirm cash-on-delivery orders without retyping the same details.",
+    [
+      [
+        "Build the catalog entry",
+        "Put the variant and price near the top. Use the catalog’s price field where available, and use the description to clarify what’s included, delivery areas, and how to order. If variants cost different amounts, give a price for each or create separate entries.",
+        "[Product] — [size/color]\nPrice: [amount + currency]\nIncludes: [items or quantity]\nOptions: [variants and prices]\nDelivery: [areas, fee, estimate]\nTo order, send the option and quantity you want."
+      ],
+      [
+        "Confirm cash on delivery before dispatch",
+        "Confirm the full amount including shipping, the delivery window, and accepted payment at the door. Ask for the delivery address in a private chat after the customer confirms the order. If exact change is needed, say so upfront.",
+        "Order summary: [item × quantity]\nItems: [amount] | Delivery: [fee]\nTotal due at delivery: [amount + currency]\nExpected delivery: [day/window]\nPayment at the door: [cash/exact change policy]\nReply CONFIRM if these details are correct."
+      ],
+      [
+        "Reply when a variant sells out",
+        "Update the catalog too so future buyers see the current options. Make the replacement and any price difference explicit before accepting the order.",
+        "[Requested option] is sold out. I have [available option] at [price]. Delivery to [area] is [fee]. Would you like that option, or should I let you know when the original is back?"
+      ]
+    ]
+  ],
+  [
+    "facebook-marketplace-high-converting-descriptions",
+    "Facebook Marketplace Descriptions That Answer Buyer Questions",
+    "Use structured listings that settle condition, included items, and pickup logistics before the first message.",
+    [
+      [
+        "Write the first two lines for a buyer scanning on a phone",
+        "Lead with model, condition, and pickup area. Use the listing’s price field for the actual asking price. Keep your street address private until you arrange pickup.",
+        "[Brand/model] [item] — [condition], pickup in [neighborhood].\nAsking [price]; [firm / open to offers].\nSize: [W × D × H]\nIncluded: [items]\nCondition: [tested functions and visible wear]\nPickup: [days and windows]\nMessage with your preferred pickup window."
+      ],
+      [
+        "Show flaws and compatibility in plain language",
+        "Photograph wear and identify missing parts. For furniture, measure the largest assembled piece and state whether it comes apart. For electronics, list model numbers and verified accessories.",
+        "Condition: Tested [functions]; see photo [number] for [flaw].\nModel: [number]. Includes [accessories].\nBuyer needs: [required part or space].\nPacking: [assembled/disassembled]; largest piece [dimensions]."
+      ],
+      [
+        "Turn common DMs into listing updates",
+        "If several shoppers ask whether you deliver or accept offers, answer that in the listing. Update availability after a confirmed handoff and provide the pickup address privately.",
+        "Yes, [item] is available. Pickup is near [landmark] on [window A] or [window B]. Which works for you? I’ll send the exact meeting spot once we agree on a time."
+      ]
+    ]
+  ],
+  [
+    "instagram-shopping-caption-hashtag-guide",
+    "Instagram Shopping Caption and Hashtag Guide",
+    "Write a clear hook, preserve useful line breaks, and choose hashtags that describe the product and buyer’s use case.",
+    [
+      [
+        "Start with the problem or a visible detail",
+        "Use a specific outcome the photo or video shows. For example, “A shelf that fits behind your bathroom door” gives shoppers something concrete to check.",
+        "Problem hook: [Common frustration]? [Product] helps by [specific feature].\nDemo hook: Watch [product] do [task] in [real setting].\nDetail hook: [Measurement/material] for [buyer use case]."
+      ],
+      [
+        "Use a three-part caption",
+        "Keep the hook on its own line, then add one short block with the facts and a separate order instruction. Preview the published format on mobile. If you can tag the product, direct readers to the tag. Otherwise use a clear DM keyword or a link that actually exists in your profile.",
+        "A shelf that fits behind your bathroom door.\n\n4 inches deep, with two removable trays. $29 before shipping.\n\nDM SHELF for colors and shipping options.\n\n#BathroomStorage #SmallBathroomIdeas #OverDoorOrganizer"
+      ],
+      [
+        "Pick hashtags for relevance",
+        "Start with a product term, a use case, and a location only for local sales. Treat tags as descriptors. Compare product taps, qualified DMs, or orders across several similar posts before keeping a set.",
+        "Product: #[SpecificProduct]\nUse case: #[BuyerUseCase]\nLocal pickup, if offered: #[City]Shopping\nBrand or collection, if useful: #[YourCollection]"
+      ]
+    ]
+  ],
+  [
+    "tiktok-shop-short-video-caption-templates",
+    "TikTok Shop Short-Video Caption Templates",
+    "Pair a product demonstration with a two-line caption and one clear action.",
+    [
+      [
+        "Make the hook match the first shot",
+        "Open on the problem, the product in use, or the finished result. Save details that need more space for on-screen labels or the product listing. Only claim what the clip demonstrates.",
+        "[Product] solves [visible problem] in [setting].\nTap the product link to check [sizes/colors]."
+      ],
+      [
+        "Write a caption for the video you filmed",
+        "A comparison can show which variant fits a real use case. A demo can call out a feature and let the footage show the work. Use the product link CTA only when the video has one.",
+        "Demo: Watch this packing cube fit into a 16-inch backpack.\nTap the product link for the exact dimensions.\n\nVariant comparison: Small pouch for cables. Large pouch for chargers.\nTap the product link to compare sizes."
+      ],
+      [
+        "Check the offer and the next action",
+        "Make sure the linked listing matches the item in the clip. If you mention a price or promotion, confirm its terms and current availability. If you earn a commission or received the product free, disclose that clearly in the video and caption.",
+        "Paid partnership with [brand]. Here’s how [product] fits [use case].\nTap the product link for current pricing and options."
+      ]
+    ]
+  ],
+  [
+    "pinterest-product-marketing-guide",
+    "Pinterest Product Marketing Guide",
+    "Create searchable Pins with clear product details and boards organized around buyer needs.",
+    [
+      [
+        "Write a Pin title with a clear product keyword",
+        "Lead with the product and its use case. Add a useful detail from the listing. Keep price and availability accurate and link to the matching product page.",
+        "Pin title: [product] for [use case]\nDescription: Discover [product] with [verified feature]. See [sizes/options] and current pricing at the product link.\nHashtags: #[product] #[use] #[category] #[style] #[occasion] #[brand]\nBoard: [use case] product ideas\nAlt text: [Describe the visible product, color, and setting.]"
+      ],
+      [
+        "Organize boards around a shopping task",
+        "Group related Pins into focused boards such as small-desk accessories or weekend travel essentials. Explain what the board contains. Use a relevant destination for each Pin and avoid repeating unrelated keywords.",
+        "Board name: [specific category] for [buyer/use]\nBoard description: Ideas for [task], including [product types] selected for [relevant feature]."
+      ],
+      [
+        "Match the image, description, and destination",
+        "Use a vertical product image, a readable headline, and a direct product link. Describe only visible details in alt text. Publish useful variations and compare saves and outbound clicks before changing your approach.",
+        "Image headline: [product benefit]\nPin title: [product + specific use]\nDescription: [One concrete feature]. Explore [options] at the link.\nAlt text: [Visible object and setting; avoid unsupported claims.]"
+      ]
+    ]
+  ]
+]
