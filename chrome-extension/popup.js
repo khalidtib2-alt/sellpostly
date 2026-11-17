@@ -1,6 +1,9 @@
 "use strict";
 
 const messages = {
+"Import From Current Page": {fr:"Importer depuis cette page",ar:"استيراد من الصفحة الحالية"},
+"Page imported. Review the details.": {fr:"Page importée. Vérifiez les détails.",ar:"تم الاستيراد. راجع التفاصيل."},
+"Could not read this page. Open a product page and try again.": {fr:"Lecture impossible. Ouvrez une page produit et réessayez.",ar:"تعذّرت قراءة الصفحة. افتح صفحة منتج وحاول مجددًا."},
   "Formatting mode": {
     "fr": "Mode de mise en forme",
     "ar": "وضع التنسيق"
@@ -313,3 +316,53 @@ for (const button of document.querySelectorAll("[data-language]")) {
     }
   });
 }
+
+document.querySelector("#import-page").addEventListener("click", async () => {
+  const button = document.querySelector("#import-page");
+  button.disabled = true;
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id || !/^https?:/.test(tab.url || "")) throw Error();
+    const [execution] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        const text = (selector) => {
+          const element = document.querySelector(selector);
+          return (element?.getAttribute("content") || element?.textContent || "").replace(/\s+/g, " ").trim();
+        };
+        function findProduct(value, depth = 0) {
+          if (!value || typeof value !== "object" || depth > 12) return;
+          if (Array.isArray(value)) {
+            for (const child of value) { const found = findProduct(child, depth + 1); if (found) return found; }
+          } else {
+            if ([value["@type"]].flat().includes("Product")) return value;
+            for (const child of Object.values(value)) { const found = findProduct(child, depth + 1); if (found) return found; }
+          }
+        }
+        let product;
+        for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
+          try { product = findProduct(JSON.parse(script.textContent)); if (product) break; } catch {}
+        }
+        const offer = [product?.offers].flat()[0];
+        const price = offer?.price ?? offer?.lowPrice;
+        const name = text('meta[property="og:title"]') || text("#productTitle") || text("h1");
+        return {
+          name: name.slice(0, 120),
+          price: (price != null ? String(price) + " " + (offer.priceCurrency || "") : text(".a-price .a-offscreen") || text("[itemprop=price]")).trim().slice(0, 35),
+          features: (text('meta[property="og:description"]') || text("#feature-bullets")).slice(0, 1200)
+        };
+      }
+    });
+    const product = execution?.result;
+    if (!product?.name) throw Error();
+    const form = document.querySelector("#seller");
+    for (const key of ["name", "price", "features"]) form.elements.namedItem(key).value = product[key] || "";
+    lastRequest = null;
+    results.hidden = true;
+    feedback.textContent = t("Page imported. Review the details.");
+  } catch {
+    feedback.textContent = t("Could not read this page. Open a product page and try again.");
+  } finally {
+    button.disabled = false;
+  }
+});

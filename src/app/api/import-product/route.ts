@@ -25,7 +25,7 @@ async function download(input: string, image = false, redirects = 0): Promise<{ 
   return new Promise((resolve,reject)=>{
     const request = (url.protocol === "https:" ? https : http).get(url,{
       agent:false,
-      headers:{"User-Agent":"Mozilla/5.0 (compatible; SellPostly/1.0)","Accept":image ? "image/*" : "text/html","Accept-Encoding":"identity"},
+      headers:{"User-Agent":"Mozilla/5.0 (compatible; SellPostly/1.0)","Accept":image ? "image/*" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9,fr;q=0.8,ar;q=0.7","Accept-Encoding":"identity"},
       lookup: (_host, _options, callback) => callback(null,selected.address,selected.family),
     },response=>{
       const code = response.statusCode ?? 500;

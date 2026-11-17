@@ -135,7 +135,7 @@ export default function Formatter() {
       {mode === "seller" && <div className="mt-5 rounded-lg border border-emerald-200 bg-white p-4">
         <label className="font-semibold">{t("Auto-Fill From Product Link")}<input type="url" dir="ltr" aria-label={t("Public product URL")} placeholder="https://example.com/products/item" className={fieldStyle} value={productUrl} onChange={e=>setProductUrl(e.target.value)} /></label>
         <button type="button" disabled={busy || !productUrl.trim()} onClick={importProduct} className="mt-2 rounded-lg bg-emerald-700 px-4 py-2 text-white disabled:opacity-50">{t(busy?"Importing…":"Import Product")}</button>
-        <p role="status">{importStatus && t(importStatus)}</p>
+        <p role="status">{importStatus && (language === "en" && importStatus === "Import failed. The store may block access. Enter the details manually." ? "Stores such as Amazon may block server requests. While viewing the product, use the SellPostly Chrome Extension’s Import From Current Page button, or enter details manually." : t(importStatus))}</p>
       </div>}
       <form ref={formRef} onChange={event=>{
         const data=new FormData(event.currentTarget);

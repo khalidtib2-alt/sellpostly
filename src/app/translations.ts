@@ -778,10 +778,7 @@ export const translations = {
     "fr": "Importation…",
     "ar": "جارٍ الاستيراد…"
   },
-  "Import failed. The store may block access. Enter the details manually.": {
-    "fr": "Import impossible. La boutique peut bloquer l’accès. Saisissez les détails manuellement.",
-    "ar": "تعذّر الاستيراد. قد يمنع المتجر الوصول. أدخل التفاصيل يدويًا."
-  },
+  "Import failed. The store may block access. Enter the details manually.": {"fr":"Les boutiques comme Amazon peuvent bloquer les requêtes serveur. Sur la page produit, utilisez le bouton Importer depuis cette page de l’extension Chrome SellPostly, ou saisissez les détails manuellement.","ar":"قد تمنع متاجر مثل Amazon طلبات الخادم. أثناء عرض المنتج، استخدم زر استيراد من الصفحة الحالية في إضافة SellPostly لمتصفح Chrome، أو أدخل التفاصيل يدويًا."},
   "Product imported. Review the details before publishing.": {
     "fr": "Produit importé. Vérifiez les détails avant publication.",
     "ar": "تم استيراد المنتج. راجع التفاصيل قبل النشر."

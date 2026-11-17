@@ -23,3 +23,6 @@ button { border: 0; border-radius: 7px; padding: 7px 9px; background: transparen
 #status:empty { display: none; }
 footer { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; padding-top: 9px; border-top: 1px solid #e2e8f0; }
 a { color: #065f46; text-underline-offset: 2px; }
+
+#import-page { width: 100%; }
+button:disabled { opacity: .6; cursor: wait; }

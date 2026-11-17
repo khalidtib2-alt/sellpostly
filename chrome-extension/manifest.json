@@ -3,7 +3,10 @@
   "name": "SellPostly",
   "version": "1.0.0",
   "description": "Format seller listings and creator posts locally.",
-  "permissions": [],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
