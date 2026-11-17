@@ -1,6 +1,7 @@
 "use strict";
 
 const messages = {
+"Delivery":{"fr":"Livraison","ar":"التوصيل"},"Reply *ORDER* now to claim yours!":{"fr":"Répondez *COMMANDER* pour passer commande !","ar":"أرسل *طلب* الآن لطلب منتجك!"},
 "Import From Current Page": {fr:"Importer depuis cette page",ar:"استيراد من الصفحة الحالية"},
 "Page imported. Review the details.": {fr:"Page importée. Vérifiez les détails.",ar:"تم الاستيراد. راجع التفاصيل."},
 "Could not read this page. Open a product page and try again.": {fr:"Lecture impossible. Ouvrez une page produit et réessayez.",ar:"تعذّرت قراءة الصفحة. افتح صفحة منتج وحاول مجددًا."},
@@ -182,13 +183,12 @@ function sellerPosts(data) {
   const name = read("name");
   const price = read("price");
   const delivery = read("delivery");
-  const features = read("features").split(/\r?\n/)
-    .map((line) => line.trim().replace(/^[-*•]\s+/, "")).filter(Boolean);
-  const bullets = features.map((feature) => "• " + feature).join("\n");
+  const features = featureLines(read("features"));
+  const bullets = features.map(feature => "✅ " + feature).join("\n");
   const location = delivery && t("Delivery / pickup") + ": " + delivery;
-  const cta = t("Message to order.");
+  const cta = "👉 " + t("Reply *ORDER* now to claim yours!");
   return [
-    ["WhatsApp Business", lines("*" + name + "*", price && "*" + t("Price") + ":* " + price, location, bullets, cta)],
+    ["WhatsApp Business", lines("*" + name + "*", price && "💰 *" + t("Price") + ":* " + price, delivery && "🚚 *" + t("Delivery") + ":* " + delivery) + "\n\n" + bullets + "\n\n" + cta],
     ["Instagram", [features[0] ? name + " — " + features[0] : t("Meet") + " " + name, lines(price, location, bullets), cta, t("#ProductFinds #ShopNow")].filter(Boolean).join("\n\n")],
     ["Facebook Marketplace", lines(t("Product") + ": " + name, price && t("Price") + ": " + price, location, bullets && t("Features") + ":\n" + bullets, cta)],
     ["TikTok", lines([name, features[0], price].filter(Boolean).join(" · "), cta + " " + t("#ProductFinds #ShopNow"))],
@@ -370,7 +370,7 @@ document.querySelector("#import-page").addEventListener("click", async () => {
         return {
           name: (text('meta[property="og:title"]') || text("#productTitle") || text("h1")).slice(0,120),
           price: price.trim().slice(0,35),
-          features: description.filter(Boolean).map(line => "• " + line).join("\n").slice(0,1200),
+          features: description.filter(Boolean).flatMap(line=>line.split(/(?<=[.!?])\s+/)).filter(line=>!/^about this item$/i.test(line) && !/our wide selection|free shipping and free returns|buy .+ at amazon\.com/i.test(line)).slice(0,4).join("\n").slice(0,1200),
           image: /^https?:/.test(image) ? image : ""
         };
       }
@@ -392,3 +392,10 @@ document.querySelector("#import-page").addEventListener("click", async () => {
     button.disabled = false;
   }
 });
+
+function featureLines(value) {
+  return String(value).replace(/\*\*/g,"").split(/\n+|(?<=[.!?])\s+/)
+    .map(line=>line.replace(/^[-•✅\s]+/u,"").trim())
+    .filter(line=>line && !/^about this item$/i.test(line) && !/our wide selection|free shipping and free returns|buy .+ at amazon\.com/i.test(line))
+    .flatMap(line=>line.match(/.{1,100}(?:\s|$)|.{1,100}/g)||[]).map(line=>line.trim()).slice(0,4);
+}

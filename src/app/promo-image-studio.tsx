@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "./language-context";
 
-export default function PromoImageStudio({ name, price, importedImage }: { name: string; price: string; importedImage: string }) {
+export default function PromoImageStudio({ name, price, importedImage, onImage }: { name: string; price: string; importedImage: string; onImage: (blob: Blob | null) => void }) {
   const { t, language } = useLanguage();
   const canvas = useRef<HTMLCanvasElement>(null);
   const [source,setSource] = useState("");
@@ -20,6 +20,7 @@ export default function PromoImageStudio({ name, price, importedImage }: { name:
     if(!context) return;
     let cancelled=false;
     setReady(false);
+    onImage(null);
     const height=format==="vertical"?1920:format==="pin"?1620:1080;
     element.width=1080; element.height=height;
     function draw(image?: HTMLImageElement) {
@@ -49,6 +50,7 @@ export default function PromoImageStudio({ name, price, importedImage }: { name:
       context.direction="ltr"; context.fillStyle=colors[1]; context.font="22px system-ui";
       context.fillText(t("Created with SellPostly.com"),540,height-20);
       setReady(true);
+      if(image) element!.toBlob(blob=>{if(!cancelled)onImage(blob);},"image/png");
     }
     setFailed(false);
     if(!source){draw();return;}
@@ -57,7 +59,7 @@ export default function PromoImageStudio({ name, price, importedImage }: { name:
     image.onerror=()=>{if(!cancelled){setFailed(true);draw();}};
     image.src=source;
     return ()=>{cancelled=true;};
-  },[source,format,theme,name,price,language,t]);
+  },[source,format,theme,name,price,language,t,onImage]);
 
   function download() {
     try {
@@ -70,7 +72,7 @@ export default function PromoImageStudio({ name, price, importedImage }: { name:
   return <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
     <h3 className="text-xl font-bold">{t("Promo Image Studio")}</h3>
     <div className="my-4 grid gap-4 sm:grid-cols-3">
-      <label>{t("Product image")}<input type="file" accept="image/png,image/jpeg,image/webp" className="block w-full text-sm" onChange={event=>{
+      <label className="cursor-pointer rounded-lg bg-emerald-700 p-3 text-white focus-within:ring-2">{t("Upload Product Photo")}<input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={event=>{
         const file=event.target.files?.[0]; if(!file)return;
         if(file.size>10000000 || !["image/png","image/jpeg","image/webp"].includes(file.type)){setFailed(true);return;}
         const reader=new FileReader(); reader.onload=()=>setSource(String(reader.result));reader.onerror=()=>setFailed(true);reader.readAsDataURL(file);

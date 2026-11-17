@@ -918,6 +918,46 @@ export const translations = {
   "Image headline: [product benefit]\nPin title: [product + specific use]\nDescription: [One concrete feature]. Explore [options] at the link.\nAlt text: [Visible object and setting; avoid unsupported claims.]": {
     "fr": "Titre sur l’image : [bénéfice produit]\nTitre de l’épingle : [produit + usage précis]\nDescription : [Caractéristique concrète]. Découvrez [options] via le lien.\nTexte alternatif : [Objet et décor visibles, sans promesse non vérifiée.]",
     "ar": "عنوان الصورة: [فائدة المنتج]\nعنوان الدبوس: [المنتج والاستخدام المحدد]\nالوصف: [ميزة ملموسة]. اكتشف [الخيارات] عبر الرابط.\nالنص البديل: [العنصر والمكان الظاهران دون ادعاءات غير موثّقة.]"
+  },
+  "Send Text": {
+    "fr": "Envoyer le texte",
+    "ar": "إرسال النص"
+  },
+  "Send Image + Text": {
+    "fr": "Envoyer l’image et le texte",
+    "ar": "إرسال الصورة والنص"
+  },
+  "Image copied! Press Ctrl+V in chat to attach photo.": {
+    "fr": "Image copiée ! Collez-la dans la conversation avec Ctrl+V.",
+    "ar": "تم نسخ الصورة! اضغط Ctrl+V في المحادثة لإرفاقها."
+  },
+  "Image downloaded. Attach it and paste the caption.": {
+    "fr": "Image téléchargée. Joignez-la et collez la légende.",
+    "ar": "تم تنزيل الصورة. أرفقها والصق النص."
+  },
+  "Caption copied. Paste it on the platform.": {
+    "fr": "Légende copiée. Collez-la sur la plateforme.",
+    "ar": "تم نسخ النص. الصقه في المنصة."
+  },
+  "Sharing failed. Copy the text or download the image.": {
+    "fr": "Échec du partage. Copiez le texte ou téléchargez l’image.",
+    "ar": "تعذّر المشاركة. انسخ النص أو نزّل الصورة."
+  },
+  "Upload Product Photo": {
+    "fr": "Importer une photo produit",
+    "ar": "رفع صورة المنتج"
+  },
+  "Try Sample Product": {
+    "fr": "Essayer un produit exemple",
+    "ar": "جرّب منتجًا نموذجيًا"
+  },
+  "Delivery": {
+    "fr": "Livraison",
+    "ar": "التوصيل"
+  },
+  "Reply *ORDER* now to claim yours!": {
+    "fr": "Répondez *COMMANDER* pour passer commande !",
+    "ar": "أرسل *طلب* الآن لطلب منتجك!"
   }
 } as const;
 export type Message = keyof typeof translations;

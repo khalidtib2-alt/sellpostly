@@ -55,6 +55,10 @@ async function download(input: string, image = false, redirects = 0, json = fals
   });
 }
 
+
+function descriptionLines(value: unknown) {
+  return clean(value).split(/(?<=[.!?])\s+/).filter(line=>! /our wide selection|free shipping and free returns|buy .+ at amazon\.com/i.test(line)).slice(0,4).join("\n");
+}
 function clean(value: unknown): string {
   if (typeof value !== "string" && typeof value !== "number") return "";
   return String(value).replace(/<[^>]*>/g," ").replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(Math.min(Number(n),0x10ffff))).replace(/\s+/g," ").trim().slice(0,1500);
@@ -100,6 +104,9 @@ export async function POST(request: Request) {
     }
     const page=await download(url);
     const html=page.bytes.toString("utf8");
+
+    const featureBlock=html.match(/<[^>]+id=["']feature-bullets["'][^>]*>([\s\S]*?)<\/ul>/i)?.[1] || "";
+    const featureBullets=[...featureBlock.matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/gi)].map(match=>clean(match[1])).filter(line=>line && !/^about this item$/i.test(line)).slice(0,4).join("\n");
     const meta: Record<string,string>={};
     for(const tag of html.matchAll(/<meta\b[^>]*>/gi)) {
       const attrs: Record<string,string>={};
@@ -123,7 +130,7 @@ export async function POST(request: Request) {
     }
     const name=clean(product?.name)||meta["og:title"]||"";
     if(!name) throw Error("No product details");
-    return Response.json({name,description:clean(product?.description)||meta["og:description"]||meta.description||"",price:clean(offer.price??offer.lowPrice),currency:clean(offer.priceCurrency),image:imageData},{headers:{"Cache-Control":"no-store"}});
+    return Response.json({name,description:featureBullets || descriptionLines(product?.description||meta["og:description"]||meta.description||""),price:clean(offer.price??offer.lowPrice),currency:clean(offer.priceCurrency),image:imageData},{headers:{"Cache-Control":"no-store"}});
   } catch {
     return Response.json({error:"IMPORT_FAILED"},{status:400});
   }
