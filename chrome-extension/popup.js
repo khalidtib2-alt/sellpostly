@@ -343,13 +343,35 @@ document.querySelector("#import-page").addEventListener("click", async () => {
         for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
           try { product = findProduct(JSON.parse(script.textContent)); if (product) break; } catch {}
         }
+
         const offer = [product?.offers].flat()[0];
-        const price = offer?.price ?? offer?.lowPrice;
-        const name = text('meta[property="og:title"]') || text("#productTitle") || text("h1");
+        const schemaPrice = offer?.price ?? offer?.lowPrice;
+        let price = schemaPrice != null ? String(schemaPrice) + " " + (offer.priceCurrency || "") : "";
+        for (const selector of ['[itemprop="price"]', ".a-price .a-offscreen", ".price-item", '[data-testid*="price"]']) {
+          if (!price) price = text(selector);
+        }
+        if (!price) {
+          const pattern = /(?:[$€£]|MAD|AED|SAR)\s*\d[\d.,]*(?:\s*\d{3})*(?:[.,]\d{2})?/i;
+          for (const element of [...document.querySelectorAll("span,p,strong,b")].slice(0,6000)) {
+            if (!element.getClientRects().length || getComputedStyle(element).visibility === "hidden") continue;
+            const value = (element.textContent || "").trim();
+            if (value.length > 100) continue;
+            const match = value.match(pattern);
+            if (match) { price = match[0]; break; }
+          }
+        }
+        const bullets = [...document.querySelectorAll("#feature-bullets li")].map(item => item.textContent.replace(/\s+/g," ").trim()).filter(Boolean);
+        const description = bullets.length ? bullets : [
+          text('[data-testid*="description"]') || text(".product__description") ||
+          text('meta[property="og:description"]') || text('meta[name="description"]')
+        ];
+        const image = document.querySelector('meta[property="og:image"]')?.content ||
+          document.querySelector("#landingImage, .product__media img, [itemprop=image]")?.src || "";
         return {
-          name: name.slice(0, 120),
-          price: (price != null ? String(price) + " " + (offer.priceCurrency || "") : text(".a-price .a-offscreen") || text("[itemprop=price]")).trim().slice(0, 35),
-          features: (text('meta[property="og:description"]') || text("#feature-bullets")).slice(0, 1200)
+          name: (text('meta[property="og:title"]') || text("#productTitle") || text("h1")).slice(0,120),
+          price: price.trim().slice(0,35),
+          features: description.filter(Boolean).map(line => "• " + line).join("\n").slice(0,1200),
+          image: /^https?:/.test(image) ? image : ""
         };
       }
     });
@@ -357,6 +379,10 @@ document.querySelector("#import-page").addEventListener("click", async () => {
     if (!product?.name) throw Error();
     const form = document.querySelector("#seller");
     for (const key of ["name", "price", "features"]) form.elements.namedItem(key).value = product[key] || "";
+    const preview = document.querySelector("#imported-image");
+    preview.hidden = !product.image;
+    preview.onerror = () => { preview.hidden = true; };
+    if(product.image) preview.src = product.image;
     lastRequest = null;
     results.hidden = true;
     feedback.textContent = t("Page imported. Review the details.");

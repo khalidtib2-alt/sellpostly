@@ -15,7 +15,7 @@ function publicAddress(ip: string) {
   return globalV6.check(ip,"ipv6") && !/^(2001:|2002:|3fff:)/i.test(ip);
 }
 
-async function download(input: string, image = false, redirects = 0): Promise<{ bytes: Buffer; type: string; url: string }> {
+async function download(input: string, image = false, redirects = 0, json = false): Promise<{ bytes: Buffer; type: string; url: string }> {
   const url = new URL(input);
   const host = url.hostname.replace(/^\[|\]$/g,"");
   if (!["http:","https:"].includes(url.protocol) || url.username || url.password || (url.port && !["80","443"].includes(url.port)) || host === "localhost" || host.endsWith(".localhost")) throw Error("Invalid URL");
@@ -25,18 +25,18 @@ async function download(input: string, image = false, redirects = 0): Promise<{ 
   return new Promise((resolve,reject)=>{
     const request = (url.protocol === "https:" ? https : http).get(url,{
       agent:false,
-      headers:{"User-Agent":"Mozilla/5.0 (compatible; SellPostly/1.0)","Accept":image ? "image/*" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9,fr;q=0.8,ar;q=0.7","Accept-Encoding":"identity"},
+      headers:{"User-Agent":"Mozilla/5.0 (compatible; SellPostly/1.0)","Accept":json ? "application/json" : image ? "image/*" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9,fr;q=0.8,ar;q=0.7","Accept-Encoding":"identity"},
       lookup: (_host, _options, callback) => callback(null,selected.address,selected.family),
     },response=>{
       const code = response.statusCode ?? 500;
       if (code >= 300 && code < 400 && response.headers.location) {
         response.resume();
         if (redirects >= 3) return reject(Error("Too many redirects"));
-        download(new URL(response.headers.location,url).href,image,redirects+1).then(resolve,reject);
+        download(new URL(response.headers.location,url).href,image,redirects+1,json).then(resolve,reject);
         return;
       }
       const type = response.headers["content-type"]?.split(";")[0] ?? "";
-      if (code !== 200 || !(image ? ["image/png","image/jpeg","image/webp"].includes(type) : ["text/html","application/xhtml+xml"].includes(type))) {
+      if (code !== 200 || !(json ? ["application/json","text/json"].includes(type) : image ? ["image/png","image/jpeg","image/webp"].includes(type) : ["text/html","application/xhtml+xml"].includes(type))) {
         response.resume(); reject(Error("Store blocked the request")); return;
       }
       const chunks: Buffer[] = [];
@@ -80,6 +80,24 @@ export async function POST(request: Request) {
     const raw=Buffer.concat(chunks).toString("utf8");
     const {url}=JSON.parse(raw);
     if(typeof url!=="string" || url.length>2048) throw Error("Invalid URL");
+
+    const submitted=new URL(url);
+    const handle=submitted.pathname.match(/\/products\/([^/]+)/)?.[1];
+    if(handle) {
+      try {
+        const response=await download(new URL("/products/"+handle.replace(/\.json$/,"")+".json",submitted.origin).href,false,0,true);
+        const payload=JSON.parse(response.bytes.toString("utf8"));
+        const product=payload.product;
+        if(!product || typeof product.title!=="string" || !product.title.trim())throw Error("No product");
+        const imageUrl=product.image?.src || product.images?.[0]?.src;
+        let image="";
+        if(typeof imageUrl==="string") {
+          try {const asset=await download(new URL(imageUrl,response.url).href,true);image="data:"+asset.type+";base64,"+asset.bytes.toString("base64");} catch {}
+        }
+        const description=String(product.body_html||"").replace(/<\/(?:li|p|div|h[1-6])>|<br\s*\/?>/gi,"\n").split("\n").map(clean).filter(Boolean).slice(0,12).join("\n");
+        return Response.json({name:clean(product.title),price:clean(product.variants?.[0]?.price),currency:clean(product.currency||payload.currency||product.variants?.[0]?.priceCurrency),description,image},{headers:{"Cache-Control":"no-store"}});
+      } catch { /* Continue with HTML metadata when the JSON endpoint is unavailable. */ }
+    }
     const page=await download(url);
     const html=page.bytes.toString("utf8");
     const meta: Record<string,string>={};
