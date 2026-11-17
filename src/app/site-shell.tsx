@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "./language-context";
+import ThemePicker from "./theme-picker";
 import Link from "next/link";
 
 const links = [
@@ -22,6 +23,7 @@ export function Header() {
           className={"rounded-full px-3 py-1 " + (language === code ? "bg-emerald-700 text-white" : "text-slate-800")}>{label}</button>
       ))}
     </div>
+    <ThemePicker />
   </nav></header>;
 }
 

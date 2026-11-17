@@ -1208,6 +1208,38 @@ export const translations = {
     "ar": "لم يتم العثور على منتجات."
   },
 "Clean White": {"fr":"Blanc pur","ar":"أبيض نقي"},
-"Soft Mint": {"fr":"Menthe douce","ar":"نعناعي فاتح"}
+"Soft Mint": {"fr":"Menthe douce","ar":"نعناعي فاتح"},
+  "Theme & Color": {
+    "fr": "Thème et couleur",
+    "ar": "المظهر واللون"
+  },
+  "Page Surface": {
+    "fr": "Fond du site",
+    "ar": "خلفية الموقع"
+  },
+  "Brand Accent": {
+    "fr": "Couleur d’accent",
+    "ar": "اللون الأساسي"
+  },
+  "Ocean Blue": {
+    "fr": "Bleu océan",
+    "ar": "أزرق المحيط"
+  },
+  "Sunset Amber": {
+    "fr": "Ambre du couchant",
+    "ar": "كهرماني الغروب"
+  },
+  "Royal Violet": {
+    "fr": "Violet royal",
+    "ar": "بنفسجي ملكي"
+  },
+  "Rose Coral": {
+    "fr": "Rose corail",
+    "ar": "وردي مرجاني"
+  },
+  "Shop Background Color": {
+    "fr": "Fond de la boutique",
+    "ar": "خلفية المتجر"
+  }
 } as const;
 export type Message = keyof typeof translations;

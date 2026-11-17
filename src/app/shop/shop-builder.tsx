@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { surfaces, surfaceNames, type Surface } from "../theme-picker";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
 import { categories, decodeShop, encodeShop, safeImage, safeUrl, shopKey, validateShop, type Product, type Shop } from "./shop-data";
@@ -13,11 +14,11 @@ function samples(): Shop {
     context.font="80px system-ui";context.textAlign="center";context.fillText(["🎧","🎒","🍽️","💧"][index],160,145);
     return {id:"sample-"+index,name,price:["49 USD","39 USD","24 USD","19 USD"][index],category:["Tech & Gadgets","Fashion","Home & Kitchen","Fitness"][index],image:canvas.toDataURL(),url:["https://www.amazon.com/","https://www.aliexpress.com/","https://www.shopify.com/","https://www.amazon.com/"][index],source:["Amazon","AliExpress","Shopify","Amazon"][index]};
   });
-  return {name:"My Shop",bio:"",phone:"",products};
+  return {name:"My Shop",bio:"",phone:"",shopTheme:"white",products};
 }
 export default function ShopBuilder(){
   const {t}=useLanguage();
-  const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",products:[]});
+  const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopTheme:"white",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(false),[preview,setPreview]=useState(false),[adding,setAdding]=useState(false);
   const [search,setSearch]=useState("");
   const [visible,setVisible]=useState(24);
@@ -59,7 +60,7 @@ export default function ShopBuilder(){
   const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   useEffect(()=>setVisible(24),[filter,search]);
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
-  return <main className="mx-auto max-w-6xl px-5 py-12">
+  return <main data-surface={shop.shopTheme} className="shop-surface mx-auto max-w-6xl px-5 py-12">
     <label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>
     <div className="mb-6 flex flex-wrap gap-3">
       {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>setPreview(true)}>{t("Storefront Preview")}</button></>}
@@ -67,6 +68,7 @@ export default function ShopBuilder(){
     </div>
     <p className="mb-4 text-sm text-slate-600">{t("Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.")}</p>
     {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
+      <label>{t("Shop Background Color")}<select className={field} value={shop.shopTheme} onChange={e=>setShop({...shop,shopTheme:e.target.value as Surface})}>{surfaces.map((surface,index)=><option key={surface} value={surface}>{t(surfaceNames[index])}</option>)}</select></label>
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
       <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
       <label>{t("WhatsApp Order Number")}<input className={field} dir="ltr" placeholder="+1 555 123 4567" value={shop.phone} onChange={e=>setShop({...shop,phone:e.target.value})}/></label>
@@ -93,7 +95,7 @@ export default function ShopBuilder(){
     <p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>
     <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)} ({c==="All"?shop.products.length:shop.products.filter(p=>p.category===c).length})</button>)}</div>
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
-      <div className="h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className="max-h-full max-w-full w-auto h-auto object-contain mix-blend-multiply" onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
+      <div className="product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
       <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price}</p>
       <div className="flex flex-wrap gap-2 text-sm">
         {p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("Buy / View Deal")}</a>}
@@ -107,3 +109,4 @@ export default function ShopBuilder(){
     <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
   </main>;
 }
+
