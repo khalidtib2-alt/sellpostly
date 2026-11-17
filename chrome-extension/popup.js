@@ -1,151 +1,154 @@
-"use strict";
+﻿"use strict";
 
 const messages = {
-"Text & Image copied! Paste (Ctrl+V) directly into your post or chat.":{"fr":"Texte et image copiés ! Collez-les (Ctrl+V) dans votre publication ou conversation.","ar":"تم نسخ النص والصورة! الصق (Ctrl+V) في المنشور أو المحادثة."},"Send to My Shop":{"fr":"Envoyer vers ma boutique","ar":"إرسال إلى متجري"},
-"Upload or import a product photo first.":{"fr":"Importez d’abord une photo produit.","ar":"ارفع أو استورد صورة المنتج أولًا."},"Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.":{"fr":"Collez l’URL d’une fiche produit précise, ou utilisez l’extension Chrome SellPostly sur cette fiche.","ar":"الصق رابط صفحة منتج محدد بدل الصفحة الرئيسية للمتجر، أو استخدم إضافة SellPostly على صفحة المنتج."},"Image copied! Press Ctrl+V in chat to attach the photo.":{"fr":"Image copiée ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.","ar":"تم نسخ الصورة! اضغط Ctrl+V في المحادثة لإرفاقها."},"Send Text":{"fr":"Envoyer le texte","ar":"إرسال النص"},"Send Image + Text":{"fr":"Envoyer l’image et le texte","ar":"إرسال الصورة والنص"},"Image downloaded. Attach it and paste the caption.":{"fr":"Image téléchargée. Joignez-la et collez la légende.","ar":"تم تنزيل الصورة. أرفقها والصق النص."},"Sharing failed. Copy the text or download the image.":{"fr":"Échec du partage. Copiez le texte ou téléchargez l’image.","ar":"تعذّرت المشاركة. انسخ النص أو نزّل الصورة."},
-"Delivery":{"fr":"Livraison","ar":"التوصيل"},"Reply *ORDER* now to claim yours!":{"fr":"Répondez *COMMANDER* pour passer commande !","ar":"أرسل *طلب* الآن لطلب منتجك!"},
-"Import From Current Page": {fr:"Importer depuis cette page",ar:"استيراد من الصفحة الحالية"},
-"Page imported. Review the details.": {fr:"Page importée. Vérifiez les détails.",ar:"تم الاستيراد. راجع التفاصيل."},
-"Could not read this page. Open a product page and try again.": {fr:"Lecture impossible. Ouvrez une page produit et réessayez.",ar:"تعذّرت قراءة الصفحة. افتح صفحة منتج وحاول مجددًا."},
+"Website": {fr:"Site web",ar:"Ø§Ù„Ù…ÙˆÙ‚Ø¹"},
+"Prompt Generator": {fr:"GÃ©nÃ©rateur de prompts",ar:"Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª"},
+"Seller Guides": {fr:"Guides pour les vendeurs",ar:"Ø£Ø¯Ù„Ø© Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"},
+"Text & Image copied! Paste (Ctrl+V) directly into your post or chat.":{"fr":"Texte et image copiÃ©s ! Collez-les (Ctrl+V) dans votre publication ou conversation.","ar":"ØªÙ… Ù†Ø³Ø® Ø§Ù„Ù†Øµ ÙˆØ§Ù„ØµÙˆØ±Ø©! Ø§Ù„ØµÙ‚ (Ctrl+V) ÙÙŠ Ø§Ù„Ù…Ù†Ø´ÙˆØ± Ø£Ùˆ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø©."},"Send to My Shop":{"fr":"Envoyer vers ma boutique","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø¥Ù„Ù‰ Ù…ØªØ¬Ø±ÙŠ"},
+"Upload or import a product photo first.":{"fr":"Importez dâ€™abord une photo produit.","ar":"Ø§Ø±ÙØ¹ Ø£Ùˆ Ø§Ø³ØªÙˆØ±Ø¯ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ù‹Ø§."},"Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.":{"fr":"Collez lâ€™URL dâ€™une fiche produit prÃ©cise, ou utilisez lâ€™extension Chrome SellPostly sur cette fiche.","ar":"Ø§Ù„ØµÙ‚ Ø±Ø§Ø¨Ø· ØµÙØ­Ø© Ù…Ù†ØªØ¬ Ù…Ø­Ø¯Ø¯ Ø¨Ø¯Ù„ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ù…ØªØ¬Ø±ØŒ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ù… Ø¥Ø¶Ø§ÙØ© SellPostly Ø¹Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ù…Ù†ØªØ¬."},"Image copied! Press Ctrl+V in chat to attach the photo.":{"fr":"Image copiÃ©e ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.","ar":"ØªÙ… Ù†Ø³Ø® Ø§Ù„ØµÙˆØ±Ø©! Ø§Ø¶ØºØ· Ctrl+V ÙÙŠ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø© Ù„Ø¥Ø±ÙØ§Ù‚Ù‡Ø§."},"Send Text":{"fr":"Envoyer le texte","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ù†Øµ"},"Send Image + Text":{"fr":"Envoyer lâ€™image et le texte","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØµÙˆØ±Ø© ÙˆØ§Ù„Ù†Øµ"},"Image downloaded. Attach it and paste the caption.":{"fr":"Image tÃ©lÃ©chargÃ©e. Joignez-la et collez la lÃ©gende.","ar":"ØªÙ… ØªÙ†Ø²ÙŠÙ„ Ø§Ù„ØµÙˆØ±Ø©. Ø£Ø±ÙÙ‚Ù‡Ø§ ÙˆØ§Ù„ØµÙ‚ Ø§Ù„Ù†Øµ."},"Sharing failed. Copy the text or download the image.":{"fr":"Ã‰chec du partage. Copiez le texte ou tÃ©lÃ©chargez lâ€™image.","ar":"ØªØ¹Ø°Ù‘Ø±Øª Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©. Ø§Ù†Ø³Ø® Ø§Ù„Ù†Øµ Ø£Ùˆ Ù†Ø²Ù‘Ù„ Ø§Ù„ØµÙˆØ±Ø©."},
+"Delivery":{"fr":"Livraison","ar":"Ø§Ù„ØªÙˆØµÙŠÙ„"},"Reply *ORDER* now to claim yours!":{"fr":"RÃ©pondez *COMMANDER* pour passer commande !","ar":"Ø£Ø±Ø³Ù„ *Ø·Ù„Ø¨* Ø§Ù„Ø¢Ù† Ù„Ø·Ù„Ø¨ Ù…Ù†ØªØ¬Ùƒ!"},
+"Import From Current Page": {fr:"Importer depuis cette page",ar:"Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ù…Ù† Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©"},
+"Page imported. Review the details.": {fr:"Page importÃ©e. VÃ©rifiez les dÃ©tails.",ar:"ØªÙ… Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯. Ø±Ø§Ø¬Ø¹ Ø§Ù„ØªÙØ§ØµÙŠÙ„."},
+"Could not read this page. Open a product page and try again.": {fr:"Lecture impossible. Ouvrez une page produit et rÃ©essayez.",ar:"ØªØ¹Ø°Ù‘Ø±Øª Ù‚Ø±Ø§Ø¡Ø© Ø§Ù„ØµÙØ­Ø©. Ø§ÙØªØ­ ØµÙØ­Ø© Ù…Ù†ØªØ¬ ÙˆØ­Ø§ÙˆÙ„ Ù…Ø¬Ø¯Ø¯Ù‹Ø§."},
   "Formatting mode": {
     "fr": "Mode de mise en forme",
-    "ar": "وضع التنسيق"
+    "ar": "ÙˆØ¶Ø¹ Ø§Ù„ØªÙ†Ø³ÙŠÙ‚"
   },
   "Seller Mode": {
     "fr": "Mode Vendeur",
-    "ar": "وضع البائع"
+    "ar": "ÙˆØ¶Ø¹ Ø§Ù„Ø¨Ø§Ø¦Ø¹"
   },
   "Creator Mode": {
-    "fr": "Mode Créateur",
-    "ar": "وضع صانع المحتوى"
+    "fr": "Mode CrÃ©ateur",
+    "ar": "ÙˆØ¶Ø¹ ØµØ§Ù†Ø¹ Ø§Ù„Ù…Ø­ØªÙˆÙ‰"
   },
   "Product Name": {
     "fr": "Nom du produit",
-    "ar": "اسم المنتج"
+    "ar": "Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬"
   },
   "Price": {
     "fr": "Prix",
-    "ar": "السعر"
+    "ar": "Ø§Ù„Ø³Ø¹Ø±"
   },
   "$29": {
-    "fr": "29 €",
-    "ar": "29 درهمًا"
+    "fr": "29 â‚¬",
+    "ar": "29 Ø¯Ø±Ù‡Ù…Ù‹Ø§"
   },
   "Delivery / Location": {
     "fr": "Livraison / lieu de retrait",
-    "ar": "التوصيل أو موقع الاستلام"
+    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„ Ø£Ùˆ Ù…ÙˆÙ‚Ø¹ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…"
   },
   "Key Features": {
-    "fr": "Caractéristiques principales",
-    "ar": "أهم الميزات"
+    "fr": "CaractÃ©ristiques principales",
+    "ar": "Ø£Ù‡Ù… Ø§Ù„Ù…ÙŠØ²Ø§Øª"
   },
   "One feature per line": {
-    "fr": "Une caractéristique par ligne",
-    "ar": "ميزة واحدة في كل سطر"
+    "fr": "Une caractÃ©ristique par ligne",
+    "ar": "Ù…ÙŠØ²Ø© ÙˆØ§Ø­Ø¯Ø© ÙÙŠ ÙƒÙ„ Ø³Ø·Ø±"
   },
   "Format Posts": {
     "fr": "Formater les publications",
-    "ar": "نسّق المنشورات"
+    "ar": "Ù†Ø³Ù‘Ù‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª"
   },
   "Quick Post": {
-    "fr": "Texte de départ",
-    "ar": "نص المنشور"
+    "fr": "Texte de dÃ©part",
+    "ar": "Ù†Øµ Ø§Ù„Ù…Ù†Ø´ÙˆØ±"
   },
   "Paste your post or hook": {
     "fr": "Collez votre texte ou votre accroche",
-    "ar": "الصق منشورك أو عبارتك الافتتاحية"
+    "ar": "Ø§Ù„ØµÙ‚ Ù…Ù†Ø´ÙˆØ±Ùƒ Ø£Ùˆ Ø¹Ø¨Ø§Ø±ØªÙƒ Ø§Ù„Ø§ÙØªØªØ§Ø­ÙŠØ©"
   },
   "Formatted posts": {
     "fr": "Publications mises en forme",
-    "ar": "المنشورات المنسّقة"
+    "ar": "Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª Ø§Ù„Ù…Ù†Ø³Ù‘Ù‚Ø©"
   },
   "Platforms": {
     "fr": "Plateformes",
-    "ar": "المنصات"
+    "ar": "Ø§Ù„Ù…Ù†ØµØ§Øª"
   },
   "Web Formatter": {
     "fr": "Outil web de mise en forme",
-    "ar": "منسّق المنشورات على الويب"
+    "ar": "Ù…Ù†Ø³Ù‘Ù‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª Ø¹Ù„Ù‰ Ø§Ù„ÙˆÙŠØ¨"
   },
   "Seller Resources": {
     "fr": "Ressources pour les vendeurs",
-    "ar": "موارد البائعين"
+    "ar": "Ù…ÙˆØ§Ø±Ø¯ Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"
   },
   "Language": {
     "fr": "Langue",
-    "ar": "اللغة"
+    "ar": "Ø§Ù„Ù„ØºØ©"
   },
   "Delivery / pickup": {
     "fr": "Livraison / retrait",
-    "ar": "التوصيل أو الاستلام"
+    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„ Ø£Ùˆ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…"
   },
   "Message to order.": {
     "fr": "Envoyez un message pour commander.",
-    "ar": "راسلنا للطلب."
+    "ar": "Ø±Ø§Ø³Ù„Ù†Ø§ Ù„Ù„Ø·Ù„Ø¨."
   },
   "Meet": {
-    "fr": "Découvrez",
-    "ar": "تعرّف على"
+    "fr": "DÃ©couvrez",
+    "ar": "ØªØ¹Ø±Ù‘Ù Ø¹Ù„Ù‰"
   },
   "Product": {
     "fr": "Produit",
-    "ar": "المنتج"
+    "ar": "Ø§Ù„Ù…Ù†ØªØ¬"
   },
   "Features": {
-    "fr": "Caractéristiques",
-    "ar": "الميزات"
+    "fr": "CaractÃ©ristiques",
+    "ar": "Ø§Ù„Ù…ÙŠØ²Ø§Øª"
   },
   "#ProductFinds #ShopNow": {
     "fr": "#BellesTrouvailles #AcheterEnLigne",
-    "ar": "#منتجات_مختارة #تسوق_الآن"
+    "ar": "#Ù…Ù†ØªØ¬Ø§Øª_Ù…Ø®ØªØ§Ø±Ø© #ØªØ³ÙˆÙ‚_Ø§Ù„Ø¢Ù†"
   },
   "What has worked for you?": {
-    "fr": "Qu’est-ce qui a fonctionné pour vous ?",
-    "ar": "ما الذي نجح معكم؟"
+    "fr": "Quâ€™est-ce qui a fonctionnÃ© pour vous ?",
+    "ar": "Ù…Ø§ Ø§Ù„Ø°ÙŠ Ù†Ø¬Ø­ Ù…Ø¹ÙƒÙ…ØŸ"
   },
   "Your take?": {
     "fr": "Votre avis ?",
-    "ar": "ما رأيكم؟"
+    "ar": "Ù…Ø§ Ø±Ø£ÙŠÙƒÙ…ØŸ"
   },
   "Share your experience below.": {
-    "fr": "Partagez votre expérience en commentaire.",
-    "ar": "شاركونا تجاربكم في التعليقات."
+    "fr": "Partagez votre expÃ©rience en commentaire.",
+    "ar": "Ø´Ø§Ø±ÙƒÙˆÙ†Ø§ ØªØ¬Ø§Ø±Ø¨ÙƒÙ… ÙÙŠ Ø§Ù„ØªØ¹Ù„ÙŠÙ‚Ø§Øª."
   },
   "formatted post": {
     "fr": "publication mise en forme",
-    "ar": "منشور منسّق"
+    "ar": "Ù…Ù†Ø´ÙˆØ± Ù…Ù†Ø³Ù‘Ù‚"
   },
   "Copy": {
     "fr": "Copier",
-    "ar": "نسخ"
+    "ar": "Ù†Ø³Ø®"
   },
   "Copied!": {
-    "fr": "Copié !",
-    "ar": "تم النسخ!"
+    "fr": "CopiÃ© !",
+    "ar": "ØªÙ… Ø§Ù„Ù†Ø³Ø®!"
   },
   "Text selected. Press Ctrl+C or Command+C to copy.": {
-    "fr": "Texte sélectionné. Appuyez sur Ctrl+C ou Cmd+C pour le copier.",
-    "ar": "تم تحديد النص. اضغط Ctrl+C أو Cmd+C لنسخه."
+    "fr": "Texte sÃ©lectionnÃ©. Appuyez sur Ctrl+C ou Cmd+C pour le copier.",
+    "ar": "ØªÙ… ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ù†Øµ. Ø§Ø¶ØºØ· Ctrl+C Ø£Ùˆ Cmd+C Ù„Ù†Ø³Ø®Ù‡."
   },
   "Posts formatted.": {
     "fr": "Publications mises en forme.",
-    "ar": "تم تنسيق المنشورات."
+    "ar": "ØªÙ… ØªÙ†Ø³ÙŠÙ‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª."
   },
   "Enter a product name.": {
     "fr": "Saisissez un nom de produit.",
-    "ar": "أدخل اسم المنتج."
+    "ar": "Ø£Ø¯Ø®Ù„ Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬."
   },
   "Enter a post.": {
     "fr": "Saisissez un texte.",
-    "ar": "أدخل نص المنشور."
+    "ar": "Ø£Ø¯Ø®Ù„ Ù†Øµ Ø§Ù„Ù…Ù†Ø´ÙˆØ±."
   },
   "Wireless headphones": {
     "fr": "Casque sans fil",
-    "ar": "سماعات لاسلكية"
+    "ar": "Ø³Ù…Ø§Ø¹Ø§Øª Ù„Ø§Ø³Ù„ÙƒÙŠØ©"
   },
   "Local pickup or shipping": {
     "fr": "Retrait sur place ou livraison",
-    "ar": "استلام محلي أو توصيل"
+    "ar": "Ø§Ø³ØªÙ„Ø§Ù… Ù…Ø­Ù„ÙŠ Ø£Ùˆ ØªÙˆØµÙŠÙ„"
   }
 };
 const languageKey = "sellpostly-language";
@@ -186,14 +189,14 @@ function sellerPosts(data) {
   const price = read("price");
   const delivery = read("delivery");
   const features = featureLines(read("features"));
-  const bullets = features.map(feature => "✅ " + feature).join("\n");
+  const bullets = features.map(feature => "âœ… " + feature).join("\n");
   const location = delivery && t("Delivery / pickup") + ": " + delivery;
-  const cta = "👉 " + t("Reply *ORDER* now to claim yours!");
+  const cta = "ðŸ‘‰ " + t("Reply *ORDER* now to claim yours!");
   return [
-    ["WhatsApp Business", lines("*" + name + "*", price && "💰 *" + t("Price") + ":* " + price, delivery && "🚚 *" + t("Delivery") + ":* " + delivery) + "\n\n" + bullets + "\n\n" + cta],
-    ["Instagram", [features[0] ? name + " — " + features[0] : t("Meet") + " " + name, lines(price, location, bullets), cta, t("#ProductFinds #ShopNow")].filter(Boolean).join("\n\n")],
+    ["WhatsApp Business", lines("*" + name + "*", price && "ðŸ’° *" + t("Price") + ":* " + price, delivery && "ðŸšš *" + t("Delivery") + ":* " + delivery) + "\n\n" + bullets + "\n\n" + cta],
+    ["Instagram", [features[0] ? name + " â€” " + features[0] : t("Meet") + " " + name, lines(price, location, bullets), cta, t("#ProductFinds #ShopNow")].filter(Boolean).join("\n\n")],
     ["Facebook Marketplace", lines(t("Product") + ": " + name, price && t("Price") + ": " + price, location, bullets && t("Features") + ":\n" + bullets, cta)],
-    ["TikTok", lines([name, features[0], price].filter(Boolean).join(" · "), cta + " " + t("#ProductFinds #ShopNow"))],
+    ["TikTok", lines([name, features[0], price].filter(Boolean).join(" Â· "), cta + " " + t("#ProductFinds #ShopNow"))],
   ];
 }
 
@@ -202,7 +205,7 @@ function creatorPosts(post) {
   const shorten = (limit, cta) => {
     limit -= Array.from(cta).length + 2;
     const characters = Array.from(compact);
-    const text = characters.length > limit ? characters.slice(0, limit - 1).join("").trimEnd() + "…" : compact;
+    const text = characters.length > limit ? characters.slice(0, limit - 1).join("").trimEnd() + "â€¦" : compact;
     return text + "\n\n" + cta;
   };
   return [
@@ -251,7 +254,7 @@ function renderPosts(posts, active = 0) {
     output.dir = "auto";
     output.rows = 5;
     output.value = post;
-    output.setAttribute("aria-label", platform + " · " + t("formatted post"));
+    output.setAttribute("aria-label", platform + " Â· " + t("formatted post"));
     const copy = document.createElement("button");
     copy.type = "button";
     copy.className = "primary";
@@ -278,7 +281,7 @@ function renderPosts(posts, active = 0) {
   });
   results.hidden = false;
   selectTab(active);
-  feedback.textContent = posts.length + " · " + t("Posts formatted.");
+  feedback.textContent = posts.length + " Â· " + t("Posts formatted.");
 }
 
 for (const button of modes) {
@@ -361,7 +364,7 @@ document.querySelector("#import-page").addEventListener("click", async () => {
           if (!price) price = text(selector);
         }
         if (!price) {
-          const pattern = /(?:[$€£]|MAD|AED|SAR)\s*\d[\d.,]*(?:\s*\d{3})*(?:[.,]\d{2})?/i;
+          const pattern = /(?:[$â‚¬Â£]|MAD|AED|SAR)\s*\d[\d.,]*(?:\s*\d{3})*(?:[.,]\d{2})?/i;
           for (const element of [...document.querySelectorAll("span,p,strong,b")].slice(0,6000)) {
             if (!element.getClientRects().length || getComputedStyle(element).visibility === "hidden") continue;
             const value = (element.textContent || "").trim();
@@ -405,7 +408,7 @@ document.querySelector("#import-page").addEventListener("click", async () => {
 
 function featureLines(value) {
   return String(value).replace(/\*\*/g,"").split(/\n+|(?<=[.!?])\s+/)
-    .map(line=>line.replace(/^[-•✅\s]+/u,"").trim())
+    .map(line=>line.replace(/^[-â€¢âœ…\s]+/u,"").trim())
     .filter(line=>line && !/^about this item$/i.test(line) && !/our wide selection|free shipping and free returns|buy .+ at amazon\.com/i.test(line))
     .flatMap(line=>line.match(/.{1,100}(?:\s|$)|.{1,100}/g)||[]).map(line=>line.trim()).slice(0,4);
 }
@@ -463,5 +466,6 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
   const preview=document.querySelector("#imported-image");
   const query=new URLSearchParams({addTitle:String(data.get("name")||""),addPrice:String(data.get("price")||""),addImage:preview && !preview.hidden?preview.src:"",addUrl:tab?.url||""});
-  window.open("https://sellpostly.com/shop?"+query,"_blank","noopener,noreferrer");
+  window.open("https://sellpostly-git-main-usidk-it.vercel.app/shop?"+query,"_blank","noopener,noreferrer");
 });
+
