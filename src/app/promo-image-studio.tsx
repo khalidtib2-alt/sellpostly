@@ -19,7 +19,7 @@ export default function PromoImageStudio({ name, price, delivery = "", importedI
   function resetImage(){setZoom(100);setOffsetX(0);setOffsetY(0);}
   const [source,setSource] = useState("");
   const [format,setFormat] = useState("square");
-  const [theme,setTheme] = useState("emerald");
+  const [theme,setTheme] = useState("white");
   const [ready,setReady] = useState(false);
   const [failed,setFailed] = useState(false);
   useEffect(()=>{ setSource(importedImage); },[importedImage]);
@@ -36,49 +36,71 @@ export default function PromoImageStudio({ name, price, delivery = "", importedI
     element.width=1080; element.height=height;
     function draw(image?: HTMLImageElement) {
       if(cancelled || !context) return;
-      const colors=theme==="slate"?["#0f172a","#ffffff","#059669"]:theme==="sand"?["#f5ead8","#34291e","#805729"]:["#ecfdf5","#064e3b","#047857"];
-      context.fillStyle=colors[0]; context.fillRect(0,0,1080,height);
-      const footerHeight=480;
-      const photoHeight=height-footerHeight-40;
-      if(image) {
-        const scale=Math.min(960/image.width,photoHeight/image.height)*(zoom/100);
-        const width=image.width*scale, h=image.height*scale;
-        
+
+      const colors=theme==="slate"?["#0f172a","#ffffff","#059669"]:theme==="sand"?["#f5ead8","#34291e","#805729"]:theme==="mint"?["#ecfdf5","#064e3b","#047857"]:["#ffffff","#0f172a","#047857"];
+      context.globalCompositeOperation="source-over";
+      context.fillStyle=colors[0];context.fillRect(0,0,1080,height);
+      const footerY=Math.round(height*0.7);
+      const photoTop=textPosition==="top"?360:0;
+      const photoBottom=textPosition==="bottom"?footerY:height-40;
+      const photoHeight=photoBottom-photoTop;
+      if(image){
+        const scale=Math.min(1000/image.width,(photoHeight-32)/image.height)*(zoom/100);
+        const width=image.width*scale,h=image.height*scale;
         context.save();
-        context.beginPath();context.rect(0,0,1080,textPosition==="bottom"?height-footerHeight:height-40);context.clip();
-        context.drawImage(image,(1080-width)/2+offsetX*5.4,40+(photoHeight-h)/2+offsetY*photoHeight/200,width,h);
+        context.beginPath();context.rect(0,photoTop,1080,photoHeight);context.clip();
+        if((theme==="sand"||theme==="mint")&&textPosition!=="badge")context.globalCompositeOperation="multiply";
+        context.drawImage(image,(1080-width)/2+offsetX*5.4,photoTop+(photoHeight-h)/2+offsetY*photoHeight/200,width,h);
+        context.globalCompositeOperation="source-over";
         context.restore();
       }
-
       context.direction=language==="ar"?"rtl":"ltr";
       context.textAlign="center";
-      const fontSize=textSize==="small"?36:textSize==="large"?60:48;
-      const cardY=textPosition==="top"?40:textPosition==="badge"?Math.round(height*0.42):height-footerHeight;
-      context.fillStyle=colors[0];
-      context.globalAlpha=textPosition==="badge"?0.94:1;
-      context.fillRect(textPosition==="bottom"?0:40,cardY,textPosition==="bottom"?1080:1000,textPosition==="bottom"?footerHeight:430);
-      context.globalAlpha=1;
-      context.fillStyle=colors[1];context.font="bold "+fontSize+"px system-ui";
-      const words=(title||"").split(/\s+/);
+      const requestedSize=textSize==="small"?36:textSize==="large"?60:48;
+      const keywordHeight=keyword.trim()?48:0;
+      const priceHeight=price?56:0;
+      const deliveryHeight=delivery?30:0;
+      const gap=8;
+      const availableTitle=height-footerY-52-keywordHeight-priceHeight-deliveryHeight-gap*3;
+      const fontSize=textPosition==="bottom"?Math.min(requestedSize,Math.max(22,Math.floor(availableTitle/3)-6)):requestedSize;
+      context.font="bold "+fontSize+"px system-ui";
+      const words=title.trim().split(/\s+/);
       const lines:string[]=[];let line="";
       for(const word of words){
-        if(context.measureText(line+" "+word).width>900 && line){lines.push(line);line=word;}
+        if(context.measureText(line+" "+word).width>920&&line){lines.push(line);line=word;}
         else line=(line+" "+word).trim();
       }
       if(line)lines.push(line);
-      lines.slice(0,3).forEach((text,index)=>context.fillText(text,540,cardY+fontSize+12+index*(fontSize+8),900));
-      if(keyword.trim()){
-        const pillY=cardY+235;
-        context.font="bold 30px system-ui";
-        const pillWidth=Math.min(900,context.measureText(keyword).width+60);
-        context.fillStyle=colors[2];context.beginPath();context.roundRect(540-pillWidth/2,pillY,pillWidth,60,30);context.fill();
-        context.fillStyle="#fff";context.fillText(keyword,540,pillY+40,pillWidth-40);
+      const visibleLines=lines.slice(0,3);
+      const titleHeight=visibleLines.length*(fontSize+6);
+      const groupHeight=titleHeight+keywordHeight+priceHeight+deliveryHeight+
+        [titleHeight,keywordHeight,priceHeight,deliveryHeight].filter(Boolean).length*gap;
+      let y=textPosition==="bottom"?height-44-groupHeight:textPosition==="top"?24:Math.round(height*0.45);
+      if(textPosition==="badge"){
+        context.fillStyle=colors[0];context.globalAlpha=0.94;
+        context.fillRect(40,y-10,1000,groupHeight+20);context.globalAlpha=1;
       }
-      if(price){
-        context.fillStyle=colors[2];context.fillRect(210,cardY+310,660,62);
-        context.fillStyle="#fff";context.font="bold 40px system-ui";context.fillText(price,540,cardY+355,620);
+      context.textBaseline="top";
+      context.fillStyle=colors[1];context.font="bold "+fontSize+"px system-ui";
+      for(const text of visibleLines){context.fillText(text,540,y,920);y+=fontSize+6;}
+      if(titleHeight)y+=gap;
+      if(keywordHeight){
+        context.font="bold 28px system-ui";
+        const pillWidth=Math.min(920,context.measureText(keyword).width+48);
+        context.fillStyle=colors[2];context.beginPath();context.roundRect(540-pillWidth/2,y,pillWidth,keywordHeight,24);context.fill();
+        context.fillStyle="#fff";context.fillText(keyword,540,y+9,pillWidth-32);
+        y+=keywordHeight+gap;
       }
-      if(delivery){context.fillStyle=colors[1];context.font="bold 28px system-ui";context.fillText(t("Delivery")+": "+delivery,540,cardY+412,920);}
+      if(priceHeight){
+        context.fillStyle=colors[2];context.beginPath();context.roundRect(210,y,660,priceHeight,12);context.fill();
+        context.fillStyle="#fff";context.font="bold 36px system-ui";context.fillText(price,540,y+8,620);
+        y+=priceHeight+gap;
+      }
+      if(deliveryHeight){
+        context.fillStyle=colors[1];context.font="bold 26px system-ui";
+        context.fillText(t("Delivery")+": "+delivery,540,y,920);
+      }
+      context.textBaseline="alphabetic";
       context.direction="ltr"; context.fillStyle=colors[1]; context.font="22px system-ui";
       context.fillText(t("Created with SellPostly.com"),540,height-20);
       setReady(true);
@@ -115,7 +137,7 @@ export default function PromoImageStudio({ name, price, delivery = "", importedI
         <option value="square">{t("Square 1:1")}</option><option value="vertical">{t("Vertical 9:16")}</option><option value="pin">{t("Pinterest Pin 2:3")}</option>
       </select></label>
       <label>{t("Color theme")}<select className="block w-full rounded border p-2" value={theme} onChange={e=>setTheme(e.target.value)}>
-        <option value="emerald">{t("Emerald")}</option><option value="slate">{t("Midnight Slate")}</option><option value="sand">{t("Warm Sand")}</option>
+        <option value="white">{t("Clean White")}</option><option value="sand">{t("Warm Sand")}</option><option value="mint">{t("Soft Mint")}</option><option value="slate">{t("Midnight Slate")}</option>
       </select></label>
     </div>
 

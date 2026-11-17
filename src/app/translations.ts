@@ -1206,6 +1206,8 @@ export const translations = {
   "No products found.": {
     "fr": "Aucun produit trouvé.",
     "ar": "لم يتم العثور على منتجات."
-  }
+  },
+"Clean White": {"fr":"Blanc pur","ar":"أبيض نقي"},
+"Soft Mint": {"fr":"Menthe douce","ar":"نعناعي فاتح"}
 } as const;
 export type Message = keyof typeof translations;
