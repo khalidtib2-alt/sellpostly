@@ -341,6 +341,430 @@ export const translations = {
   }
   ,"What has worked for you?": { fr: "Qu’est-ce qui a fonctionné pour vous ?", ar: "ما الذي نجح معكم؟" },
   "Your take?": { fr: "Votre avis ?", ar: "ما رأيكم؟" },
-  "Share your experience below.": { fr: "Partagez votre expérience en commentaire.", ar: "شاركونا تجاربكم في التعليقات." }
+  "Share your experience below.": { fr: "Partagez votre expérience en commentaire.", ar: "شاركونا تجاربكم في التعليقات." },
+  "About SellPostly": {
+    "fr": "À propos de SellPostly",
+    "ar": "حول SellPostly"
+  },
+  "SellPostly helps online sellers and creators turn one set of product details into posts for several platforms.": {
+    "fr": "SellPostly aide les vendeurs en ligne et les créateurs à publier sur plusieurs plateformes à partir des mêmes informations produit.",
+    "ar": "يساعد SellPostly البائعين عبر الإنترنت وصنّاع المحتوى على إعداد منشورات لعدة منصات من بيانات منتج واحد."
+  },
+  "Format once, publish where you sell": {
+    "fr": "Formatez une fois, publiez là où vous vendez",
+    "ar": "نسّق مرة واحدة وانشر حيث تبيع"
+  },
+  "Seller Mode creates drafts for WhatsApp Business, Instagram, Facebook Marketplace, and TikTok. Creator Mode adapts a core post for LinkedIn, X, and Threads. Copy the draft, review it, and publish from your own account.": {
+    "fr": "Le mode Vendeur prépare des brouillons pour WhatsApp Business, Instagram, Facebook Marketplace et TikTok. Le mode Créateur adapte un texte pour LinkedIn, X et Threads. Copiez le brouillon, relisez-le et publiez depuis votre compte.",
+    "ar": "يُعدّ وضع البائع مسودات لـ WhatsApp Business وInstagram وFacebook Marketplace وTikTok. ويكيّف وضع صانع المحتوى نصك لـ LinkedIn وX وThreads. انسخ المسودة وراجعها ثم انشرها من حسابك."
+  },
+  "Keep control of your accounts": {
+    "fr": "Gardez la maîtrise de vos comptes",
+    "ar": "احتفظ بالتحكم في حساباتك"
+  },
+  "SellPostly formats text in your browser without asking for platform passwords, API tokens, or account access.": {
+    "fr": "SellPostly met le texte en forme dans votre navigateur sans demander de mots de passe, de jetons d’API ni d’accès à vos comptes.",
+    "ar": "ينسّق SellPostly النص في متصفحك دون طلب كلمات المرور أو رموز واجهات البرمجة أو الوصول إلى حساباتك."
+  },
+  "Try the formatter": {
+    "fr": "Essayer l’outil de mise en forme",
+    "ar": "جرّب منسّق المنشورات"
+  },
+  "Contact SellPostly": {
+    "fr": "Contacter SellPostly",
+    "ar": "تواصل مع SellPostly"
+  },
+  "Get help with the formatter, report a bug, or suggest a guide.": {
+    "fr": "Obtenez de l’aide, signalez un problème ou suggérez un guide.",
+    "ar": "اطلب المساعدة في التنسيق أو أبلغ عن خلل أو اقترح دليلًا."
+  },
+  "Email ": {
+    "fr": "Écrivez directement à ",
+    "ar": "راسلنا مباشرةً على "
+  },
+  " directly or use the form to prepare a draft in your email app.": {
+    "fr": " ou utilisez le formulaire pour préparer un brouillon dans votre application de messagerie.",
+    "ar": " أو استخدم النموذج لإعداد مسودة في تطبيق البريد."
+  },
+  "SellPostly formats your drafts locally in your browser.": {
+    "fr": "SellPostly met vos brouillons en forme localement dans votre navigateur.",
+    "ar": "ينسّق SellPostly مسوداتك محليًا في متصفحك."
+  },
+  "Product data and drafts": {
+    "fr": "Données produit et brouillons",
+    "ar": "بيانات المنتجات والمسودات"
+  },
+  "SellPostly does not send your formatter inputs or outputs to our servers, store them in a database, or sell your product data. When you click Copy Text, the draft goes to your device clipboard. Any platform where you paste the draft handles it under its own privacy policy.": {
+    "fr": "SellPostly ne transmet pas vos saisies ni vos résultats à ses serveurs, ne les enregistre pas en base de données et ne vend pas vos données produit. Le bouton Copier le texte place le brouillon dans le presse-papiers de votre appareil. La plateforme où vous le collez applique sa propre politique de confidentialité.",
+    "ar": "لا يرسل SellPostly مدخلات المنسّق أو نتائجه إلى خوادمه، ولا يحفظها في قاعدة بيانات أو يبيع بيانات منتجاتك. عند الضغط على زر النسخ، تنتقل المسودة إلى حافظة جهازك. وتخضع عند لصقها لسياسة خصوصية المنصة المعنية."
+  },
+  "Support and hosting": {
+    "fr": "Assistance et hébergement",
+    "ar": "الدعم والاستضافة"
+  },
+  "If you email support, we receive your email address and the information you send and use it to respond. Our hosting provider may process standard connection data, such as IP addresses and request logs, to serve and protect the site.": {
+    "fr": "Si vous nous écrivez, nous recevons votre adresse e-mail et le contenu de votre message pour vous répondre. Notre hébergeur peut traiter des données de connexion courantes, comme les adresses IP et les journaux de requêtes, pour faire fonctionner et protéger le site.",
+    "ar": "عند مراسلة الدعم، نتلقى عنوان بريدك ومحتوى رسالتك للرد عليك. قد يعالج مزوّد الاستضافة بيانات اتصال اعتيادية، مثل عناوين IP وسجلات الطلبات، لتشغيل الموقع وحمايته."
+  },
+  "Advertising and cookies": {
+    "fr": "Publicité et cookies",
+    "ar": "الإعلانات وملفات تعريف الارتباط"
+  },
+  "If Google AdSense is enabled, Google and other ad vendors may place or read cookies or use web beacons, IP addresses, and similar identifiers to serve and measure ads. Google and its partners may personalize ads based on visits to this and other sites.": {
+    "fr": "Si Google AdSense est activé, Google et d’autres prestataires publicitaires peuvent lire ou déposer des cookies ou utiliser des pixels invisibles, des adresses IP et des identifiants similaires pour diffuser et mesurer les annonces. Google et ses partenaires peuvent personnaliser les annonces selon vos visites sur ce site et ailleurs.",
+    "ar": "إذا فُعّل Google AdSense، قد تستخدم Google وشركات إعلانية أخرى ملفات تعريف الارتباط أو إشارات الويب أو عناوين IP ومعرّفات مشابهة لعرض الإعلانات وقياس أدائها. وقد تخصّص Google وشركاؤها الإعلانات استنادًا إلى زياراتك لهذا الموقع ومواقع أخرى."
+  },
+  "Read ": {
+    "fr": "Découvrez ",
+    "ar": "اطّلع على "
+  },
+  "how Google uses data from partner sites": {
+    "fr": "comment Google utilise les données de ses sites partenaires",
+    "ar": "كيفية استخدام Google لبيانات المواقع الشريكة"
+  },
+  " or manage personalized ads in ": {
+    "fr": " ou gérez les annonces personnalisées dans ",
+    "ar": " أو اضبط الإعلانات المخصّصة عبر "
+  },
+  "Google My Ad Center": {
+    "fr": "Mon centre d’annonces Google",
+    "ar": "مركز إعلانات Google"
+  },
+  "Privacy questions can go to ": {
+    "fr": "Pour toute question sur la confidentialité, écrivez à ",
+    "ar": "للاستفسار عن الخصوصية، راسل "
+  },
+  "Terms of Use": {
+    "fr": "Conditions d’utilisation",
+    "ar": "شروط الاستخدام"
+  },
+  "These terms apply to the SellPostly website, formatter, and guides.": {
+    "fr": "Ces conditions s’appliquent au site SellPostly, à son outil et à ses guides.",
+    "ar": "تسري هذه الشروط على موقع SellPostly وأداة التنسيق والأدلة."
+  },
+  "Using SellPostly": {
+    "fr": "Utiliser SellPostly",
+    "ar": "استخدام SellPostly"
+  },
+  "You may use and adapt the templates and formatted drafts for your own posts. Use content you have permission to publish. Do not use SellPostly to create deceptive listings, infringe someone’s rights, or interfere with the site.": {
+    "fr": "Vous pouvez utiliser et adapter les modèles et brouillons pour vos publications. Publiez uniquement du contenu que vous êtes autorisé à utiliser. N’utilisez pas SellPostly pour créer des annonces trompeuses, porter atteinte aux droits d’autrui ou perturber le site.",
+    "ar": "يمكنك استخدام القوالب والمسودات وتعديلها لمنشوراتك. انشر فقط المحتوى الذي تملك إذنًا باستخدامه. لا تستخدم SellPostly لإنشاء إعلانات مضللة أو انتهاك حقوق الآخرين أو تعطيل الموقع."
+  },
+  "Review before publishing": {
+    "fr": "Relire avant de publier",
+    "ar": "راجع قبل النشر"
+  },
+  "Check prices, availability, product claims, and delivery terms before posting. You are responsible for your listings and compliance with applicable rules and platform policies. Third-party platforms control their own features and accounts.": {
+    "fr": "Vérifiez les prix, la disponibilité, les affirmations sur les produits et les conditions de livraison avant de publier. Vous êtes responsable de vos annonces et du respect des règles applicables et des politiques des plateformes. Les plateformes tierces gèrent leurs fonctionnalités et leurs comptes.",
+    "ar": "تحقّق من الأسعار والتوفر والادعاءات المتعلقة بالمنتج وشروط التوصيل قبل النشر. أنت مسؤول عن إعلاناتك والالتزام بالقواعد المعمول بها وسياسات المنصات. تدير المنصات الخارجية ميزاتها وحساباتها بنفسها."
+  },
+  "Availability": {
+    "fr": "Disponibilité",
+    "ar": "التوفر"
+  },
+  "SellPostly is provided as available. We may update templates or change features. We do not guarantee platform acceptance or sales results.": {
+    "fr": "SellPostly est fourni sous réserve de disponibilité. Les modèles et fonctionnalités peuvent évoluer. Nous ne garantissons ni l’acceptation par une plateforme ni les résultats de vente.",
+    "ar": "تُقدّم خدمة SellPostly حسب توفرها. قد نحدّث القوالب أو نغيّر الميزات. لا نضمن قبول المنصات للمنشورات أو تحقيق نتائج مبيعات."
+  },
+  "Questions about these terms can go to ": {
+    "fr": "Pour toute question sur ces conditions, écrivez à ",
+    "ar": "للاستفسار عن هذه الشروط، راسل "
+  },
+  "Format seller listings and creator posts from the Chrome toolbar. SellPostly processes your drafts inside the popup and requests zero Chrome permissions.": {
+    "fr": "Mettez en forme vos annonces et publications depuis la barre d’outils de Chrome. SellPostly traite les brouillons dans la fenêtre de l’extension et ne demande aucune autorisation Chrome.",
+    "ar": "نسّق إعلاناتك ومنشوراتك من شريط أدوات Chrome. يعالج SellPostly المسودات داخل نافذة الإضافة ولا يطلب أي أذونات من Chrome."
+  },
+  "SellPostly Chrome Extension": {
+    "fr": "Extension Chrome SellPostly",
+    "ar": "إضافة SellPostly لمتصفح Chrome"
+  },
+  "Install the unpacked extension": {
+    "fr": "Installer l’extension non empaquetée",
+    "ar": "تثبيت الإضافة من مجلدها"
+  },
+  "Find the ": {
+    "fr": "Trouvez le dossier ",
+    "ar": "ابحث عن مجلد "
+  },
+  " folder in your copy of the SellPostly project. If you received it in a ZIP file, extract it first.": {
+    "fr": " dans votre copie du projet SellPostly. Si vous l’avez reçu dans une archive ZIP, extrayez-le d’abord.",
+    "ar": " في نسختك من مشروع SellPostly. إذا استلمته في ملف ZIP، ففك ضغطه أولًا."
+  },
+  "Open ": {
+    "fr": "Ouvrez ",
+    "ar": "افتح "
+  },
+  " in Chrome and turn on ": {
+    "fr": " dans Chrome et activez le ",
+    "ar": " في Chrome وفعّل "
+  },
+  "Developer mode": {
+    "fr": "mode développeur",
+    "ar": "وضع المطوّر"
+  },
+  "Select ": {
+    "fr": "Sélectionnez ",
+    "ar": "اختر "
+  },
+  "Load unpacked": {
+    "fr": "Charger l’extension non empaquetée",
+    "ar": "تحميل إضافة غير مضغوطة"
+  },
+  " and choose the folder that contains ": {
+    "fr": " et choisissez le dossier qui contient ",
+    "ar": " وحدّد المجلد الذي يحتوي على "
+  },
+  "Open Chrome’s Extensions menu and pin SellPostly so you can launch it from the toolbar.": {
+    "fr": "Ouvrez le menu Extensions de Chrome et épinglez SellPostly pour l’ouvrir depuis la barre d’outils.",
+    "ar": "افتح قائمة إضافات Chrome وثبّت SellPostly لتفتحه من شريط الأدوات."
+  },
+  "Format and copy a post": {
+    "fr": "Mettre en forme et copier une publication",
+    "ar": "تنسيق منشور ونسخه"
+  },
+  "In Seller Mode, enter your product name, price, delivery details, and features. In Creator Mode, paste your draft or hook.": {
+    "fr": "En mode Vendeur, saisissez le nom du produit, son prix, ses caractéristiques et les modalités de livraison. En mode Créateur, collez votre brouillon ou votre accroche.",
+    "ar": "في وضع البائع، أدخل اسم المنتج وسعره وميزاته وتفاصيل التوصيل. وفي وضع صانع المحتوى، الصق المسودة أو العبارة الافتتاحية."
+  },
+  "Format Posts": {
+    "fr": "Formater les publications",
+    "ar": "نسّق المنشورات"
+  },
+  ", choose a platform tab, and click ": {
+    "fr": ", choisissez un onglet de plateforme, puis cliquez sur ",
+    "ar": "، ثم اختر تبويب المنصة واضغط على "
+  },
+  "Copy": {
+    "fr": "Copier",
+    "ar": "نسخ"
+  },
+  ". Paste the text into the platform, review it, and publish when ready.": {
+    "fr": ". Collez le texte sur la plateforme, relisez-le et publiez quand vous êtes prêt.",
+    "ar": "، والصق النص في المنصة وراجعه قبل نشره."
+  },
+  "Use the free web formatter": {
+    "fr": "Utiliser l’outil web gratuit",
+    "ar": "استخدم أداة الويب المجانية"
+  },
+  "Name": {
+    "fr": "Nom",
+    "ar": "الاسم"
+  },
+  "Email": {
+    "fr": "Adresse e-mail",
+    "ar": "البريد الإلكتروني"
+  },
+  "Subject": {
+    "fr": "Objet",
+    "ar": "الموضوع"
+  },
+  "Message": {
+    "fr": "Message",
+    "ar": "الرسالة"
+  },
+  "Open email draft": {
+    "fr": "Ouvrir un brouillon",
+    "ar": "افتح مسودة بريد"
+  },
+  "Send the draft from your email app. If it did not open, email support@sellpostly.com directly.": {
+    "fr": "Envoyez le brouillon depuis votre application de messagerie. S’il ne s’est pas ouvert, écrivez directement à support@sellpostly.com.",
+    "ar": "أرسل المسودة من تطبيق البريد. إذا لم تُفتح، راسل support@sellpostly.com مباشرةً."
+  },
+  "Find a listing or caption template for the platform you sell on. Replace the bracketed details with your own product information before posting.": {
+    "fr": "Trouvez un modèle d’annonce ou de légende pour votre plateforme de vente. Remplacez les éléments entre crochets avant de publier.",
+    "ar": "اختر قالب إعلان أو تعليق للمنصة التي تبيع عليها. استبدل البيانات بين الأقواس بتفاصيل منتجك قبل النشر."
+  },
+  "Open the free post formatter": {
+    "fr": "Ouvrir l’outil gratuit de mise en forme",
+    "ar": "افتح منسّق المنشورات المجاني"
+  },
+  "Format your product details": {
+    "fr": "Mettre en forme les détails de votre produit",
+    "ar": "نسّق تفاصيل منتجك"
+  },
+  "More seller guides": {
+    "fr": "Autres guides pour les vendeurs",
+    "ar": "مزيد من أدلة البائعين"
+  },
+  "All seller guides": {
+    "fr": "Tous les guides pour les vendeurs",
+    "ar": "جميع أدلة البائعين"
+  },
+  "WhatsApp Business Product Catalog Templates": {
+    "fr": "Modèles de catalogue WhatsApp Business",
+    "ar": "قوالب كتالوج WhatsApp Business"
+  },
+  "Write a catalog listing and confirm cash-on-delivery orders without retyping the same details.": {
+    "fr": "Rédigez une fiche et confirmez les commandes payables à la livraison sans ressaisir les mêmes détails.",
+    "ar": "اكتب بطاقة منتج وأكّد طلبات الدفع عند الاستلام دون إعادة كتابة التفاصيل."
+  },
+  "Build the catalog entry": {
+    "fr": "Créer la fiche du catalogue",
+    "ar": "أنشئ بطاقة المنتج"
+  },
+  "Put the variant and price near the top. Use the catalog’s price field where available, and use the description to clarify what’s included, delivery areas, and how to order. If variants cost different amounts, give a price for each or create separate entries.": {
+    "fr": "Placez la variante et le prix en haut. Utilisez le champ prix s’il existe et précisez dans la description le contenu, les zones livrées et la marche à suivre pour commander. Si les variantes ont des prix différents, détaillez-les ou créez des fiches séparées.",
+    "ar": "ضع الخيار والسعر في أعلى البطاقة. استخدم خانة السعر إن توفرت، ووضّح في الوصف ما يشمله الطلب ومناطق التوصيل وطريقة الشراء. إذا اختلف السعر حسب الخيار فاذكر سعر كل خيار أو أنشئ بطاقات منفصلة."
+  },
+  "[Product] — [size/color]\nPrice: [amount + currency]\nIncludes: [items or quantity]\nOptions: [variants and prices]\nDelivery: [areas, fee, estimate]\nTo order, send the option and quantity you want.": {
+    "fr": "[Produit] — [taille/couleur]\nPrix : [montant et devise]\nComprend : [articles ou quantité]\nOptions : [variantes et prix]\nLivraison : [zones, frais, délai]\nPour commander, envoyez l’option et la quantité souhaitées.",
+    "ar": "[المنتج] — [المقاس أو اللون]\nالسعر: [المبلغ والعملة]\nيشمل: [القطع أو الكمية]\nالخيارات: [الخيارات وأسعارها]\nالتوصيل: [المناطق والرسوم والمدة]\nللطلب، أرسل الخيار والكمية المطلوبة."
+  },
+  "Confirm cash on delivery before dispatch": {
+    "fr": "Confirmer le paiement à la livraison avant l’envoi",
+    "ar": "أكّد الدفع عند الاستلام قبل الشحن"
+  },
+  "Confirm the full amount including shipping, the delivery window, and accepted payment at the door. Ask for the delivery address in a private chat after the customer confirms the order. If exact change is needed, say so upfront.": {
+    "fr": "Confirmez le total avec les frais, le créneau et les moyens de paiement acceptés à la porte. Demandez l’adresse en privé après validation. Précisez d’avance si le client doit faire l’appoint.",
+    "ar": "أكّد الإجمالي مع الرسوم وموعد التسليم وطرق الدفع المقبولة. اطلب العنوان في محادثة خاصة بعد تأكيد الطلب. أخبر العميل مسبقًا إن كان عليه تجهيز المبلغ بالضبط."
+  },
+  "Order summary: [item × quantity]\nItems: [amount] | Delivery: [fee]\nTotal due at delivery: [amount + currency]\nExpected delivery: [day/window]\nPayment at the door: [cash/exact change policy]\nReply CONFIRM if these details are correct.": {
+    "fr": "Récapitulatif : [article × quantité]\nArticles : [montant] | Livraison : [frais]\nTotal à régler à la livraison : [montant et devise]\nLivraison prévue : [jour/créneau]\nPaiement : [espèces / appoint demandé]\nRépondez CONFIRMER si tout est correct.",
+    "ar": "ملخص الطلب: [المنتج × الكمية]\nقيمة المنتجات: [المبلغ] | التوصيل: [الرسوم]\nالإجمالي عند الاستلام: [المبلغ والعملة]\nموعد التسليم المتوقع: [اليوم أو الفترة]\nالدفع: [نقدًا / تجهيز المبلغ بالضبط]\nأرسل «تأكيد» إذا كانت البيانات صحيحة."
+  },
+  "Reply when a variant sells out": {
+    "fr": "Répondre lorsqu’une variante est épuisée",
+    "ar": "ردّ على نفاد أحد الخيارات"
+  },
+  "Update the catalog too so future buyers see the current options. Make the replacement and any price difference explicit before accepting the order.": {
+    "fr": "Mettez aussi le catalogue à jour. Avant de valider la commande, précisez la variante de remplacement et tout écart de prix.",
+    "ar": "حدّث الكتالوج أيضًا. وضّح الخيار البديل وأي فرق في السعر قبل قبول الطلب."
+  },
+  "[Requested option] is sold out. I have [available option] at [price]. Delivery to [area] is [fee]. Would you like that option, or should I let you know when the original is back?": {
+    "fr": "[Variante demandée] est épuisée. Il reste [option] à [prix]. La livraison vers [zone] coûte [frais]. Souhaitez-vous cette option ou préférez-vous être prévenu du retour en stock ?",
+    "ar": "نفد [الخيار المطلوب]. يتوفر [الخيار البديل] بسعر [السعر]. رسوم التوصيل إلى [المنطقة] هي [الرسوم]. هل ترغب في البديل أم تفضّل أن نخبرك عند عودة الخيار الأصلي؟"
+  },
+  "Facebook Marketplace Descriptions That Answer Buyer Questions": {
+    "fr": "Descriptions Facebook Marketplace qui répondent aux acheteurs",
+    "ar": "أوصاف Facebook Marketplace تجيب عن أسئلة المشترين"
+  },
+  "Use structured listings that settle condition, included items, and pickup logistics before the first message.": {
+    "fr": "Structurez vos annonces pour préciser l’état, le contenu et le retrait avant le premier message.",
+    "ar": "نسّق إعلانك بحيث يوضّح حالة المنتج ومحتوياته وترتيبات الاستلام قبل أول رسالة."
+  },
+  "Write the first two lines for a buyer scanning on a phone": {
+    "fr": "Soigner les deux premières lignes sur mobile",
+    "ar": "اكتب أول سطرين بما يناسب القراءة على الهاتف"
+  },
+  "Lead with model, condition, and pickup area. Use the listing’s price field for the actual asking price. Keep your street address private until you arrange pickup.": {
+    "fr": "Commencez par le modèle, l’état et le quartier. Indiquez le prix demandé dans le champ prévu. Communiquez l’adresse exacte en privé après avoir convenu du retrait.",
+    "ar": "ابدأ بالطراز والحالة ومنطقة الاستلام. اكتب السعر المطلوب في الخانة المخصّصة. شارك العنوان الدقيق على الخاص بعد الاتفاق على الاستلام."
+  },
+  "[Brand/model] [item] — [condition], pickup in [neighborhood].\nAsking [price]; [firm / open to offers].\nSize: [W × D × H]\nIncluded: [items]\nCondition: [tested functions and visible wear]\nPickup: [days and windows]\nMessage with your preferred pickup window.": {
+    "fr": "[Article] [marque/modèle] — [état], retrait à [quartier].\nPrix : [prix], [ferme / négociable].\nDimensions : [L × P × H]\nInclus : [articles]\nÉtat : [fonctions testées et traces d’usure]\nRetrait : [jours et créneaux]\nIndiquez le créneau qui vous convient.",
+    "ar": "[المنتج] [العلامة أو الطراز] — [الحالة]، الاستلام في [الحي].\nالسعر: [السعر]، [ثابت أو قابل للتفاوض].\nالأبعاد: [العرض × العمق × الارتفاع]\nيشمل: [القطع]\nالحالة: [الوظائف المختبرة وآثار الاستخدام]\nالاستلام: [الأيام والأوقات]\nأرسل الموعد الذي يناسبك."
+  },
+  "Show flaws and compatibility in plain language": {
+    "fr": "Décrire clairement les défauts et la compatibilité",
+    "ar": "وضّح العيوب والتوافق بلغة بسيطة"
+  },
+  "Photograph wear and identify missing parts. For furniture, measure the largest assembled piece and state whether it comes apart. For electronics, list model numbers and verified accessories.": {
+    "fr": "Photographiez les marques d’usure et indiquez les pièces manquantes. Pour un meuble, mesurez la plus grande pièce à transporter et précisez s’il se démonte. Pour l’électronique, indiquez les références et les accessoires vérifiés.",
+    "ar": "صوّر آثار الاستخدام واذكر القطع الناقصة. للأثاث، قِس أكبر قطعة ستُنقل وبيّن إمكان فكّه. وللإلكترونيات، اذكر رقم الطراز والملحقات التي تحققت منها."
+  },
+  "Condition: Tested [functions]; see photo [number] for [flaw].\nModel: [number]. Includes [accessories].\nBuyer needs: [required part or space].\nPacking: [assembled/disassembled]; largest piece [dimensions].": {
+    "fr": "État : [fonctions] testées ; voir photo [numéro] pour [défaut].\nModèle : [référence]. Inclus : [accessoires].\nÀ prévoir : [pièce ou espace nécessaire].\nTransport : [monté/démonté] ; plus grande pièce [dimensions].",
+    "ar": "الحالة: اختُبرت [الوظائف]؛ راجع الصورة [الرقم] لرؤية [العيب].\nالطراز: [الرقم]. الملحقات: [القطع].\nما تحتاج إليه: [قطعة أو مساحة].\nالنقل: [مركّب أو مفكّك]؛ أبعاد أكبر قطعة [الأبعاد]."
+  },
+  "Turn common DMs into listing updates": {
+    "fr": "Intégrer les questions fréquentes à l’annonce",
+    "ar": "حدّث الإعلان بأسئلة المشترين المتكرّرة"
+  },
+  "If several shoppers ask whether you deliver or accept offers, answer that in the listing. Update availability after a confirmed handoff and provide the pickup address privately.": {
+    "fr": "Si on vous demande souvent si vous livrez ou négociez, indiquez-le dans l’annonce. Actualisez la disponibilité après la remise et envoyez l’adresse en privé.",
+    "ar": "إذا تكررت أسئلة التوصيل أو التفاوض، فأجب عنها في الإعلان. حدّث حالة التوفر بعد التسليم وأرسل العنوان على الخاص."
+  },
+  "Yes, [item] is available. Pickup is near [landmark] on [window A] or [window B]. Which works for you? I’ll send the exact meeting spot once we agree on a time.": {
+    "fr": "Oui, [article] est disponible. Retrait près de [repère], [créneau A] ou [créneau B]. Quel moment vous arrange ? Je vous enverrai le lieu exact une fois le créneau fixé.",
+    "ar": "نعم، [المنتج] متوفر. الاستلام قرب [المَعلم] في [الموعد أ] أو [الموعد ب]. أيّهما يناسبك؟ أرسل لك المكان الدقيق بعد الاتفاق."
+  },
+  "Instagram Shopping Caption and Hashtag Guide": {
+    "fr": "Guide des légendes et hashtags Instagram Shopping",
+    "ar": "دليل التعليقات والوسوم في Instagram Shopping"
+  },
+  "Write a clear hook, preserve useful line breaks, and choose hashtags that describe the product and buyer’s use case.": {
+    "fr": "Rédigez une accroche claire, aérez votre légende et choisissez des hashtags liés au produit et à son usage.",
+    "ar": "اكتب عبارة افتتاحية واضحة، واترك مسافات بين الفقرات، واختر وسومًا تصف المنتج واستخدامه."
+  },
+  "Start with the problem or a visible detail": {
+    "fr": "Commencer par un problème ou un détail visible",
+    "ar": "ابدأ بمشكلة أو بتفصيل يمكن رؤيته"
+  },
+  "Use a specific outcome the photo or video shows. For example, “A shelf that fits behind your bathroom door” gives shoppers something concrete to check.": {
+    "fr": "Mettez en avant un résultat visible sur la photo ou la vidéo. « Une étagère qui tient derrière votre porte » donne au client un critère concret.",
+    "ar": "اذكر نتيجة محددة تظهر في الصورة أو الفيديو. مثال: «رف يتّسع خلف باب الحمّام» يقدّم للمشتري معلومة يمكن التحقق منها."
+  },
+  "Problem hook: [Common frustration]? [Product] helps by [specific feature].\nDemo hook: Watch [product] do [task] in [real setting].\nDetail hook: [Measurement/material] for [buyer use case].": {
+    "fr": "Problème : [frustration courante] ? [Produit] y répond grâce à [caractéristique].\nDémo : regardez [produit] réaliser [tâche] dans [contexte].\nDétail : [dimension/matériau] pour [usage].",
+    "ar": "المشكلة: هل تواجه [مشكلة شائعة]؟ يساعدك [المنتج] بفضل [ميزة محددة].\nالعرض: شاهد [المنتج] ينجز [المهمة] في [سياق حقيقي].\nالتفصيل: [المقاس أو المادة] من أجل [الاستخدام]."
+  },
+  "Use a three-part caption": {
+    "fr": "Structurer la légende en trois parties",
+    "ar": "قسّم التعليق إلى ثلاثة أجزاء"
+  },
+  "Keep the hook on its own line, then add one short block with the facts and a separate order instruction. Preview the published format on mobile. If you can tag the product, direct readers to the tag. Otherwise use a clear DM keyword or a link that actually exists in your profile.": {
+    "fr": "Isolez l’accroche, ajoutez un court bloc d’informations puis la marche à suivre pour commander. Vérifiez le rendu sur mobile. Si le produit est identifié, renvoyez vers son étiquette. Sinon, proposez un mot-clé à envoyer en message privé ou un lien présent sur votre profil.",
+    "ar": "ضع العبارة الافتتاحية في سطر مستقل، ثم أضف فقرة قصيرة بالحقائق وتعليمات منفصلة للطلب. راجع التنسيق على الهاتف. وجّه القارئ إلى إشارة المنتج إن أضفتها، وإلا حدّد كلمة تُرسل في رسالة خاصة أو رابطًا موجودًا في حسابك."
+  },
+  "A shelf that fits behind your bathroom door.\n\n4 inches deep, with two removable trays. $29 before shipping.\n\nDM SHELF for colors and shipping options.\n\n#BathroomStorage #SmallBathroomIdeas #OverDoorOrganizer": {
+    "fr": "Une étagère qui tient derrière la porte de votre salle de bain.\n\n10 cm de profondeur, deux bacs amovibles. 29 $ hors livraison.\n\nEnvoyez ÉTAGÈRE en privé pour les coloris et les options de livraison.\n\n#RangementSalleDeBain #PetiteSalleDeBain #RangementDePorte",
+    "ar": "رف يتّسع خلف باب الحمّام.\n\nعمقه 10 سم ويضم صينيتين قابلتين للإزالة. السعر 29 دولارًا دون رسوم الشحن.\n\nأرسل «رف» في رسالة خاصة لمعرفة الألوان وخيارات التوصيل.\n\n#تنظيم_الحمام #حمام_صغير #رف_خلف_الباب"
+  },
+  "Pick hashtags for relevance": {
+    "fr": "Choisir des hashtags pertinents",
+    "ar": "اختر وسومًا مرتبطة بالمنتج"
+  },
+  "Start with a product term, a use case, and a location only for local sales. Treat tags as descriptors. Compare product taps, qualified DMs, or orders across several similar posts before keeping a set.": {
+    "fr": "Combinez un terme précis pour le produit, son usage et, pour les ventes locales, la ville. Comparez les clics produit, les messages utiles ou les commandes sur plusieurs publications similaires avant de retenir une combinaison.",
+    "ar": "ابدأ باسم دقيق للمنتج ووسم لاستخدامه، وأضف المدينة إذا كان البيع محليًا. قارن نقرات المنتج والرسائل الجادة والطلبات عبر منشورات متشابهة قبل اعتماد مجموعة وسوم."
+  },
+  "Product: #[SpecificProduct]\nUse case: #[BuyerUseCase]\nLocal pickup, if offered: #[City]Shopping\nBrand or collection, if useful: #[YourCollection]": {
+    "fr": "Produit : #[ProduitPrécis]\nUsage : #[CasDUsage]\nRetrait local, si proposé : #[Ville]Shopping\nMarque ou collection : #[VotreCollection]",
+    "ar": "المنتج: #[اسم_المنتج]\nالاستخدام: #[حالة_الاستخدام]\nالاستلام المحلي إن توفر: #تسوق_[المدينة]\nالعلامة أو المجموعة: #[اسم_المجموعة]"
+  },
+  "TikTok Shop Short-Video Caption Templates": {
+    "fr": "Modèles de légendes pour vidéos courtes TikTok Shop",
+    "ar": "قوالب تعليقات الفيديوهات القصيرة لـ TikTok Shop"
+  },
+  "Pair a product demonstration with a two-line caption and one clear action.": {
+    "fr": "Associez une démonstration à une légende de deux lignes et à une seule action claire.",
+    "ar": "أرفق عرض المنتج بتعليق من سطرين ودعوة واحدة واضحة إلى اتخاذ إجراء."
+  },
+  "Make the hook match the first shot": {
+    "fr": "Faire correspondre l’accroche au premier plan",
+    "ar": "اجعل العبارة الافتتاحية متوافقة مع اللقطة الأولى"
+  },
+  "Open on the problem, the product in use, or the finished result. Save details that need more space for on-screen labels or the product listing. Only claim what the clip demonstrates.": {
+    "fr": "Ouvrez sur le problème, le produit en action ou le résultat final. Gardez les détails pour le texte à l’écran ou la fiche produit. Limitez vos affirmations à ce qui est montré.",
+    "ar": "ابدأ بالمشكلة أو بالمنتج أثناء الاستخدام أو بالنتيجة النهائية. اترك التفاصيل لنص الشاشة أو صفحة المنتج. اقتصر على الادعاءات التي يدعمها الفيديو."
+  },
+  "[Product] solves [visible problem] in [setting].\nTap the product link to check [sizes/colors].": {
+    "fr": "[Produit] résout [problème visible] dans [contexte].\nTouchez le lien produit pour voir [tailles/coloris].",
+    "ar": "يعالج [المنتج] مشكلة [المشكلة الظاهرة] في [السياق].\nاضغط على رابط المنتج للاطّلاع على [المقاسات أو الألوان]."
+  },
+  "Write a caption for the video you filmed": {
+    "fr": "Écrire pour la vidéo que vous avez tournée",
+    "ar": "اكتب تعليقًا يناسب الفيديو الذي صوّرته"
+  },
+  "A comparison can show which variant fits a real use case. A demo can call out a feature and let the footage show the work. Use the product link CTA only when the video has one.": {
+    "fr": "Une comparaison peut montrer quelle variante convient à chaque usage. Une démo peut annoncer une caractéristique et laisser l’image l’illustrer. Renvoyez vers le lien produit seulement s’il figure dans la vidéo.",
+    "ar": "يمكن للمقارنة توضيح الخيار الأنسب لكل استخدام. وفي العرض العملي، اذكر ميزة ودع اللقطات تبيّنها. ادعُ المشاهد إلى فتح رابط المنتج فقط إذا كان الفيديو يتضمّنه."
+  },
+  "Demo: Watch this packing cube fit into a 16-inch backpack.\nTap the product link for the exact dimensions.\n\nVariant comparison: Small pouch for cables. Large pouch for chargers.\nTap the product link to compare sizes.": {
+    "fr": "Démo : regardez cet organiseur se glisser dans un sac à dos de 41 cm.\nTouchez le lien produit pour les dimensions exactes.\n\nComparaison : petite pochette pour les câbles, grande pour les chargeurs.\nTouchez le lien produit pour comparer les tailles.",
+    "ar": "عرض عملي: شاهد حقيبة التنظيم وهي تتّسع داخل حقيبة ظهر بحجم 41 سم.\nاضغط على رابط المنتج للاطّلاع على الأبعاد الدقيقة.\n\nمقارنة: حقيبة صغيرة للكابلات وأكبر للشواحن.\nاضغط على رابط المنتج لمقارنة المقاسات."
+  },
+  "Check the offer and the next action": {
+    "fr": "Vérifier l’offre et l’action proposée",
+    "ar": "تحقّق من العرض والخطوة التالية"
+  },
+  "Make sure the linked listing matches the item in the clip. If you mention a price or promotion, confirm its terms and current availability. If you earn a commission or received the product free, disclose that clearly in the video and caption.": {
+    "fr": "Vérifiez que la fiche liée correspond au produit montré. Si vous mentionnez un prix ou une promotion, confirmez ses conditions et sa disponibilité. Signalez clairement dans la vidéo et la légende toute commission ou tout produit reçu gratuitement.",
+    "ar": "تأكّد من أن الصفحة المرتبطة تعرض المنتج نفسه. إذا ذكرت سعرًا أو عرضًا، فتحقّق من شروطه وتوفّره. أفصح بوضوح في الفيديو والتعليق إذا كنت تتقاضى عمولة أو حصلت على المنتج مجانًا."
+  },
+  "Paid partnership with [brand]. Here’s how [product] fits [use case].\nTap the product link for current pricing and options.": {
+    "fr": "Partenariat rémunéré avec [marque]. Voyez comment [produit] répond à [usage].\nTouchez le lien produit pour connaître le prix actuel et les options.",
+    "ar": "شراكة مدفوعة مع [العلامة]. شاهد كيف يناسب [المنتج] [الاستخدام].\nاضغط على رابط المنتج لمعرفة السعر الحالي والخيارات."
+  }
 } as const;
 export type Message = keyof typeof translations;

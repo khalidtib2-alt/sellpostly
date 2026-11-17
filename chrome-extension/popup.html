@@ -8,35 +8,42 @@
   <script src="popup.js" defer></script>
 </head>
 <body>
-  <header><h1>SellPostly</h1></header>
+  <header>
+    <h1>SellPostly</h1>
+    <div class="languages" role="group" aria-label="Language" data-label="Language">
+      <button type="button" data-language="en" lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-language="fr" lang="fr" aria-pressed="false">FR</button>
+      <button type="button" data-language="ar" lang="ar" aria-pressed="false">العربية</button>
+    </div>
+  </header>
   <main>
-    <div class="modes" role="group" aria-label="Formatting mode">
-      <button type="button" data-mode="seller" aria-pressed="true">Seller Mode</button>
-      <button type="button" data-mode="creator" aria-pressed="false">Creator Mode</button>
+    <div class="modes" role="group" aria-label="Formatting mode" data-label="Formatting mode">
+      <button type="button" data-mode="seller" aria-pressed="true"><span data-message="Seller Mode">Seller Mode</span></button>
+      <button type="button" data-mode="creator" aria-pressed="false"><span data-message="Creator Mode">Creator Mode</span></button>
     </div>
     <form id="seller">
       <div class="fields">
-        <label>Product Name<input name="name" required maxlength="120"></label>
-        <label>Price<input name="price" placeholder="$29" maxlength="35"></label>
+        <label><span data-message="Product Name">Product Name</span><input dir="auto" name="name" placeholder="Wireless headphones" data-placeholder="Wireless headphones" required maxlength="120"></label>
+        <label><span data-message="Price">Price</span><input dir="auto" name="price" placeholder="$29" data-placeholder="$29" maxlength="35"></label>
       </div>
-      <label>Delivery / Location<input name="delivery" maxlength="200"></label>
-      <label>Key Features<textarea name="features" rows="3" maxlength="1200" placeholder="One feature per line"></textarea></label>
-      <button class="primary">Format Posts</button>
+      <label><span data-message="Delivery / Location">Delivery / Location</span><input dir="auto" name="delivery" placeholder="Local pickup or shipping" data-placeholder="Local pickup or shipping" maxlength="200"></label>
+      <label><span data-message="Key Features">Key Features</span><textarea dir="auto" name="features" rows="3" maxlength="1200" placeholder="One feature per line" data-placeholder="One feature per line"></textarea></label>
+      <button class="primary"><span data-message="Format Posts">Format Posts</span></button>
     </form>
     <form id="creator" hidden>
-      <label>Quick Post<textarea name="post" rows="5" required maxlength="3000" placeholder="Paste your post or hook"></textarea></label>
-      <button class="primary">Format Posts</button>
+      <label><span data-message="Quick Post">Quick Post</span><textarea dir="auto" name="post" rows="5" required maxlength="3000" placeholder="Paste your post or hook" data-placeholder="Paste your post or hook"></textarea></label>
+      <button class="primary"><span data-message="Format Posts">Format Posts</span></button>
     </form>
-    <section id="results" aria-label="Formatted posts" hidden>
-      <div id="tabs" role="tablist" aria-label="Platforms"></div>
+    <section id="results" aria-label="Formatted posts" data-label="Formatted posts" hidden>
+      <div id="tabs" role="tablist" aria-label="Platforms" data-label="Platforms"></div>
       <div id="panels"></div>
     </section>
     <p id="status" role="status"></p>
   </main>
   <footer>
     <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer">SellPostly</a>
-    <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer">Web Formatter</a>
-    <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer">Seller Resources</a>
+    <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer"><span data-message="Web Formatter">Web Formatter</span></a>
+    <a href="https://sellpostly.com" target="_blank" rel="noopener noreferrer"><span data-message="Seller Resources">Seller Resources</span></a>
   </footer>
 </body>
 </html>
