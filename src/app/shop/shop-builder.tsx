@@ -19,6 +19,8 @@ export default function ShopBuilder(){
   const {t}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(false),[preview,setPreview]=useState(false),[adding,setAdding]=useState(false);
+  const [search,setSearch]=useState("");
+  const [visible,setVisible]=useState(24);
   const [filter,setFilter]=useState("All"),[photo,setPhoto]=useState(""),[status,setStatus]=useState<Message|"">("");
   useEffect(()=>{
     let cancelled=false;
@@ -32,8 +34,9 @@ export default function ShopBuilder(){
           let initial=samples();
           try {const saved=localStorage.getItem(shopKey);if(saved)initial=validateShop(JSON.parse(saved));}catch{}
           if(params.get("addTitle")){
-            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),category:"Top Deals",source:"Other"};
-            if(initial.products.length<40)initial.products.push(product);
+            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
+            initial.products.push(product);
+            setFilter(product.category);
             try {localStorage.setItem(shopKey,JSON.stringify(initial));}catch{setStatus("Could not save. Device storage may be full.");}
             history.replaceState(null,"",location.pathname);
           }
@@ -53,8 +56,11 @@ export default function ShopBuilder(){
     try{sessionStorage.setItem("sellpostly-post",JSON.stringify(product));location.href="/#formatter";}catch{setStatus("Could not save. Device storage may be full.");}
   }
   const options=[...categories,...new Set(shop.products.map(p=>p.category).filter(c=>!categories.includes(c as typeof categories[number])))];
+  const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+  useEffect(()=>setVisible(24),[filter,search]);
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
   return <main className="mx-auto max-w-6xl px-5 py-12">
+    <label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>
     <div className="mb-6 flex flex-wrap gap-3">
       {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>setPreview(true)}>{t("Storefront Preview")}</button></>}
       <button className={button} disabled={!loaded} onClick={share}>{t("Copy Shareable Shop Link")}</button>
@@ -69,7 +75,7 @@ export default function ShopBuilder(){
     {adding&&!preview&&!shared && <form className="mb-8 grid gap-4 rounded-xl border p-5 sm:grid-cols-2" onSubmit={e=>{
       e.preventDefault();const data=new FormData(e.currentTarget);
       const get=(key:string)=>String(data.get(key)||"").trim();
-      if(shop.products.length>=40){setStatus("Maximum 40 products.");return;}
+
       setShop({...shop,products:[...shop.products,{id:crypto.randomUUID(),name:get("name"),price:get("price"),category:get("category")||"Top Deals",image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source")}]});
       setAdding(false);setPhoto("");
     }}>
@@ -85,9 +91,9 @@ export default function ShopBuilder(){
     </form>}
     <h1 className="text-4xl font-black">{shop.name==="My Shop"?t("My Shop"):shop.name}</h1><p className="my-4 text-slate-600">{shop.bio}</p>
     <p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>
-    <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)}</button>)}</div>
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{shop.products.filter(p=>filter==="All"||p.category===filter).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
-      {p.image&&<img src={p.image} alt={p.name} className="h-52 w-full rounded-lg object-contain" onError={e=>{e.currentTarget.style.display="none";}}/>}
+    <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)} ({c==="All"?shop.products.length:shop.products.filter(p=>p.category===c).length})</button>)}</div>
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
+      <div className="h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className="max-h-full max-w-full w-auto h-auto object-contain" onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
       <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price}</p>
       <div className="flex flex-wrap gap-2 text-sm">
         {p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("Buy / View Deal")}</a>}
@@ -96,6 +102,8 @@ export default function ShopBuilder(){
         {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>setShop({...shop,products:shop.products.filter(item=>item.id!==p.id)})}>{t("Remove")}</button>}
       </div>
     </article>)}</div>
+    {matches.length===0&&loaded&&<p>{t("No products found.")}</p>}
+    {matches.length>visible&&<button type="button" className={button+" mt-6"} onClick={()=>setVisible(count=>count+24)}>{t("Load More")}</button>}
     <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
   </main>;
 }

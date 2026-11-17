@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 const messages = {
+"Category":{"fr":"Catégorie","ar":"الفئة"},"Tech & Gadgets":{"fr":"Tech et gadgets","ar":"التقنية والأجهزة"},"Fashion":{"fr":"Mode","ar":"الأزياء"},"Home & Kitchen":{"fr":"Maison et cuisine","ar":"المنزل والمطبخ"},"Beauty":{"fr":"Beauté","ar":"الجمال"},"Fitness":{"fr":"Fitness","ar":"اللياقة"},"Top Deals":{"fr":"Meilleures offres","ar":"أفضل العروض"},"Other":{"fr":"Autre","ar":"أخرى"},
 "Open Full Studio": {fr:"Ouvrir le studio complet",ar:"فتح الاستوديو الكامل"},
 "Website": {fr:"Site web",ar:"Ø§Ù„Ù…ÙˆÙ‚Ø¹"},
 "Prompt Generator": {fr:"GÃ©nÃ©rateur de prompts",ar:"Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª"},
@@ -466,7 +467,7 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   const data=new FormData(form);
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
   const preview=document.querySelector("#imported-image");
-  const query=new URLSearchParams({addTitle:String(data.get("name")||""),addPrice:String(data.get("price")||""),addImage:preview && !preview.hidden?preview.src:"",addUrl:tab?.url||""});
+  const query=new URLSearchParams({addCategory:document.querySelector("#shop-category").value,addTitle:String(data.get("name")||""),addPrice:String(data.get("price")||""),addImage:preview && !preview.hidden?preview.src:"",addUrl:tab?.url||""});
   window.open("https://sellpostly-git-main-usidk-it.vercel.app/shop?"+query,"_blank","noopener,noreferrer");
 });
 
@@ -488,6 +489,7 @@ document.querySelector("#open-studio").addEventListener("click",async()=>{
     image:preview&&!preview.hidden?preview.src:"",
     link
   });
-  chrome.tabs.create({url:"https://vercel.app/?"+query+"#formatter"});
+  chrome.tabs.create({url:"https://sellpostly-git-main-usidk-it.vercel.app/?"+query+"#formatter"});
 });
+
 

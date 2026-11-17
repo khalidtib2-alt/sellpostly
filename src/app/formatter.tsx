@@ -50,10 +50,12 @@ const fieldStyle = "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3
 
 function PostCard({ post, image }: { post: Post; image: Blob | null }) {
   const { t } = useLanguage();
+  const [text,setText] = useState(post.text);
   const [status, setStatus] = useState<Message | "">("");
+  useEffect(()=>{setText(post.text);},[post.text]);
   async function copy() {
     try {
-      await navigator.clipboard.writeText(post.text);
+      await navigator.clipboard.writeText(text);
       setStatus("Copied!");
     } catch {
       setStatus("Copy failed. Select the text to copy it manually.");
@@ -61,10 +63,10 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
   }
 
   function destination() {
-    const text=encodeURIComponent(post.text);
-    if(post.platform==="WhatsApp Business")return "https://whatsapp.com/send?text="+text;
-    if(post.platform.startsWith("X"))return "https://twitter.com/intent/tweet?text="+text;
-    if(post.platform==="Threads")return "https://threads.net/intent/post?text="+text;
+    const encoded=encodeURIComponent(text);
+    if(post.platform==="WhatsApp Business")return "https://whatsapp.com/send?text="+encoded;
+    if(post.platform.startsWith("X"))return "https://twitter.com/intent/tweet?text="+encoded;
+    if(post.platform==="Threads")return "https://threads.net/intent/post?text="+encoded;
     if(post.platform==="Pinterest")return "https://pinterest.com";
     return post.url || "https://www.linkedin.com/";
   }
@@ -80,15 +82,15 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
       try {
         if(withImage && image) {
           try {
-            await navigator.clipboard.write([new ClipboardItem({"image/png":image,"text/plain":new Blob([post.text],{type:"text/plain"})})]);
+            await navigator.clipboard.write([new ClipboardItem({"image/png":image,"text/plain":new Blob([text],{type:"text/plain"})})]);
             setStatus("Text & Image copied! Paste (Ctrl+V) directly into your post or chat.");
           } catch {
-            await navigator.clipboard.writeText(post.text);
+            await navigator.clipboard.writeText(text);
             const url=URL.createObjectURL(image);
             const link=document.createElement("a");link.href=url;link.download="sellpostly-promo.png";link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
             setStatus("Image downloaded. Attach it and paste the caption.");
           }
-        } else {await navigator.clipboard.writeText(post.text);setStatus("Caption copied. Paste it on the platform.");}
+        } else {await navigator.clipboard.writeText(text);setStatus("Caption copied. Paste it on the platform.");}
       } catch {setStatus("Sharing failed. Copy the text or download the image.");}
     })();
     window.open(destination(),"_blank","noopener,noreferrer");
@@ -97,7 +99,7 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4">
       <h3 className="font-bold">{post.platform}</h3>
-      <p dir="auto" className="my-3 whitespace-pre-wrap break-words text-sm text-slate-700">{post.text}</p>
+      <textarea aria-label={post.platform} dir="auto" className="my-3 min-h-48 w-full rounded-lg border border-slate-300 p-3 text-sm text-slate-700" value={text} onChange={event=>setText(event.target.value)} /><button type="button" className="mb-3 text-sm text-emerald-800 underline" onClick={()=>setText(post.text)}>{t("Reset")}</button>
       <div className="flex flex-wrap gap-3 text-sm font-semibold">
         <button type="button" onClick={copy} className="rounded-md bg-emerald-50 px-3 py-2 text-emerald-800">{t("Copy Text")}</button>
         <button type="button" onClick={()=>send()} className="rounded-md border px-3 py-2">{t("Send Text")}</button>
@@ -114,6 +116,7 @@ export default function Formatter() {
   const formRef = useRef<HTMLFormElement>(null);
   const [promo,setPromo] = useState<Blob | null>(null);
   const [image,setImage] = useState("");
+  const [delivery,setDelivery] = useState("");
   const [draft,setDraft] = useState({name:"",price:""});
   const [busy,setBusy] = useState(false);
   const [importStatus,setImportStatus] = useState<Message | "">("");
@@ -156,6 +159,7 @@ export default function Formatter() {
       if(field)field.value=value;
     }
     setMode("seller");
+    setDelivery(values.delivery);
     setDraft({name:values.name,price:values.price});
     setImage(safeImage(product.image||""));
     setProductUrl(values.contact);
@@ -254,6 +258,7 @@ export default function Formatter() {
       </div>}
       <form ref={formRef} onChange={event=>{
         const data=new FormData(event.currentTarget);
+        setDelivery(String(data.get("delivery")||""));
         setDraft({name:String(data.get("name")||""),price:[data.get("price"),data.get("currency")].filter(Boolean).join(" ")});
       }} key={mode} onSubmit={generate} className="mt-6 grid gap-4 text-sm font-medium sm:grid-cols-2">
         {mode === "seller" ? <>
@@ -272,7 +277,7 @@ export default function Formatter() {
         </div>
       </form>
       {mode === "seller" && <button type="button" onClick={saveShop} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-white">{t("Save to My Shop")}</button>}
-      {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} importedImage={image} onImage={setPromo} />}
+      {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} delivery={delivery} importedImage={image} onImage={setPromo} />}
       <p role="status" className="sr-only">{posts.length ? posts.length + " · " + t("Posts generated.") : ""}</p>
       {posts.length > 0 && <div className="mt-7 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} image={promo} />)}</div>}
     </div>

@@ -1190,6 +1190,22 @@ export const translations = {
   "LIMITED DEAL": {
     "fr": "OFFRE LIMITÉE",
     "ar": "عرض محدود"
+  },
+  "Footer Bar": {
+    "fr": "Barre de pied de page",
+    "ar": "شريط سفلي"
+  },
+  "Search Products": {
+    "fr": "Rechercher des produits",
+    "ar": "البحث عن المنتجات"
+  },
+  "Load More": {
+    "fr": "Afficher plus",
+    "ar": "عرض المزيد"
+  },
+  "No products found.": {
+    "fr": "Aucun produit trouvé.",
+    "ar": "لم يتم العثور على منتجات."
   }
 } as const;
 export type Message = keyof typeof translations;

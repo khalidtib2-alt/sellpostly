@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "./language-context";
 
-export default function PromoImageStudio({ name, price, importedImage, onImage }: { name: string; price: string; importedImage: string; onImage: (blob: Blob | null) => void }) {
+export default function PromoImageStudio({ name, price, delivery = "", importedImage, onImage }: { name: string; price: string; delivery?: string; importedImage: string; onImage: (blob: Blob | null) => void }) {
   const { t, language } = useLanguage();
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -38,13 +38,14 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
       if(cancelled || !context) return;
       const colors=theme==="slate"?["#0f172a","#ffffff","#059669"]:theme==="sand"?["#f5ead8","#34291e","#805729"]:["#ecfdf5","#064e3b","#047857"];
       context.fillStyle=colors[0]; context.fillRect(0,0,1080,height);
-      const photoHeight=height-420;
+      const footerHeight=480;
+      const photoHeight=height-footerHeight-40;
       if(image) {
         const scale=Math.min(960/image.width,photoHeight/image.height)*(zoom/100);
         const width=image.width*scale, h=image.height*scale;
         
         context.save();
-        context.beginPath();context.rect(0,0,1080,height-40);context.clip();
+        context.beginPath();context.rect(0,0,1080,textPosition==="bottom"?height-footerHeight:height-40);context.clip();
         context.drawImage(image,(1080-width)/2+offsetX*5.4,40+(photoHeight-h)/2+offsetY*photoHeight/200,width,h);
         context.restore();
       }
@@ -52,10 +53,10 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
       context.direction=language==="ar"?"rtl":"ltr";
       context.textAlign="center";
       const fontSize=textSize==="small"?36:textSize==="large"?60:48;
-      const cardY=textPosition==="top"?40:textPosition==="badge"?Math.round(height*0.42):height-470;
+      const cardY=textPosition==="top"?40:textPosition==="badge"?Math.round(height*0.42):height-footerHeight;
       context.fillStyle=colors[0];
       context.globalAlpha=textPosition==="badge"?0.94:1;
-      context.fillRect(40,cardY,1000,330);
+      context.fillRect(textPosition==="bottom"?0:40,cardY,textPosition==="bottom"?1080:1000,textPosition==="bottom"?footerHeight:430);
       context.globalAlpha=1;
       context.fillStyle=colors[1];context.font="bold "+fontSize+"px system-ui";
       const words=(title||"").split(/\s+/);
@@ -74,9 +75,10 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
         context.fillStyle="#fff";context.fillText(keyword,540,pillY+40,pillWidth-40);
       }
       if(price){
-        context.fillStyle=colors[2];context.fillRect(210,height-110,660,62);
-        context.fillStyle="#fff";context.font="bold 40px system-ui";context.fillText(price,540,height-65,620);
+        context.fillStyle=colors[2];context.fillRect(210,cardY+310,660,62);
+        context.fillStyle="#fff";context.font="bold 40px system-ui";context.fillText(price,540,cardY+355,620);
       }
+      if(delivery){context.fillStyle=colors[1];context.font="bold 28px system-ui";context.fillText(t("Delivery")+": "+delivery,540,cardY+412,920);}
       context.direction="ltr"; context.fillStyle=colors[1]; context.font="22px system-ui";
       context.fillText(t("Created with SellPostly.com"),540,height-20);
       setReady(true);
@@ -91,7 +93,7 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
     image.onerror=()=>{if(!cancelled){setFailed(true);draw();}};
     image.src=source;
     return ()=>{cancelled=true;};
-  },[source,format,theme,title,keyword,textSize,textPosition,zoom,offsetX,offsetY,price,language,t,onImage]);
+  },[source,format,theme,title,keyword,textSize,textPosition,zoom,offsetX,offsetY,price,delivery,language,t,onImage]);
 
   function download() {
     try {
@@ -128,7 +130,7 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
         <option value="small">{t("Small")}</option><option value="medium">{t("Medium")}</option><option value="large">{t("Large")}</option>
       </select></label>
       <label>{t("Text Position")}<select className="block w-full rounded border p-2" value={textPosition} onChange={e=>setTextPosition(e.target.value)}>
-        <option value="top">{t("Top Banner")}</option><option value="bottom">{t("Bottom Card")}</option><option value="badge">{t("Overlay Badge")}</option>
+        <option value="top">{t("Top Banner")}</option><option value="bottom">{t("Footer Bar")}</option><option value="badge">{t("Overlay Badge")}</option>
       </select></label>
     </div>
     <canvas ref={canvas} aria-label={t("Promo preview")} className="mx-auto h-auto w-full max-w-sm border border-slate-200" />
