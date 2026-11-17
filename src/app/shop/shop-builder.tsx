@@ -1,0 +1,101 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useLanguage } from "../language-context";
+import type { Message } from "../translations";
+import { categories, decodeShop, encodeShop, safeImage, safeUrl, shopKey, validateShop, type Product, type Shop } from "./shop-data";
+
+const field="mt-1 block w-full rounded-lg border border-slate-300 p-2";
+const button="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white";
+function samples(): Shop {
+  const products=["Wireless headphones","Travel backpack","Kitchen organizer","Fitness bottle"].map((name,index)=>{
+    const canvas=document.createElement("canvas");canvas.width=320;canvas.height=240;
+    const context=canvas.getContext("2d")!;context.fillStyle=["#d1fae5","#e2e8f0","#fef3c7","#fce7f3"][index];context.fillRect(0,0,320,240);
+    context.font="80px system-ui";context.textAlign="center";context.fillText(["🎧","🎒","🍽️","💧"][index],160,145);
+    return {id:"sample-"+index,name,price:["49 USD","39 USD","24 USD","19 USD"][index],category:["Tech & Gadgets","Fashion","Home & Kitchen","Fitness"][index],image:canvas.toDataURL(),url:["https://www.amazon.com/","https://www.aliexpress.com/","https://www.shopify.com/","https://www.amazon.com/"][index],source:["Amazon","AliExpress","Shopify","Amazon"][index]};
+  });
+  return {name:"My Shop",bio:"",phone:"",products};
+}
+export default function ShopBuilder(){
+  const {t}=useLanguage();
+  const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",products:[]});
+  const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(false),[preview,setPreview]=useState(false),[adding,setAdding]=useState(false);
+  const [filter,setFilter]=useState("All"),[photo,setPhoto]=useState(""),[status,setStatus]=useState<Message|"">("");
+  useEffect(()=>{
+    let cancelled=false;
+    async function load(){
+      const params=new URLSearchParams(location.search);
+      try{
+        if(params.has("s")){
+          const decoded=await decodeShop(params.get("s")!);if(cancelled)return;
+          setShop(decoded);setShared(true);setPreview(true);
+        } else {
+          let initial=samples();
+          try {const saved=localStorage.getItem(shopKey);if(saved)initial=validateShop(JSON.parse(saved));}catch{}
+          if(params.get("addTitle")){
+            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),category:"Top Deals",source:"Other"};
+            if(initial.products.length<40)initial.products.push(product);
+            try {localStorage.setItem(shopKey,JSON.stringify(initial));}catch{setStatus("Could not save. Device storage may be full.");}
+            history.replaceState(null,"",location.pathname);
+          }
+          if(cancelled)return;setShop(initial);
+        }
+      }catch{setStatus("Could not open this shop link.");}
+      if(!cancelled)setLoaded(true);
+    }
+    load();return()=>{cancelled=true;};
+  },[]);
+  useEffect(()=>{if(loaded&&!shared)try{localStorage.setItem(shopKey,JSON.stringify(shop));}catch{setStatus("Could not save. Device storage may be full.");}},[shop,loaded,shared]);
+  async function share(){
+    try{const code=await encodeShop(shop);await navigator.clipboard.writeText(location.origin+"/shop?s="+code);setStatus("Copied!");}
+    catch{setStatus("Shop link is too large. Use image URLs or fewer products.");}
+  }
+  function createPost(product:Product){
+    try{sessionStorage.setItem("sellpostly-post",JSON.stringify(product));location.href="/#formatter";}catch{setStatus("Could not save. Device storage may be full.");}
+  }
+  const options=[...categories,...new Set(shop.products.map(p=>p.category).filter(c=>!categories.includes(c as typeof categories[number])))];
+  function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
+  return <main className="mx-auto max-w-6xl px-5 py-12">
+    <div className="mb-6 flex flex-wrap gap-3">
+      {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>setPreview(true)}>{t("Storefront Preview")}</button></>}
+      <button className={button} disabled={!loaded} onClick={share}>{t("Copy Shareable Shop Link")}</button>
+    </div>
+    <p className="mb-4 text-sm text-slate-600">{t("Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.")}</p>
+    {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
+      <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
+      <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
+      <label>{t("WhatsApp Order Number")}<input className={field} dir="ltr" placeholder="+1 555 123 4567" value={shop.phone} onChange={e=>setShop({...shop,phone:e.target.value})}/></label>
+      <button className={button} onClick={()=>setAdding(!adding)}>{t("Add Product")}</button>
+    </section>}
+    {adding&&!preview&&!shared && <form className="mb-8 grid gap-4 rounded-xl border p-5 sm:grid-cols-2" onSubmit={e=>{
+      e.preventDefault();const data=new FormData(e.currentTarget);
+      const get=(key:string)=>String(data.get(key)||"").trim();
+      if(shop.products.length>=40){setStatus("Maximum 40 products.");return;}
+      setShop({...shop,products:[...shop.products,{id:crypto.randomUUID(),name:get("name"),price:get("price"),category:get("category")||"Top Deals",image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source")}]});
+      setAdding(false);setPhoto("");
+    }}>
+      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} name={["name","price","category","image","url"][i]} type={i===3||i===4?"url":"text"} required={i===0||i===4} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
+      <datalist id="shop-categories">{categories.slice(1).map(c=><option key={c} value={c}>{label(c)}</option>)}</datalist>
+      <label>{t("Source Badge")}<select className={field} name="source">{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
+      <label>{t("Upload Product Photo")}<input className={field} type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
+        const file=e.target.files?.[0];if(!file)return;
+        if(file.size>5000000){setStatus("Photo must be under 5 MB.");return;}
+        const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");const scale=Math.min(1,600/Math.max(img.width,img.height));c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d")!.drawImage(img,0,0,c.width,c.height);setPhoto(c.toDataURL("image/jpeg",0.7));};img.src=String(reader.result);};reader.readAsDataURL(file);
+      }}/></label>
+      <button className={button}>{t("Save Product")}</button>
+    </form>}
+    <h1 className="text-4xl font-black">{shop.name==="My Shop"?t("My Shop"):shop.name}</h1><p className="my-4 text-slate-600">{shop.bio}</p>
+    <p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>
+    <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)}</button>)}</div>
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{shop.products.filter(p=>filter==="All"||p.category===filter).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
+      {p.image&&<img src={p.image} alt={p.name} className="h-52 w-full rounded-lg object-contain" onError={e=>{e.currentTarget.style.display="none";}}/>}
+      <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price}</p>
+      <div className="flex flex-wrap gap-2 text-sm">
+        {p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("Buy / View Deal")}</a>}
+        <a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>
+        <button className="rounded-lg border px-3 py-2" onClick={()=>createPost(p)}>{t("Create Social Post")}</button>
+        {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>setShop({...shop,products:shop.products.filter(item=>item.id!==p.id)})}>{t("Remove")}</button>}
+      </div>
+    </article>)}</div>
+    <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
+  </main>;
+}

@@ -1,6 +1,7 @@
 "use strict";
 
 const messages = {
+"Text & Image copied! Paste (Ctrl+V) directly into your post or chat.":{"fr":"Texte et image copiés ! Collez-les (Ctrl+V) dans votre publication ou conversation.","ar":"تم نسخ النص والصورة! الصق (Ctrl+V) في المنشور أو المحادثة."},"Send to My Shop":{"fr":"Envoyer vers ma boutique","ar":"إرسال إلى متجري"},
 "Upload or import a product photo first.":{"fr":"Importez d’abord une photo produit.","ar":"ارفع أو استورد صورة المنتج أولًا."},"Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.":{"fr":"Collez l’URL d’une fiche produit précise, ou utilisez l’extension Chrome SellPostly sur cette fiche.","ar":"الصق رابط صفحة منتج محدد بدل الصفحة الرئيسية للمتجر، أو استخدم إضافة SellPostly على صفحة المنتج."},"Image copied! Press Ctrl+V in chat to attach the photo.":{"fr":"Image copiée ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.","ar":"تم نسخ الصورة! اضغط Ctrl+V في المحادثة لإرفاقها."},"Send Text":{"fr":"Envoyer le texte","ar":"إرسال النص"},"Send Image + Text":{"fr":"Envoyer l’image et le texte","ar":"إرسال الصورة والنص"},"Image downloaded. Attach it and paste the caption.":{"fr":"Image téléchargée. Joignez-la et collez la légende.","ar":"تم تنزيل الصورة. أرفقها والصق النص."},"Sharing failed. Copy the text or download the image.":{"fr":"Échec du partage. Copiez le texte ou téléchargez l’image.","ar":"تعذّرت المشاركة. انسخ النص أو نزّل الصورة."},
 "Delivery":{"fr":"Livraison","ar":"التوصيل"},"Reply *ORDER* now to claim yours!":{"fr":"Répondez *COMMANDER* pour passer commande !","ar":"أرسل *طلب* الآن لطلب منتجك!"},
 "Import From Current Page": {fr:"Importer depuis cette page",ar:"استيراد من الصفحة الحالية"},
@@ -411,7 +412,7 @@ function featureLines(value) {
 
 function shareUrl(platform, post) {
   const text=encodeURIComponent(post);
-  if(platform==="WhatsApp Business")return "https://web.whatsapp.com/send?text="+text;
+  if(platform==="WhatsApp Business")return "https://whatsapp.com/send?text="+text;
   if(platform==="X")return "https://twitter.com/intent/tweet?text="+text;
   if(platform==="Threads")return "https://threads.net/intent/post?text="+text;
   if(platform==="Pinterest")return "https://pinterest.com/pin/create/button/?description="+text;
@@ -422,7 +423,7 @@ async function sendPost(platform,post,withImage) {
   if(withImage && (!preview || preview.hidden || !preview.complete || !preview.naturalWidth)) {
     feedback.textContent=t("Upload or import a product photo first.");return;
   }
-  const tab=window.open("about:blank","_blank");if(tab)tab.opener=null;
+  window.open(shareUrl(platform,post),"_blank","noopener,noreferrer");
   try {
     if(withImage) {
       const blobPromise=new Promise((resolve,reject)=>{
@@ -438,8 +439,8 @@ async function sendPost(platform,post,withImage) {
         image.onerror=()=>reject(Error());image.src=preview.src;
       });
       try {
-        await navigator.clipboard.write([new ClipboardItem({"image/png":blobPromise})]);
-        feedback.textContent=t("Image copied! Press Ctrl+V in chat to attach the photo.");
+        await navigator.clipboard.write([new ClipboardItem({"image/png":blobPromise,"text/plain":new Blob([post],{type:"text/plain"})})]);
+        feedback.textContent=t("Text & Image copied! Paste (Ctrl+V) directly into your post or chat.");
       } catch {
         try {
           const blob=await blobPromise;const url=URL.createObjectURL(blob);
@@ -452,6 +453,15 @@ async function sendPost(platform,post,withImage) {
         feedback.textContent=t("Image downloaded. Attach it and paste the caption.");
       }
     } else {await navigator.clipboard.writeText(post);feedback.textContent=t("Copied!");}
-    if(tab)tab.location.href=shareUrl(platform,post);
-  } catch {if(tab)tab.close();feedback.textContent=t("Sharing failed. Copy the text or download the image.");}
+
+  } catch {feedback.textContent=t("Sharing failed. Copy the text or download the image.");}
 }
+
+document.querySelector("#send-shop").addEventListener("click",async()=>{
+  const form=document.querySelector("#seller");
+  const data=new FormData(form);
+  const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
+  const preview=document.querySelector("#imported-image");
+  const query=new URLSearchParams({addTitle:String(data.get("name")||""),addPrice:String(data.get("price")||""),addImage:preview && !preview.hidden?preview.src:"",addUrl:tab?.url||""});
+  window.open("https://sellpostly.com/shop?"+query,"_blank","noopener,noreferrer");
+});

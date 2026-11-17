@@ -970,6 +970,162 @@ export const translations = {
   "Image copied! Press Ctrl+V in chat to attach the photo.": {
     "fr": "Image copiée ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.",
     "ar": "تم نسخ الصورة! اضغط Ctrl+V في المحادثة لإرفاقها."
+  },
+  "My Shop": {
+    "fr": "Ma boutique",
+    "ar": "متجري"
+  },
+  "Builder": {
+    "fr": "Éditeur",
+    "ar": "المحرر"
+  },
+  "Storefront Preview": {
+    "fr": "Aperçu de la boutique",
+    "ar": "معاينة المتجر"
+  },
+  "Copy Shareable Shop Link": {
+    "fr": "Copier le lien de la boutique",
+    "ar": "نسخ رابط المتجر"
+  },
+  "Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.": {
+    "fr": "Les liens partagés contiennent un instantané. Copiez un nouveau lien après modification. Les photos peuvent rendre le lien trop long.",
+    "ar": "تحتوي الروابط على نسخة وقت المشاركة. انسخ رابطًا جديدًا بعد التعديل. قد تجعل الصور المرفوعة الرابط طويلًا جدًا."
+  },
+  "Shop Name": {
+    "fr": "Nom de la boutique",
+    "ar": "اسم المتجر"
+  },
+  "Bio": {
+    "fr": "Présentation",
+    "ar": "نبذة"
+  },
+  "WhatsApp Order Number": {
+    "fr": "Numéro WhatsApp pour les commandes",
+    "ar": "رقم واتساب للطلبات"
+  },
+  "Add Product": {
+    "fr": "Ajouter un produit",
+    "ar": "إضافة منتج"
+  },
+  "Category": {
+    "fr": "Catégorie",
+    "ar": "الفئة"
+  },
+  "Image URL": {
+    "fr": "URL de l’image",
+    "ar": "رابط الصورة"
+  },
+  "Affiliate / Checkout URL": {
+    "fr": "Lien affilié / de paiement",
+    "ar": "رابط الإحالة أو الدفع"
+  },
+  "Source Badge": {
+    "fr": "Plateforme d’origine",
+    "ar": "مصدر المنتج"
+  },
+  "Other": {
+    "fr": "Autre",
+    "ar": "أخرى"
+  },
+  "Save Product": {
+    "fr": "Enregistrer le produit",
+    "ar": "حفظ المنتج"
+  },
+  "All": {
+    "fr": "Tout",
+    "ar": "الكل"
+  },
+  "Tech & Gadgets": {
+    "fr": "Tech et gadgets",
+    "ar": "التقنية والأجهزة"
+  },
+  "Fashion": {
+    "fr": "Mode",
+    "ar": "الأزياء"
+  },
+  "Home & Kitchen": {
+    "fr": "Maison et cuisine",
+    "ar": "المنزل والمطبخ"
+  },
+  "Beauty": {
+    "fr": "Beauté",
+    "ar": "الجمال"
+  },
+  "Fitness": {
+    "fr": "Fitness",
+    "ar": "اللياقة"
+  },
+  "Top Deals": {
+    "fr": "Meilleures offres",
+    "ar": "أفضل العروض"
+  },
+  "Buy / View Deal": {
+    "fr": "Acheter / Voir l’offre",
+    "ar": "شراء أو عرض الصفقة"
+  },
+  "Order via WhatsApp": {
+    "fr": "Commander sur WhatsApp",
+    "ar": "الطلب عبر واتساب"
+  },
+  "Create Social Post": {
+    "fr": "Créer une publication",
+    "ar": "إنشاء منشور"
+  },
+  "Remove": {
+    "fr": "Supprimer",
+    "ar": "إزالة"
+  },
+  "I would like to order": {
+    "fr": "Je souhaite commander",
+    "ar": "أرغب في طلب"
+  },
+  "Could not save. Device storage may be full.": {
+    "fr": "Enregistrement impossible. Le stockage est peut-être plein.",
+    "ar": "تعذّر الحفظ. قد تكون مساحة الجهاز ممتلئة."
+  },
+  "Could not open this shop link.": {
+    "fr": "Impossible d’ouvrir ce lien de boutique.",
+    "ar": "تعذّر فتح رابط المتجر."
+  },
+  "Shop link is too large. Use image URLs or fewer products.": {
+    "fr": "Le lien est trop long. Utilisez des URL d’images ou moins de produits.",
+    "ar": "رابط المتجر طويل جدًا. استخدم روابط الصور أو منتجات أقل."
+  },
+  "Maximum 40 products.": {
+    "fr": "40 produits maximum.",
+    "ar": "الحد الأقصى 40 منتجًا."
+  },
+  "Photo must be under 5 MB.": {
+    "fr": "La photo doit faire moins de 5 Mo.",
+    "ar": "يجب أن تكون الصورة أصغر من 5 ميغابايت."
+  },
+  "Sample products are demonstrations. Replace their details and links before sharing.": {
+    "fr": "Les produits exemples sont des démonstrations. Remplacez leurs détails et liens avant de partager.",
+    "ar": "المنتجات النموذجية للعرض فقط. استبدل بياناتها وروابطها قبل المشاركة."
+  },
+  "Travel backpack": {
+    "fr": "Sac à dos de voyage",
+    "ar": "حقيبة ظهر للسفر"
+  },
+  "Kitchen organizer": {
+    "fr": "Organiseur de cuisine",
+    "ar": "منظّم المطبخ"
+  },
+  "Fitness bottle": {
+    "fr": "Gourde de sport",
+    "ar": "قارورة رياضية"
+  },
+  "Save to My Shop": {
+    "fr": "Enregistrer dans ma boutique",
+    "ar": "حفظ في متجري"
+  },
+  "Text & Image copied! Paste (Ctrl+V) directly into your post or chat.": {
+    "fr": "Texte et image copiés ! Collez-les (Ctrl+V) dans votre publication ou conversation.",
+    "ar": "تم نسخ النص والصورة! الصق (Ctrl+V) في المنشور أو المحادثة."
+  },
+  "Send to My Shop": {
+    "fr": "Envoyer vers ma boutique",
+    "ar": "إرسال إلى متجري"
   }
 } as const;
 export type Message = keyof typeof translations;

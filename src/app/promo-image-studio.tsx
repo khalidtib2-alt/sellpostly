@@ -50,11 +50,12 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
       context.direction="ltr"; context.fillStyle=colors[1]; context.font="22px system-ui";
       context.fillText(t("Created with SellPostly.com"),540,height-20);
       setReady(true);
-      if(image) element!.toBlob(blob=>{if(!cancelled)onImage(blob);},"image/png");
+      if(image) { try { element!.toBlob(blob=>{if(!cancelled)onImage(blob);},"image/png"); } catch { setFailed(true);onImage(null); } }
     }
     setFailed(false);
     if(!source){draw();return;}
     const image=new Image();
+    image.crossOrigin="anonymous";
     image.onload=()=>draw(image);
     image.onerror=()=>{if(!cancelled){setFailed(true);draw();}};
     image.src=source;

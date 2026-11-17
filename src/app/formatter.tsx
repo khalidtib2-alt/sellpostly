@@ -1,10 +1,11 @@
 "use client";
+import { safeImage, safeUrl } from "./shop/shop-data";
 import PromoImageStudio from "./promo-image-studio";
 
 
 import { useLanguage } from "./language-context";
 import type { Message } from "./translations";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
 type Post = { platform: string; text: string; url?: string };
 type Mode = "seller" | "creator";
@@ -64,7 +65,7 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
     if(post.platform==="WhatsApp Business")return "https://whatsapp.com/send?text="+text;
     if(post.platform.startsWith("X"))return "https://twitter.com/intent/tweet?text="+text;
     if(post.platform==="Threads")return "https://threads.net/intent/post?text="+text;
-    if(post.platform==="Pinterest")return "https://pinterest.com/pin/create/button/?description="+text+"&url="+encodeURIComponent("https://sellpostly.com");
+    if(post.platform==="Pinterest")return "https://pinterest.com";
     return post.url || "https://www.linkedin.com/";
   }
   async function send(withImage=false) {
@@ -74,33 +75,24 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
       document.getElementById("upload-product-photo")?.focus();
       return;
     }
-    const file=image?new File([image],"sellpostly-promo.png",{type:"image/png"}):null;
-    if(withImage && file && navigator.canShare?.({files:[file]})) {
-      try {await navigator.share({files:[file],text:post.text});} catch(error) {
-        if(!(error instanceof DOMException && error.name==="AbortError"))setStatus("Sharing failed. Copy the text or download the image.");
-      }
-      return;
-    }
-    const tab=window.open("about:blank","_blank");
-    if(tab)tab.opener=null;
-    try {
-      if(withImage && image) {
-        try {
-          await navigator.clipboard.write([new ClipboardItem({"image/png":image})]);
-          setStatus("Image copied! Press Ctrl+V in chat to attach the photo.");
-        } catch {
-          const url=URL.createObjectURL(image);
-          const link=document.createElement("a");link.href=url;link.download="sellpostly-promo.png";link.click();
-          setTimeout(()=>URL.revokeObjectURL(url),10000);
-          await navigator.clipboard.writeText(post.text);
-          setStatus("Image downloaded. Attach it and paste the caption.");
-        }
-      } else {
-        await navigator.clipboard.writeText(post.text);
-        setStatus("Caption copied. Paste it on the platform.");
-      }
-      if(tab)tab.location.href=destination();
-    } catch {if(tab)tab.close();setStatus("Sharing failed. Copy the text or download the image.");}
+
+    const copying = (async()=>{
+      try {
+        if(withImage && image) {
+          try {
+            await navigator.clipboard.write([new ClipboardItem({"image/png":image,"text/plain":new Blob([post.text],{type:"text/plain"})})]);
+            setStatus("Text & Image copied! Paste (Ctrl+V) directly into your post or chat.");
+          } catch {
+            await navigator.clipboard.writeText(post.text);
+            const url=URL.createObjectURL(image);
+            const link=document.createElement("a");link.href=url;link.download="sellpostly-promo.png";link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
+            setStatus("Image downloaded. Attach it and paste the caption.");
+          }
+        } else {await navigator.clipboard.writeText(post.text);setStatus("Caption copied. Paste it on the platform.");}
+      } catch {setStatus("Sharing failed. Copy the text or download the image.");}
+    })();
+    window.open(destination(),"_blank","noopener,noreferrer");
+    await copying;
   }
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4">
@@ -132,6 +124,36 @@ export default function Formatter() {
   const [error, setError] = useState<Message | "">("");
   const posts = results.data ? (mode === "seller" ? sellerPosts(results.data, t) : creatorPosts(results.hook, t)) : [];
 
+
+  useEffect(()=>{
+    try {
+      const saved=sessionStorage.getItem("sellpostly-post");if(!saved)return;
+      const product=JSON.parse(saved);
+      const form=formRef.current;if(!form)return;
+      for(const [key,value] of Object.entries({name:String(product.name||""),price:String(product.price||""),contact:safeUrl(String(product.url||""))})) {
+        const field=form.elements.namedItem(key) as HTMLInputElement | null;if(field)field.value=value;
+      }
+      setDraft({name:String(product.name||""),price:String(product.price||"")});
+      setImage(safeImage(String(product.image||"")));
+      sessionStorage.removeItem("sellpostly-post");
+    }catch{}
+  },[]);
+  async function saveShop(){
+    const form=formRef.current;if(!form)return;
+    const data=new FormData(form);
+
+    let photo=image;
+    if(promo) {
+      const bitmap=await createImageBitmap(promo);
+      const canvas=document.createElement("canvas");
+      const scale=Math.min(1,600/Math.max(bitmap.width,bitmap.height));
+      canvas.width=bitmap.width*scale;canvas.height=bitmap.height*scale;
+      canvas.getContext("2d")!.drawImage(bitmap,0,0,canvas.width,canvas.height);
+      photo=canvas.toDataURL("image/jpeg",0.7);bitmap.close();
+    }
+    const query=new URLSearchParams({addTitle:String(data.get("name")||""),addPrice:[data.get("price"),currency].filter(Boolean).join(" "),addImage:photo,addUrl:String(data.get("contact")||productUrl)});
+    location.href="/shop?"+query;
+  }
   async function importProduct() {
     if(busy)return;
     setBusy(true);setImportStatus("");
@@ -218,6 +240,7 @@ export default function Formatter() {
           {error && <p role="alert" className="mt-2 text-red-700">{t(error)}</p>}
         </div>
       </form>
+      {mode === "seller" && <button type="button" onClick={saveShop} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-white">{t("Save to My Shop")}</button>}
       {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} importedImage={image} onImage={setPromo} />}
       <p role="status" className="sr-only">{posts.length ? posts.length + " · " + t("Posts generated.") : ""}</p>
       {posts.length > 0 && <div className="mt-7 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} image={promo} />)}</div>}
