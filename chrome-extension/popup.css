@@ -26,3 +26,6 @@ a { color: #065f46; text-underline-offset: 2px; }
 
 #import-page { width: 100%; }
 button:disabled { opacity: .6; cursor: wait; }
+
+.send-actions { display:flex; flex-wrap:wrap; gap:4px; }
+.send-actions button { font-size:12px; }

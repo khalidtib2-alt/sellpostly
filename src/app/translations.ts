@@ -958,6 +958,18 @@ export const translations = {
   "Reply *ORDER* now to claim yours!": {
     "fr": "Répondez *COMMANDER* pour passer commande !",
     "ar": "أرسل *طلب* الآن لطلب منتجك!"
+  },
+  "Upload or import a product photo first.": {
+    "fr": "Importez d’abord une photo produit.",
+    "ar": "ارفع أو استورد صورة المنتج أولًا."
+  },
+  "Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.": {
+    "fr": "Collez l’URL d’une fiche produit précise, ou utilisez l’extension Chrome SellPostly sur cette fiche.",
+    "ar": "الصق رابط صفحة منتج محدد بدل الصفحة الرئيسية للمتجر، أو استخدم إضافة SellPostly على صفحة المنتج."
+  },
+  "Image copied! Press Ctrl+V in chat to attach the photo.": {
+    "fr": "Image copiée ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.",
+    "ar": "تم نسخ الصورة! اضغط Ctrl+V في المحادثة لإرفاقها."
   }
 } as const;
 export type Message = keyof typeof translations;

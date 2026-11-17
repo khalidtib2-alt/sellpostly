@@ -68,6 +68,12 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
     return post.url || "https://www.linkedin.com/";
   }
   async function send(withImage=false) {
+    if(withImage && !image) {
+      setStatus("Upload or import a product photo first.");
+      document.getElementById("upload-product-photo")?.scrollIntoView({behavior:"smooth",block:"center"});
+      document.getElementById("upload-product-photo")?.focus();
+      return;
+    }
     const file=image?new File([image],"sellpostly-promo.png",{type:"image/png"}):null;
     if(withImage && file && navigator.canShare?.({files:[file]})) {
       try {await navigator.share({files:[file],text:post.text});} catch(error) {
@@ -80,8 +86,8 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
     try {
       if(withImage && image) {
         try {
-          await navigator.clipboard.write([new ClipboardItem({"image/png":image,"text/plain":new Blob([post.text],{type:"text/plain"})})]);
-          setStatus("Image copied! Press Ctrl+V in chat to attach photo.");
+          await navigator.clipboard.write([new ClipboardItem({"image/png":image})]);
+          setStatus("Image copied! Press Ctrl+V in chat to attach the photo.");
         } catch {
           const url=URL.createObjectURL(image);
           const link=document.createElement("a");link.href=url;link.download="sellpostly-promo.png";link.click();
@@ -103,7 +109,7 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
       <div className="flex flex-wrap gap-3 text-sm font-semibold">
         <button type="button" onClick={copy} className="rounded-md bg-emerald-50 px-3 py-2 text-emerald-800">{t("Copy Text")}</button>
         <button type="button" onClick={()=>send()} className="rounded-md border px-3 py-2">{t("Send Text")}</button>
-        {image && <button type="button" onClick={()=>send(true)} className="rounded-md bg-emerald-700 px-3 py-2 text-white">{t("Send Image + Text")}</button>}
+        {<button type="button" onClick={()=>send(true)} className="rounded-md bg-emerald-700 px-3 py-2 text-white">{t("Send Image + Text")}</button>}
         {post.url && <a className="rounded-md border border-slate-200 px-3 py-2" href={post.url} target="_blank" rel="noopener noreferrer">{t("Open Platform")}</a>}
       </div>
       <p role="status" className="mt-1 text-sm text-emerald-800">{status && t(status)}</p>
@@ -131,7 +137,7 @@ export default function Formatter() {
     setBusy(true);setImportStatus("");
     try {
       const response=await fetch("/api/import-product",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:productUrl})});
-      if(!response.ok)throw Error();
+      if(!response.ok) { const error=await response.json(); if(error.error==="PRODUCT_URL_REQUIRED"){setImportStatus("Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.");return;} throw Error(); }
       const product=await response.json();
       const form=formRef.current;
       if(!form)return;

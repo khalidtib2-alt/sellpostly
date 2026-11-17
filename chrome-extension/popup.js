@@ -1,6 +1,7 @@
 "use strict";
 
 const messages = {
+"Upload or import a product photo first.":{"fr":"Importez d’abord une photo produit.","ar":"ارفع أو استورد صورة المنتج أولًا."},"Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.":{"fr":"Collez l’URL d’une fiche produit précise, ou utilisez l’extension Chrome SellPostly sur cette fiche.","ar":"الصق رابط صفحة منتج محدد بدل الصفحة الرئيسية للمتجر، أو استخدم إضافة SellPostly على صفحة المنتج."},"Image copied! Press Ctrl+V in chat to attach the photo.":{"fr":"Image copiée ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.","ar":"تم نسخ الصورة! اضغط Ctrl+V في المحادثة لإرفاقها."},"Send Text":{"fr":"Envoyer le texte","ar":"إرسال النص"},"Send Image + Text":{"fr":"Envoyer l’image et le texte","ar":"إرسال الصورة والنص"},"Image downloaded. Attach it and paste the caption.":{"fr":"Image téléchargée. Joignez-la et collez la légende.","ar":"تم تنزيل الصورة. أرفقها والصق النص."},"Sharing failed. Copy the text or download the image.":{"fr":"Échec du partage. Copiez le texte ou téléchargez l’image.","ar":"تعذّرت المشاركة. انسخ النص أو نزّل الصورة."},
 "Delivery":{"fr":"Livraison","ar":"التوصيل"},"Reply *ORDER* now to claim yours!":{"fr":"Répondez *COMMANDER* pour passer commande !","ar":"أرسل *طلب* الآن لطلب منتجك!"},
 "Import From Current Page": {fr:"Importer depuis cette page",ar:"استيراد من الصفحة الحالية"},
 "Page imported. Review the details.": {fr:"Page importée. Vérifiez les détails.",ar:"تم الاستيراد. راجع التفاصيل."},
@@ -263,7 +264,15 @@ function renderPosts(posts, active = 0) {
         feedback.textContent = t("Text selected. Press Ctrl+C or Command+C to copy.");
       }
     });
-    panel.append(output, copy);
+
+    const sendText = document.createElement("button");
+    sendText.type="button";sendText.textContent=t("Send Text");
+    sendText.addEventListener("click",()=>sendPost(platform,post,false));
+    const sendImage = document.createElement("button");
+    sendImage.type="button";sendImage.className="primary";sendImage.textContent=t("Send Image + Text");
+    sendImage.addEventListener("click",()=>sendPost(platform,post,true));
+    const actions=document.createElement("div");actions.className="send-actions";actions.append(copy,sendText,sendImage);
+    panel.append(output,actions);
     panels.append(panel);
   });
   results.hidden = false;
@@ -398,4 +407,51 @@ function featureLines(value) {
     .map(line=>line.replace(/^[-•✅\s]+/u,"").trim())
     .filter(line=>line && !/^about this item$/i.test(line) && !/our wide selection|free shipping and free returns|buy .+ at amazon\.com/i.test(line))
     .flatMap(line=>line.match(/.{1,100}(?:\s|$)|.{1,100}/g)||[]).map(line=>line.trim()).slice(0,4);
+}
+
+function shareUrl(platform, post) {
+  const text=encodeURIComponent(post);
+  if(platform==="WhatsApp Business")return "https://web.whatsapp.com/send?text="+text;
+  if(platform==="X")return "https://twitter.com/intent/tweet?text="+text;
+  if(platform==="Threads")return "https://threads.net/intent/post?text="+text;
+  if(platform==="Pinterest")return "https://pinterest.com/pin/create/button/?description="+text;
+  return {"Instagram":"https://instagram.com/","Facebook Marketplace":"https://facebook.com/marketplace/","TikTok":"https://tiktok.com/","LinkedIn":"https://linkedin.com/"}[platform];
+}
+async function sendPost(platform,post,withImage) {
+  const preview=document.querySelector("#imported-image");
+  if(withImage && (!preview || preview.hidden || !preview.complete || !preview.naturalWidth)) {
+    feedback.textContent=t("Upload or import a product photo first.");return;
+  }
+  const tab=window.open("about:blank","_blank");if(tab)tab.opener=null;
+  try {
+    if(withImage) {
+      const blobPromise=new Promise((resolve,reject)=>{
+        const image=new Image();image.crossOrigin="anonymous";
+        image.onload=()=>{
+          try {
+            const scale=Math.min(1,2048/Math.max(image.width,image.height));
+            const canvas=document.createElement("canvas");canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);
+            canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height);
+            canvas.toBlob(blob=>blob?resolve(blob):reject(Error()),"image/png");
+          } catch(error){reject(error);}
+        };
+        image.onerror=()=>reject(Error());image.src=preview.src;
+      });
+      try {
+        await navigator.clipboard.write([new ClipboardItem({"image/png":blobPromise})]);
+        feedback.textContent=t("Image copied! Press Ctrl+V in chat to attach the photo.");
+      } catch {
+        try {
+          const blob=await blobPromise;const url=URL.createObjectURL(blob);
+          const link=document.createElement("a");link.href=url;link.download="sellpostly-product.png";link.click();
+          setTimeout(()=>URL.revokeObjectURL(url),10000);
+        } catch {
+          const link=document.createElement("a");link.href=preview.src;link.download="sellpostly-product";link.click();
+        }
+        await navigator.clipboard.writeText(post);
+        feedback.textContent=t("Image downloaded. Attach it and paste the caption.");
+      }
+    } else {await navigator.clipboard.writeText(post);feedback.textContent=t("Copied!");}
+    if(tab)tab.location.href=shareUrl(platform,post);
+  } catch {if(tab)tab.close();feedback.textContent=t("Sharing failed. Copy the text or download the image.");}
 }

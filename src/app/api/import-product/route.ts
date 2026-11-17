@@ -25,7 +25,7 @@ async function download(input: string, image = false, redirects = 0, json = fals
   return new Promise((resolve,reject)=>{
     const request = (url.protocol === "https:" ? https : http).get(url,{
       agent:false,
-      headers:{"User-Agent":"Mozilla/5.0 (compatible; SellPostly/1.0)","Accept":json ? "application/json" : image ? "image/*" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9,fr;q=0.8,ar;q=0.7","Accept-Encoding":"identity"},
+      headers:{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36","Accept":json ? "application/json" : image ? "image/*" : "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9,fr;q=0.8,ar;q=0.7","Accept-Encoding":"identity"},
       lookup: (_host, _options, callback) => callback(null,selected.address,selected.family),
     },response=>{
       const code = response.statusCode ?? 500;
@@ -87,11 +87,12 @@ export async function POST(request: Request) {
 
     const submitted=new URL(url);
     const handle=submitted.pathname.match(/\/products\/([^/]+)/)?.[1];
-    if(handle) {
+    const homepage = submitted.pathname === "/" || submitted.pathname === "";
+    if(handle || homepage) {
       try {
-        const response=await download(new URL("/products/"+handle.replace(/\.json$/,"")+".json",submitted.origin).href,false,0,true);
+        const response=await download(new URL(homepage ? "/products.json?limit=1" : "/products/"+handle!.replace(/\.json$/,"")+".json",submitted.origin).href,false,0,true);
         const payload=JSON.parse(response.bytes.toString("utf8"));
-        const product=payload.product;
+        const product=homepage ? payload.products?.[0] : payload.product;
         if(!product || typeof product.title!=="string" || !product.title.trim())throw Error("No product");
         const imageUrl=product.image?.src || product.images?.[0]?.src;
         let image="";
@@ -100,7 +101,7 @@ export async function POST(request: Request) {
         }
         const description=String(product.body_html||"").replace(/<\/(?:li|p|div|h[1-6])>|<br\s*\/?>/gi,"\n").split("\n").map(clean).filter(Boolean).slice(0,12).join("\n");
         return Response.json({name:clean(product.title),price:clean(product.variants?.[0]?.price),currency:clean(product.currency||payload.currency||product.variants?.[0]?.priceCurrency),description,image},{headers:{"Cache-Control":"no-store"}});
-      } catch { /* Continue with HTML metadata when the JSON endpoint is unavailable. */ }
+      } catch { if(homepage)return Response.json({error:"PRODUCT_URL_REQUIRED"},{status:400}); }
     }
     const page=await download(url);
     const html=page.bytes.toString("utf8");
@@ -135,4 +136,5 @@ export async function POST(request: Request) {
     return Response.json({error:"IMPORT_FAILED"},{status:400});
   }
 }
+
 

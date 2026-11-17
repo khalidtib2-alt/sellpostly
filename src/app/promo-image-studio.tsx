@@ -72,7 +72,7 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
   return <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
     <h3 className="text-xl font-bold">{t("Promo Image Studio")}</h3>
     <div className="my-4 grid gap-4 sm:grid-cols-3">
-      <label className="cursor-pointer rounded-lg bg-emerald-700 p-3 text-white focus-within:ring-2">{t("Upload Product Photo")}<input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={event=>{
+      <label className="cursor-pointer rounded-lg bg-emerald-700 p-3 text-white focus-within:ring-2">{t("Upload Product Photo")}<input id="upload-product-photo" type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={event=>{
         const file=event.target.files?.[0]; if(!file)return;
         if(file.size>10000000 || !["image/png","image/jpeg","image/webp"].includes(file.type)){setFailed(true);return;}
         const reader=new FileReader(); reader.onload=()=>setSource(String(reader.result));reader.onerror=()=>setFailed(true);reader.readAsDataURL(file);
