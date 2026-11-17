@@ -125,18 +125,49 @@ export default function Formatter() {
   const posts = results.data ? (mode === "seller" ? sellerPosts(results.data, t) : creatorPosts(results.hook, t)) : [];
 
 
+
   useEffect(()=>{
-    try {
-      const saved=sessionStorage.getItem("sellpostly-post");if(!saved)return;
-      const product=JSON.parse(saved);
-      const form=formRef.current;if(!form)return;
-      for(const [key,value] of Object.entries({name:String(product.name||""),price:String(product.price||""),contact:safeUrl(String(product.url||""))})) {
-        const field=form.elements.namedItem(key) as HTMLInputElement | null;if(field)field.value=value;
-      }
-      setDraft({name:String(product.name||""),price:String(product.price||"")});
-      setImage(safeImage(String(product.image||"")));
-      sessionStorage.removeItem("sellpostly-post");
-    }catch{}
+    const form=formRef.current;
+    if(!form)return;
+    const params=new URLSearchParams(window.location.search);
+    const keys=["title","price","delivery","features","image","link"];
+    const fromQuery=keys.some(key=>params.has(key));
+    let product:Record<string,string>={};
+    if(fromQuery) {
+      for(const key of keys)product[key]=params.get(key)||"";
+    } else {
+      try {
+        const saved=sessionStorage.getItem("sellpostly-post");
+        if(!saved)return;
+        const entry=JSON.parse(saved);
+        product={title:String(entry.name||""),price:String(entry.price||""),link:String(entry.url||""),image:String(entry.image||"")};
+        sessionStorage.removeItem("sellpostly-post");
+      }catch{return;}
+    }
+    const values={
+      name:(product.title||"").slice(0,120),
+      price:(product.price||"").slice(0,50),
+      delivery:(product.delivery||"").slice(0,240),
+      features:(product.features||"").slice(0,1500),
+      contact:safeUrl(product.link||"")
+    };
+    for(const [key,value] of Object.entries(values)){
+      const field=form.elements.namedItem(key) as HTMLInputElement | HTMLTextAreaElement | null;
+      if(field)field.value=value;
+    }
+    setMode("seller");
+    setDraft({name:values.name,price:values.price});
+    setImage(safeImage(product.image||""));
+    setProductUrl(values.contact);
+    if(values.name) {
+      const data=new FormData(form);
+      setResults(previous=>({data,hook:"",version:previous.version+1}));
+    }
+    if(fromQuery) {
+      for(const key of keys)params.delete(key);
+      const remaining=params.toString();
+      window.history.replaceState(window.history.state,"",window.location.pathname+(remaining?"?"+remaining:"")+window.location.hash);
+    }
   },[]);
   async function saveShop(){
     const form=formRef.current;if(!form)return;

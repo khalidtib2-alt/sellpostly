@@ -1126,6 +1126,70 @@ export const translations = {
   "Send to My Shop": {
     "fr": "Envoyer vers ma boutique",
     "ar": "إرسال إلى متجري"
+  },
+  "Image Size": {
+    "fr": "Taille de l’image",
+    "ar": "حجم الصورة"
+  },
+  "Horizontal (X)": {
+    "fr": "Position horizontale (X)",
+    "ar": "الموضع الأفقي (X)"
+  },
+  "Vertical (Y)": {
+    "fr": "Position verticale (Y)",
+    "ar": "الموضع العمودي (Y)"
+  },
+  "Reset Image": {
+    "fr": "Réinitialiser l’image",
+    "ar": "إعادة ضبط الصورة"
+  },
+  "Custom Title": {
+    "fr": "Titre personnalisé",
+    "ar": "عنوان مخصّص"
+  },
+  "Promo Keyword": {
+    "fr": "Accroche promotionnelle",
+    "ar": "عبارة ترويجية"
+  },
+  "Text Size": {
+    "fr": "Taille du texte",
+    "ar": "حجم النص"
+  },
+  "Text Position": {
+    "fr": "Position du texte",
+    "ar": "موضع النص"
+  },
+  "Small": {
+    "fr": "Petit",
+    "ar": "صغير"
+  },
+  "Medium": {
+    "fr": "Moyen",
+    "ar": "متوسط"
+  },
+  "Large": {
+    "fr": "Grand",
+    "ar": "كبير"
+  },
+  "Top Banner": {
+    "fr": "Bandeau supérieur",
+    "ar": "شريط علوي"
+  },
+  "Bottom Card": {
+    "fr": "Carte inférieure",
+    "ar": "بطاقة سفلية"
+  },
+  "Overlay Badge": {
+    "fr": "Badge superposé",
+    "ar": "شارة فوق الصورة"
+  },
+  "Reset": {
+    "fr": "Réinitialiser",
+    "ar": "إعادة الضبط"
+  },
+  "LIMITED DEAL": {
+    "fr": "OFFRE LIMITÉE",
+    "ar": "عرض محدود"
   }
 } as const;
 export type Message = keyof typeof translations;

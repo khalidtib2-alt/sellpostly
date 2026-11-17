@@ -6,6 +6,17 @@ import { useLanguage } from "./language-context";
 export default function PromoImageStudio({ name, price, importedImage, onImage }: { name: string; price: string; importedImage: string; onImage: (blob: Blob | null) => void }) {
   const { t, language } = useLanguage();
   const canvas = useRef<HTMLCanvasElement>(null);
+
+  const [zoom,setZoom] = useState(100);
+  const [offsetX,setOffsetX] = useState(0);
+  const [offsetY,setOffsetY] = useState(0);
+  const [customTitle,setCustomTitle] = useState<string | null>(null);
+  const [keyword,setKeyword] = useState("");
+  const [textSize,setTextSize] = useState("medium");
+  const [textPosition,setTextPosition] = useState("bottom");
+  const title=customTitle ?? name;
+  const cachedImage=useRef<HTMLImageElement | null>(null);
+  function resetImage(){setZoom(100);setOffsetX(0);setOffsetY(0);}
   const [source,setSource] = useState("");
   const [format,setFormat] = useState("square");
   const [theme,setTheme] = useState("emerald");
@@ -29,23 +40,42 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
       context.fillStyle=colors[0]; context.fillRect(0,0,1080,height);
       const photoHeight=height-420;
       if(image) {
-        const scale=Math.min(960/image.width,photoHeight/image.height);
+        const scale=Math.min(960/image.width,photoHeight/image.height)*(zoom/100);
         const width=image.width*scale, h=image.height*scale;
-        context.drawImage(image,(1080-width)/2,40+(photoHeight-h)/2,width,h);
+        
+        context.save();
+        context.beginPath();context.rect(0,0,1080,height-40);context.clip();
+        context.drawImage(image,(1080-width)/2+offsetX*5.4,40+(photoHeight-h)/2+offsetY*photoHeight/200,width,h);
+        context.restore();
       }
+
       context.direction=language==="ar"?"rtl":"ltr";
       context.textAlign="center";
-      context.fillStyle=colors[1]; context.font="bold 48px system-ui";
-      const words=(name||t("Product Name")).split(/\s+/);
-      const lines:string[]=[]; let line="";
-      for(const word of words) {
-        if(context.measureText(line+" "+word).width>940 && line) { lines.push(line); line=word; } else line=(line+" "+word).trim();
+      const fontSize=textSize==="small"?36:textSize==="large"?60:48;
+      const cardY=textPosition==="top"?40:textPosition==="badge"?Math.round(height*0.42):height-470;
+      context.fillStyle=colors[0];
+      context.globalAlpha=textPosition==="badge"?0.94:1;
+      context.fillRect(40,cardY,1000,330);
+      context.globalAlpha=1;
+      context.fillStyle=colors[1];context.font="bold "+fontSize+"px system-ui";
+      const words=(title||"").split(/\s+/);
+      const lines:string[]=[];let line="";
+      for(const word of words){
+        if(context.measureText(line+" "+word).width>900 && line){lines.push(line);line=word;}
+        else line=(line+" "+word).trim();
       }
       if(line)lines.push(line);
-      lines.slice(0,3).forEach((text,index)=>context.fillText(text,540,height-320+index*58,940));
-      if(price) {
-        context.fillStyle=colors[2]; context.fillRect(210,height-138,660,80);
-        context.fillStyle="#fff"; context.font="bold 44px system-ui"; context.fillText(price,540,height-84,620);
+      lines.slice(0,3).forEach((text,index)=>context.fillText(text,540,cardY+fontSize+12+index*(fontSize+8),900));
+      if(keyword.trim()){
+        const pillY=cardY+235;
+        context.font="bold 30px system-ui";
+        const pillWidth=Math.min(900,context.measureText(keyword).width+60);
+        context.fillStyle=colors[2];context.beginPath();context.roundRect(540-pillWidth/2,pillY,pillWidth,60,30);context.fill();
+        context.fillStyle="#fff";context.fillText(keyword,540,pillY+40,pillWidth-40);
+      }
+      if(price){
+        context.fillStyle=colors[2];context.fillRect(210,height-110,660,62);
+        context.fillStyle="#fff";context.font="bold 40px system-ui";context.fillText(price,540,height-65,620);
       }
       context.direction="ltr"; context.fillStyle=colors[1]; context.font="22px system-ui";
       context.fillText(t("Created with SellPostly.com"),540,height-20);
@@ -54,13 +84,14 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
     }
     setFailed(false);
     if(!source){draw();return;}
+    if(cachedImage.current?.src === source && cachedImage.current.complete && cachedImage.current.naturalWidth){draw(cachedImage.current);return ()=>{cancelled=true;};}
     const image=new Image();
     image.crossOrigin="anonymous";
-    image.onload=()=>draw(image);
+    image.onload=()=>{cachedImage.current=image;draw(image);};
     image.onerror=()=>{if(!cancelled){setFailed(true);draw();}};
     image.src=source;
     return ()=>{cancelled=true;};
-  },[source,format,theme,name,price,language,t,onImage]);
+  },[source,format,theme,title,keyword,textSize,textPosition,zoom,offsetX,offsetY,price,language,t,onImage]);
 
   function download() {
     try {
@@ -85,8 +116,24 @@ export default function PromoImageStudio({ name, price, importedImage, onImage }
         <option value="emerald">{t("Emerald")}</option><option value="slate">{t("Midnight Slate")}</option><option value="sand">{t("Warm Sand")}</option>
       </select></label>
     </div>
+
+    <div className="mb-5 grid gap-4 sm:grid-cols-3">
+      <label>{t("Image Size")} <output>{zoom}%</output><input className="block w-full accent-emerald-700" type="range" min="50" max="150" value={zoom} onChange={e=>setZoom(Number(e.target.value))}/></label>
+      <label>{t("Horizontal (X)")} <output>{offsetX}%</output><input className="block w-full accent-emerald-700" type="range" min="-100" max="100" value={offsetX} onChange={e=>setOffsetX(Number(e.target.value))}/></label>
+      <label>{t("Vertical (Y)")} <output>{offsetY}%</output><input className="block w-full accent-emerald-700" type="range" min="-100" max="100" value={offsetY} onChange={e=>setOffsetY(Number(e.target.value))}/></label>
+      <button type="button" onClick={resetImage} className="justify-self-start rounded-lg border border-emerald-700 px-4 py-2 font-semibold text-emerald-800">{t("Reset Image")}</button>
+      <label>{t("Custom Title")}<input dir="auto" className="block w-full rounded border p-2" maxLength={160} value={title} onChange={e=>setCustomTitle(e.target.value)}/></label>
+      <label>{t("Promo Keyword")}<input dir="auto" className="block w-full rounded border p-2" maxLength={60} placeholder={t("LIMITED DEAL")} value={keyword} onChange={e=>setKeyword(e.target.value)}/></label>
+      <label>{t("Text Size")}<select className="block w-full rounded border p-2" value={textSize} onChange={e=>setTextSize(e.target.value)}>
+        <option value="small">{t("Small")}</option><option value="medium">{t("Medium")}</option><option value="large">{t("Large")}</option>
+      </select></label>
+      <label>{t("Text Position")}<select className="block w-full rounded border p-2" value={textPosition} onChange={e=>setTextPosition(e.target.value)}>
+        <option value="top">{t("Top Banner")}</option><option value="bottom">{t("Bottom Card")}</option><option value="badge">{t("Overlay Badge")}</option>
+      </select></label>
+    </div>
     <canvas ref={canvas} aria-label={t("Promo preview")} className="mx-auto h-auto w-full max-w-sm border border-slate-200" />
     <button type="button" onClick={download} disabled={!ready} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white">{t("Download Promo PNG")}</button>
     {failed && <p role="status">{t("Image unavailable. Upload a PNG, JPEG, or WebP under 10 MB.")}</p>}
   </section>;
 }
+

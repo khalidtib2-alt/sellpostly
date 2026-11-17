@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 const messages = {
+"Open Full Studio": {fr:"Ouvrir le studio complet",ar:"فتح الاستوديو الكامل"},
 "Website": {fr:"Site web",ar:"Ø§Ù„Ù…ÙˆÙ‚Ø¹"},
 "Prompt Generator": {fr:"GÃ©nÃ©rateur de prompts",ar:"Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª"},
 "Seller Guides": {fr:"Guides pour les vendeurs",ar:"Ø£Ø¯Ù„Ø© Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"},
@@ -467,5 +468,26 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   const preview=document.querySelector("#imported-image");
   const query=new URLSearchParams({addTitle:String(data.get("name")||""),addPrice:String(data.get("price")||""),addImage:preview && !preview.hidden?preview.src:"",addUrl:tab?.url||""});
   window.open("https://sellpostly-git-main-usidk-it.vercel.app/shop?"+query,"_blank","noopener,noreferrer");
+});
+
+
+document.querySelector("#open-studio").addEventListener("click",async()=>{
+  const form=document.querySelector("#seller");
+  const data=new FormData(form);
+  const preview=document.querySelector("#imported-image");
+  let link="";
+  try {
+    const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
+    if(/^https?:/.test(tab?.url||""))link=tab.url;
+  }catch{}
+  const query=new URLSearchParams({
+    title:String(data.get("name")||""),
+    price:String(data.get("price")||""),
+    delivery:String(data.get("delivery")||""),
+    features:String(data.get("features")||""),
+    image:preview&&!preview.hidden?preview.src:"",
+    link
+  });
+  chrome.tabs.create({url:"https://vercel.app/?"+query+"#formatter"});
 });
 
