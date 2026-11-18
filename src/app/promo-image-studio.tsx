@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "./language-context";
 
-export default function PromoImageStudio({ name, price, delivery = "", importedImage, onImage }: { name: string; price: string; delivery?: string; importedImage: string; onImage: (blob: Blob | null) => void }) {
+export default function PromoImageStudio({ name, price, delivery = "", importedImage, onImage, onProductImage }: { name: string; price: string; delivery?: string; importedImage: string; onImage: (blob: Blob | null) => void; onProductImage?: (source: string) => void }) {
   const { t, language } = useLanguage();
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -131,7 +131,7 @@ export default function PromoImageStudio({ name, price, delivery = "", importedI
       <label className="cursor-pointer rounded-lg bg-emerald-700 p-3 text-white focus-within:ring-2">{t("Upload Product Photo")}<input id="upload-product-photo" type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={event=>{
         const file=event.target.files?.[0]; if(!file)return;
         if(file.size>10000000 || !["image/png","image/jpeg","image/webp"].includes(file.type)){setFailed(true);return;}
-        const reader=new FileReader(); reader.onload=()=>setSource(String(reader.result));reader.onerror=()=>setFailed(true);reader.readAsDataURL(file);
+        const reader=new FileReader(); reader.onload=()=>{const original=String(reader.result);setSource(original);onProductImage?.(original);};reader.onerror=()=>setFailed(true);reader.readAsDataURL(file);
       }} /></label>
       <label>{t("Format")}<select className="block w-full rounded border p-2" value={format} onChange={e=>setFormat(e.target.value)}>
         <option value="square">{t("Square 1:1")}</option><option value="vertical">{t("Vertical 9:16")}</option><option value="pin">{t("Pinterest Pin 2:3")}</option>

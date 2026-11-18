@@ -184,17 +184,7 @@ export default function Formatter() {
     const title=String(data.get("name")||"").trim();
     if(!title){setError("Enter a product name.");return;}
     try{
-      let photo=image;
-      if(promo){
-        const bitmap=await createImageBitmap(promo);
-        try{
-          const canvas=document.createElement("canvas");
-          const scale=Math.min(1,600/Math.max(bitmap.width,bitmap.height));
-          canvas.width=bitmap.width*scale;canvas.height=bitmap.height*scale;
-          canvas.getContext("2d")!.drawImage(bitmap,0,0,canvas.width,canvas.height);
-          photo=canvas.toDataURL("image/jpeg",0.7);
-        }finally{bitmap.close();}
-      }
+      const photo=image;
       const url=safeUrl(String(data.get("contact")||productUrl));
       let source="Other";
       if(url){
@@ -302,7 +292,7 @@ export default function Formatter() {
         <label>{t("Shop Category")}<select className={fieldStyle} value={shopCategory} onChange={e=>setShopCategory(e.target.value)}>{categories.slice(1).map(c=><option key={c} value={c}>{t(c)}</option>)}</select></label>
         <label>{t("Gender / Audience")}<select className={fieldStyle} value={gender} onChange={e=>setGender(normalizeGender(e.target.value))}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option></select></label>
         <button type="button" onClick={saveShop} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-white">{t("Save to My Shop")}</button></div>}
-      {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} delivery={delivery} importedImage={image} onImage={setPromo} />}
+      {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} delivery={delivery} importedImage={image} onImage={setPromo} onProductImage={setImage} />}
       <p role="status" className="sr-only">{posts.length ? posts.length + " · " + t("Posts generated.") : ""}</p>
       {posts.length > 0 && <div className="mt-7 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} image={promo} />)}</div>}
     </div>
