@@ -26,7 +26,7 @@ function sellerPosts(data: FormData, t: (message: Message) => string): Post[] {
   return [
     { platform: "WhatsApp Business", url: "https://web.whatsapp.com/", text: join("*" + name + "*", price && "💰 *" + t("Price") + ":* " + price, delivery && "🚚 *" + t("Delivery") + ":* " + delivery) + "\n\n" + bullets + "\n\n" + order },
     { platform: "Instagram", url: "https://www.instagram.com/", text: [features[0] ? name + " — " + features[0] : t("Discover") + " " + name, join(price, location, bullets), order, [tag && "#" + tag, t("#ShopNow #ProductFinds")].filter(Boolean).join(" ")].filter(Boolean).join("\n\n") },
-    { platform: "Facebook Marketplace", url: "https://www.facebook.com/marketplace/", text: join(t("Product") + ": " + name, price && t("Price") + ": " + price, location, bullets && t("Features") + ":\n" + bullets, order) },
+    { platform: "Facebook Marketplace", url: "https://facebook.com", text: join(t("Product") + ": " + name, price && t("Price") + ": " + price, location, bullets && t("Features") + ":\n" + bullets, order) },
     { platform: "TikTok", url: "https://www.tiktok.com/", text: join(caption, order.replace(/\s+/g, " ") + " " + t("#ShopNow #ProductFinds")) },
     { platform: "Pinterest", url: "https://www.pinterest.com/", text: join(t("Pin Title") + ": " + name, t("SEO Pin Description") + ": " + join(name, bullets, order), [tag && "#"+tag, ...t("#Shopping #ProductIdeas #GiftIdeas #Style #Wishlist #Discoveries").split(" ").slice(tag?1:0)].join(" "), t("Recommended Board Name") + ": " + t("Product ideas") + " · " + name, t("Image Alt Text") + ": " + name) },
   ];
@@ -78,25 +78,38 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
       return;
     }
 
-    const copying = (async()=>{
-      try {
-        await navigator.clipboard.writeText(text);
-        if(withImage && image) {
-          try {
-            await navigator.clipboard.write([new ClipboardItem({"image/png":image,"text/plain":new Blob([text],{type:"text/plain"})})]);
-            setStatus("Text & Image copied! Paste (Ctrl+V) directly into your post or chat.");
-          } catch {
-            await navigator.clipboard.writeText(text);
-            const url=URL.createObjectURL(image);
-            const link=document.createElement("a");link.href=url;link.download="sellpostly-promo.png";link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
-            setStatus("Image downloaded. Attach it and paste the caption.");
-          }
-        } else {await navigator.clipboard.writeText(text);setStatus("Caption copied. Paste it on the platform.");}
-      } catch {setStatus("Sharing failed. Copy the text or download the image.");}
-    })();
-    window.open(destination(),"_blank","noopener,noreferrer");
-    await copying;
+    try{
+      if(withImage && image){
+
+      const file=new File([image],"sellpostly-promo.png",{type:"image/png"});
+      if(navigator.canShare?.({files:[file]})){
+        try{await navigator.share({files:[file],text:text});}
+        catch(error){if(!(error instanceof DOMException && error.name==="AbortError"))throw error;}
+        return;
+      }
+      const download=()=>{
+        const url=URL.createObjectURL(image),link=document.createElement("a");
+        link.href=url;link.download="sellpostly-promo.png";link.click();
+        setTimeout(()=>URL.revokeObjectURL(url),10000);
+      };
+      if(["Instagram","TikTok","Pinterest"].includes(post.platform)){
+        download();await navigator.clipboard.writeText(text);
+        setStatus("Image downloaded. Attach it and paste the caption.");
+      }else{
+        try{
+          await navigator.clipboard.write([new ClipboardItem({"image/png":image})]);
+          setStatus(post.platform==="Facebook Marketplace"?"Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption":"Image copied! Press Ctrl+V in chat to attach the photo.");
+        }catch{
+          download();await navigator.clipboard.writeText(text);
+          setStatus("Image downloaded. Attach it and paste the caption.");
+        }
+      }
+
+      }else{await navigator.clipboard.writeText(text);setStatus("Caption copied. Paste it on the platform.");}
+      window.open(destination(),"_blank","noopener,noreferrer");
+    }catch{setStatus("Sharing failed. Copy the text or download the image.");}
   }
+
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4">
       <h3 className="font-bold">{post.platform}</h3>

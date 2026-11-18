@@ -1,4 +1,6 @@
 "use client";
+import CryptoCheckout from "./crypto-checkout";
+import { cryptoNetworks, normalizeNetwork, validWallet } from "./crypto-data";
 import { useEffect, useState } from "react";
 import { surfaces, surfaceNames, type Surface } from "../theme-picker";
 import { useLanguage } from "../language-context";
@@ -20,6 +22,7 @@ export default function ShopBuilder(){
   const {t}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopTheme:"white",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(false),[preview,setPreview]=useState(false),[adding,setAdding]=useState(false);
+  const [checkout,setCheckout]=useState<Product | null>(null);
   const [editing,setEditing]=useState<Product | null>(null);
   const [genderFilter,setGenderFilter]=useState<Gender | "all">("all");
   const [search,setSearch]=useState("");
@@ -94,6 +97,9 @@ export default function ShopBuilder(){
     </div>
     <p className="mb-4 text-sm text-slate-600">{t("Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.")}</p>
     {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
+      <label>{t("Crypto Wallet (Optional)")}<input dir="ltr" className={field} maxLength={100} value={shop.cryptoWallet||""} onChange={e=>setShop({...shop,cryptoWallet:e.target.value.trim()})}/>{shop.cryptoWallet&&!validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<span role="status">{t("Enter a valid address for the selected network.")}</span>}</label>
+      <label>{t("Crypto Network")}<select className={field} value={normalizeNetwork(shop.cryptoNetwork)} onChange={e=>setShop({...shop,cryptoNetwork:normalizeNetwork(e.target.value)})}>{cryptoNetworks.map(network=><option key={network}>{network}</option>)}</select></label>
+      <p className="text-sm">{t("Crypto checkout uses the listed numeric price as a stablecoin amount. Use USD, USDC, or USDT prices and confirm supported tokens with buyers.")}</p>
       <label>{t("Shop Background Color")}<select className={field} value={shop.shopTheme} onChange={e=>setShop({...shop,shopTheme:e.target.value as Surface})}>{surfaces.map((surface,index)=><option key={surface} value={surface}>{t(surfaceNames[index])}</option>)}</select></label>
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
       <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
@@ -131,6 +137,7 @@ export default function ShopBuilder(){
       <div className="product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
       <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price}</p>{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":"Women")}</span>}
       <div className="flex flex-wrap gap-2 text-sm">
+        {shop.cryptoWallet&&validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<button type="button" className={button} onClick={()=>setCheckout(p)}>{t("Pay with USDC / USDT")}</button>}
         {p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("Buy / View Deal")}</a>}
         <a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>
         <button className="rounded-lg border px-3 py-2" onClick={()=>createPost(p)}>{t("Create Social Post")}</button>
@@ -140,6 +147,7 @@ export default function ShopBuilder(){
     </article>)}</div>
     {matches.length===0&&loaded&&<p>{t("No products found.")}</p>}
     {matches.length>visible&&<button type="button" className={button+" mt-6"} onClick={()=>setVisible(count=>count+24)}>{t("Load More")}</button>}
+    {checkout&&<CryptoCheckout product={checkout} shop={shop} onClose={()=>setCheckout(null)}/>}
     <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
   </main>;
 }

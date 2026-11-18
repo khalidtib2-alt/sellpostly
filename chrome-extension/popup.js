@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 const messages = {
+"Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption":{"fr":"Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.","ar":"تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."},
 "Shop Category":{"fr":"Catégorie de boutique","ar":"فئة المتجر"},"Gender / Audience":{"fr":"Genre / Public","ar":"الجنس أو الجمهور"},"All / Unisex":{"fr":"Tous / Mixte","ar":"الكل / للجنسين"},"Men":{"fr":"Hommes","ar":"رجال"},"Women":{"fr":"Femmes","ar":"نساء"},"Unisex":{"fr":"Mixte","ar":"للجنسين"},"Edit Product":{"fr":"Modifier le produit","ar":"تعديل المنتج"},
 "Category":{"fr":"Catégorie","ar":"الفئة"},"Tech & Gadgets":{"fr":"Tech et gadgets","ar":"التقنية والأجهزة"},"Fashion":{"fr":"Mode","ar":"الأزياء"},"Home & Kitchen":{"fr":"Maison et cuisine","ar":"المنزل والمطبخ"},"Beauty":{"fr":"Beauté","ar":"الجمال"},"Fitness":{"fr":"Fitness","ar":"اللياقة"},"Top Deals":{"fr":"Meilleures offres","ar":"أفضل العروض"},"Other":{"fr":"Autre","ar":"أخرى"},
 "Open Full Studio": {fr:"Ouvrir le studio complet",ar:"فتح الاستوديو الكامل"},
@@ -422,14 +423,14 @@ function shareUrl(platform, post) {
   if(platform==="X")return "https://twitter.com/intent/tweet?text="+text;
   if(platform==="Threads")return "https://threads.net/intent/post?text="+text;
   if(platform==="Pinterest")return "https://pinterest.com/pin/create/button/?description="+text;
-  return {"Instagram":"https://instagram.com/","Facebook Marketplace":"https://facebook.com/marketplace/","TikTok":"https://tiktok.com/","LinkedIn":"https://linkedin.com/"}[platform];
+  return {"Instagram":"https://instagram.com/","Facebook Marketplace":"https://facebook.com","TikTok":"https://tiktok.com/","LinkedIn":"https://linkedin.com/"}[platform];
 }
 async function sendPost(platform,post,withImage) {
   const preview=document.querySelector("#imported-image");
   if(withImage && (!preview || preview.hidden || !preview.complete || !preview.naturalWidth)) {
     feedback.textContent=t("Upload or import a product photo first.");return;
   }
-  window.open(shareUrl(platform,post),"_blank","noopener,noreferrer");
+
   try {
     await navigator.clipboard.writeText(post);
     if(withImage) {
@@ -445,22 +446,35 @@ async function sendPost(platform,post,withImage) {
         };
         image.onerror=()=>reject(Error());image.src=preview.src;
       });
-      try {
-        await navigator.clipboard.write([new ClipboardItem({"image/png":blobPromise,"text/plain":new Blob([post],{type:"text/plain"})})]);
-        feedback.textContent=t("Text & Image copied! Paste (Ctrl+V) directly into your post or chat.");
-      } catch {
-        try {
-          const blob=await blobPromise;const url=URL.createObjectURL(blob);
-          const link=document.createElement("a");link.href=url;link.download="sellpostly-product.png";link.click();
-          setTimeout(()=>URL.revokeObjectURL(url),10000);
-        } catch {
-          const link=document.createElement("a");link.href=preview.src;link.download="sellpostly-product";link.click();
-        }
-        await navigator.clipboard.writeText(post);
-        feedback.textContent=t("Image downloaded. Attach it and paste the caption.");
+      const blob=await blobPromise;
+
+      const file=new File([blob],"sellpostly-promo.png",{type:"image/png"});
+      if(navigator.canShare?.({files:[file]})){
+        try{await navigator.share({files:[file],text:post});}
+        catch(error){if(!(error instanceof DOMException && error.name==="AbortError"))throw error;}
+        return;
       }
+      const download=()=>{
+        const url=URL.createObjectURL(blob),link=document.createElement("a");
+        link.href=url;link.download="sellpostly-promo.png";link.click();
+        setTimeout(()=>URL.revokeObjectURL(url),10000);
+      };
+      if(["Instagram","TikTok","Pinterest"].includes(platform)){
+        download();await navigator.clipboard.writeText(post);
+        setSendStatus("Image downloaded. Attach it and paste the caption.");
+      }else{
+        try{
+          await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+          setSendStatus(platform==="Facebook Marketplace"?"Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption":"Image copied! Press Ctrl+V in chat to attach the photo.");
+        }catch{
+          download();await navigator.clipboard.writeText(post);
+          setSendStatus("Image downloaded. Attach it and paste the caption.");
+        }
+      }
+
     } else {await navigator.clipboard.writeText(post);feedback.textContent=t("Copied!");}
 
+    window.open(shareUrl(platform,post),"_blank","noopener,noreferrer");
   } catch {feedback.textContent=t("Sharing failed. Copy the text or download the image.");}
 }
 
@@ -504,3 +518,5 @@ function whatsappUrl(message) {
   }
   return "https://wa.me/?text="+encodeURIComponent(preview);
 }
+
+function setSendStatus(message){feedback.textContent=t(message);}

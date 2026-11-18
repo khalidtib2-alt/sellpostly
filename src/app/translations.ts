@@ -1269,6 +1269,91 @@ export const translations = {
   "Edit Product": {
     "fr": "Modifier le produit",
     "ar": "تعديل المنتج"
+  },
+"Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption":{"fr":"Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.","ar":"تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."},
+  "Pay with USDC / USDT": {
+    "fr": "Payer en USDC / USDT",
+    "ar": "الدفع بـ USDC / USDT"
+  },
+  "Close": {
+    "fr": "Fermer",
+    "ar": "إغلاق"
+  },
+  "Coin": {
+    "fr": "Jeton",
+    "ar": "العملة"
+  },
+  "Network": {
+    "fr": "Réseau",
+    "ar": "الشبكة"
+  },
+  "Wallet Address": {
+    "fr": "Adresse du portefeuille",
+    "ar": "عنوان المحفظة"
+  },
+  "Wallet QR Code": {
+    "fr": "QR code du portefeuille",
+    "ar": "رمز QR للمحفظة"
+  },
+  "Copy Address": {
+    "fr": "Copier l’adresse",
+    "ar": "نسخ العنوان"
+  },
+  "Copy Amount": {
+    "fr": "Copier le montant",
+    "ar": "نسخ المبلغ"
+  },
+  "Transaction Hash (TxID)": {
+    "fr": "Identifiant de transaction (TxID)",
+    "ar": "معرّف المعاملة (TxID)"
+  },
+  "Payment receipt": {
+    "fr": "Reçu de paiement",
+    "ar": "إيصال الدفع"
+  },
+  "Send Payment Receipt on WhatsApp": {
+    "fr": "Envoyer le reçu sur WhatsApp",
+    "ar": "إرسال إيصال الدفع عبر واتساب"
+  },
+  "Seller WhatsApp number is unavailable.": {
+    "fr": "Le numéro WhatsApp du vendeur est indisponible.",
+    "ar": "رقم واتساب البائع غير متاح."
+  },
+  "QR code unavailable. Copy the address.": {
+    "fr": "QR code indisponible. Copiez l’adresse.",
+    "ar": "رمز QR غير متاح. انسخ العنوان."
+  },
+  "Crypto Wallet (Optional)": {
+    "fr": "Portefeuille crypto (facultatif)",
+    "ar": "محفظة العملات الرقمية (اختياري)"
+  },
+  "Crypto Network": {
+    "fr": "Réseau crypto",
+    "ar": "شبكة العملات الرقمية"
+  },
+  "Enter a valid address for the selected network.": {
+    "fr": "Saisissez une adresse valide pour le réseau choisi.",
+    "ar": "أدخل عنوانًا صحيحًا للشبكة المختارة."
+  },
+  "Set a single USD, USDC, or USDT price to display a payment amount. Other currencies require seller confirmation.": {
+    "fr": "Indiquez un prix unique en USD, USDC ou USDT pour afficher un montant. Les autres devises nécessitent une confirmation du vendeur.",
+    "ar": "حدّد سعرًا واحدًا بالدولار أو USDC أو USDT لعرض المبلغ. تتطلب العملات الأخرى تأكيد البائع."
+  },
+  "Confirm the exact token and network with the seller before sending. Network fees are additional.": {
+    "fr": "Confirmez le jeton exact et le réseau avec le vendeur avant l’envoi. Les frais réseau sont en supplément.",
+    "ar": "أكّد العملة والشبكة مع البائع قبل الإرسال. تُضاف رسوم الشبكة إلى المبلغ."
+  },
+  "QR contains the wallet address only. Choose the coin, network, and amount in your own wallet.": {
+    "fr": "Le QR contient uniquement l’adresse. Choisissez le jeton, le réseau et le montant dans votre portefeuille.",
+    "ar": "يتضمن رمز QR عنوان المحفظة فقط. اختر العملة والشبكة والمبلغ في محفظتك."
+  },
+  "Optional receipt only. The seller must verify the transfer on-chain before fulfilling the order.": {
+    "fr": "Reçu facultatif uniquement. Le vendeur doit vérifier le transfert sur la blockchain avant de traiter la commande.",
+    "ar": "الإيصال اختياري. على البائع التحقق من التحويل على الشبكة قبل تنفيذ الطلب."
+  },
+  "Crypto checkout uses the listed numeric price as a stablecoin amount. Use USD, USDC, or USDT prices and confirm supported tokens with buyers.": {
+    "fr": "Le paiement utilise le prix numérique affiché comme montant en stablecoin. Utilisez des prix USD, USDC ou USDT et confirmez les jetons acceptés avec les acheteurs.",
+    "ar": "يستخدم الدفع السعر الرقمي المعروض كمبلغ بالعملة المستقرة. استخدم أسعار الدولار أو USDC أو USDT وأكّد العملات المقبولة مع المشترين."
   }
 } as const;
 export type Message = keyof typeof translations;
