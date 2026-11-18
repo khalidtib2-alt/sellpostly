@@ -1462,6 +1462,12 @@ export const translations = {
   "Pay Total with USDC / USDT": {
     "fr": "Payer le total en USDC / USDT",
     "ar": "دفع الإجمالي بـ USDC / USDT"
-  }
+  },
+"Clear Cart": {"fr":"Vider le panier","ar":"إفراغ السلة"},
+"Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.": {"fr":"Ajoutez votre numéro WhatsApp dans les paramètres de la boutique ci-dessus pour activer les commandes WhatsApp.","ar":"أضف رقم واتساب في إعدادات المتجر أعلاه لتفعيل الطلب عبر واتساب."},
+"Language": {"fr":"Langue","ar":"اللغة"},
+"Loading storefront…": {"fr":"Chargement de la boutique…","ar":"جارٍ تحميل المتجر…"},
+"Edit My Own Shop": {"fr":"Modifier ma propre boutique","ar":"تعديل متجري الخاص"},
+"WhatsApp checkout is unavailable for this shop.": {"fr":"La commande sur WhatsApp est indisponible pour cette boutique.","ar":"الطلب عبر واتساب غير متاح لهذا المتجر."}
 } as const;
 export type Message = keyof typeof translations;

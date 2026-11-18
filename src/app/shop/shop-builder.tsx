@@ -21,10 +21,10 @@ function samples(): Shop {
   });
   return {name:"My Shop",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products};
 }
-export default function ShopBuilder(){
-  const {t}=useLanguage();
+export default function ShopBuilder({isSharedBuyerView=false}:{isSharedBuyerView?:boolean}){
+  const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
-  const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(false),[preview,setPreview]=useState(false),[adding,setAdding]=useState(false);
+  const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(isSharedBuyerView),[preview,setPreview]=useState(isSharedBuyerView),[adding,setAdding]=useState(false);
   const [checkout,setCheckout]=useState<{product:Product;details:string} | null>(null);
   const [cart,setCart]=useState<Record<string,number>>({});
   const [cartOpen,setCartOpen]=useState(false);
@@ -38,7 +38,7 @@ export default function ShopBuilder(){
     async function load(){
       const params=new URLSearchParams(location.search);
       try{
-        if(params.has("s")){
+        if(isSharedBuyerView || params.has("s")){
           const decoded=await decodeShop(params.get("s")!);if(cancelled)return;
           setShop(decoded);setShared(true);setPreview(true);
         } else {
@@ -101,12 +101,18 @@ export default function ShopBuilder(){
   useEffect(()=>setVisible(24),[filter,genderFilter,search]);
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
   return <main data-surface={shop.shopTheme} className="shop-surface mx-auto max-w-6xl px-5 py-12">
+<header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-6">
+<div><h1 className="text-4xl font-black">{shop.name==="My Shop"||!shop.name?t("My Shop"):shop.name}</h1><p className="mt-3 whitespace-pre-line text-slate-600">{shop.bio}</p></div>
+{shared&&<div role="group" aria-label={t("Language")} className="flex gap-1 rounded-full border border-slate-300 bg-white p-1 text-slate-900">
+{(["en","fr","ar"] as const).map(value=><button type="button" key={value} lang={value} aria-pressed={language===value} onClick={()=>setLanguage(value)} className={language===value?"rounded-full bg-emerald-700 px-3 py-2 text-sm font-semibold text-white":"rounded-full px-3 py-2 text-sm font-semibold"}>{value==="ar"?"العربية":value.toUpperCase()}</button>)}
+</div>}</header>
+{!loaded&&<p role="status">{t("Loading storefront…")}</p>}
     <label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>
-    <div className="mb-6 flex flex-wrap gap-3">
+    {!shared&&<div className="mb-6 flex flex-wrap gap-3">
       {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>setPreview(true)}>{t("Storefront Preview")}</button></>}
       <button className={button} disabled={!loaded} onClick={share}>{t("Copy Shareable Shop Link")}</button>
-    </div>
-    <p className="mb-4 text-sm text-slate-600">{t("Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.")}</p>
+    </div>}
+    {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.")}</p>}
     {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
       <fieldset className="sm:col-span-3"><legend className="mb-2 font-semibold">{t("Shop Type")}</legend><div className="flex flex-wrap gap-3">{(["affiliate","personal"] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:"rounded-lg border px-4 py-2"} onClick={()=>setShop({...shop,shopMode:mode})}>{t(mode==="affiliate"?"Affiliate Storefront":"Personal Seller Store")}</button>)}</div></fieldset>
       {shop.shopMode==="affiliate"&&<label className="sm:col-span-3">{t("Affiliate Disclosure (Optional)")}<textarea className={field} maxLength={500} value={shop.affiliateDisclosure||""} onChange={e=>setShop({...shop,affiliateDisclosure:e.target.value})}/></label>}
@@ -117,7 +123,8 @@ export default function ShopBuilder(){
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
       <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
       <label>{t("WhatsApp Order Number")}<input className={field} dir="ltr" placeholder="+1 555 123 4567" value={shop.phone} onChange={e=>setShop({...shop,phone:e.target.value})}/></label>
-      <button className={button} onClick={()=>{setEditing(null);setPhoto("");setAdding(!adding);}}>{t("Add Product")}</button>
+      {!shop.phone.replace(/\D/g,"")&&<p className="text-sm sm:col-span-3">{t("Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.")}</p>}
+<button className={button} onClick={()=>{setEditing(null);setPhoto("");setAdding(!adding);}}>{t("Add Product")}</button>
     </section>}
     {adding&&!preview&&!shared && <form key={editing?.id || "new"} id="shop-product-form" className="mb-8 grid gap-4 rounded-xl border p-5 sm:grid-cols-2" onSubmit={e=>{
       e.preventDefault();const data=new FormData(e.currentTarget);
@@ -142,8 +149,8 @@ export default function ShopBuilder(){
       }}/></label>
       <button className={button}>{t("Save Product")}</button>
     </form>}
-    <h1 className="text-4xl font-black">{shop.name==="My Shop"?t("My Shop"):shop.name}</h1><p className="my-4 text-slate-600">{shop.bio}</p>
-    <p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>
+    
+    {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>}
     <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)} ({c==="All"?shop.products.length:shop.products.filter(p=>p.category===c).length})</button>)}</div>
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":"Unisex")}</button>)}
@@ -156,8 +163,8 @@ export default function ShopBuilder(){
         {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>changeCart(p.id,1)}>{t("Add to Cart")}</button>}
         {shop.shopMode==="personal"&&shop.cryptoWallet&&validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<button type="button" className={button} onClick={()=>setCheckout({product:p,details:""})}>{t("Pay with USDC / USDT")}</button>}
         {shop.shopMode==="affiliate"&&p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("View Deal / Buy Now")}</a>}
-        {shop.shopMode==="personal"&&<a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>}
-        <button className="rounded-lg border px-3 py-2" onClick={()=>createPost(p)}>{t("Create Social Post")}</button>
+        {shop.shopMode==="personal"&&shop.phone.replace(/\D/g,"")&&<a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>}
+        {!shared&&<button className="rounded-lg border px-3 py-2" onClick={()=>createPost(p)}>{t("Create Social Post")}</button>}
         {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>{setEditing(p);setPhoto("");setAdding(true);setTimeout(()=>document.getElementById("shop-product-form")?.scrollIntoView({behavior:"smooth"}),0);}}>{t("Edit Product")}</button>}
         {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>setShop({...shop,products:shop.products.filter(item=>item.id!==p.id)})}>{t("Remove")}</button>}
       </div>
@@ -165,9 +172,10 @@ export default function ShopBuilder(){
     {matches.length===0&&loaded&&<p>{t("No products found.")}</p>}
     {matches.length>visible&&<button type="button" className={button+" mt-6"} onClick={()=>setVisible(count=>count+24)}>{t("Load More")}</button>}
     {shop.shopMode==="personal"&&<button type="button" onClick={()=>setCartOpen(true)} className="fixed bottom-5 end-5 z-30 rounded-full bg-emerald-700 px-5 py-3 font-bold text-white shadow-lg">{t("Cart")} ({count}) · {total?(total.currency==="USD"?"$":"")+total.amount+(total.currency!=="USD"?" "+total.currency:""):"—"}</button>}
-    {shop.shopMode==="personal"&&cartOpen&&<CartDrawer lines={lines} shop={shop} change={changeCart} onClose={()=>setCartOpen(false)} onPay={(product,details)=>setCheckout({product,details})}/>}
+    {shop.shopMode==="personal"&&cartOpen&&<CartDrawer isSharedBuyerView={shared} lines={lines} shop={shop} change={changeCart} onClose={()=>setCartOpen(false)} onPay={(product,details)=>setCheckout({product,details})}/>}
     {checkout&&<CryptoCheckout product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
     <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
+{shared&&<footer className="mt-12 border-t border-slate-200 pt-5 text-center text-xs text-slate-600"><a href="/shop" className="underline">{t("Edit My Own Shop")}</a></footer>}
   </main>;
 }
 
