@@ -1,5 +1,5 @@
 "use client";
-import { categories, normalizeGender, type Gender, safeImage, safeUrl } from "./shop/shop-data";
+import { safeImage, safeUrl } from "./shop/shop-data";
 import PromoImageStudio from "./promo-image-studio";
 
 
@@ -136,8 +136,6 @@ export default function Formatter() {
   const [busy,setBusy] = useState(false);
   const [importStatus,setImportStatus] = useState<Message | "">("");
   const [productUrl,setProductUrl] = useState("");
-  const [shopCategory,setShopCategory] = useState("Top Deals");
-  const [gender,setGender] = useState<Gender>("unisex");
   const [currency,setCurrency] = useState("USD");
   const [mode, setMode] = useState<Mode>("seller");
   const [results, setResults] = useState<{ data: FormData | null; hook: string; version: number }>({ data: null, hook: "", version: 0 });
@@ -160,8 +158,6 @@ export default function Formatter() {
         const saved=sessionStorage.getItem("sellpostly-post");
         if(!saved)return;
         const entry=JSON.parse(saved);
-        setShopCategory(categories.slice(1).includes(entry.category)?entry.category:"Other");
-        setGender(normalizeGender(entry.gender));
         product={title:String(entry.name||""),price:String(entry.price||""),link:String(entry.url||""),image:String(entry.image||"")};
         sessionStorage.removeItem("sellpostly-post");
       }catch{return;}
@@ -193,29 +189,6 @@ export default function Formatter() {
     }
   },[]);
 
-  async function saveShop(){
-    const form=formRef.current;if(!form)return;
-    const data=new FormData(form);
-    const title=String(data.get("name")||"").trim();
-    if(!title){setError("Enter a product name.");return;}
-    try{
-      const photo=image;
-      const url=safeUrl(String(data.get("contact")||productUrl));
-      let source="Other";
-      if(url){
-        const host=new URL(url).hostname;
-        if(/(^|\.)amazon\./i.test(host))source="Amazon";
-        else if(/(^|\.)aliexpress\./i.test(host))source="AliExpress";
-        else if(/(^|\.)myshopify\.com$/i.test(host))source="Shopify";
-        else if(/(^|\.)(wa\.me|whatsapp\.com)$/i.test(host))source="WhatsApp Direct";
-      }
-      localStorage.setItem("sellpostly_pending_shop_item",JSON.stringify({
-        id:crypto.randomUUID(),title,price:[data.get("price"),currency].filter(Boolean).join(" "),
-        image:photo,url,category:shopCategory,gender,source
-      }));
-      window.location.href="/shop";
-    }catch{setImportStatus("Could not save. Device storage may be full.");}
-  }
   async function importProduct() {
     if(busy)return;
     setBusy(true);setImportStatus("");
@@ -265,6 +238,7 @@ export default function Formatter() {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-8">
       <h2 className="text-3xl font-bold tracking-tight">{t("Post Formatter")}</h2>
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><a href="/prompt-generator" className="font-semibold text-emerald-800 underline">{t("Prompt Generator")}</a><span>{t("AI Hashtags")}</span><span>· {t("Social Preview")}</span><span>· {t("Multi-Platform Send")}</span></div>
       <div role="group" aria-label={t("Formatter mode")} className="mt-5 inline-flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-white p-1">
         {(["seller", "creator"] as const).map(option => (
           <button key={option} type="button" aria-pressed={mode === option} onClick={() => {
@@ -303,13 +277,12 @@ export default function Formatter() {
           {error && <p role="alert" className="mt-2 text-red-700">{t(error)}</p>}
         </div>
       </form>
-      {mode === "seller" && <div className="mt-4 flex flex-wrap items-end gap-3">
-        <label>{t("Shop Category")}<select className={fieldStyle} value={shopCategory} onChange={e=>setShopCategory(e.target.value)}>{categories.slice(1).map(c=><option key={c} value={c}>{t(c)}</option>)}</select></label>
-        <label>{t("Gender / Audience")}<select className={fieldStyle} value={gender} onChange={e=>setGender(normalizeGender(e.target.value))}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option></select></label>
-        <button type="button" onClick={saveShop} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-white">{t("Save to My Shop")}</button></div>}
+
       {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} delivery={delivery} importedImage={image} onImage={setPromo} onProductImage={setImage} />}
       <p role="status" className="sr-only">{posts.length ? posts.length + " · " + t("Posts generated.") : ""}</p>
-      {posts.length > 0 && <div className="mt-7 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} image={promo} />)}</div>}
+      {posts.length > 0 && <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4"><h3 className="font-semibold">{t("AI Hashtags")}</h3><p className="mt-1 text-xs text-slate-600">{t("Keyword-based suggestions to refine with your AI prompt. No AI service is called.")}</p><p className="mt-2" dir="auto">{Array.from(new Set((mode==="seller"?draft.name:results.hook).normalize("NFKC").split(/[^\p{L}\p{N}]+/u).filter(word=>word.length>2).slice(0,6).map(word=>"#"+word))).join(" ")}</p></section>}
+      {posts.length > 0 && <h3 className="mt-6 text-xl font-bold">{t("Social Preview")} · {t("Multi-Platform Send")}</h3>}
+      {posts.length > 0 && <div className="mt-4 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} image={promo} />)}</div>}
     </div>
   );
 }

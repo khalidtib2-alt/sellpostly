@@ -8,7 +8,7 @@ const messages = {
 "Website": {fr:"Site web",ar:"Ø§Ù„Ù…ÙˆÙ‚Ø¹"},
 "Prompt Generator": {fr:"GÃ©nÃ©rateur de prompts",ar:"Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª"},
 "Seller Guides": {fr:"Guides pour les vendeurs",ar:"Ø£Ø¯Ù„Ø© Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"},
-"Text & Image copied! Paste (Ctrl+V) directly into your post or chat.":{"fr":"Texte et image copiÃ©s ! Collez-les (Ctrl+V) dans votre publication ou conversation.","ar":"ØªÙ… Ù†Ø³Ø® Ø§Ù„Ù†Øµ ÙˆØ§Ù„ØµÙˆØ±Ø©! Ø§Ù„ØµÙ‚ (Ctrl+V) ÙÙŠ Ø§Ù„Ù…Ù†Ø´ÙˆØ± Ø£Ùˆ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø©."},"Send to My Shop":{"fr":"Envoyer vers ma boutique","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø¥Ù„Ù‰ Ù…ØªØ¬Ø±ÙŠ"},
+"Text & Image copied! Paste (Ctrl+V) directly into your post or chat.":{"fr":"Texte et image copiÃ©s ! Collez-les (Ctrl+V) dans votre publication ou conversation.","ar":"ØªÙ… Ù†Ø³Ø® Ø§Ù„Ù†Øµ ÙˆØ§Ù„ØµÙˆØ±Ø©! Ø§Ù„ØµÙ‚ (Ctrl+V) ÙÙŠ Ø§Ù„Ù…Ù†Ø´ÙˆØ± Ø£Ùˆ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø©."},
 "Upload or import a product photo first.":{"fr":"Importez dâ€™abord une photo produit.","ar":"Ø§Ø±ÙØ¹ Ø£Ùˆ Ø§Ø³ØªÙˆØ±Ø¯ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ù‹Ø§."},"Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.":{"fr":"Collez lâ€™URL dâ€™une fiche produit prÃ©cise, ou utilisez lâ€™extension Chrome SellPostly sur cette fiche.","ar":"Ø§Ù„ØµÙ‚ Ø±Ø§Ø¨Ø· ØµÙØ­Ø© Ù…Ù†ØªØ¬ Ù…Ø­Ø¯Ø¯ Ø¨Ø¯Ù„ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ù…ØªØ¬Ø±ØŒ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ù… Ø¥Ø¶Ø§ÙØ© SellPostly Ø¹Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ù…Ù†ØªØ¬."},"Image copied! Press Ctrl+V in chat to attach the photo.":{"fr":"Image copiÃ©e ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.","ar":"ØªÙ… Ù†Ø³Ø® Ø§Ù„ØµÙˆØ±Ø©! Ø§Ø¶ØºØ· Ctrl+V ÙÙŠ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø© Ù„Ø¥Ø±ÙØ§Ù‚Ù‡Ø§."},"Send Text":{"fr":"Envoyer le texte","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ù†Øµ"},"Send Image + Text":{"fr":"Envoyer lâ€™image et le texte","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØµÙˆØ±Ø© ÙˆØ§Ù„Ù†Øµ"},"Image downloaded. Attach it and paste the caption.":{"fr":"Image tÃ©lÃ©chargÃ©e. Joignez-la et collez la lÃ©gende.","ar":"ØªÙ… ØªÙ†Ø²ÙŠÙ„ Ø§Ù„ØµÙˆØ±Ø©. Ø£Ø±ÙÙ‚Ù‡Ø§ ÙˆØ§Ù„ØµÙ‚ Ø§Ù„Ù†Øµ."},"Sharing failed. Copy the text or download the image.":{"fr":"Ã‰chec du partage. Copiez le texte ou tÃ©lÃ©chargez lâ€™image.","ar":"ØªØ¹Ø°Ù‘Ø±Øª Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©. Ø§Ù†Ø³Ø® Ø§Ù„Ù†Øµ Ø£Ùˆ Ù†Ø²Ù‘Ù„ Ø§Ù„ØµÙˆØ±Ø©."},
 "Delivery":{"fr":"Livraison","ar":"Ø§Ù„ØªÙˆØµÙŠÙ„"},"Reply *ORDER* now to claim yours!":{"fr":"RÃ©pondez *COMMANDER* pour passer commande !","ar":"Ø£Ø±Ø³Ù„ *Ø·Ù„Ø¨* Ø§Ù„Ø¢Ù† Ù„Ø·Ù„Ø¨ Ù…Ù†ØªØ¬Ùƒ!"},
 "Import From Current Page": {fr:"Importer depuis cette page",ar:"Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ù…Ù† Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©"},
@@ -478,14 +478,7 @@ async function sendPost(platform,post,withImage) {
   } catch {feedback.textContent=t("Sharing failed. Copy the text or download the image.");}
 }
 
-document.querySelector("#send-shop").addEventListener("click",async()=>{
-  const form=document.querySelector("#seller");
-  const data=new FormData(form);
-  const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-  const preview=document.querySelector("#imported-image");
-  const query=new URLSearchParams({addGender:document.querySelector("#shop-gender").value,addCategory:document.querySelector("#shop-category").value,addTitle:String(data.get("name")||""),addPrice:String(data.get("price")||""),addImage:preview && !preview.hidden?preview.src:"",addUrl:tab?.url||""});
-  window.open("https://sellpostly-git-main-usidk-it.vercel.app/shop?"+query,"_blank","noopener,noreferrer");
-});
+
 
 
 document.querySelector("#open-studio").addEventListener("click",async()=>{

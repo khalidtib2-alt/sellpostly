@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
-import { normalizeNetwork, validWallet } from "./crypto-data";
 import { cartTotal, type CartLine } from "./cart-data";
 import type { Product, Shop } from "./shop-data";
 
@@ -35,7 +34,7 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuye
     <p className="my-3 text-sm">{t("Delivery fees are confirmed by the seller.")}</p>
     <div className="grid gap-3">
       <button type="button" disabled={!total||!shop.phone.replace(/\D/g,"")} onClick={whatsapp} className="rounded-lg bg-emerald-700 px-4 py-3 font-semibold text-white disabled:opacity-50">{t("Order All on WhatsApp")}</button>
-      {shop.cryptoWallet&&validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<button type="button" disabled={!total} onClick={()=>{
+      {<button type="button" disabled={!total} onClick={()=>{
         if(!total)return;
         const order:Product={id:"cart-order",name:t("Cart Order"),price:total.amount+" "+total.currency,category:"Other",gender:"unisex",image:"",url:"",source:"Other"};
         dialog.current?.close();onPay(order,details);

@@ -1,14 +1,14 @@
 "use client";
+import { escrowReady, holdDays } from "./escrow-config";
 import CartDrawer from "./cart-drawer";
 import { cartTotal } from "./cart-data";
 
 import CryptoCheckout from "./crypto-checkout";
-import { cryptoNetworks, normalizeNetwork, validWallet } from "./crypto-data";
 import { useEffect, useState } from "react";
 import { surfaces, surfaceNames, type Surface } from "../theme-picker";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
-import { normalizeGender, type Gender, categories, decodeShop, encodeShop, safeImage, safeUrl, shopKey, validateShop, dealBadges, type DealBadge, type Product, type Shop } from "./shop-data";
+import { normalizeGender, type Gender, categories, decodeShop, safeImage, safeUrl, shopKey, validateShop, dealBadges, type DealBadge, type Product, type Shop } from "./shop-data";
 
 const field="mt-1 block w-full rounded-lg border border-slate-300 p-2";
 const button="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white";
@@ -21,7 +21,7 @@ function samples(): Shop {
   });
   return {name:"My Shop",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products};
 }
-export default function ShopBuilder({isSharedBuyerView=false}:{isSharedBuyerView?:boolean}){
+export default function ShopBuilder({isSharedBuyerView=false,initialShop}:{isSharedBuyerView?:boolean;initialShop?:Shop}){
   const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(isSharedBuyerView),[preview,setPreview]=useState(isSharedBuyerView),[adding,setAdding]=useState(false);
@@ -36,6 +36,7 @@ export default function ShopBuilder({isSharedBuyerView=false}:{isSharedBuyerView
   useEffect(()=>{
     let cancelled=false;
     async function load(){
+      if(initialShop){setShop(initialShop);setShared(true);setPreview(true);setLoaded(true);return;}
       const params=new URLSearchParams(location.search);
       try{
         if(isSharedBuyerView || params.has("s")){
@@ -81,11 +82,16 @@ export default function ShopBuilder({isSharedBuyerView=false}:{isSharedBuyerView
       if(!cancelled)setLoaded(true);
     }
     load();return()=>{cancelled=true;};
-  },[]);
+  },[initialShop,isSharedBuyerView]);
   useEffect(()=>{if(loaded&&!shared)try{localStorage.setItem(shopKey,JSON.stringify(shop));}catch{setStatus("Could not save. Device storage may be full.");}},[shop,loaded,shared]);
   async function share(){
-    try{const code=await encodeShop(shop);await navigator.clipboard.writeText(location.origin+"/shop?s="+code);setStatus("Copied!");}
-    catch{setStatus("Shop link is too large. Use image URLs or fewer products.");}
+    try{
+      const key=localStorage.getItem("sellpostly-pro-key")||"";
+      const response=await fetch("/api/shops",{method:"POST",headers:{"Content-Type":"application/json","x-pro-key":key},body:JSON.stringify(shop)});
+      if(!response.ok)throw Error();
+      const result=await response.json();
+      await navigator.clipboard.writeText(location.origin+result.url);setStatus("Copied!");
+    }catch{setStatus("Could not publish the shop. Check your Pro license and database setup.");}
   }
   function createPost(product:Product){
     try{sessionStorage.setItem("sellpostly-post",JSON.stringify(product));location.href="/#formatter";}catch{setStatus("Could not save. Device storage may be full.");}
@@ -102,7 +108,7 @@ export default function ShopBuilder({isSharedBuyerView=false}:{isSharedBuyerView
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
   return <main data-surface={shop.shopTheme} className="shop-surface mx-auto max-w-6xl px-5 py-12">
 <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-6">
-<div><h1 className="text-4xl font-black">{shop.name==="My Shop"||!shop.name?t("My Shop"):shop.name}</h1><p className="mt-3 whitespace-pre-line text-slate-600">{shop.bio}</p></div>
+<div><div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white text-2xl font-black text-emerald-800">{shop.logo?<img src={shop.logo} alt={shop.name} className="max-h-full max-w-full object-contain"/>:(shop.name||"SP").trim().slice(0,2).toUpperCase()}</div><h1 className="text-4xl font-black">{shop.name==="My Shop"||!shop.name?t("My Shop"):shop.name}</h1><p className="mt-3 whitespace-pre-line text-slate-600">{shop.bio}</p></div>
 {shared&&<div role="group" aria-label={t("Language")} className="flex gap-1 rounded-full border border-slate-300 bg-white p-1 text-slate-900">
 {(["en","fr","ar"] as const).map(value=><button type="button" key={value} lang={value} aria-pressed={language===value} onClick={()=>setLanguage(value)} className={language===value?"rounded-full bg-emerald-700 px-3 py-2 text-sm font-semibold text-white":"rounded-full px-3 py-2 text-sm font-semibold"}>{value==="ar"?"العربية":value.toUpperCase()}</button>)}
 </div>}</header>
@@ -112,13 +118,18 @@ export default function ShopBuilder({isSharedBuyerView=false}:{isSharedBuyerView
       {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>setPreview(true)}>{t("Storefront Preview")}</button></>}
       <button className={button} disabled={!loaded} onClick={share}>{t("Copy Shareable Shop Link")}</button>
     </div>}
-    {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.")}</p>}
+    {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Publish your latest changes to update your public storefront.")}</p>}
     {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
       <fieldset className="sm:col-span-3"><legend className="mb-2 font-semibold">{t("Shop Type")}</legend><div className="flex flex-wrap gap-3">{(["affiliate","personal"] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:"rounded-lg border px-4 py-2"} onClick={()=>setShop({...shop,shopMode:mode})}>{t(mode==="affiliate"?"Affiliate Storefront":"Personal Seller Store")}</button>)}</div></fieldset>
       {shop.shopMode==="affiliate"&&<label className="sm:col-span-3">{t("Affiliate Disclosure (Optional)")}<textarea className={field} maxLength={500} value={shop.affiliateDisclosure||""} onChange={e=>setShop({...shop,affiliateDisclosure:e.target.value})}/></label>}
-      <label>{t("Crypto Wallet (Optional)")}<input dir="ltr" className={field} maxLength={100} value={shop.cryptoWallet||""} onChange={e=>setShop({...shop,cryptoWallet:e.target.value.trim()})}/>{shop.cryptoWallet&&!validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<span role="status">{t("Enter a valid address for the selected network.")}</span>}</label>
-      <label>{t("Crypto Network")}<select className={field} value={normalizeNetwork(shop.cryptoNetwork)} onChange={e=>setShop({...shop,cryptoNetwork:normalizeNetwork(e.target.value)})}>{cryptoNetworks.map(network=><option key={network}>{network}</option>)}</select></label>
-      <p className="text-sm">{t("Crypto checkout uses the listed numeric price as a stablecoin amount. Use USD, USDC, or USDT prices and confirm supported tokens with buyers.")}</p>
+      <label>{t("Store Logo")}<input type="file" accept="image/png,image/jpeg,image/webp" className={field} onChange={event=>{
+        const file=event.target.files?.[0];if(!file)return;
+        if(file.size>5000000){setStatus("Photo must be under 5 MB.");return;}
+        const reader=new FileReader();reader.onload=()=>{const image=new Image();image.onload=()=>{const canvas=document.createElement("canvas");const scale=Math.min(1,256/Math.max(image.width,image.height));canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));canvas.getContext("2d")?.drawImage(image,0,0,canvas.width,canvas.height);setShop(previous=>({...previous,logo:canvas.toDataURL("image/png")}));};image.src=String(reader.result);};reader.readAsDataURL(file);
+      }}/>{shop.logo&&<button type="button" className="mt-2 text-sm underline" onClick={()=>setShop({...shop,logo:""})}>{t("Remove Logo")}</button>}</label>
+      <label>{t("Escrow Hold Period")}<select className={field} value={holdDays(shop.escrowHoldDays)} onChange={e=>setShop({...shop,escrowHoldDays:Number(e.target.value)})}>{Array.from({length:13},(_,i)=>i+3).map(days=><option key={days} value={days}>{days} {t("days")}</option>)}</select></label>
+      <p className="text-sm">{t("Escrow settings are recorded for future verified payments. Automatic release is not enabled in Milestone 1.")}</p>
+      {!escrowReady&&<p className="text-sm sm:col-span-3" role="status">{t("Escrow checkout is unavailable. The platform escrow wallet has not been configured.")}</p>}
       <label>{t("Shop Background Color")}<select className={field} value={shop.shopTheme} onChange={e=>setShop({...shop,shopTheme:e.target.value as Surface})}>{surfaces.map((surface,index)=><option key={surface} value={surface}>{t(surfaceNames[index])}</option>)}</select></label>
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
       <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
@@ -161,7 +172,7 @@ export default function ShopBuilder({isSharedBuyerView=false}:{isSharedBuyerView
       {shop.shopMode==="affiliate"&&shop.affiliateDisclosure&&<p className="my-2 text-xs text-slate-600">{shop.affiliateDisclosure}</p>}
       <div className="flex flex-wrap gap-2 text-sm">
         {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>changeCart(p.id,1)}>{t("Add to Cart")}</button>}
-        {shop.shopMode==="personal"&&shop.cryptoWallet&&validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<button type="button" className={button} onClick={()=>setCheckout({product:p,details:""})}>{t("Pay with USDC / USDT")}</button>}
+        {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>setCheckout({product:p,details:""})}>{t("Pay with USDC / USDT")}</button>}
         {shop.shopMode==="affiliate"&&p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("View Deal / Buy Now")}</a>}
         {shop.shopMode==="personal"&&shop.phone.replace(/\D/g,"")&&<a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>}
         {!shared&&<button className="rounded-lg border px-3 py-2" onClick={()=>createPost(p)}>{t("Create Social Post")}</button>}

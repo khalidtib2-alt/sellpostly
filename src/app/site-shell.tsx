@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "./language-context";
+import BrandLogo from "./brand-logo";
 import ThemePicker from "./theme-picker";
 import Link from "next/link";
 
@@ -13,7 +14,7 @@ const links = [
 export function Header() {
   const { language, setLanguage, t } = useLanguage();
   return <header className="border-b border-slate-200"><nav aria-label={t("Main navigation")} className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
-    <Link href="/" className="text-xl font-black tracking-tight"><span className="text-emerald-700">Sell</span>Postly</Link>
+    <Link href="/" className="text-xl font-black tracking-tight"><BrandLogo /></Link>
     <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-slate-700">
       <Link href="/shop">{t("My Shop")}</Link><Link href="/#formatter">{t("Post Formatter")}</Link><Link href="/prompt-generator">{t("Prompt Generator")}</Link><Link href="/guides">{t("Seller Guides")}</Link><Link href="/extension">{t("Chrome Extension")}</Link><Link href="/about">{t("About")}</Link><Link href="/contact">{t("Contact")}</Link>
     </div>
