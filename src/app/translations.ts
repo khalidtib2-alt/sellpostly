@@ -1240,6 +1240,7 @@ export const translations = {
   "Shop Background Color": {
     "fr": "Fond de la boutique",
     "ar": "خلفية المتجر"
-  }
+  },
+"Product added to My Shop!": {"fr":"Produit ajouté à ma boutique !","ar":"تمت إضافة المنتج إلى متجري!"}
 } as const;
 export type Message = keyof typeof translations;

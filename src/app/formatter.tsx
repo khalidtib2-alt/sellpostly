@@ -173,21 +173,39 @@ export default function Formatter() {
       window.history.replaceState(window.history.state,"",window.location.pathname+(remaining?"?"+remaining:"")+window.location.hash);
     }
   },[]);
+
   async function saveShop(){
     const form=formRef.current;if(!form)return;
     const data=new FormData(form);
-
-    let photo=image;
-    if(promo) {
-      const bitmap=await createImageBitmap(promo);
-      const canvas=document.createElement("canvas");
-      const scale=Math.min(1,600/Math.max(bitmap.width,bitmap.height));
-      canvas.width=bitmap.width*scale;canvas.height=bitmap.height*scale;
-      canvas.getContext("2d")!.drawImage(bitmap,0,0,canvas.width,canvas.height);
-      photo=canvas.toDataURL("image/jpeg",0.7);bitmap.close();
-    }
-    const query=new URLSearchParams({addTitle:String(data.get("name")||""),addPrice:[data.get("price"),currency].filter(Boolean).join(" "),addImage:photo,addUrl:String(data.get("contact")||productUrl)});
-    location.href="/shop?"+query;
+    const title=String(data.get("name")||"").trim();
+    if(!title){setError("Enter a product name.");return;}
+    try{
+      let photo=image;
+      if(promo){
+        const bitmap=await createImageBitmap(promo);
+        try{
+          const canvas=document.createElement("canvas");
+          const scale=Math.min(1,600/Math.max(bitmap.width,bitmap.height));
+          canvas.width=bitmap.width*scale;canvas.height=bitmap.height*scale;
+          canvas.getContext("2d")!.drawImage(bitmap,0,0,canvas.width,canvas.height);
+          photo=canvas.toDataURL("image/jpeg",0.7);
+        }finally{bitmap.close();}
+      }
+      const url=safeUrl(String(data.get("contact")||productUrl));
+      let source="Other";
+      if(url){
+        const host=new URL(url).hostname;
+        if(/(^|\.)amazon\./i.test(host))source="Amazon";
+        else if(/(^|\.)aliexpress\./i.test(host))source="AliExpress";
+        else if(/(^|\.)myshopify\.com$/i.test(host))source="Shopify";
+        else if(/(^|\.)(wa\.me|whatsapp\.com)$/i.test(host))source="WhatsApp Direct";
+      }
+      localStorage.setItem("sellpostly_pending_shop_item",JSON.stringify({
+        id:crypto.randomUUID(),title,price:[data.get("price"),currency].filter(Boolean).join(" "),
+        image:photo,url,category:"Top Deals",source
+      }));
+      window.location.href="/shop";
+    }catch{setImportStatus("Could not save. Device storage may be full.");}
   }
   async function importProduct() {
     if(busy)return;

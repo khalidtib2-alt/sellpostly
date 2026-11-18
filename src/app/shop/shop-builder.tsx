@@ -41,6 +41,29 @@ export default function ShopBuilder(){
             try {localStorage.setItem(shopKey,JSON.stringify(initial));}catch{setStatus("Could not save. Device storage may be full.");}
             history.replaceState(null,"",location.pathname);
           }
+
+          try {
+            const pending=localStorage.getItem("sellpostly_pending_shop_item");
+            if(pending){
+              const item=JSON.parse(pending);
+              if(!item || typeof item.title!=="string" || !item.title.trim())throw Error("Invalid product");
+              const product:Product={
+                id:typeof item.id==="string" && item.id ? item.id : crypto.randomUUID(),
+                name:item.title.slice(0,120),
+                price:typeof item.price==="string"?item.price:"",
+                image:safeImage(typeof item.image==="string"?item.image:""),
+                url:safeUrl(typeof item.url==="string"?item.url:""),
+                category:typeof item.category==="string" && item.category?item.category.slice(0,80):"Top Deals",
+                source:typeof item.source==="string"?item.source:"Other"
+              };
+              if(!initial.products.some(existing=>existing.id===product.id))initial.products.push(product);
+              // Commit the catalog before removing the recoverable pending item.
+              localStorage.setItem(shopKey,JSON.stringify(initial));
+              localStorage.removeItem("sellpostly_pending_shop_item");
+              setFilter(product.category);
+              setStatus("Product added to My Shop!");
+            }
+          }catch{setStatus("Could not save. Device storage may be full.");}
           if(cancelled)return;setShop(initial);
         }
       }catch{setStatus("Could not open this shop link.");}
