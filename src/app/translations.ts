@@ -1241,6 +1241,34 @@ export const translations = {
     "fr": "Fond de la boutique",
     "ar": "خلفية المتجر"
   },
-"Product added to My Shop!": {"fr":"Produit ajouté à ma boutique !","ar":"تمت إضافة المنتج إلى متجري!"}
+"Product added to My Shop!": {"fr":"Produit ajouté à ma boutique !","ar":"تمت إضافة المنتج إلى متجري!"},
+  "Shop Category": {
+    "fr": "Catégorie de boutique",
+    "ar": "فئة المتجر"
+  },
+  "Gender / Audience": {
+    "fr": "Genre / Public",
+    "ar": "الجنس أو الجمهور"
+  },
+  "All / Unisex": {
+    "fr": "Tous / Mixte",
+    "ar": "الكل / للجنسين"
+  },
+  "Men": {
+    "fr": "Hommes",
+    "ar": "رجال"
+  },
+  "Women": {
+    "fr": "Femmes",
+    "ar": "نساء"
+  },
+  "Unisex": {
+    "fr": "Mixte",
+    "ar": "للجنسين"
+  },
+  "Edit Product": {
+    "fr": "Modifier le produit",
+    "ar": "تعديل المنتج"
+  }
 } as const;
 export type Message = keyof typeof translations;

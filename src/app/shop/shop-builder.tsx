@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { surfaces, surfaceNames, type Surface } from "../theme-picker";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
-import { categories, decodeShop, encodeShop, safeImage, safeUrl, shopKey, validateShop, type Product, type Shop } from "./shop-data";
+import { normalizeGender, type Gender, categories, decodeShop, encodeShop, safeImage, safeUrl, shopKey, validateShop, type Product, type Shop } from "./shop-data";
 
 const field="mt-1 block w-full rounded-lg border border-slate-300 p-2";
 const button="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white";
@@ -12,7 +12,7 @@ function samples(): Shop {
     const canvas=document.createElement("canvas");canvas.width=320;canvas.height=240;
     const context=canvas.getContext("2d")!;context.fillStyle=["#d1fae5","#e2e8f0","#fef3c7","#fce7f3"][index];context.fillRect(0,0,320,240);
     context.font="80px system-ui";context.textAlign="center";context.fillText(["🎧","🎒","🍽️","💧"][index],160,145);
-    return {id:"sample-"+index,name,price:["49 USD","39 USD","24 USD","19 USD"][index],category:["Tech & Gadgets","Fashion","Home & Kitchen","Fitness"][index],image:canvas.toDataURL(),url:["https://www.amazon.com/","https://www.aliexpress.com/","https://www.shopify.com/","https://www.amazon.com/"][index],source:["Amazon","AliExpress","Shopify","Amazon"][index]};
+    return {gender:"unisex" as const,id:"sample-"+index,name,price:["49 USD","39 USD","24 USD","19 USD"][index],category:["Tech & Gadgets","Fashion","Home & Kitchen","Fitness"][index],image:canvas.toDataURL(),url:["https://www.amazon.com/","https://www.aliexpress.com/","https://www.shopify.com/","https://www.amazon.com/"][index],source:["Amazon","AliExpress","Shopify","Amazon"][index]};
   });
   return {name:"My Shop",bio:"",phone:"",shopTheme:"white",products};
 }
@@ -20,6 +20,8 @@ export default function ShopBuilder(){
   const {t}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopTheme:"white",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(false),[preview,setPreview]=useState(false),[adding,setAdding]=useState(false);
+  const [editing,setEditing]=useState<Product | null>(null);
+  const [genderFilter,setGenderFilter]=useState<Gender | "all">("all");
   const [search,setSearch]=useState("");
   const [visible,setVisible]=useState(24);
   const [filter,setFilter]=useState("All"),[photo,setPhoto]=useState(""),[status,setStatus]=useState<Message|"">("");
@@ -35,7 +37,7 @@ export default function ShopBuilder(){
           let initial=samples();
           try {const saved=localStorage.getItem(shopKey);if(saved)initial=validateShop(JSON.parse(saved));}catch{}
           if(params.get("addTitle")){
-            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
+            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
             initial.products.push(product);
             setFilter(product.category);
             try {localStorage.setItem(shopKey,JSON.stringify(initial));}catch{setStatus("Could not save. Device storage may be full.");}
@@ -53,6 +55,7 @@ export default function ShopBuilder(){
                 price:typeof item.price==="string"?item.price:"",
                 image:safeImage(typeof item.image==="string"?item.image:""),
                 url:safeUrl(typeof item.url==="string"?item.url:""),
+                gender:normalizeGender(item.gender),
                 category:typeof item.category==="string" && item.category?item.category.slice(0,80):"Top Deals",
                 source:typeof item.source==="string"?item.source:"Other"
               };
@@ -80,8 +83,8 @@ export default function ShopBuilder(){
     try{sessionStorage.setItem("sellpostly-post",JSON.stringify(product));location.href="/#formatter";}catch{setStatus("Could not save. Device storage may be full.");}
   }
   const options=[...categories,...new Set(shop.products.map(p=>p.category).filter(c=>!categories.includes(c as typeof categories[number])))];
-  const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
-  useEffect(()=>setVisible(24),[filter,search]);
+  const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (genderFilter==="all"||p.gender===genderFilter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+  useEffect(()=>setVisible(24),[filter,genderFilter,search]);
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
   return <main data-surface={shop.shopTheme} className="shop-surface mx-auto max-w-6xl px-5 py-12">
     <label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>
@@ -95,18 +98,22 @@ export default function ShopBuilder(){
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
       <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
       <label>{t("WhatsApp Order Number")}<input className={field} dir="ltr" placeholder="+1 555 123 4567" value={shop.phone} onChange={e=>setShop({...shop,phone:e.target.value})}/></label>
-      <button className={button} onClick={()=>setAdding(!adding)}>{t("Add Product")}</button>
+      <button className={button} onClick={()=>{setEditing(null);setPhoto("");setAdding(!adding);}}>{t("Add Product")}</button>
     </section>}
-    {adding&&!preview&&!shared && <form className="mb-8 grid gap-4 rounded-xl border p-5 sm:grid-cols-2" onSubmit={e=>{
+    {adding&&!preview&&!shared && <form key={editing?.id || "new"} id="shop-product-form" className="mb-8 grid gap-4 rounded-xl border p-5 sm:grid-cols-2" onSubmit={e=>{
       e.preventDefault();const data=new FormData(e.currentTarget);
       const get=(key:string)=>String(data.get(key)||"").trim();
 
-      setShop({...shop,products:[...shop.products,{id:crypto.randomUUID(),name:get("name"),price:get("price"),category:get("category")||"Top Deals",image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source")}]});
+
+      const product:Product={id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source")};
+      setShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]});
+      setEditing(null);
       setAdding(false);setPhoto("");
     }}>
-      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} name={["name","price","category","image","url"][i]} type={i===3||i===4?"url":"text"} required={i===0||i===4} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
+      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? editing[["name","price","category","image","url"][i] as keyof Product] : ""} name={["name","price","category","image","url"][i]} type={i===3||i===4?"url":"text"} required={i===0||i===4} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
       <datalist id="shop-categories">{categories.slice(1).map(c=><option key={c} value={c}>{label(c)}</option>)}</datalist>
-      <label>{t("Source Badge")}<select className={field} name="source">{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
+      <label>{t("Gender / Audience")}<select className={field} name="gender" defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option></select></label>
+      <label>{t("Source Badge")}<select className={field} name="source" defaultValue={editing?.source || "Other"}>{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c} value={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
       <label>{t("Upload Product Photo")}<input className={field} type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
         const file=e.target.files?.[0];if(!file)return;
         if(file.size>5000000){setStatus("Photo must be under 5 MB.");return;}
@@ -117,13 +124,17 @@ export default function ShopBuilder(){
     <h1 className="text-4xl font-black">{shop.name==="My Shop"?t("My Shop"):shop.name}</h1><p className="my-4 text-slate-600">{shop.bio}</p>
     <p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>
     <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)} ({c==="All"?shop.products.length:shop.products.filter(p=>p.category===c).length})</button>)}</div>
+    <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
+      {(["all","men","women","unisex"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":"Unisex")}</button>)}
+    </div>
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
       <div className="product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
-      <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price}</p>
+      <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price}</p>{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":"Women")}</span>}
       <div className="flex flex-wrap gap-2 text-sm">
         {p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("Buy / View Deal")}</a>}
         <a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>
         <button className="rounded-lg border px-3 py-2" onClick={()=>createPost(p)}>{t("Create Social Post")}</button>
+        {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>{setEditing(p);setPhoto("");setAdding(true);setTimeout(()=>document.getElementById("shop-product-form")?.scrollIntoView({behavior:"smooth"}),0);}}>{t("Edit Product")}</button>}
         {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>setShop({...shop,products:shop.products.filter(item=>item.id!==p.id)})}>{t("Remove")}</button>}
       </div>
     </article>)}</div>
