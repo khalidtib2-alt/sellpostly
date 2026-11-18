@@ -1,11 +1,14 @@
 "use client";
+import CartDrawer from "./cart-drawer";
+import { cartTotal } from "./cart-data";
+
 import CryptoCheckout from "./crypto-checkout";
 import { cryptoNetworks, normalizeNetwork, validWallet } from "./crypto-data";
 import { useEffect, useState } from "react";
 import { surfaces, surfaceNames, type Surface } from "../theme-picker";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
-import { normalizeGender, type Gender, categories, decodeShop, encodeShop, safeImage, safeUrl, shopKey, validateShop, type Product, type Shop } from "./shop-data";
+import { normalizeGender, type Gender, categories, decodeShop, encodeShop, safeImage, safeUrl, shopKey, validateShop, dealBadges, type DealBadge, type Product, type Shop } from "./shop-data";
 
 const field="mt-1 block w-full rounded-lg border border-slate-300 p-2";
 const button="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white";
@@ -16,13 +19,15 @@ function samples(): Shop {
     context.font="80px system-ui";context.textAlign="center";context.fillText(["🎧","🎒","🍽️","💧"][index],160,145);
     return {gender:"unisex" as const,id:"sample-"+index,name,price:["49 USD","39 USD","24 USD","19 USD"][index],category:["Tech & Gadgets","Fashion","Home & Kitchen","Fitness"][index],image:canvas.toDataURL(),url:["https://www.amazon.com/","https://www.aliexpress.com/","https://www.shopify.com/","https://www.amazon.com/"][index],source:["Amazon","AliExpress","Shopify","Amazon"][index]};
   });
-  return {name:"My Shop",bio:"",phone:"",shopTheme:"white",products};
+  return {name:"My Shop",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products};
 }
 export default function ShopBuilder(){
   const {t}=useLanguage();
-  const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopTheme:"white",products:[]});
+  const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(false),[preview,setPreview]=useState(false),[adding,setAdding]=useState(false);
-  const [checkout,setCheckout]=useState<Product | null>(null);
+  const [checkout,setCheckout]=useState<{product:Product;details:string} | null>(null);
+  const [cart,setCart]=useState<Record<string,number>>({});
+  const [cartOpen,setCartOpen]=useState(false);
   const [editing,setEditing]=useState<Product | null>(null);
   const [genderFilter,setGenderFilter]=useState<Gender | "all">("all");
   const [search,setSearch]=useState("");
@@ -85,6 +90,12 @@ export default function ShopBuilder(){
   function createPost(product:Product){
     try{sessionStorage.setItem("sellpostly-post",JSON.stringify(product));location.href="/#formatter";}catch{setStatus("Could not save. Device storage may be full.");}
   }
+
+  const lines=shop.products.filter(product=>cart[product.id]>0).map(product=>({product,quantity:cart[product.id]}));
+  const count=lines.reduce((sum,line)=>sum+line.quantity,0);
+  const total=cartTotal(lines);
+  function changeCart(id:string,delta:number){setCart(previous=>({...previous,[id]:Math.max(0,Math.min(99,(previous[id]||0)+delta))}));}
+  useEffect(()=>{setCart({});setCartOpen(false);setCheckout(null);},[shop.shopMode]);
   const options=[...categories,...new Set(shop.products.map(p=>p.category).filter(c=>!categories.includes(c as typeof categories[number])))];
   const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (genderFilter==="all"||p.gender===genderFilter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   useEffect(()=>setVisible(24),[filter,genderFilter,search]);
@@ -97,6 +108,8 @@ export default function ShopBuilder(){
     </div>
     <p className="mb-4 text-sm text-slate-600">{t("Shared links contain a snapshot. Copy a new link after edits. Uploaded photos may make links too large.")}</p>
     {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
+      <fieldset className="sm:col-span-3"><legend className="mb-2 font-semibold">{t("Shop Type")}</legend><div className="flex flex-wrap gap-3">{(["affiliate","personal"] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:"rounded-lg border px-4 py-2"} onClick={()=>setShop({...shop,shopMode:mode})}>{t(mode==="affiliate"?"Affiliate Storefront":"Personal Seller Store")}</button>)}</div></fieldset>
+      {shop.shopMode==="affiliate"&&<label className="sm:col-span-3">{t("Affiliate Disclosure (Optional)")}<textarea className={field} maxLength={500} value={shop.affiliateDisclosure||""} onChange={e=>setShop({...shop,affiliateDisclosure:e.target.value})}/></label>}
       <label>{t("Crypto Wallet (Optional)")}<input dir="ltr" className={field} maxLength={100} value={shop.cryptoWallet||""} onChange={e=>setShop({...shop,cryptoWallet:e.target.value.trim()})}/>{shop.cryptoWallet&&!validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<span role="status">{t("Enter a valid address for the selected network.")}</span>}</label>
       <label>{t("Crypto Network")}<select className={field} value={normalizeNetwork(shop.cryptoNetwork)} onChange={e=>setShop({...shop,cryptoNetwork:normalizeNetwork(e.target.value)})}>{cryptoNetworks.map(network=><option key={network}>{network}</option>)}</select></label>
       <p className="text-sm">{t("Crypto checkout uses the listed numeric price as a stablecoin amount. Use USD, USDC, or USDT prices and confirm supported tokens with buyers.")}</p>
@@ -111,14 +124,16 @@ export default function ShopBuilder(){
       const get=(key:string)=>String(data.get(key)||"").trim();
 
 
-      const product:Product={id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source")};
+      const product:Product={id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source")};
       setShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]});
       setEditing(null);
       setAdding(false);setPhoto("");
     }}>
-      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? editing[["name","price","category","image","url"][i] as keyof Product] : ""} name={["name","price","category","image","url"][i]} type={i===3||i===4?"url":"text"} required={i===0||i===4} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
+      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? editing[["name","price","category","image","url"][i] as keyof Product] : ""} name={["name","price","category","image","url"][i]} type={i===3||i===4?"url":"text"} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
       <datalist id="shop-categories">{categories.slice(1).map(c=><option key={c} value={c}>{label(c)}</option>)}</datalist>
       <label>{t("Gender / Audience")}<select className={field} name="gender" defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option></select></label>
+      <label>{t("Compare-at Price")}<input className={field} name="compareAtPrice" maxLength={50} defaultValue={editing?.compareAtPrice||""}/></label>
+      <label>{t("Deal Badge")}<select className={field} name="badge" defaultValue={editing?.badge||"none"}>{dealBadges.map(badge=><option key={badge} value={badge}>{t(badge==="none"?"None":badge==="hot"?"Hot":badge==="sale"?"Sale":badge==="limited"?"Limited":"New")}</option>)}</select></label>
       <label>{t("Source Badge")}<select className={field} name="source" defaultValue={editing?.source || "Other"}>{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c} value={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
       <label>{t("Upload Product Photo")}<input className={field} type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
         const file=e.target.files?.[0];if(!file)return;
@@ -135,11 +150,13 @@ export default function ShopBuilder(){
     </div>
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
       <div className="product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
-      <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price}</p>{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":"Women")}</span>}
+      <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price} {p.compareAtPrice&&<del className="ms-2 text-sm font-normal text-slate-600">{p.compareAtPrice}</del>}</p>{p.badge&&p.badge!=="none"&&<span className="mb-2 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold">{t(p.badge==="hot"?"Hot":p.badge==="sale"?"Sale":p.badge==="limited"?"Limited":"New")}</span>}{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":"Women")}</span>}
+      {shop.shopMode==="affiliate"&&shop.affiliateDisclosure&&<p className="my-2 text-xs text-slate-600">{shop.affiliateDisclosure}</p>}
       <div className="flex flex-wrap gap-2 text-sm">
-        {shop.cryptoWallet&&validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<button type="button" className={button} onClick={()=>setCheckout(p)}>{t("Pay with USDC / USDT")}</button>}
-        {p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("Buy / View Deal")}</a>}
-        <a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>
+        {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>changeCart(p.id,1)}>{t("Add to Cart")}</button>}
+        {shop.shopMode==="personal"&&shop.cryptoWallet&&validWallet(shop.cryptoWallet,normalizeNetwork(shop.cryptoNetwork))&&<button type="button" className={button} onClick={()=>setCheckout({product:p,details:""})}>{t("Pay with USDC / USDT")}</button>}
+        {shop.shopMode==="affiliate"&&p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("View Deal / Buy Now")}</a>}
+        {shop.shopMode==="personal"&&<a className="rounded-lg border px-3 py-2" href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t("I would like to order")+" "+p.name+" "+p.price)} target="_blank" rel="noopener noreferrer">{t("Order via WhatsApp")}</a>}
         <button className="rounded-lg border px-3 py-2" onClick={()=>createPost(p)}>{t("Create Social Post")}</button>
         {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>{setEditing(p);setPhoto("");setAdding(true);setTimeout(()=>document.getElementById("shop-product-form")?.scrollIntoView({behavior:"smooth"}),0);}}>{t("Edit Product")}</button>}
         {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>setShop({...shop,products:shop.products.filter(item=>item.id!==p.id)})}>{t("Remove")}</button>}
@@ -147,7 +164,9 @@ export default function ShopBuilder(){
     </article>)}</div>
     {matches.length===0&&loaded&&<p>{t("No products found.")}</p>}
     {matches.length>visible&&<button type="button" className={button+" mt-6"} onClick={()=>setVisible(count=>count+24)}>{t("Load More")}</button>}
-    {checkout&&<CryptoCheckout product={checkout} shop={shop} onClose={()=>setCheckout(null)}/>}
+    {shop.shopMode==="personal"&&<button type="button" onClick={()=>setCartOpen(true)} className="fixed bottom-5 end-5 z-30 rounded-full bg-emerald-700 px-5 py-3 font-bold text-white shadow-lg">{t("Cart")} ({count}) · {total?(total.currency==="USD"?"$":"")+total.amount+(total.currency!=="USD"?" "+total.currency:""):"—"}</button>}
+    {shop.shopMode==="personal"&&cartOpen&&<CartDrawer lines={lines} shop={shop} change={changeCart} onClose={()=>setCartOpen(false)} onPay={(product,details)=>setCheckout({product,details})}/>}
+    {checkout&&<CryptoCheckout product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
     <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
   </main>;
 }

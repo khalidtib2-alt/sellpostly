@@ -1354,6 +1354,114 @@ export const translations = {
   "Crypto checkout uses the listed numeric price as a stablecoin amount. Use USD, USDC, or USDT prices and confirm supported tokens with buyers.": {
     "fr": "Le paiement utilise le prix numérique affiché comme montant en stablecoin. Utilisez des prix USD, USDC ou USDT et confirmez les jetons acceptés avec les acheteurs.",
     "ar": "يستخدم الدفع السعر الرقمي المعروض كمبلغ بالعملة المستقرة. استخدم أسعار الدولار أو USDC أو USDT وأكّد العملات المقبولة مع المشترين."
+  },
+  "Shop Type": {
+    "fr": "Type de boutique",
+    "ar": "نوع المتجر"
+  },
+  "Affiliate Storefront": {
+    "fr": "Boutique affiliée",
+    "ar": "متجر التسويق بالعمولة"
+  },
+  "Personal Seller Store": {
+    "fr": "Boutique de vente directe",
+    "ar": "متجر بائع مباشر"
+  },
+  "Affiliate Disclosure (Optional)": {
+    "fr": "Mention d’affiliation (facultative)",
+    "ar": "إفصاح العمولة (اختياري)"
+  },
+  "Compare-at Price": {
+    "fr": "Prix de référence",
+    "ar": "السعر السابق"
+  },
+  "Deal Badge": {
+    "fr": "Badge promotionnel",
+    "ar": "شارة العرض"
+  },
+  "None": {
+    "fr": "Aucun",
+    "ar": "بدون"
+  },
+  "Hot": {
+    "fr": "Populaire",
+    "ar": "رائج"
+  },
+  "Sale": {
+    "fr": "Promotion",
+    "ar": "تخفيض"
+  },
+  "Limited": {
+    "fr": "Limité",
+    "ar": "محدود"
+  },
+  "New": {
+    "fr": "Nouveau",
+    "ar": "جديد"
+  },
+  "View Deal / Buy Now": {
+    "fr": "Voir l’offre / Acheter",
+    "ar": "عرض الصفقة / الشراء الآن"
+  },
+  "Add to Cart": {
+    "fr": "Ajouter au panier",
+    "ar": "إضافة إلى السلة"
+  },
+  "Cart": {
+    "fr": "Panier",
+    "ar": "السلة"
+  },
+  "Cart Order": {
+    "fr": "Commande du panier",
+    "ar": "طلب السلة"
+  },
+  "Your cart is empty.": {
+    "fr": "Votre panier est vide.",
+    "ar": "سلتك فارغة."
+  },
+  "Decrease quantity": {
+    "fr": "Réduire la quantité",
+    "ar": "تقليل الكمية"
+  },
+  "Increase quantity": {
+    "fr": "Augmenter la quantité",
+    "ar": "زيادة الكمية"
+  },
+  "Quantity": {
+    "fr": "Quantité",
+    "ar": "الكمية"
+  },
+  "Delivery City / Note": {
+    "fr": "Ville de livraison / Note",
+    "ar": "مدينة التوصيل / ملاحظة"
+  },
+  "Total": {
+    "fr": "Total",
+    "ar": "الإجمالي"
+  },
+  "Confirm prices with the seller.": {
+    "fr": "Confirmez les prix avec le vendeur.",
+    "ar": "أكّد الأسعار مع البائع."
+  },
+  "Full order copied. Paste it into WhatsApp.": {
+    "fr": "Commande complète copiée. Collez-la dans WhatsApp.",
+    "ar": "تم نسخ الطلب كاملًا. الصقه في واتساب."
+  },
+  "Cart totals require compatible USD, USDC, or USDT prices. Confirm other currencies with the seller.": {
+    "fr": "Le total nécessite des prix compatibles en USD, USDC ou USDT. Confirmez les autres devises avec le vendeur.",
+    "ar": "يتطلب الإجمالي أسعارًا متوافقة بالدولار أو USDC أو USDT. أكّد العملات الأخرى مع البائع."
+  },
+  "Delivery fees are confirmed by the seller.": {
+    "fr": "Les frais de livraison sont confirmés par le vendeur.",
+    "ar": "يؤكّد البائع رسوم التوصيل."
+  },
+  "Order All on WhatsApp": {
+    "fr": "Commander le panier sur WhatsApp",
+    "ar": "طلب جميع المنتجات عبر واتساب"
+  },
+  "Pay Total with USDC / USDT": {
+    "fr": "Payer le total en USDC / USDT",
+    "ar": "دفع الإجمالي بـ USDC / USDT"
   }
 } as const;
 export type Message = keyof typeof translations;

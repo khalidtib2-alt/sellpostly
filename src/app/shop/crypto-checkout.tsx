@@ -6,7 +6,7 @@ import type { Message } from "../translations";
 import type { Product, Shop } from "./shop-data";
 import { stableAmount, normalizeNetwork } from "./crypto-data";
 
-export default function CryptoCheckout({ product, shop, onClose }: {product:Product;shop:Shop;onClose:()=>void}){
+export default function CryptoCheckout({ product, shop, onClose, orderDetails = "" }: {product:Product;shop:Shop;onClose:()=>void;orderDetails?:string}){
   const {t}=useLanguage();
   const payment=stableAmount(product.price);
   const [coin,setCoin]=useState(payment?.coin||"USDC");
@@ -28,10 +28,11 @@ export default function CryptoCheckout({ product, shop, onClose }: {product:Prod
     try{await navigator.clipboard.writeText(value);setStatus("Copied!");}
     catch{setStatus("Copy failed. Select the text to copy it manually.");}
   }
-  const receipt=[t("Payment receipt"),product.name,payment?payment.amount+" "+coin:"",t("Network")+": "+network,t("Wallet Address")+": "+shop.cryptoWallet,txid?t("Transaction Hash (TxID)")+": "+txid:""].filter(Boolean).join("\n");
+  const receipt=[t("Payment receipt"),product.name,orderDetails,payment?payment.amount+" "+coin:"",t("Network")+": "+network,t("Wallet Address")+": "+shop.cryptoWallet,txid?t("Transaction Hash (TxID)")+": "+txid:""].filter(Boolean).join("\n");
   return <dialog ref={dialog} onClose={onClose} className="m-auto max-h-[90vh] w-[min(95vw,32rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 backdrop:bg-black/50">
     <div className="flex items-center justify-between gap-3"><h2 className="text-2xl font-bold">{t("Pay with USDC / USDT")}</h2><button type="button" onClick={()=>dialog.current?.close()} className="rounded-lg border px-3 py-2">{t("Close")}</button></div>
     <p className="mt-4 font-semibold">{product.name}</p>
+    {orderDetails&&<pre className="my-3 whitespace-pre-wrap text-sm">{orderDetails}</pre>}
     <label className="mt-4 block">{t("Coin")}<select className="mt-1 w-full rounded-lg border p-2" value={coin} onChange={e=>setCoin(e.target.value)} disabled={!!payment?.coin}><option>USDC</option><option>USDT</option></select></label>
     {payment?<p className="my-3 text-2xl font-bold" dir="ltr">{payment.amount} {coin}</p>:<p role="alert" className="my-3">{t("Set a single USD, USDC, or USDT price to display a payment amount. Other currencies require seller confirmation.")}</p>}
     <p className="my-3 inline-block rounded-full bg-emerald-50 px-3 py-1">{t("Network")}: {network}</p>
