@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import BuyerOrderForm from "./buyer-order-form";
 import QRCode from "qrcode";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
@@ -7,7 +8,7 @@ import type { Product, Shop } from "./shop-data";
 import { escrowWallet, escrowNetwork, escrowReady, holdDays } from "./escrow-config";
 import { stableAmount } from "./crypto-data";
 
-export default function CryptoCheckout({ product, shop, onClose, orderDetails = "" }: {product:Product;shop:Shop;onClose:()=>void;orderDetails?:string}){
+export default function CryptoCheckout({ product, shop, onClose, orderDetails = "", storeSlug, orderItems=[] }: {storeSlug?:string;orderItems?:{id:string;quantity:number}[];product:Product;shop:Shop;onClose:()=>void;orderDetails?:string}){
   const {t}=useLanguage();
   const payment=stableAmount(product.price);
   const [coin,setCoin]=useState(payment?.coin||"USDC");
@@ -46,9 +47,10 @@ export default function CryptoCheckout({ product, shop, onClose, orderDetails = 
     <label className="block">{t("Wallet Address")}<input readOnly dir="ltr" value={escrowWallet} className="my-2 w-full rounded-lg border p-2 font-mono text-sm"/></label>
     <div className="flex flex-wrap gap-2"><button type="button" disabled={!escrowReady} onClick={()=>copy(escrowWallet)} className="rounded-lg border px-4 py-2">{t("Copy Address")}</button><button type="button" disabled={!payment} onClick={()=>payment&&copy(payment.amount)} className="rounded-lg border px-4 py-2 disabled:opacity-50">{t("Copy Amount")}</button></div>
     <label className="mt-4 block">{t("Transaction Hash (TxID)")}<input dir="ltr" maxLength={150} value={txid} onChange={e=>setTxid(e.target.value.replace(/[\r\n]/g,""))} className="mt-1 w-full rounded-lg border p-2"/></label>
-    <p className="my-3 text-sm">{t("Optional receipt only. The seller must verify the transfer on-chain before fulfilling the order.")}</p>
+    <p className="my-3 text-sm">{t(storeSlug?"Submitting a TxID records a pending order. Payment must be verified before fulfillment.":"Optional receipt only. The seller must verify the transfer on-chain before fulfilling the order.")}</p>
     {escrowReady&&payment&&shop.phone.replace(/\D/g,"")&&<a href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(receipt)} target="_blank" rel="noopener noreferrer" className="mt-3 block rounded-lg bg-emerald-700 px-4 py-3 text-center font-semibold text-white">{t("Send Payment Receipt on WhatsApp")}</a>}
     {!shop.phone.replace(/\D/g,"")&&<p className="my-3">{t("Seller WhatsApp number is unavailable.")}</p>}
+    {storeSlug&&escrowReady&&<BuyerOrderForm slug={storeSlug} coin={coin} network={network} txid={txid} items={orderItems}/>}
     <p role="status" className="mt-3">{status&&t(status)}</p>
   </dialog>;
 }

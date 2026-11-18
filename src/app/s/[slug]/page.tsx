@@ -7,5 +7,5 @@ export default async function PublicStore({params}:{params:Promise<{slug:string}
   const {slug}=await params;
   const shop=await publicShop(slug);
   if(!shop)notFound();
-  return <><style>{'body > header, body > footer { display: none; }'}</style><ShopBuilder isSharedBuyerView initialShop={shop}/></>;
+  return <><style>{'body > header, body > footer { display: none; }'}</style><ShopBuilder isSharedBuyerView initialShop={shop} publicSlug={slug}/></>;
 }

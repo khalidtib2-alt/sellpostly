@@ -5,7 +5,7 @@ import type { Message } from "../translations";
 import { cartTotal, type CartLine } from "./cart-data";
 import type { Product, Shop } from "./shop-data";
 
-export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuyerView=false}:{isSharedBuyerView?:boolean;lines:CartLine[];shop:Shop;change:(id:string,delta:number)=>void;onClose:()=>void;onPay:(product:Product,details:string)=>void}){
+export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuyerView=false}:{isSharedBuyerView?:boolean;lines:CartLine[];shop:Shop;change:(id:string,delta:number)=>void;onClose:()=>void;onPay:(product:Product,details:string,items:{id:string;quantity:number}[])=>void}){
   const {t}=useLanguage();
   const dialog=useRef<HTMLDialogElement>(null);
   const [note,setNote]=useState(""),[status,setStatus]=useState<Message|"">("");
@@ -37,7 +37,7 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuye
       {<button type="button" disabled={!total} onClick={()=>{
         if(!total)return;
         const order:Product={id:"cart-order",name:t("Cart Order"),price:total.amount+" "+total.currency,category:"Other",gender:"unisex",image:"",url:"",source:"Other"};
-        dialog.current?.close();onPay(order,details);
+        dialog.current?.close();onPay(order,details,lines.map(({product,quantity})=>({id:product.id,quantity})));
       }} className="rounded-lg border border-emerald-700 px-4 py-3 font-semibold disabled:opacity-50">{t("Pay Total with USDC / USDT")}</button>}
     </div>
     {!shop.phone.replace(/\D/g,"")&&<p className="my-3">{t(isSharedBuyerView?"WhatsApp checkout is unavailable for this shop.":"Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.")}</p>}

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../language-context';
 const ShopBuilder=dynamic(()=>import('./shop-builder'));
 export const proStorageKey='sellpostly-pro-key';
-export default function ProGate(){
+export default function ProGate({children}:{children?:React.ReactNode}){
   const {t}=useLanguage();
   const [verified,setVerified]=useState(false),[checking,setChecking]=useState(true),[key,setKey]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(false);
   const dialog=useRef<HTMLDialogElement>(null);
@@ -26,7 +26,7 @@ export default function ProGate(){
       localStorage.setItem(proStorageKey,key.trim());setVerified(true);dialog.current?.close();
     }catch{setError(true);}finally{setBusy(false);}
   }
-  if(verified)return <><div className="mx-auto max-w-6xl px-5 pt-5 text-end"><button className="text-sm underline" onClick={()=>{localStorage.removeItem(proStorageKey);setVerified(false);setKey('');}}>{t('Deactivate Pro on this device')}</button></div><ShopBuilder/></>;
+  if(verified)return <><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 pt-5"><nav aria-label="SellPostly Pro" className="flex gap-5 font-semibold"><a className="text-emerald-800 underline" href="/shop">{t("My Shop")}</a><a className="text-emerald-800 underline" href="/dashboard">{t("Seller Dashboard")}</a></nav><button className="text-sm underline" onClick={()=>{localStorage.removeItem(proStorageKey);setVerified(false);setKey('');}}>{t('Deactivate Pro on this device')}</button></div>{children||<ShopBuilder/>}</>;
   return <main className="mx-auto max-w-6xl px-5 py-16">
     <section className="grid items-center gap-10 lg:grid-cols-2">
       <div><span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-800">SellPostly Pro</span><h1 className="mt-5 text-4xl font-black sm:text-5xl">{t('SellPostly Pro Storefront')}</h1><p className="mt-5 text-lg text-slate-600">{t('Your brand. Your catalog. A storefront built to sell.')}</p><ul className="my-6 space-y-3">{(['Branded storefront and public shop link','Affiliate deals or personal seller cart','Store logo and configurable escrow hold'] as const).map(text=><li key={text}>✓ {t(text)}</li>)}</ul><button disabled={checking} onClick={()=>dialog.current?.showModal()} className="rounded-xl bg-emerald-700 px-6 py-3 font-bold text-white disabled:opacity-50">{t(checking?'Checking license…':'Activate Pro License')}</button><p className="mt-4 text-sm text-slate-600">{t('The social formatter stays free. Buyers never need a license.')}</p></div>

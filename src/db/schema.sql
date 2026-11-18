@@ -97,3 +97,6 @@ BEGIN
 END $$;
 -- statement-breakpoint
 REVOKE ALL ON FUNCTION request_seller_payout(uuid,text,numeric,text,text,text) FROM PUBLIC;
+
+-- statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS orders_normalized_network_tx ON orders(network,(CASE WHEN network='Solana' THEN tx_id ELSE lower(tx_id) END)) WHERE tx_id IS NOT NULL;

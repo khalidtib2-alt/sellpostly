@@ -21,11 +21,11 @@ function samples(): Shop {
   });
   return {name:"My Shop",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products};
 }
-export default function ShopBuilder({isSharedBuyerView=false,initialShop}:{isSharedBuyerView?:boolean;initialShop?:Shop}){
+export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicSlug}:{isSharedBuyerView?:boolean;initialShop?:Shop;publicSlug?:string}){
   const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(isSharedBuyerView),[preview,setPreview]=useState(isSharedBuyerView),[adding,setAdding]=useState(false);
-  const [checkout,setCheckout]=useState<{product:Product;details:string} | null>(null);
+  const [checkout,setCheckout]=useState<{product:Product;details:string;items?:{id:string;quantity:number}[]} | null>(null);
   const [cart,setCart]=useState<Record<string,number>>({});
   const [cartOpen,setCartOpen]=useState(false);
   const [editing,setEditing]=useState<Product | null>(null);
@@ -183,8 +183,8 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop}:{isSha
     {matches.length===0&&loaded&&<p>{t("No products found.")}</p>}
     {matches.length>visible&&<button type="button" className={button+" mt-6"} onClick={()=>setVisible(count=>count+24)}>{t("Load More")}</button>}
     {shop.shopMode==="personal"&&<button type="button" onClick={()=>setCartOpen(true)} className="fixed bottom-5 end-5 z-30 rounded-full bg-emerald-700 px-5 py-3 font-bold text-white shadow-lg">{t("Cart")} ({count}) · {total?(total.currency==="USD"?"$":"")+total.amount+(total.currency!=="USD"?" "+total.currency:""):"—"}</button>}
-    {shop.shopMode==="personal"&&cartOpen&&<CartDrawer isSharedBuyerView={shared} lines={lines} shop={shop} change={changeCart} onClose={()=>setCartOpen(false)} onPay={(product,details)=>setCheckout({product,details})}/>}
-    {checkout&&<CryptoCheckout product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
+    {shop.shopMode==="personal"&&cartOpen&&<CartDrawer isSharedBuyerView={shared} lines={lines} shop={shop} change={changeCart} onClose={()=>setCartOpen(false)} onPay={(product,details,items)=>setCheckout({product,details,items})}/>}
+    {checkout&&<CryptoCheckout storeSlug={publicSlug} orderItems={checkout.items||[{id:checkout.product.id,quantity:1}]} product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
     <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
 {shared&&<footer className="mt-12 border-t border-slate-200 pt-5 text-center text-xs text-slate-600"><a href="/shop" className="underline">{t("Edit My Own Shop")}</a></footer>}
   </main>;

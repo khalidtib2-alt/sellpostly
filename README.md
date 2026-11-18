@@ -29,3 +29,7 @@ This milestone provides receiving-wallet checkout instructions, QR codes, hold c
 `orders` computes commission and seller net values with PostgreSQL decimal arithmetic (5%, six decimal places). The database snapshots the shop's hold on order creation, prevents edits to verified payment values, and blocks release before the hold ends. `payout_requests` enforces a $10 minimum. The payout helper locks the shop, verifies ownership, and reserves only released balances in the same coin/network, subtracting pending/approved/paid payouts. Application code must use this helper rather than inserting payouts directly. There is intentionally no public payment-verification or payout endpoint in this milestone. The database credential must be server-only and limited to trusted backend code.
 
 Tests use an isolated embedded PostgreSQL engine and mocked Gumroad responses. A real Neon connection and live Gumroad purchase are needed for deployment integration tests; schema initialization is not executed against a live database during a build.
+
+## Milestone 2
+
+Buyer order submission, contact-matched disputes/receipt confirmation, seller order management, and the Pro dashboard are now implemented. See MILESTONE-2.md for migration steps, API contracts, exact balance definitions, and operational limits. Re-run the protected database initializer before use. Automatic payment verification, releases and actual payouts remain disabled.
