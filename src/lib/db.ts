@@ -21,21 +21,25 @@ export async function recordSubscription(identity:ProIdentity){
   const sql=db();
   await sql`INSERT INTO subscriptions(owner_key,provider) VALUES(${identity.ownerKey},${identity.provider}) ON CONFLICT(owner_key) DO UPDATE SET provider=excluded.provider,verified_at=now()`;
 }
+export const PUBLISH_SHOP_SQL=`INSERT INTO shops(owner_key,slug,name,logo,catalog)
+ SELECT $1,$2,$3,$4,$5::jsonb FROM subscriptions WHERE owner_key=$1 AND status='active'
+ ON CONFLICT(owner_key) DO UPDATE SET name=excluded.name,logo=excluded.logo,catalog=excluded.catalog,published=true,updated_at=now()
+ RETURNING slug,escrow_hold_days`;
 export async function publishShop(identity:ProIdentity,value:unknown){
-  const shop=validateShop(value);
+  const {escrowHoldDays:_ignored,...shop}=validateShop(value);
   const sql=db();
   const slug='store-'+randomBytes(9).toString('hex');
   const results=await sql.transaction([
     sql`INSERT INTO subscriptions(owner_key,provider) VALUES(${identity.ownerKey},${identity.provider}) ON CONFLICT(owner_key) DO UPDATE SET provider=excluded.provider,verified_at=now()`,
-    sql`INSERT INTO shops(owner_key,slug,name,logo,escrow_hold_days,catalog) SELECT ${identity.ownerKey},${slug},${shop.name},${shop.logo||''},${shop.escrowHoldDays||7},${JSON.stringify(shop)}::jsonb FROM subscriptions WHERE owner_key=${identity.ownerKey} AND status='active' ON CONFLICT(owner_key) DO UPDATE SET name=excluded.name,logo=excluded.logo,escrow_hold_days=excluded.escrow_hold_days,catalog=excluded.catalog,published=true,updated_at=now() RETURNING slug`
+    sql.query(PUBLISH_SHOP_SQL,[identity.ownerKey,slug,shop.name,shop.logo||"",JSON.stringify(shop)])
   ]);
   if(!results[1][0])throw Error("PRO_REQUIRED");
   return String(results[1][0].slug);
 }
 export async function publicShop(slug:string,query:Query=async(sql,parameters)=>await db().query(sql,parameters)):Promise<(Shop & {verified:boolean;suspended:boolean})|null>{
   if(!/^[a-z0-9][a-z0-9-]{2,63}$/.test(slug))return null;
-  const rows=await query("SELECT catalog,verified,suspended FROM shops WHERE slug=$1 AND published=true LIMIT 1",[slug]);
-  return rows[0]?{...validateShop(rows[0].catalog),verified:rows[0].verified===true,suspended:rows[0].suspended===true}:null;
+  const rows=await query("SELECT catalog,verified,suspended,escrow_hold_days FROM shops WHERE slug=$1 AND published=true LIMIT 1",[slug]);
+  return rows[0]?{...validateShop(rows[0].catalog),escrowHoldDays:rows[0].escrow_hold_days,verified:rows[0].verified===true,suspended:rows[0].suspended===true}:null;
 }
 export async function createPendingOrder(shopId:string,grossAmount:string,coin:'USDC'|'USDT',network:string,details:unknown){
   const sql=db();
@@ -45,4 +49,8 @@ export async function createPendingOrder(shopId:string,grossAmount:string,coin:'
 export async function requestPayout(identity:ProIdentity,shopId:string,amount:string,coin:'USDC'|'USDT',network:string,wallet:string){
   const sql=db();
   return sql`SELECT request_seller_payout(${shopId}::uuid,${identity.ownerKey},${amount}::numeric,${coin},${network},${wallet}) AS id`;
+}
+
+export async function sellerShopSettings(owner:string,query:Query=async(sql,parameters)=>await db().query(sql,parameters)){
+ const rows=await query("SELECT id,escrow_hold_days FROM shops WHERE owner_key=$1",[owner]);return rows[0]||{escrow_hold_days:7};
 }

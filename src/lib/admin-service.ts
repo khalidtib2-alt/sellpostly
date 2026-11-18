@@ -24,19 +24,29 @@ export async function adminOrder(id:string,query:Query=run){
 export const ADMIN_ORDER_UPDATE_SQL=`UPDATE orders SET
  status=CASE $2 WHEN 'verify' THEN 'held' WHEN 'release' THEN 'released' WHEN 'refund' THEN 'refunded' ELSE 'cancelled' END,
  payment_verified_at=CASE WHEN $2='verify' THEN now() ELSE payment_verified_at END,
- details=details || jsonb_build_object('admin_actions',coalesce(details->'admin_actions','[]'::jsonb)||jsonb_build_array(jsonb_build_object('action',$2::text,'note',$3::text,'at',now())))
+ force_released_at=CASE WHEN $2='release' AND escrow_release_at>now() AND $5::boolean THEN now() ELSE force_released_at END,
+ details=details || jsonb_build_object('admin_actions',coalesce(details->'admin_actions','[]'::jsonb)||jsonb_build_array(jsonb_build_object('action',$2::text,'note',$3::text,'force_release',$5::boolean,'at',now())))
  WHERE id=$1::uuid AND (
  ($2='verify' AND status='pending' AND tx_id IS NOT NULL AND tx_id=$4::text) OR
- ($2='release' AND status IN ('held','disputed') AND payment_verified_at IS NOT NULL AND escrow_release_at<=now()) OR
+ ($2='release' AND status IN ('held','disputed') AND payment_verified_at IS NOT NULL AND (escrow_release_at<=now() OR ($5::boolean AND nullif(details->>'buyer_confirmed_at','') IS NOT NULL))) OR
  ($2='refund' AND status IN ('held','disputed')) OR ($2='cancel' AND status='pending'))
- RETURNING id,status,payment_verified_at,escrow_release_at,gross_amount::text,commission_amount::text,net_amount::text`;
+ RETURNING id,status,payment_verified_at,escrow_release_at,force_released_at,gross_amount::text,commission_amount::text,net_amount::text`;
 export async function updateOrder(id:string,value:unknown,query:Query=run){
  uuid(id);const raw=object(value),action=text(raw.action,16);
  if(!['verify','release','refund','cancel'].includes(action))throw new ApiError('INVALID_INPUT');
+ if(raw.forceRelease!==undefined&&typeof raw.forceRelease!=='boolean')throw new ApiError('INVALID_INPUT');
+ const force=raw.forceRelease===true;
+ if(force&&action!=='release')throw new ApiError('INVALID_INPUT');
  const note=raw.note===undefined?'':text(raw.note,1000,false);
  let verifiedTx:string|null=null;
  if(action==='verify'){const order=await adminOrder(id,query);txId(order.tx_id,network(order.network));verifiedTx=order.tx_id;}
- const rows=await query(ADMIN_ORDER_UPDATE_SQL,[id,action,note,verifiedTx]);
+ if(force){
+  const order=await adminOrder(id,query);
+  const confirmed=Date.parse(order.details?.buyer_confirmed_at||'');
+  const paid=Date.parse(order.payment_verified_at||'');
+  if(!Number.isFinite(confirmed)||!Number.isFinite(paid)||confirmed<paid)throw new ApiError('BUYER_CONFIRMATION_REQUIRED',409);
+ }
+ const rows=await query(ADMIN_ORDER_UPDATE_SQL,[id,action,note,verifiedTx,force]);
  if(!rows.length)throw new ApiError('TRANSITION_NOT_ALLOWED',409);return rows[0];
 }
 export async function adminPayout(id:string,query:Query=run){
@@ -62,9 +72,11 @@ export async function adminShop(id:string,query:Query=run){
 }
 export async function updateShop(id:string,value:unknown,query:Query=run){
  uuid(id);const raw=object(value);
- if(raw.verified===undefined&&raw.suspended===undefined)throw new ApiError('INVALID_INPUT');
+ if(raw.verified===undefined&&raw.suspended===undefined&&raw.escrow_hold_days===undefined)throw new ApiError('INVALID_INPUT');
  for(const key of ['verified','suspended'])if(raw[key]!==undefined&&typeof raw[key]!=='boolean')throw new ApiError('INVALID_INPUT');
- const rows=await query('UPDATE shops SET verified=coalesce($2::boolean,verified),suspended=coalesce($3::boolean,suspended),updated_at=now() WHERE id=$1::uuid RETURNING id,name,slug,verified,suspended',[id,raw.verified??null,raw.suspended??null]);
+ const days=raw.escrow_hold_days;
+ if(days!==undefined&&(typeof days!=='number'||!Number.isInteger(days)||days<3||days>15))throw new ApiError('INVALID_HOLD_PERIOD');
+ const rows=await query('UPDATE shops SET verified=coalesce($2::boolean,verified),suspended=coalesce($3::boolean,suspended),escrow_hold_days=coalesce($4::integer,escrow_hold_days),updated_at=now() WHERE id=$1::uuid RETURNING id,name,slug,verified,suspended,escrow_hold_days',[id,raw.verified??null,raw.suspended??null,days??null]);
  if(!rows.length)throw new ApiError('RECORD_NOT_FOUND',404);return rows[0];
 }
 export async function updateSubscription(value:unknown,query:Query=run){

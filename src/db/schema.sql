@@ -129,3 +129,45 @@ BEGIN
   END IF;
   RETURN NEW;
 END $$;
+
+-- statement-breakpoint
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS force_released_at timestamptz;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION enforce_order_hold() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE blocked boolean; confirmed_at timestamptz;
+BEGIN
+ IF TG_OP='INSERT' THEN
+  SELECT escrow_hold_days,suspended INTO NEW.escrow_hold_days,blocked FROM shops WHERE id=NEW.shop_id FOR SHARE;
+  IF blocked THEN RAISE EXCEPTION 'Store suspended'; END IF;
+  IF NEW.force_released_at IS NOT NULL THEN RAISE EXCEPTION 'Force release requires an existing buyer-confirmed order'; END IF;
+ ELSE
+  IF NEW.shop_id<>OLD.shop_id THEN RAISE EXCEPTION 'Order shop cannot change'; END IF;
+  NEW.escrow_hold_days:=OLD.escrow_hold_days;
+  IF OLD.payment_verified_at IS NOT NULL AND (NEW.payment_verified_at IS DISTINCT FROM OLD.payment_verified_at OR NEW.gross_amount<>OLD.gross_amount OR NEW.coin<>OLD.coin OR NEW.network<>OLD.network OR NEW.tx_id IS DISTINCT FROM OLD.tx_id) THEN RAISE EXCEPTION 'Verified payment cannot change'; END IF;
+  IF NEW.force_released_at IS DISTINCT FROM OLD.force_released_at THEN
+   IF OLD.force_released_at IS NOT NULL THEN RAISE EXCEPTION 'Force release audit cannot change'; END IF;
+   BEGIN confirmed_at:=(OLD.details->>'buyer_confirmed_at')::timestamptz; EXCEPTION WHEN OTHERS THEN confirmed_at:=NULL; END;
+   IF NEW.status<>'released' OR OLD.status NOT IN ('held','disputed') OR confirmed_at IS NULL OR OLD.payment_verified_at IS NULL OR confirmed_at<OLD.payment_verified_at OR confirmed_at>now() THEN RAISE EXCEPTION 'Buyer confirmation required for force release'; END IF;
+   NEW.force_released_at:=now();
+  END IF;
+ END IF;
+ IF NEW.payment_verified_at IS NOT NULL THEN NEW.escrow_release_at:=NEW.payment_verified_at+make_interval(days=>NEW.escrow_hold_days); END IF;
+ IF NEW.status='released' AND (NEW.escrow_release_at IS NULL OR NEW.escrow_release_at>now()) AND NEW.force_released_at IS NULL THEN RAISE EXCEPTION 'Escrow hold has not ended'; END IF;
+ RETURN NEW;
+END $$;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION request_seller_payout(p_shop uuid,p_owner text,p_amount numeric,p_coin text,p_network text,p_wallet text)
+RETURNS uuid LANGUAGE plpgsql AS $$
+DECLARE available numeric; reserved numeric; result uuid;
+BEGIN
+  IF p_amount < 10 THEN RAISE EXCEPTION 'Minimum payout is 10.00'; END IF;
+  PERFORM 1 FROM subscriptions WHERE owner_key=p_owner AND status='active' FOR SHARE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Active subscription required'; END IF;
+  PERFORM 1 FROM shops WHERE id=p_shop AND owner_key=p_owner FOR UPDATE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Shop ownership required'; END IF;
+  SELECT coalesce(sum(net_amount),0) INTO available FROM orders WHERE shop_id=p_shop AND status='released' AND (escrow_release_at<=now() OR force_released_at IS NOT NULL) AND coin=p_coin AND network=p_network;
+  SELECT coalesce(sum(amount),0) INTO reserved FROM payout_requests WHERE shop_id=p_shop AND status IN ('pending','approved','paid') AND coin=p_coin AND network=p_network;
+  IF p_amount > available-reserved THEN RAISE EXCEPTION 'Insufficient released balance'; END IF;
+  INSERT INTO payout_requests(shop_id,amount,coin,network,wallet) VALUES(p_shop,p_amount,p_coin,p_network,p_wallet) RETURNING id INTO result;
+  RETURN result;
+END $$;

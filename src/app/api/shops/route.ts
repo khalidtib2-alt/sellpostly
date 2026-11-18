@@ -1,5 +1,5 @@
 import { proIdentity } from '../../../lib/pro-auth';
-import { publishShop } from '../../../lib/db';
+import { publishShop,sellerShopSettings } from '../../../lib/db';
 export const runtime='nodejs';
 export async function POST(request:Request){
   const identity=await proIdentity(request);
@@ -11,4 +11,9 @@ export async function POST(request:Request){
   catch{return Response.json({error:'INVALID_CATALOG'},{status:400});}
   try{const slug=await publishShop(identity,value);return Response.json({slug,url:'/s/'+slug},{headers:{'Cache-Control':'no-store'}});}
   catch{return Response.json({error:'PUBLISH_FAILED'},{status:400});}
+}
+
+export async function GET(request:Request){
+ const identity=await proIdentity(request);if(!identity)return Response.json({error:"PRO_REQUIRED"},{status:401,headers:{"Cache-Control":"no-store"}});
+ try{return Response.json(await sellerShopSettings(identity.ownerKey),{headers:{"Cache-Control":"no-store"}});}catch{return Response.json({error:"SERVICE_UNAVAILABLE"},{status:503});}
 }

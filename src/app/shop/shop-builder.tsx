@@ -24,6 +24,8 @@ function samples(): Shop {
 export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicSlug,verifiedStore=false}:{isSharedBuyerView?:boolean;initialShop?:Shop;publicSlug?:string;verifiedStore?:boolean}){
   const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
+  const [assignedHold,setAssignedHold]=useState(holdDays(initialShop?.escrowHoldDays));
+  const [policyLoaded,setPolicyLoaded]=useState(!!initialShop);
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(isSharedBuyerView),[preview,setPreview]=useState(isSharedBuyerView),[adding,setAdding]=useState(false);
   const [checkout,setCheckout]=useState<{product:Product;details:string;items?:{id:string;quantity:number}[]} | null>(null);
   const [cart,setCart]=useState<Record<string,number>>({});
@@ -84,6 +86,21 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     load();return()=>{cancelled=true;};
   },[initialShop,isSharedBuyerView]);
   useEffect(()=>{if(loaded&&!shared)try{localStorage.setItem(shopKey,JSON.stringify(shop));}catch{setStatus("Could not save. Device storage may be full.");}},[shop,loaded,shared]);
+  useEffect(()=>{
+    if(shared||!loaded)return;
+    let active=true;
+    async function refreshPolicy(){
+      try{
+        const key=localStorage.getItem("sellpostly-pro-key")||"";
+        const response=await fetch("/api/shops",{headers:{"x-pro-key":key},cache:"no-store"});
+        if(!response.ok)throw Error();
+        const settings=await response.json();
+        if(active){const days=holdDays(settings.escrow_hold_days);setAssignedHold(days);setPolicyLoaded(true);setShop(previous=>({...previous,escrowHoldDays:days}));}
+      }catch{if(active)setStatus("Could not refresh the admin-assigned hold period. Try again.");}
+    }
+    refreshPolicy();window.addEventListener("focus",refreshPolicy);
+    return()=>{active=false;window.removeEventListener("focus",refreshPolicy);};
+  },[shared,loaded]);
   async function share(){
     try{
       const key=localStorage.getItem("sellpostly-pro-key")||"";
@@ -127,8 +144,8 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
         if(file.size>5000000){setStatus("Photo must be under 5 MB.");return;}
         const reader=new FileReader();reader.onload=()=>{const image=new Image();image.onload=()=>{const canvas=document.createElement("canvas");const scale=Math.min(1,256/Math.max(image.width,image.height));canvas.width=Math.max(1,Math.round(image.width*scale));canvas.height=Math.max(1,Math.round(image.height*scale));canvas.getContext("2d")?.drawImage(image,0,0,canvas.width,canvas.height);setShop(previous=>({...previous,logo:canvas.toDataURL("image/png")}));};image.src=String(reader.result);};reader.readAsDataURL(file);
       }}/>{shop.logo&&<button type="button" className="mt-2 text-sm underline" onClick={()=>setShop({...shop,logo:""})}>{t("Remove Logo")}</button>}</label>
-      <label>{t("Escrow Hold Period")}<select className={field} value={holdDays(shop.escrowHoldDays)} onChange={e=>setShop({...shop,escrowHoldDays:Number(e.target.value)})}>{Array.from({length:13},(_,i)=>i+3).map(days=><option key={days} value={days}>{days} {t("days")}</option>)}</select></label>
-      <p className="text-sm">{t("Escrow settings are recorded for future verified payments. Automatic release is not enabled in Milestone 1.")}</p>
+      <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4"><p className="font-semibold">{t("Admin-assigned escrow hold")}: {assignedHold} {t("days")}</p><p className="mt-2 text-sm">{t("Only the Admin can change this period. Changes apply to new orders; existing orders keep their original hold.")}</p>{!policyLoaded&&<p className="mt-2 text-xs">{t("Default hold shown until admin settings load.")}</p>}</div>
+      <p className="text-sm">{t("Payments are verified and releases are recorded by the Admin. Transfers are handled separately.")}</p>
       {!escrowReady&&<p className="text-sm sm:col-span-3" role="status">{t("Escrow checkout is unavailable. The platform escrow wallet has not been configured.")}</p>}
       <label>{t("Shop Background Color")}<select className={field} value={shop.shopTheme} onChange={e=>setShop({...shop,shopTheme:e.target.value as Surface})}>{surfaces.map((surface,index)=><option key={surface} value={surface}>{t(surfaceNames[index])}</option>)}</select></label>
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>

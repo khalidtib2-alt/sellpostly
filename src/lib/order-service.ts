@@ -28,7 +28,7 @@ export async function submitOrder(value:unknown,query:Query=run){
 export const BUYER_ACTION_SQL=`UPDATE orders SET
  status=CASE WHEN $3='dispute' THEN 'disputed' ELSE status END,
  details=details || CASE WHEN $3='dispute' THEN jsonb_build_object('dispute',jsonb_build_object('reason',$4::text,'opened_at',now())) ELSE jsonb_build_object('buyer_confirmed_at',now()) END
- WHERE id=$1::uuid AND details->'buyer'->>'contact'=$2 AND status='held'
+ WHERE id=$1::uuid AND details->'buyer'->>'contact'=$2 AND (status='held' OR ($3='confirm_receipt' AND status='disputed'))
  RETURNING id,status,escrow_release_at,details->>'buyer_confirmed_at' AS buyer_confirmed_at`;
 export async function buyerAction(id:string,value:unknown,query:Query=run){
  uuid(id);const raw=object(value),match=contact(raw.contact),action=raw.action||'dispute';
@@ -61,7 +61,7 @@ export async function payout(ownerKey:string,value:unknown,query:Query=run){
   const rows=await query('SELECT request_seller_payout($1::uuid,$2,$3::numeric,$4,$5,$6) AS id',[shops[0].id,ownerKey,amount,selectedCoin,net,wallet]);return rows[0];
  }catch(error){if((error as {code?:string}).code==='P0001')throw new ApiError('PAYOUT_NOT_AVAILABLE',409);throw error;}
 }
-export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name FROM shops WHERE owner_key=$1),
+export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name,escrow_hold_days FROM shops WHERE owner_key=$1),
  ord AS (SELECT o.* FROM orders o JOIN owned s ON s.id=o.shop_id),
  pay AS (SELECT p.* FROM payout_requests p JOIN owned s ON s.id=p.shop_id),
  buckets AS (SELECT coin,network FROM ord UNION SELECT coin,network FROM pay),
@@ -69,12 +69,12 @@ export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name FROM shops WHERE 
  (SELECT coalesce(sum(gross_amount),0)::text FROM ord WHERE coin=b.coin AND network=b.network AND status IN ('held','released','disputed')) AS gross_sales,
  (SELECT coalesce(sum(commission_amount),0)::text FROM ord WHERE coin=b.coin AND network=b.network AND status IN ('held','released','disputed')) AS total_commission,
  (SELECT coalesce(sum(net_amount),0)::text FROM ord WHERE coin=b.coin AND network=b.network AND status IN ('held','disputed')) AS pending_escrow,
- ((SELECT coalesce(sum(net_amount),0) FROM ord WHERE coin=b.coin AND network=b.network AND status='released' AND escrow_release_at<=now())-(SELECT coalesce(sum(amount),0) FROM pay WHERE coin=b.coin AND network=b.network AND status IN ('pending','approved','paid')))::text AS available_balance,
+ ((SELECT coalesce(sum(net_amount),0) FROM ord WHERE coin=b.coin AND network=b.network AND status='released' AND (escrow_release_at<=now() OR force_released_at IS NOT NULL))-(SELECT coalesce(sum(amount),0) FROM pay WHERE coin=b.coin AND network=b.network AND status IN ('pending','approved','paid')))::text AS available_balance,
  (SELECT coalesce(sum(amount),0)::text FROM pay WHERE coin=b.coin AND network=b.network AND status='paid') AS total_redeemed
  FROM buckets b)
  SELECT (SELECT row_to_json(s) FROM owned s) AS shop,
  coalesce((SELECT json_agg(b ORDER BY coin,network) FROM balances b),'[]') AS balances,
- coalesce((SELECT json_agg(json_build_object('id',id,'gross_amount',gross_amount::text,'commission_amount',commission_amount::text,'net_amount',net_amount::text,'coin',coin,'network',network,'status',status,'tx_id',tx_id,'escrow_hold_days',escrow_hold_days,'escrow_release_at',escrow_release_at,'payment_verified_at',payment_verified_at,'created_at',created_at,'details',details) ORDER BY created_at DESC,id) FROM ord),'[]') AS orders,
+ coalesce((SELECT json_agg(json_build_object('id',id,'gross_amount',gross_amount::text,'commission_amount',commission_amount::text,'net_amount',net_amount::text,'coin',coin,'network',network,'status',status,'tx_id',tx_id,'escrow_hold_days',escrow_hold_days,'escrow_release_at',escrow_release_at,'force_released_at',force_released_at,'payment_verified_at',payment_verified_at,'created_at',created_at,'details',details) ORDER BY created_at DESC,id) FROM ord),'[]') AS orders,
  coalesce((SELECT json_agg(json_build_object('id',id,'amount',amount::text,'coin',coin,'network',network,'wallet',wallet,'status',status,'tx_id',tx_id,'created_at',created_at) ORDER BY created_at DESC,id) FROM pay),'[]') AS payouts`;
 export async function dashboard(ownerKey:string,query:Query=run){return (await query(DASHBOARD_SQL,[ownerKey]))[0];}
 

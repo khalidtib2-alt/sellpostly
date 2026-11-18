@@ -50,7 +50,7 @@ test('buyer and seller workflows enforce contact, ownership, holds and precise i
   assert.equal(buyerView.fulfillment.delivery_notes,'digital-key-123');assert.equal(buyerView.details,undefined);
   const disputed=await service.buyerAction(order.id,{contact:'buyer@example.com',action:'dispute',reason:'Delivery incomplete'},query);
   assert.equal(disputed.status,'disputed');
-  await assert.rejects(service.buyerAction(order.id,{contact:'buyer@example.com',action:'confirm_receipt'},query));
+  assert.equal((await service.buyerAction(order.id,{contact:'buyer@example.com',action:'confirm_receipt'},query)).status,'disputed');
   await assert.rejects(pg.query("UPDATE orders SET status='released' WHERE id=$1",[order.id]));
   const held=await service.dashboard('owner',query);
   assert.equal(held.balances[0].gross_sales,'199.999998');

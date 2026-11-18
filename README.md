@@ -37,3 +37,7 @@ Buyer order submission, contact-matched disputes/receipt confirmation, seller or
 ## Milestone 3
 
 Digital Product, Art and Sport categories, database-backed store verification/suspension, and the manual Admin Control Center are implemented. See MILESTONE-3.md for migration steps and API contracts. Rerun the protected database initializer before use. Visit /admin directly and use ADMIN_SECRET_KEY; admin endpoints require x-admin-key even in development. No signing or fund transfers are performed.
+
+## Escrow governance update (current rules)
+
+Admin-only 3–15 day assignment, default seven, replaces the seller hold selector. Seller publishing cannot overwrite the database policy. Clear order actions and an empty-state workflow preview are provided in /admin. Explicit buyer-confirmed admin force releases preserve the original deadline and create an audited override. See ESCROW-GOVERNANCE.md; its hold/release rules supersede earlier milestone notes. Rerun the protected database initializer before use.

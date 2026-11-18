@@ -35,7 +35,7 @@ export default function CryptoCheckout({ product, shop, onClose, orderDetails = 
   return <dialog ref={dialog} onClose={onClose} className="m-auto max-h-[90vh] w-[min(95vw,32rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 text-slate-900 backdrop:bg-black/50">
     <div className="flex items-center justify-between gap-3"><h2 className="text-2xl font-bold">{t("Pay with USDC / USDT")}</h2><button type="button" onClick={()=>dialog.current?.close()} className="rounded-lg border px-3 py-2">{t("Close")}</button></div>
     {escrowReady?<p className="my-4 rounded-xl bg-emerald-50 p-3 font-semibold text-emerald-900">{t("Escrow Protected")} · {holdDays(shop.escrowHoldDays)} {t("days")}</p>:<p role="alert" className="my-4 rounded-xl border border-amber-300 p-3">{t("Escrow checkout is unavailable. The platform escrow wallet has not been configured.")}</p>}
-    <p className="my-3 text-sm">{t("Escrow settings are recorded for future verified payments. Automatic release is not enabled in Milestone 1.")}</p>
+    <p className="my-3 text-sm">{t("Payments are verified and releases are recorded by the Admin. Transfers are handled separately.")}</p>
     <p className="mt-4 font-semibold">{product.name}</p>
     {orderDetails&&<pre className="my-3 whitespace-pre-wrap text-sm">{orderDetails}</pre>}
     <label className="mt-4 block">{t("Coin")}<select className="mt-1 w-full rounded-lg border p-2" value={coin} onChange={e=>setCoin(e.target.value)} disabled={!!payment?.coin}><option>USDC</option><option>USDT</option></select></label>
