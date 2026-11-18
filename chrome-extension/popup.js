@@ -418,7 +418,7 @@ function featureLines(value) {
 
 function shareUrl(platform, post) {
   const text=encodeURIComponent(post);
-  if(platform==="WhatsApp Business")return "https://whatsapp.com/send?text="+text;
+  if(platform==="WhatsApp Business")return whatsappUrl(post);
   if(platform==="X")return "https://twitter.com/intent/tweet?text="+text;
   if(platform==="Threads")return "https://threads.net/intent/post?text="+text;
   if(platform==="Pinterest")return "https://pinterest.com/pin/create/button/?description="+text;
@@ -431,6 +431,7 @@ async function sendPost(platform,post,withImage) {
   }
   window.open(shareUrl(platform,post),"_blank","noopener,noreferrer");
   try {
+    await navigator.clipboard.writeText(post);
     if(withImage) {
       const blobPromise=new Promise((resolve,reject)=>{
         const image=new Image();image.crossOrigin="anonymous";
@@ -494,3 +495,12 @@ document.querySelector("#open-studio").addEventListener("click",async()=>{
 });
 
 
+
+function whatsappUrl(message) {
+  let preview=message.slice(0,800).replace(/[\uD800-\uDBFF]$/,"").trimEnd();
+  if(message.length>800) {
+    const boundary=preview.search(/\s+\S*$/u);
+    if(boundary>0)preview=preview.slice(0,boundary).trimEnd();
+  }
+  return "https://wa.me/?text="+encodeURIComponent(preview);
+}

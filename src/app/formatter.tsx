@@ -64,7 +64,7 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
 
   function destination() {
     const encoded=encodeURIComponent(text);
-    if(post.platform==="WhatsApp Business")return "https://whatsapp.com/send?text="+encoded;
+    if(post.platform==="WhatsApp Business")return whatsappUrl(text);
     if(post.platform.startsWith("X"))return "https://twitter.com/intent/tweet?text="+encoded;
     if(post.platform==="Threads")return "https://threads.net/intent/post?text="+encoded;
     if(post.platform==="Pinterest")return "https://pinterest.com";
@@ -80,6 +80,7 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
 
     const copying = (async()=>{
       try {
+        await navigator.clipboard.writeText(text);
         if(withImage && image) {
           try {
             await navigator.clipboard.write([new ClipboardItem({"image/png":image,"text/plain":new Blob([text],{type:"text/plain"})})]);
@@ -306,3 +307,12 @@ function featureLines(value: string) {
     .flatMap(line=>line.match(/.{1,100}(?:\s|$)|.{1,100}/g)||[]).map(line=>line.trim()).slice(0,4);
 }
 
+
+function whatsappUrl(message: string) {
+  let preview=message.slice(0,800).replace(/[\uD800-\uDBFF]$/,"").trimEnd();
+  if(message.length>800) {
+    const boundary=preview.search(/\s+\S*$/u);
+    if(boundary>0)preview=preview.slice(0,boundary).trimEnd();
+  }
+  return "https://wa.me/?text="+encodeURIComponent(preview);
+}
