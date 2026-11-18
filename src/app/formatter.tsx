@@ -82,7 +82,8 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
       if(withImage && image){
 
       const file=new File([image],"sellpostly-promo.png",{type:"image/png"});
-      if(navigator.canShare?.({files:[file]})){
+      const isMobileOrTouch = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 0 && window.innerWidth < 1024);
+      if(isMobileOrTouch && navigator.canShare?.({files:[file]})){
         try{await navigator.share({files:[file],text:text});}
         catch(error){if(!(error instanceof DOMException && error.name==="AbortError"))throw error;}
         return;
