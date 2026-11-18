@@ -21,7 +21,7 @@ function samples(): Shop {
   });
   return {name:"My Shop",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products};
 }
-export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicSlug}:{isSharedBuyerView?:boolean;initialShop?:Shop;publicSlug?:string}){
+export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicSlug,verifiedStore=false}:{isSharedBuyerView?:boolean;initialShop?:Shop;publicSlug?:string;verifiedStore?:boolean}){
   const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(isSharedBuyerView),[preview,setPreview]=useState(isSharedBuyerView),[adding,setAdding]=useState(false);
@@ -108,7 +108,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
   return <main data-surface={shop.shopTheme} className="shop-surface mx-auto max-w-6xl px-5 py-12">
 <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-6">
-<div><div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white text-2xl font-black text-emerald-800">{shop.logo?<img src={shop.logo} alt={shop.name} className="max-h-full max-w-full object-contain"/>:(shop.name||"SP").trim().slice(0,2).toUpperCase()}</div><h1 className="text-4xl font-black">{shop.name==="My Shop"||!shop.name?t("My Shop"):shop.name}</h1><p className="mt-3 whitespace-pre-line text-slate-600">{shop.bio}</p></div>
+<div>{publicSlug&&verifiedStore&&<p className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-800"><span aria-hidden="true">✓</span>{t("Verified Store")}</p>}<div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white text-2xl font-black text-emerald-800">{shop.logo?<img src={shop.logo} alt={shop.name} className="max-h-full max-w-full object-contain"/>:(shop.name||"SP").trim().slice(0,2).toUpperCase()}</div><h1 className="text-4xl font-black">{shop.name==="My Shop"||!shop.name?t("My Shop"):shop.name}</h1><p className="mt-3 whitespace-pre-line text-slate-600">{shop.bio}</p></div>
 {shared&&<div role="group" aria-label={t("Language")} className="flex gap-1 rounded-full border border-slate-300 bg-white p-1 text-slate-900">
 {(["en","fr","ar"] as const).map(value=><button type="button" key={value} lang={value} aria-pressed={language===value} onClick={()=>setLanguage(value)} className={language===value?"rounded-full bg-emerald-700 px-3 py-2 text-sm font-semibold text-white":"rounded-full px-3 py-2 text-sm font-semibold"}>{value==="ar"?"العربية":value.toUpperCase()}</button>)}
 </div>}</header>

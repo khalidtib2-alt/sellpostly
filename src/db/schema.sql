@@ -87,6 +87,8 @@ RETURNS uuid LANGUAGE plpgsql AS $$
 DECLARE available numeric; reserved numeric; result uuid;
 BEGIN
   IF p_amount < 10 THEN RAISE EXCEPTION 'Minimum payout is 10.00'; END IF;
+  PERFORM 1 FROM subscriptions WHERE owner_key=p_owner AND status='active' FOR SHARE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Active subscription required'; END IF;
   PERFORM 1 FROM shops WHERE id=p_shop AND owner_key=p_owner FOR UPDATE;
   IF NOT FOUND THEN RAISE EXCEPTION 'Shop ownership required'; END IF;
   SELECT coalesce(sum(net_amount),0) INTO available FROM orders WHERE shop_id=p_shop AND status='released' AND escrow_release_at<=now() AND coin=p_coin AND network=p_network;
@@ -100,3 +102,30 @@ REVOKE ALL ON FUNCTION request_seller_payout(uuid,text,numeric,text,text,text) F
 
 -- statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS orders_normalized_network_tx ON orders(network,(CASE WHEN network='Solana' THEN tx_id ELSE lower(tx_id) END)) WHERE tx_id IS NOT NULL;
+
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS verified boolean NOT NULL DEFAULT false;
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS suspended boolean NOT NULL DEFAULT false;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION enforce_order_hold() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE blocked boolean;
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    SELECT escrow_hold_days,suspended INTO NEW.escrow_hold_days,blocked FROM shops WHERE id=NEW.shop_id FOR SHARE;
+    IF blocked THEN RAISE EXCEPTION 'Store suspended'; END IF;
+  ELSE
+    IF NEW.shop_id <> OLD.shop_id THEN RAISE EXCEPTION 'Order shop cannot change'; END IF;
+    NEW.escrow_hold_days := OLD.escrow_hold_days;
+    IF OLD.payment_verified_at IS NOT NULL AND (NEW.payment_verified_at IS DISTINCT FROM OLD.payment_verified_at OR NEW.gross_amount <> OLD.gross_amount OR NEW.coin <> OLD.coin OR NEW.network <> OLD.network OR NEW.tx_id IS DISTINCT FROM OLD.tx_id) THEN
+      RAISE EXCEPTION 'Verified payment cannot change';
+    END IF;
+  END IF;
+  IF NEW.payment_verified_at IS NOT NULL THEN
+    NEW.escrow_release_at := NEW.payment_verified_at + make_interval(days => NEW.escrow_hold_days);
+  END IF;
+  IF NEW.status = 'released' AND (NEW.escrow_release_at IS NULL OR NEW.escrow_release_at > now()) THEN
+    RAISE EXCEPTION 'Escrow hold has not ended';
+  END IF;
+  RETURN NEW;
+END $$;

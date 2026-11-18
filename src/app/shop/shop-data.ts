@@ -8,7 +8,7 @@ import type { Surface } from "../theme-picker";
 export type Product = { id: string; name: string; price: string; compareAtPrice?: string; badge?: DealBadge; category: string; gender: Gender; image: string; url: string; source: string };
 export type Shop = { logo?: string; escrowHoldDays?: number; name: string; bio: string; phone: string; shopMode: ShopMode; affiliateDisclosure?: string; cryptoWallet?: string; cryptoNetwork?: CryptoNetwork; shopTheme: Surface; products: Product[] };
 export const shopKey = "sellpostly-shop-v1";
-export const categories = ["All", "Tech & Gadgets", "Fashion", "Home & Kitchen", "Beauty", "Fitness", "Top Deals", "Other"] as const;
+export const categories = ["All", "Tech & Gadgets", "Fashion", "Home & Kitchen", "Beauty", "Fitness", "Top Deals", "Digital Product", "Art", "Sport", "Other"] as const;
 export function safeUrl(value: string) {
   try { const url=new URL(value); return ["http:","https:"].includes(url.protocol) ? url.href : ""; } catch { return ""; }
 }

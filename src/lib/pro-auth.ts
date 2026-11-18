@@ -26,4 +26,8 @@ export async function verifyProKey(key: string): Promise<ProIdentity | null> {
     return {ownerKey,provider:'gumroad'};
   }catch{return null;}
 }
-export function proIdentity(request: Request){return verifyProKey(request.headers.get('x-pro-key')?.trim()||'');}
+export async function proIdentity(request: Request){
+ const identity=await verifyProKey(request.headers.get("x-pro-key")?.trim()||"");
+ if(!identity||!process.env.DATABASE_URL)return identity;
+ try {const {ensureActiveSubscription}=await import("./subscription-access");return await ensureActiveSubscription(identity)?identity:null;}catch{return null;}
+}

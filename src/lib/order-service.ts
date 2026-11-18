@@ -11,14 +11,15 @@ export async function submitOrder(value:unknown,query:Query=run){
  const raw=object(value),slug=text(raw.slug,64),selectedCoin=coin(raw.coin),net=network(raw.network),tx=txId(raw.tx_id,net);
  if(!escrowReady||net!==escrowNetwork)throw new ApiError('ESCROW_UNAVAILABLE',503);
  const buyer=object(raw.buyer),buyerContact=contact(buyer.contact),name=text(buyer.name,100);
- const shops=await query('SELECT id,catalog,escrow_hold_days FROM shops WHERE slug=$1 AND published=true',[slug]);
+ const shops=await query('SELECT id,catalog,escrow_hold_days,suspended FROM shops WHERE slug=$1 AND published=true',[slug]);
  if(!shops.length)throw new ApiError('SHOP_NOT_FOUND',404);
+ if(shops[0].suspended)throw new ApiError('STORE_SUSPENDED',403);
  const shop=validateShop(shops[0].catalog);if(shop.shopMode!=='personal')throw new ApiError('CHECKOUT_UNAVAILABLE');
  const priced=priceItems(shop.products,raw.items,selectedCoin);
  const details={items:priced.items,buyer:{name,contact:buyerContact},delivery_note:typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet};
  // INSERT SELECT also checks the catalog has not changed during price calculation.
  const rows=await query(`INSERT INTO orders(shop_id,gross_amount,coin,network,tx_id,details)
- SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND catalog=$7::jsonb
+ SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND catalog=$7::jsonb
  RETURNING id,gross_amount::text,coin,network,status,escrow_hold_days,created_at`,
  [shops[0].id,priced.gross,selectedCoin,net,tx,JSON.stringify(details),JSON.stringify(shops[0].catalog)]);
  if(!rows.length)throw new ApiError('CATALOG_CHANGED',409);
@@ -42,7 +43,7 @@ export async function buyerAction(id:string,value:unknown,query:Query=run){
  return rows[0];
 }
 export const FULFILL_SQL=`UPDATE orders o SET details=o.details || jsonb_build_object('fulfillment',jsonb_build_object('tracking',$3::text,'delivery_notes',$4::text,'updated_at',now()))
- FROM shops s WHERE o.shop_id=s.id AND s.owner_key=$2 AND o.id=$1::uuid AND o.status IN ('held','released')
+ FROM shops s WHERE o.shop_id=s.id AND s.owner_key=$2 AND o.id=$1::uuid AND o.status IN ('held','released') AND EXISTS (SELECT 1 FROM subscriptions WHERE owner_key=s.owner_key AND status='active')
  RETURNING o.id,o.status,o.details->'fulfillment' AS fulfillment`;
 export async function fulfill(id:string,ownerKey:string,value:unknown,query:Query=run){
  uuid(id);const raw=object(value),tracking=text(raw.tracking??'',500,false),notes=text(raw.delivery_notes??'',4000,false);

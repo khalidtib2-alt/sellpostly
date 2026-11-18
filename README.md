@@ -33,3 +33,7 @@ Tests use an isolated embedded PostgreSQL engine and mocked Gumroad responses. A
 ## Milestone 2
 
 Buyer order submission, contact-matched disputes/receipt confirmation, seller order management, and the Pro dashboard are now implemented. See MILESTONE-2.md for migration steps, API contracts, exact balance definitions, and operational limits. Re-run the protected database initializer before use. Automatic payment verification, releases and actual payouts remain disabled.
+
+## Milestone 3
+
+Digital Product, Art and Sport categories, database-backed store verification/suspension, and the manual Admin Control Center are implemented. See MILESTONE-3.md for migration steps and API contracts. Rerun the protected database initializer before use. Visit /admin directly and use ADMIN_SECRET_KEY; admin endpoints require x-admin-key even in development. No signing or fund transfers are performed.
