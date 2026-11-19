@@ -18,7 +18,7 @@ test('extension config builds use only the canonical public environment value',a
  const {spawnSync}=await import('node:child_process');const {writeFile}=await import('node:fs/promises');
  const paths=['chrome-extension/app-config.js','chrome-extension/manifest.json','chrome-extension/popup.html'];const originals=await Promise.all(paths.map(path=>readFile(path,'utf8')));
  try{
-  for(const [input,expected]of [['','https://vercel.app'],['https://shop.example.com','https://shop.example.com'],['https://sellpostly-git-main-team.vercel.app','https://vercel.app']]){
+  for(const [input,expected]of [['','https://sellpostly.vercel.app'],['https://shop.example.com','https://shop.example.com'],['https://sellpostly-git-main-team.vercel.app','https://sellpostly.vercel.app'],['https://vercel.com/usidk-it','https://sellpostly.vercel.app']]){
    const result=spawnSync(process.execPath,['scripts/configure-extension.mjs'],{env:{...process.env,NEXT_PUBLIC_APP_URL:input,RESEND_API_KEY:'never-bundle-this-secret'},encoding:'utf8'});assert.equal(result.status,0,result.stderr);
    const config=await readFile(paths[0],'utf8'),context=vm.createContext({});vm.runInContext(config,context);assert.equal(context.SELLPOSTLY_APP_URL,expected);assert.ok(!config.includes('never-bundle-this-secret'));
    assert.equal(JSON.parse(await readFile(paths[1],'utf8')).homepage_url,expected);

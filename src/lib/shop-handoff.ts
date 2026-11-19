@@ -1,8 +1,9 @@
-import { normalizeGender,safeImage,safeUrl,shopKey,type Product,type Shop } from '../app/shop/shop-data';
+import {modeCatalogKey,switchCatalog} from '../app/shop/catalog-modes';
+import { normalizeGender,safeImage,safeUrl,shopKey,validateShop,type Product,type Shop,type ShopMode } from '../app/shop/shop-data';
 export const pendingShopKey='sellpostly_pending_shop_item';
 export const proKey='sellpostly-pro-key';
 type StorageLike=Pick<Storage,'getItem'|'setItem'|'removeItem'>;
-export type PendingShopItem={id:string;title:string;price:string;image:string;description:string;url:string;category:string;gender:'unisex'|'men'|'women'|'kids';source:string};
+export type PendingShopItem={destination?:ShopMode;stock?:number;id:string;title:string;price:string;image:string;description:string;url:string;category:string;gender:'unisex'|'men'|'women'|'kids';source:string};
 const text=(value:unknown,max:number)=>typeof value==='string'?value.trim().slice(0,max):'';
 export function sourceForUrl(value:string){
  try{const host=new URL(value).hostname;
@@ -19,21 +20,24 @@ export function normalizePending(value:unknown,createId=()=>crypto.randomUUID())
  const image=typeof raw.image==='string'?raw.image:'';
  if(image.length>1500000)throw Error('IMAGE_TOO_LARGE');
  const url=safeUrl(text(raw.url,20000));
- return {id:text(raw.id,100)||createId(),title,price:text(raw.price,50),description:text(raw.description??raw.features,4000),image:safeImage(image),url,category:text(raw.category,80)||'Top Deals',gender:normalizeGender(raw.gender),source:text(raw.source,50)||sourceForUrl(url)};
+ return {destination:raw.destination==='affiliate'||raw.destination==='personal'?raw.destination:undefined,stock:typeof raw.stock==='number'&&Number.isInteger(raw.stock)&&raw.stock>=0?Math.min(raw.stock,1000000):undefined,id:text(raw.id,100)||createId(),title,price:text(raw.price,50),description:text(raw.description??raw.features,4000),image:safeImage(image),url,category:text(raw.category,80)||'Top Deals',gender:normalizeGender(raw.gender),source:text(raw.source,50)||sourceForUrl(url)};
 }
 export function pendingProduct(item:PendingShopItem):Product{
- return {id:item.id,name:item.title,price:item.price,image:item.image,description:item.description,url:item.url,category:item.category,gender:item.gender,source:item.source};
+ return {stock:item.stock,catalogMode:item.destination,id:item.id,name:item.title,price:item.price,image:item.image,description:item.description,url:item.url,category:item.category,gender:item.gender,source:item.source};
 }
 export function consumePending(shop:Shop,storage:StorageLike){
  const saved=storage.getItem(pendingShopKey);
  if(!saved)return {shop,added:false,category:''};
- const item=normalizePending(JSON.parse(saved)),product=pendingProduct(item);
+ const item=normalizePending(JSON.parse(saved));
+ const target=item.destination&&item.destination!==shop.shopMode?switchCatalog(shop,item.destination,storage):shop;
+ const product={...pendingProduct(item),catalogMode:target.shopMode};
  // Give older pending objects a durable identity before committing the catalog.
  storage.setItem(pendingShopKey,JSON.stringify(item));
- const existing=shop.products.find(p=>p.id===product.id);
- if(existing){try{storage.removeItem(pendingShopKey);}catch{}return {shop,added:false,category:existing.category};}
- const next={...shop,products:[product,...shop.products]};
+ const existing=target.products.find(p=>p.id===product.id);
+ if(existing){try{storage.removeItem(pendingShopKey);}catch{}return {shop:target,added:false,category:existing.category};}
+ const next=validateShop({...target,products:[product,...target.products]});
  storage.setItem(shopKey,JSON.stringify(next));
+ storage.setItem(modeCatalogKey(next.shopMode),JSON.stringify(next));
  try{storage.removeItem(pendingShopKey);}catch{}
  return {shop:next,added:true,category:product.category};
 }

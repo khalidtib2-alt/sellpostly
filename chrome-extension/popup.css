@@ -34,3 +34,7 @@ button:disabled { opacity: .6; cursor: wait; }
 .studio-shortcuts button { flex:1; font-size:12px; }
 
 .fields select {width:100%;min-width:0;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;padding:9px;font:inherit;}
+.destination-picker {padding:10px;border:1px solid #a7f3d0;background:#ecfdf5;border-radius:10px;}
+.destination-picker select {display:block;width:100%;margin:6px 0;border:1px solid #059669;border-radius:7px;padding:8px;background:white;color:#064e3b;font:inherit;}
+.destination-picker small {display:block;color:#475569;font-size:11px;font-weight:400;line-height:1.5;}
+* { box-sizing:border-box; }

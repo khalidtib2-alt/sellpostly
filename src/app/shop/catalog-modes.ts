@@ -8,5 +8,5 @@ export function switchCatalog(shop:Shop,mode:ShopMode,storage:Store):Shop{
  const saved=storage.getItem(modeCatalogKey(mode));
  const archived=saved?validateShop(JSON.parse(saved)):null;
  const products=archived?.products||[];
- return validateShop({...shop,...archived,shopMode:mode,products});
+ return validateShop({...shop,...archived,heroTitle:archived?.heroTitle||'',heroSubtitle:archived?.heroSubtitle||'',heroImage:archived?.heroImage||'',shopAccent:archived?.shopAccent||(mode==='affiliate'?'amber':'emerald'),shopMode:mode,products});
 }

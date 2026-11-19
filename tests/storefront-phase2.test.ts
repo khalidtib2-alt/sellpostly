@@ -22,10 +22,10 @@ test('independent published catalogs, COD ledger isolation and buyer/seller life
   const schema=await readFile('src/db/schema.sql','utf8');await pg.exec(schema);await pg.exec(schema);
   await query("INSERT INTO subscriptions(owner_key,provider,email,language) VALUES('owner2','master','seller@example.com','fr'),('outsider','master','other@example.com','en')",[]);
   const item=(id:string,mode:'affiliate'|'personal')=>({id,name:'Product '+id,price:'20 USD',image:'',url:mode==='affiliate'?'https://amazon.com/dp/TEST':'',source:'Other',gender:'unisex',category:'Other',catalogMode:mode});
-  const affiliate=validateShop({name:'Deals',shopMode:'affiliate',products:[item('deal','affiliate')]});
+  const affiliate=validateShop({name:'Deals',shopMode:'affiliate',heroTitle:'Curated by us',shopAccent:'amber',products:[item('deal','affiliate')]});
   const personal=validateShop({name:'Owned',shopMode:'personal',cryptoWallet:'0x'+'2'.repeat(40),sellerEmail:'seller@example.com',codEnabled:true,escrowEnabled:true,products:[item('owned','personal')]});
   const publish=(shop:unknown)=>query(PUBLISH_SHOP_SQL,['owner2','phase2-store','Store','',JSON.stringify(shop)]);
-  await publish(affiliate);assert.equal((await publicShop('phase2-store',query,'personal'))?.products.length,0);await publish(personal);await publish(affiliate);
+  await publish(affiliate);assert.equal((await publicShop('phase2-store',query,'personal'))?.products.length,0);assert.equal((await publicShop('phase2-store',query,'personal'))?.heroTitle,'');assert.equal((await publicShop('phase2-store',query,'personal'))?.shopAccent,'emerald');await publish(personal);await publish(affiliate);
   assert.equal((await publicShop('phase2-store',query,'affiliate'))?.products[0].id,'deal');
   const own=await publicShop('phase2-store',query,'personal');assert.equal(own?.products[0].id,'owned');assert.equal(own?.cryptoWallet,personal.cryptoWallet);
   assert.equal(storePath('phase2-store','personal'),'/s/phase2-store/personal');assert.notEqual(storePath('phase2-store','affiliate'),storePath('phase2-store','personal'));

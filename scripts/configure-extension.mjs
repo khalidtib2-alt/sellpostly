@@ -6,8 +6,8 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 // Match Next's .env precedence without exposing any server-only settings.
 const {loadEnvConfig}=createRequire(import.meta.url)('@next/env');
 loadEnvConfig(root);
-let base='https://vercel.app';
-try{const url=new URL(process.env.NEXT_PUBLIC_APP_URL||base);if(url.protocol==='https:'&&!url.username&&!url.password&&!/-git-/i.test(url.hostname))base=url.origin;}catch{}
+let base='https://sellpostly.vercel.app';
+try{const url=new URL(process.env.NEXT_PUBLIC_APP_URL||base);if(url.protocol==='https:'&&!url.username&&!url.password&&!/-git-/i.test(url.hostname)&&url.hostname!=='vercel.app'&&!/(^|\.)vercel\.com$/i.test(url.hostname))base=url.origin;}catch{}
 fs.writeFileSync(path.join(root,'chrome-extension/app-config.js'),'"use strict";\nglobalThis.SELLPOSTLY_APP_URL = '+JSON.stringify(base)+';\n');
 const manifestPath=path.join(root,'chrome-extension/manifest.json');
 const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));manifest.homepage_url=base;

@@ -1,4 +1,7 @@
 "use client";
+import {StorefrontHero,StorefrontProducts} from './storefront-templates';
+import {shopAccents,shopAccentNames} from './storefront-style';
+import {productCheckout} from './product-checkout';
 import ShareModal from './share-modal';
 import CodCheckout from './cod-checkout';
 import {switchCatalog,modeCatalogKey} from './catalog-modes';
@@ -9,12 +12,12 @@ import {publicLink} from "../../lib/public-url";
 
 import { escrowReady, holdDays } from "./escrow-config";
 import BuyerStoreFooter from "./buyer-store-footer";
-import { consumePending,importFromHash,pendingShopKey } from "../../lib/shop-handoff";
+import { consumePending,importFromHash,pendingShopKey,normalizePending } from "../../lib/shop-handoff";
 import CartDrawer from "./cart-drawer";
 import { cartTotal } from "./cart-data";
 
 import CryptoCheckout from "./crypto-checkout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { surfaces, surfaceNames, type Surface } from "../theme-picker";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
@@ -58,6 +61,8 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
           }catch{}
           if(params.get("mode")==="personal"&&initial.shopMode!=="personal")initial=switchCatalog(initial,"personal",localStorage);
           if(params.get("addTitle")){
+            const destination=params.get("addDestination");if((destination==="affiliate"||destination==="personal")&&initial.shopMode!==destination)initial=switchCatalog(initial,destination,localStorage);
+            setPreview(true);
             const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),description:(params.get("addDescription")||"").slice(0,4000),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
             initial.products.push(product);
             setFilter(product.category);
@@ -69,7 +74,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
             const consume=()=>{
               const result=consumePending(initial,localStorage);initial=result.shop;
               if(result.category)setFilter(result.category);
-              if(result.added)setStatus("Product added to My Shop!");
+              if(result.added){setStatus("Product added to My Shop!");setPreview(true);}
             };
             consume();
             const incoming=importFromHash(location.hash);
@@ -102,6 +107,15 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     refreshPolicy();window.addEventListener("focus",refreshPolicy);
     return()=>{active=false;window.removeEventListener("focus",refreshPolicy);};
   },[shared,loaded]);
+  const shopRef=useRef(shop);shopRef.current=shop;
+  useEffect(()=>{
+    if(!loaded||shared)return;
+    const receive=()=>{try{const result=consumePending(shopRef.current,localStorage);if(result.added||result.shop.shopMode!==shopRef.current.shopMode){shopRef.current=result.shop;setShop(result.shop);setFilter(result.category||'All');setGenderFilter('all');setPreview(true);setAdding(false);if(result.added)setStatus('Product added to My Shop!');}}catch{setStatus('Could not save. Device storage may be full.');}};
+    const message=(event:MessageEvent)=>{if(event.source!==window||event.origin!==location.origin||event.data?.type!=='SELLPOSTLY_PRODUCT_IMPORT')return;try{const item=normalizePending(event.data.product);localStorage.setItem(pendingShopKey,JSON.stringify(item));receive();}catch{setStatus('Could not save. Device storage may be full.');}};
+    const storage=(event:StorageEvent)=>{if(event.key===pendingShopKey)receive();};
+    window.addEventListener('message',message);window.addEventListener('storage',storage);window.addEventListener('focus',receive);receive();
+    return()=>{window.removeEventListener('message',message);window.removeEventListener('storage',storage);window.removeEventListener('focus',receive);};
+  },[loaded,shared]);
   async function share(){
     if(publicSlug||snapshot){setShareTarget({url:productShareUrl(publicSlug?storePath(publicSlug,shop.shopMode):'/shop?'+new URLSearchParams({s:snapshot!})),title:shop.name});return;}
     try{
@@ -136,7 +150,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (genderFilter==="all"||p.gender===genderFilter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   useEffect(()=>setVisible(24),[filter,genderFilter,search]);
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
-  return <main data-surface={shop.shopTheme} className="shop-surface mx-auto max-w-6xl px-5 py-12">
+  return <main data-surface={shop.shopTheme} data-accent={shop.shopAccent||'emerald'} className="shop-surface storefront-layout mx-auto max-w-7xl px-5 py-12">
 <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-6">
 <div>{publicSlug&&verifiedStore&&<p className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-800"><span aria-hidden="true">✓</span>{t("Verified Store")}</p>}<div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white text-2xl font-black text-emerald-800">{shop.logo?<img src={shop.logo} alt={shop.name} className="max-h-full max-w-full object-contain"/>:(shop.name||"SP").trim().slice(0,2).toUpperCase()}</div><h1 className="text-4xl font-black">{shop.name==="My Shop"||!shop.name?t("My Shop"):shop.name}</h1><p className="mt-3 whitespace-pre-line text-slate-600">{shop.bio}</p></div>
 {shared&&<div role="group" aria-label={t("Language")} className="flex gap-1 rounded-full border border-slate-300 bg-white p-1 text-slate-900">
@@ -144,11 +158,13 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
 </div>}</header>
 {shared&&loaded&&<button type="button" className={button+" mb-5"} onClick={share}>{t("Share Store")}</button>}
 {!loaded&&<p role="status">{t("Loading storefront…")}</p>}
+    {(shared||preview)&&loaded&&<StorefrontHero shop={shop} verified={verifiedStore}/>}
     <label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>
     {!shared&&<div className="mb-6 flex flex-wrap gap-3">
       {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>{setPreview(true);setAdding(false);}}>{t("Storefront Preview")}</button></>}
       <button className={button} disabled={!loaded} onClick={share}>{t("Share Store")}</button>
     </div>}
+    {!shared&&loaded&&<div className="mb-6 flex flex-wrap gap-3" aria-label={t('Preview Template')}>{(['affiliate','personal'] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:'rounded-lg border px-4 py-2'} onClick={()=>{try{setShop(switchCatalog(shop,mode,localStorage));setPreview(true);setAdding(false);setFilter('All');setGenderFilter('all');}catch{setStatus('Could not save. Device storage may be full.');}}}>{t(mode==='affiliate'?'Affiliate Deals Shop':'Personal Seller Shop')}</button>)}</div>}
     {!shared&&loaded&&<section className="mb-6 grid gap-4 md:grid-cols-2">{(['affiliate','personal'] as const).map(mode=><article key={mode} className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="text-xl font-bold">{t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')}</h2><p className="my-3 text-sm text-slate-600">{t(mode==='affiliate'?'External deals only. No cart or escrow.':'Your products, cart and enabled checkout methods.')}</p><input aria-label={t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')} readOnly dir="ltr" className={field} value={publishedSlug?productShareUrl(storePath(publishedSlug,mode)):t('Publish to create this link')}/><div className="mt-3 flex gap-3"><button disabled={publishing} type="button" className={button} onClick={()=>shareMode(mode,true)}>{t('Copy Link')}</button><button disabled={publishing} type="button" className="rounded-lg border px-4 py-2" onClick={()=>shareMode(mode)}>{t('Social Share')}</button></div></article>)}</section>}
     {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Publish your latest changes to update your public storefront.")}</p>}
     {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
@@ -163,6 +179,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       <p className="text-sm">{t("Payments are verified and releases are recorded by the Admin. Transfers are handled separately.")}</p>
       {!escrowReady&&<p className="text-sm sm:col-span-3" role="status">{t("Escrow checkout is unavailable. The platform escrow wallet has not been configured.")}</p>}</>}
       {shop.shopMode==='personal'&&<fieldset className="rounded-xl border bg-white p-4 sm:col-span-3"><legend className="font-bold">{t('Personal Seller Payment Settings')}</legend><label className="block">{t('Seller USDC Wallet Address (Polygon)')}<input dir="ltr" className={field} maxLength={42} placeholder="0x..." value={shop.cryptoWallet||''} onChange={e=>setShop({...shop,cryptoWallet:e.target.value.trim()})}/></label><p className="mt-2 text-sm text-slate-600">{t('Payout destination only. Buyers pay the platform escrow wallet.')}</p><label className="mt-4 block">{t('Seller Email')}<input type="email" className={field} maxLength={254} value={shop.sellerEmail||''} onChange={e=>setShop({...shop,sellerEmail:e.target.value})}/></label><div className="my-4 flex flex-wrap gap-5"><label className="flex items-center gap-2"><input type="checkbox" checked={shop.codEnabled!==false} onChange={e=>setShop({...shop,codEnabled:e.target.checked})}/>{t('Enable Cash on Delivery')}</label><label className="flex items-center gap-2"><input type="checkbox" checked={shop.escrowEnabled!==false} onChange={e=>setShop({...shop,escrowEnabled:e.target.checked})}/>{t('Enable USDC Escrow')}</label></div><button type="button" className={button} disabled={publishing} onClick={()=>shareMode('personal')}>{t('Save Payment Settings')}</button></fieldset>}
+      <fieldset className="grid gap-4 rounded-xl border p-4 sm:col-span-3 sm:grid-cols-2"><legend className="font-bold">{t('Template Design')}</legend><label>{t('Hero Headline')}<input className={field} maxLength={140} value={shop.heroTitle||''} onChange={e=>setShop({...shop,heroTitle:e.target.value})}/></label><label>{t('Hero Subtitle')}<input className={field} maxLength={400} value={shop.heroSubtitle||''} onChange={e=>setShop({...shop,heroSubtitle:e.target.value})}/></label><label>{t('Hero Image URL')}<input type="url" className={field} value={shop.heroImage||''} onChange={e=>setShop({...shop,heroImage:e.target.value})}/></label><label>{t('Store Accent Palette')}<select className={field} value={shop.shopAccent||'emerald'} onChange={e=>setShop({...shop,shopAccent:e.target.value as typeof shopAccents[number]})}>{shopAccents.map((value,i)=><option key={value} value={value}>{t(shopAccentNames[i])}</option>)}</select></label><p className="text-sm text-slate-600 sm:col-span-2">{t('Design changes apply only to this storefront template.')}</p></fieldset>
       <label>{t("Shop Background Color")}<select className={field} value={shop.shopTheme} onChange={e=>setShop({...shop,shopTheme:e.target.value as Surface})}>{surfaces.map((surface,index)=><option key={surface} value={surface}>{t(surfaceNames[index])}</option>)}</select></label>
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
       <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
@@ -175,7 +192,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       const get=(key:string)=>String(data.get(key)||"").trim();
 
 
-      const product:Product={catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).map(safeImage).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
+      const product:Product={stock:get('stock')===''?undefined:Math.min(1000000,Math.max(0,Math.trunc(Number(get('stock'))))),catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).map(safeImage).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
       setShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]});
       setEditing(null);
       setAdding(false);setPhoto("");
@@ -183,6 +200,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? editing[["name","price","category","image","url"][i] as keyof Product] : ""} name={["name","price","category","image","url"][i]} type={i===3||i===4?"url":"text"} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
       <datalist id="shop-categories">{categories.slice(1).map(c=><option key={c} value={c}>{label(c)}</option>)}</datalist>
       <label>{t("Gender / Audience")}<select className={field} name="gender" defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option><option value="kids">{t("Kids")}</option></select></label>
+      <label>{t('Stock (Optional)')}<input type="number" name="stock" className={field} min={0} max={1000000} defaultValue={editing?.stock??''}/></label>
       <label>{t("Compare-at Price")}<input className={field} name="compareAtPrice" maxLength={50} defaultValue={editing?.compareAtPrice||""}/></label>
       <label>{t("Deal Badge")}<select className={field} name="badge" defaultValue={editing?.badge||"none"}>{dealBadges.map(badge=><option key={badge} value={badge}>{t(badge==="none"?"None":badge==="hot"?"Hot":badge==="sale"?"Sale":badge==="limited"?"Limited":"New")}</option>)}</select></label>
       <label className="sm:col-span-2">{t("Product Description")}<textarea className={field} name="description" rows={3} maxLength={4000} defaultValue={editing?.description||""}/></label>
@@ -201,7 +219,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex","kids"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":value==="kids"?"Kids":"Unisex")}</button>)}
     </div>
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} onClick={e=>{if(shop.shopMode==="personal"&&!(e.target as HTMLElement).closest("a,button,input,textarea,select"))location.href=productPath(p.id,publicSlug,snapshot);}} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
+    {(shared||preview)?<><div id="store-collection" className="store-collection-heading"><h2>{t(shop.shopMode==='affiliate'?'The Curated Edit':'The Signature Collection')}</h2><span className="text-sm text-slate-600">{matches.length} {t('pieces to explore')}</span></div><StorefrontProducts shop={shop} products={matches.slice(0,visible)} slug={publicSlug} snapshot={snapshot} onAdd={(p,q)=>changeCart(p.id,q)} onPay={(p,q)=>setCheckout(productCheckout(p,q))} onCod={(p,q)=>setCodLines([{product:p,quantity:q}])}/></>:(<>    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} onClick={e=>{if(shop.shopMode==="personal"&&!(e.target as HTMLElement).closest("a,button,input,textarea,select"))location.href=productPath(p.id,publicSlug,snapshot);}} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
       <div className={(shop.shopMode==="personal"?"cursor-pointer ":"")+"product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl"}>{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
       <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{shop.shopMode==="personal"?<a href={productPath(p.id,publicSlug,snapshot)} className="hover:underline">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</a>:p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price} {p.compareAtPrice&&<del className="ms-2 text-sm font-normal text-slate-600">{p.compareAtPrice}</del>}</p>{p.badge&&p.badge!=="none"&&<span className="mb-2 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold">{t(p.badge==="hot"?"Hot":p.badge==="sale"?"Sale":p.badge==="limited"?"Limited":"New")}</span>}{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":p.gender==="kids"?"Kids":"Women")}</span>}
       {p.description&&<p dir="auto" className="my-3 line-clamp-3 whitespace-pre-line text-sm text-slate-600">{p.description}</p>}
@@ -219,9 +237,10 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
         {!shared&&!preview&&<button className="rounded-lg border px-3 py-2" onClick={()=>setShop({...shop,products:shop.products.filter(item=>item.id!==p.id)})}>{t("Remove")}</button>}
       </div>
     </article>)}</div>
+</>)}
     {matches.length===0&&loaded&&<p>{t("No products found.")}</p>}
     {matches.length>visible&&<button type="button" className={button+" mt-6"} onClick={()=>setVisible(count=>count+24)}>{t("Load More")}</button>}
-    {shop.shopMode==="personal"&&<button type="button" onClick={()=>setCartOpen(true)} className="fixed bottom-5 end-5 z-30 rounded-full bg-emerald-700 px-5 py-3 font-bold text-white shadow-lg">{t("Cart")} ({count}) · {total?(total.currency==="USD"?"$":"")+total.amount+(total.currency!=="USD"?" "+total.currency:""):"—"}</button>}
+    {shop.shopMode==="personal"&&<button type="button" onClick={()=>setCartOpen(true)} className="fixed bottom-5 end-5 z-30 rounded-full bg-emerald-700 px-5 py-3 font-bold text-white shadow-lg">{t("Shopping Bag")} ({count}) · {total?(total.currency==="USD"?"$":"")+total.amount+(total.currency!=="USD"?" "+total.currency:""):"—"}</button>}
     {shop.shopMode==="personal"&&cartOpen&&<CartDrawer isSharedBuyerView={shared} lines={lines} shop={shop} onCod={()=>{setCartOpen(false);setCodLines(lines);}} change={changeCart} onClose={()=>setCartOpen(false)} onPay={(product,details,items)=>setCheckout({product,details,items})}/>}
     {shop.shopMode==="personal"&&shop.codEnabled!==false&&codLines&&<CodCheckout storeSlug={publicSlug} shop={shop} lines={codLines} onClose={()=>setCodLines(null)}/>}
     {shareTarget&&<ShareModal {...shareTarget} onClose={()=>setShareTarget(null)}/>}

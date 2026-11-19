@@ -15,7 +15,7 @@ export function priceItems(products:Product[],value:unknown,selectedCoin:'USDC'|
  const quantities=new Map<string,number>();
  for(const item of value){const raw=object(item),id=text(raw.id,100),quantity=raw.quantity;if(!Number.isInteger(quantity)||Number(quantity)<1||Number(quantity)>99)throw new ApiError('INVALID_ITEMS');const total=(quantities.get(id)||0)+Number(quantity);if(total>99)throw new ApiError('INVALID_ITEMS');quantities.set(id,total);}
  let gross=BigInt(0);
- const items=Array.from(quantities,([id,quantity])=>{const product=products.find(p=>p.id===id);if(!product)throw new ApiError('INVALID_ITEMS');const parsed=stableAmount(product.price);if(!parsed||(parsed.coin&&parsed.coin!==selectedCoin))throw new ApiError('PRICE_UNAVAILABLE');const amount=units(parsed.amount);gross+=amount*BigInt(quantity);return {id,name:product.name,quantity,unit_price:decimal(amount),line_total:decimal(amount*BigInt(quantity))};});
+ const items=Array.from(quantities,([id,quantity])=>{const product=products.find(p=>p.id===id);if(!product)throw new ApiError('INVALID_ITEMS');if(product.stock!==undefined&&quantity>product.stock)throw new ApiError('OUT_OF_STOCK',409);const parsed=stableAmount(product.price);if(!parsed||(parsed.coin&&parsed.coin!==selectedCoin))throw new ApiError('PRICE_UNAVAILABLE');const amount=units(parsed.amount);gross+=amount*BigInt(quantity);return {id,name:product.name,quantity,unit_price:decimal(amount),line_total:decimal(amount*BigInt(quantity))};});
  if(gross<=BigInt(0)||gross>=BigInt("100000000000000000000"))throw new ApiError('INVALID_AMOUNT');
  return {items,gross:decimal(gross)};
 }

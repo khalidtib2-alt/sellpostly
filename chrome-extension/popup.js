@@ -1,6 +1,11 @@
 ﻿"use strict";
 
 const messages = {
+"Stock (Optional)":{"fr":"Stock (facultatif)","ar":"المخزون (اختياري)"},
+"Affiliate Deals Shop":{"fr":"Boutique de bonnes affaires affiliées","ar":"متجر العروض بالعمولة"},
+"Personal Seller Shop":{"fr":"Boutique personnelle du vendeur","ar":"متجر البائع الشخصي"},
+"Destination Store":{"fr":"Boutique de destination","ar":"المتجر المستهدف"},
+"Affiliate tags are kept for deals. Personal products use your seller checkout.":{"fr":"Les liens affiliés conservent leurs paramètres. Les produits personnels utilisent votre paiement vendeur.","ar":"تُحفظ وسوم روابط العمولة للعروض. تستخدم المنتجات الشخصية طرق الدفع الخاصة بمتجرك."},
   "Could not load or save email preferences.": {
     "fr": "Impossible de charger ou d’enregistrer les préférences e-mail.",
     "ar": "تعذّر تحميل تفضيلات البريد أو حفظها."
@@ -730,7 +735,7 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   const data=new FormData(form),title=String(data.get("name")||"").trim();
   if(!title){feedback.textContent=t("Enter a product name or import the current page first.");return;}
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
+  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
   if(!result?.ok)throw Error();
   feedback.textContent=t("Opening My Shop. Activate Pro on the website if requested.");
  }catch{feedback.textContent=t("Could not open My Shop. Reload the extension and try again.");}
@@ -738,3 +743,7 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
 });
 
 void globalThis.SellPostlyFrontend.resolve().then(base=>{for(const link of document.querySelectorAll("footer a")){const path=new URL(link.href).pathname;link.href=base+(path==="/"?"":path);}});
+
+const destinationPicker=document.querySelector('#store-destination');
+try{const saved=localStorage.getItem('sellpostly-store-destination');if(saved==='affiliate'||saved==='personal')destinationPicker.value=saved;}catch{}
+destinationPicker.addEventListener('change',()=>{try{localStorage.setItem('sellpostly-store-destination',destinationPicker.value);}catch{}});

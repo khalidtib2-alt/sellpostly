@@ -2663,5 +2663,38 @@ export const translations = {
 ,"Release Escrow Funds":{"fr":"Libérer les fonds sous séquestre","ar":"تحرير أموال الضمان"}
 ,"Not configured":{"fr":"Non configuré","ar":"غير مُعدّ"}
 ,"Shipped":{"fr":"Expédiée","ar":"تم الشحن"}
+,"The Curated Edit":{"fr":"La sélection du moment","ar":"مختاراتنا المنتقاة"}
+,"The Signature Collection":{"fr":"La collection signature","ar":"المجموعة المميزة"}
+,"Top Curated Picks & Fresh Finds":{"fr":"Nos coups de cœur et belles découvertes","ar":"مختارات مميزة واكتشافات جديدة"}
+,"Everyday pieces. Exceptionally yours.":{"fr":"L’exceptionnel, au quotidien.","ar":"قطع يومية بطابعك المميز."}
+,"A considered collection of useful finds. Explore the details, compare the value, and shop directly with the original store.":{"fr":"Une sélection réfléchie de trouvailles utiles. Découvrez les détails, comparez et achetez directement auprès de la boutique.","ar":"مجموعة منتقاة من المنتجات المفيدة. اكتشف التفاصيل وقارن القيمة وتسوق مباشرة من المتجر الأصلي."}
+,"Discover the collection, find your next favorite, and order directly from our boutique.":{"fr":"Découvrez la collection, trouvez votre prochain coup de cœur et commandez directement dans notre boutique.","ar":"اكتشف المجموعة واعثر على قطعتك المفضلة واطلب مباشرة من متجرنا."}
+,"Explore the edit":{"fr":"Découvrir la sélection","ar":"استكشف المختارات"}
+,"Shop the collection":{"fr":"Découvrir la collection","ar":"تسوق المجموعة"}
+,"Prices and availability are set by each external store.":{"fr":"Les prix et la disponibilité dépendent de chaque boutique partenaire.","ar":"يحدد كل متجر خارجي الأسعار والتوفر."}
+,"Your collection. Your way to pay.":{"fr":"Votre collection. Votre façon de payer.","ar":"مجموعتك وطريقتك في الدفع."}
+,"Selected with care":{"fr":"Choisi avec soin","ar":"مختار بعناية"}
+,"Preview":{"fr":"Aperçu","ar":"معاينة"}
+,"THE EDIT":{"fr":"SÉLECTION","ar":"المختارات"}
+,"COLLECTION":{"fr":"COLLECTION","ar":"المجموعة"}
+,"View Best Deal":{"fr":"Voir la meilleure offre","ar":"عرض أفضل صفقة"}
+,"Quick View":{"fr":"Aperçu rapide","ar":"عرض سريع"}
+,"Sold Out":{"fr":"Épuisé","ar":"نفد المخزون"}
+,"available":{"fr":"disponibles","ar":"متاح"}
+,"pieces to explore":{"fr":"articles à découvrir","ar":"منتج للاستكشاف"}
+,"Shopping Bag":{"fr":"Mon panier","ar":"حقيبة التسوق"}
+,"Template Design":{"fr":"Design de la vitrine","ar":"تصميم واجهة المتجر"}
+,"Hero Headline":{"fr":"Titre de la bannière","ar":"عنوان البانر"}
+,"Hero Subtitle":{"fr":"Sous-titre de la bannière","ar":"وصف البانر"}
+,"Hero Image URL":{"fr":"URL de l’image de bannière","ar":"رابط صورة البانر"}
+,"Store Accent Palette":{"fr":"Palette de la boutique","ar":"ألوان المتجر"}
+,"Design changes apply only to this storefront template.":{"fr":"Ces réglages s’appliquent uniquement à cette vitrine.","ar":"تُطبق تغييرات التصميم على واجهة هذا المتجر فقط."}
+,"Stock (Optional)":{"fr":"Stock (facultatif)","ar":"المخزون (اختياري)"}
+,"Preview Template":{"fr":"Aperçu du modèle","ar":"معاينة التصميم"}
+,"Affiliate Deals Shop":{"fr":"Boutique de bonnes affaires affiliées","ar":"متجر العروض بالعمولة"}
+,"Personal Seller Shop":{"fr":"Boutique personnelle du vendeur","ar":"متجر البائع الشخصي"}
+,"Destination Store":{"fr":"Boutique de destination","ar":"المتجر المستهدف"}
+,"Affiliate tags are kept for deals. Personal products use your seller checkout.":{"fr":"Les liens affiliés conservent leurs paramètres. Les produits personnels utilisent votre paiement vendeur.","ar":"تُحفظ وسوم روابط العمولة للعروض. تستخدم المنتجات الشخصية طرق الدفع الخاصة بمتجرك."}
+,"Not enough stock.":{"fr":"Stock insuffisant.","ar":"المخزون غير كافٍ."}
 } as const;
 export type Message = keyof typeof translations;

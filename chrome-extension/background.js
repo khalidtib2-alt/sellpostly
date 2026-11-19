@@ -11,8 +11,9 @@ function prepareProduct(value){
  if(!value||typeof value!=="object")throw Error("INVALID_PRODUCT");
  const text=(v,n)=>typeof v==="string"?v.trim().slice(0,n):"";
  const title=text(value.title||value.name,120);if(!title)throw Error("INVALID_PRODUCT");
- const url=cleanProductLink(value.url),image=typeof value.image==="string"&&/^https?:\/\//i.test(value.image)?value.image.slice(0,20000):"";
- return {id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category:text(value.category,80)||"Top Deals",gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
+ const destination=["affiliate","personal"].includes(value.destination)?value.destination:undefined;
+ const url=destination==="affiliate"?(()=>{try{const link=new URL(value.url);return ["http:","https:"].includes(link.protocol)?link.href:"";}catch{return "";}})():cleanProductLink(value.url),image=typeof value.image==="string"&&/^https?:\/\//i.test(value.image)?value.image.slice(0,20000):"";
+ return {destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category:text(value.category,80)||"Top Deals",gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
 }
 async function sendProduct(value){
  const product=prepareProduct(value),base=await SellPostlyFrontend.resolve();

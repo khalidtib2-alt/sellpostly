@@ -1,48 +1,37 @@
-SellPostly Storefront Architecture - Phase 2
+SellPostly Distinct Storefront Templates + Chrome Extension 1.0.3
 
-Apply this cumulative patch at your repository root, retaining src/, scripts/, public/ and tests/ folder paths. Previous Phase 1 separation, product pages, cart synchronization, support contact and demo artwork are included.
+WEBSITE PATCH
+Extract this bundle into your repository root, preserving src/, scripts/, tests/, public/ and chrome-extension/. This is cumulative with Phase 1/2, product pages, cart sync, support contact and demo artwork. Original checkout was not modified and nothing was deployed.
 
-REQUIRED INSTALLATION
-1. Extract into your repository root.
-2. If a misplaced duplicate root app/ folder exists, run:
-   node scripts/fix-duplicate-app.mjs
-   This guarded helper backs it up outside the repository and refuses to move a root app with a layout or files without src/app counterparts.
-3. Configure DATABASE_URL in your own .env.local or deployment environment. No credentials are included.
-4. Run the idempotent database migration BEFORE deploying the updated application:
-   npm run db:init
-   The script executes the schema's statement-breakpoint blocks atomically and verifies Phase 2 columns.
-5. Run:
-   npm run build
-   npm test
-6. Deploy using your normal process. This patch has not been deployed and the live Neon database has not been migrated.
+If a misplaced root app/ directory exists, run the guarded backup repair:
+node scripts/fix-duplicate-app.mjs
 
-PUBLIC LINKS AND CATALOGS
-/s/<slug>/affiliate and /s/<slug>/personal are independent storefronts under the existing seller account. Separate affiliate_catalog and personal_catalog JSON columns retain both published inventories. Publishing one does not overwrite the other. A never-used mode starts empty; existing catalogs migrate into their matching mode.
-/shop displays both share cards, each with Copy Link and Social Share. These actions publish the corresponding device-saved catalog before sharing. Missing local catalogs can be restored from Neon. An inactive local mode is retained independently.
-Personal product links remain /s/<slug>/product/<productId> and always read personal_catalog, regardless of which shop was most recently published. Their Back to Store link points to the personal alias. Existing /s/<slug> links retain compatibility with the last published catalog.
+If Phase 2 database columns have not yet been applied, run npm run db:init using your own DATABASE_URL before deploying. This design update stores hero, palette and optional stock settings in the existing catalog JSON. It does not require additional columns beyond Phase 2. The included idempotent schema preserves independent empty-mode design defaults.
 
-PAYMENT SETTINGS
-In Personal Seller mode, enter the Seller USDC Wallet Address (Polygon), seller email and COD/USDC-escrow preferences, then Save Payment Settings. These persist in shops. The seller wallet is a payout destination only: buyers still pay NEXT_PUBLIC_ESCROW_WALLET, the platform Polygon escrow wallet. Existing Pro and Admin authentication and Admin-assigned hold periods are preserved.
+Run npm run build and npm test, then deploy using your normal process.
 
-COD ORDERS
-POST /api/orders/cod validates the published personal catalog, current prices, selected quantities, buyer email, phone and delivery address. It records payment_method=COD, escrow_status=NONE, USD/COD accounting, zero escrow commission, and no payment verification or release deadline. Stable request IDs prevent duplicate retry submissions. COD cannot enter crypto escrow or fund seller payouts. Current recorded COD prices must be plain USD-compatible prices; unsupported currencies/token-denominated prices require seller correction.
-COD is hidden and rejected when disabled. Local/snapshot previews cannot create recorded orders until published. Seller tracking updates mark COD orders shipped; COD records appear in Orders while crypto balance metrics remain separate.
+TWO TEMPLATES
+Affiliate (/s/<slug>/affiliate and Affiliate preview): a magazine-style curator hero, featured editorial pick, numbered photography cards, actual-description highlight bullets, category/audience filters, real compare-at discount calculations, and direct sponsored View Best Deal links. No cart, crypto, COD or escrow UI appears in the buyer Affiliate layout. Verified Store is shown only for an Admin-verified store; the template does not claim each deal is independently verified.
 
-EMAILS AND TRACKING
-Set RESEND_API_KEY and a verified EMAIL_FROM sender to enable delivery. Reply-To is sellpostly.support@gmail.com. Set a valid seller email in Payment Settings (or the existing subscription notification settings) so seller notices have a destination. Buyer checkout now collects an email; historical contact-based order lookup remains supported. Set notification language preferences for localized seller emails.
-- COD recorded: confirmation to buyer and seller.
-- Admin Confirm Funds Arrived: buyer escrow-protection receipt plus seller shipping-ready notice.
-- Seller tracking/carrier/note update: buyer delivery email. Revisions generate a new notification.
-- Admin Release Escrow Funds: seller release notice with net amount and Polygon payout address.
-Emails use committed database facts, escaped EN/FR/AR HTML and plain text, and per-recipient/event idempotency. Missing Resend configuration skips email without failing the saved order. Provider errors are logged without rolling back business updates.
-Admin release remains an accounting action. No code signs or sends cryptocurrency; the release email explicitly states that the on-chain transfer is handled separately. Existing hold deadlines and buyer-confirmed force-release checks still apply.
-Configure NEXT_PUBLIC_APP_URL=https://sellpostly.vercel.app (or your canonical custom domain) for production links in emails. Never use a preview URL. Keep the existing NEXT_PUBLIC_ESCROW_WALLET/Polygon configuration for live crypto checkout.
+Personal (/s/<slug>/personal and Personal preview): a boutique hero, brand typography, Admin verification and escrow/payment indicators tied to configuration, hover image zoom, quantity-aware Quick View, full Product Landing Page links, and a slide-out Shopping Bag. Existing escrow, recorded COD and cart persistence remain connected.
 
-ADMIN AND SELLER DASHBOARDS
-Admin order rows show the seller payout wallet with Copy Address and the buyer email. Confirm Funds Arrived and Release Escrow Funds apply only to crypto orders. COD is labeled as non-escrow and cannot use those actions. Seller fulfillment supports tracking number, shipping carrier and delivery/digital-key notes.
+In Builder, choose the shop type and edit Template Design: headline, subtitle, hero image URL, accent palette and background theme. Settings persist independently in each catalog and through published/snapshot links. Preview Template controls let you switch directly between both designs. Imported seller photos remain uncropped with contained product frames; dark themes use a white image frame.
+
+STOCK
+Stock is optional and entered by the seller; no stock quantity is invented or scraped. Zero stock disables buying actions in the buyer template. Checkout rejects quantities exceeding the configured stock. This is a manual availability/quantity limit, not an inventory reservation or automatic decrement system.
+
+EXTENSION 1.0.3
+The bundle contains a standalone SellPostly-Extension-1.0.3.zip. Extract it into a separate folder and use Chrome -> chrome://extensions -> Developer mode -> Load unpacked, choosing the folder containing manifest.json. If updating an existing unpacked install, reload that folder and verify version 1.0.3.
+
+The Destination Store selector above Send to My Shop (Pro) offers Affiliate Deals Shop and Personal Seller Shop and remembers the selection. Category, audience, price, photo, description and optional stock travel in the existing short-URL localStorage/postMessage bridge.
+- Affiliate destination: the complete external affiliate URL, including Amazon tag and campaign parameters, is preserved.
+- Personal destination: store tracking parameters are removed as before, and the product enters only the Personal catalog.
+The website archives the outgoing catalog, consumes the import once, switches to the target category and template preview, and also handles imports arriving after the builder has mounted. Legacy imports without a destination keep their existing active-mode behavior. Pro activation still happens on the website; no license bypass was added.
+
+The extension keeps activeTab/scripting/storage permissions only. The known frontend allowlist and vercel.com rejection remain intact. The extension configuration fallback now uses https://sellpostly.vercel.app, including installed static shortcut links. Use NEXT_PUBLIC_APP_URL for your canonical deployment; do not use a Vercel dashboard or preview URL.
 
 VERIFICATION
 npm run build: 0 errors.
-npm test: 44 tests passed.
-Integration tests execute the PostgreSQL schema repeatedly, including after COD insertion, and cover independent catalogs, wallet persistence, COD idempotency/zero commission/no escrow/no payout, ownership, hold enforcement, tracking updates and buyer/seller email delivery through a mocked Resend service. No real emails, payments, live DB operations or deployment were performed.
-The local test runner required an environment-only os.userInfo workaround, which is not shipped. No secrets, environment files, node_modules or build outputs are included. Original repository files were not changed by this staged implementation.
+npm test: all 49 tests passed.
+Additional checks: popup.js/background.js syntax, version/permissions, destination handoff, affiliate tag preservation, independent palette/hero serialization, discount/stock validation, repeated imports, dedicated buyer-template rendering, and existing Phase 2 PostgreSQL/email tests. Emails use a mocked Resend service. No live DB migration, payment, email or deployment was performed.
+The environment-specific os.userInfo test workaround is not shipped. No environment files, secrets, dependencies or build outputs are included. EN/FR/AR labels and RTL layout are retained.

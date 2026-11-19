@@ -20,6 +20,7 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  const [shareUrl,setShareUrl]=useState(''),[codLines,setCodLines]=useState<{product:Product;quantity:number}[]|null>(null);
  const [cart,setCart]=useShopCart(shop,slug,snapshot,shop.shopMode==='personal'),product=shop.shopMode==='personal'?shop.products.find(p=>p.id===productId):undefined;
  if(!product)return <main className="mx-auto max-w-3xl p-8"><p>{t('Product Not Found')}</p><a href={slug?'/s/'+encodeURIComponent(slug)+'/personal':'/shop'}>{t('Back to Store')}</a></main>;
+ const maximum=Math.max(1,Math.min(99,product.stock??99));
  const back=slug?'/s/'+encodeURIComponent(slug)+'/personal':'/shop'+(snapshot?'?'+new URLSearchParams({s:snapshot}):'?mode=personal');
  const lines=shop.products.filter(p=>cart[p.id]>0).map(p=>({product:p,quantity:cart[p.id]})),total=cartTotal(lines),count=lines.reduce((n,line)=>n+line.quantity,0);
  const photos=[...new Set([product.image,...(product.images||[])].map(safeImage).filter(Boolean))].slice(0,9);
@@ -28,7 +29,7 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  const title=product.id.startsWith('sample-')?t(product.name as Message):product.name;
  const button='rounded-xl bg-emerald-700 px-6 py-3 font-bold text-white disabled:opacity-50';
  function change(id:string,delta:number){setCart(previous=>{const next={...previous},value=Math.min(99,Math.max(0,(previous[id]||0)+delta));if(value)next[id]=value;else delete next[id];return next;});}
- function add(order=false){change(product!.id,quantity);setStatus('Added to Cart');if(order){if(shop.escrowEnabled!==false)setCheckout(productCheckout(product!,quantity));else if(shop.codEnabled!==false)setCodLines([{product:product!,quantity}]);else setCartOpen(true);}}
+ function add(order=false){if(product!.stock!==undefined&&quantity>product!.stock){setStatus('Not enough stock.');return;}change(product!.id,quantity);setStatus('Added to Cart');if(order){if(shop.escrowEnabled!==false)setCheckout(productCheckout(product!,quantity));else if(shop.codEnabled!==false)setCodLines([{product:product!,quantity}]);else setCartOpen(true);}}
  async function copy(){
   setCopying(true);
   try{
@@ -37,7 +38,7 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
    setShareUrl(productShareUrl(productPath(product!.id,published,snapshot)));
   }catch{setStatus('Publish your shop to create a shareable product link.');}finally{setCopying(false);}
  }
- return <main data-surface={shop.shopTheme} className="shop-surface mx-auto min-h-screen max-w-7xl px-5 pb-32 pt-6">
+ return <main data-surface={shop.shopTheme} data-accent={shop.shopAccent} className="shop-surface mx-auto min-h-screen max-w-7xl px-5 pb-32 pt-6">
  <header className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5"><a href={back} className="flex items-center gap-3">{shop.logo?<img src={shop.logo} alt="" className="h-12 w-12 rounded-xl bg-white object-contain"/>:<span className="grid h-12 w-12 place-items-center rounded-xl bg-emerald-700 text-xl font-bold text-white">{shop.name.trim().slice(0,2).toUpperCase()}</span>}<span><span className="block text-xl font-bold">{shop.name}</span>{verified&&<span className="text-xs text-emerald-700">✓ {t("Verified Store")}</span>}</span></a><div className="flex items-center gap-3"><div aria-label={t('Language')} className="flex rounded-full border p-1">{(['en','fr','ar'] as const).map(code=><button key={code} type="button" aria-pressed={language===code} onClick={()=>setLanguage(code)} className={language===code?'rounded-full bg-emerald-700 px-3 py-1 text-white':'px-3 py-1'}>{code==='ar'?'العربية':code.toUpperCase()}</button>)}</div><button type="button" onClick={()=>setCartOpen(true)} className="rounded-xl border px-4 py-2 font-semibold">{t('Cart')} ({count})</button></div></header>
  <nav aria-label={t('Breadcrumb')} className="mb-6 text-sm"><a href={back} className="underline">← {t('Back to Store')}</a><span className="mx-2">/</span><span>{title}</span></nav>
  <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-14"><ProductGallery images={photos} title={title}/>
@@ -45,10 +46,11 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  <h1 className="text-3xl font-black leading-tight sm:text-4xl">{title}</h1><div className="my-5 flex flex-wrap items-baseline gap-3"><p className="text-3xl font-black">{product.price}</p>{product.compareAtPrice&&<del className="text-lg text-slate-500">{product.compareAtPrice}</del>}</div>
  {shop.bio&&<p className="mb-5 text-slate-600">{shop.bio}</p>}
  {highlights.length>0&&<section className="my-6"><h2 className="mb-3 font-bold">{t('Product Highlights')}</h2><ul className="space-y-2">{highlights.map((line,i)=><li key={i} dir="auto" className="flex gap-3"><span aria-hidden="true" className="text-emerald-700">✓</span><span>{line}</span></li>)}</ul></section>}
- <div className="mb-5 flex items-center gap-4"><label className="font-semibold" htmlFor="product-quantity">{t('Quantity')}</label><input id="product-quantity" type="number" min={1} max={99} value={quantity} onChange={e=>setQuantity(Math.min(99,Math.max(1,Math.trunc(Number(e.target.value))||1)))} className="w-24 rounded-lg border bg-white p-3 text-slate-900"/></div>
- <div className="grid gap-3 sm:grid-cols-2"><button type="button" className={button} onClick={()=>add(true)}>{t('Order Now')}</button><button type="button" className="rounded-xl border border-emerald-700 px-6 py-3 font-bold" onClick={()=>add()}>{t('Add to Cart')}</button></div>
- {shop.escrowEnabled!==false&&<button type="button" className="mt-3 w-full rounded-xl border border-emerald-700 px-6 py-3 font-bold" onClick={()=>add(true)}>{t('Pay with USDC / USDT')}</button>}
- {shop.codEnabled!==false&&<button type="button" className="mt-3 w-full rounded-xl border px-6 py-3 font-bold" onClick={()=>setCodLines([{product,quantity}])}>{t('Cash on Delivery (COD)')}</button>}
+ <div className="mb-5 flex items-center gap-4"><label className="font-semibold" htmlFor="product-quantity">{t('Quantity')}</label><input id="product-quantity" type="number" min={1} max={maximum} value={quantity} onChange={e=>setQuantity(Math.min(maximum,Math.max(1,Math.trunc(Number(e.target.value))||1)))} className="w-24 rounded-lg border bg-white p-3 text-slate-900"/></div>
+ <div className="grid gap-3 sm:grid-cols-2"><button type="button" disabled={product.stock===0} className={button} onClick={()=>add(true)}>{t('Order Now')}</button><button type="button" className="rounded-xl border border-emerald-700 px-6 py-3 font-bold" disabled={product.stock===0} onClick={()=>add()}>{t('Add to Cart')}</button></div>
+ {shop.escrowEnabled!==false&&<button type="button" className="mt-3 w-full rounded-xl border border-emerald-700 px-6 py-3 font-bold" disabled={product.stock===0} onClick={()=>add(true)}>{t('Pay with USDC / USDT')}</button>}
+ {shop.codEnabled!==false&&<button type="button" className="mt-3 w-full rounded-xl border px-6 py-3 font-bold" disabled={product.stock===0} onClick={()=>setCodLines([{product,quantity}])}>{t('Cash on Delivery (COD)')}</button>}
+ {product.stock===0&&<p className="my-3 font-semibold">{t('Sold Out')}</p>}
  <p className="my-3 text-sm text-slate-600">{t('Delivery fees are confirmed by the seller.')}</p>
  {shop.escrowEnabled!==false&&<section className="my-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-950"><h2 className="font-bold">◇ {t('Escrow Buyer Protection')}</h2>{slug&&escrowReady?<><p className="mt-2 text-sm">{t('Payments are verified and held for the store’s assigned escrow period. Report delivery problems before release.')}</p><p className="mt-2 font-semibold">{holdDays(shop.escrowHoldDays)} {t('days')} · USDC / USDT · Polygon</p></>:<p className="mt-2 text-sm">{t('Preview: publish your store to enable escrow checkout.')}</p>}</section>}
  <button type="button" disabled={copying} className="text-sm font-semibold underline disabled:opacity-50" onClick={copy}>{t('Share Product')}</button>

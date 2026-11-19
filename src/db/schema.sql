@@ -308,6 +308,6 @@ UPDATE shops SET seller_usdc_wallet=personal_catalog->>'cryptoWallet' WHERE sell
 
 -- Each seller gets both aliases; a never-used mode starts with an empty catalog.
 -- statement-breakpoint
-UPDATE shops SET affiliate_catalog=jsonb_set(jsonb_set(catalog,'{shopMode}','"affiliate"'),'{products}','[]') WHERE affiliate_catalog IS NULL AND catalog ? 'products';
+UPDATE shops SET affiliate_catalog=jsonb_set(jsonb_set(catalog-'heroTitle'-'heroSubtitle'-'heroImage'-'shopAccent','{shopMode}','"affiliate"'),'{products}','[]') WHERE affiliate_catalog IS NULL AND catalog ? 'products';
 -- statement-breakpoint
-UPDATE shops SET personal_catalog=jsonb_set(jsonb_set(catalog,'{shopMode}','"personal"'),'{products}','[]') WHERE personal_catalog IS NULL AND catalog ? 'products';
+UPDATE shops SET personal_catalog=jsonb_set(jsonb_set(catalog-'heroTitle'-'heroSubtitle'-'heroImage'-'shopAccent','{shopMode}','"personal"'),'{products}','[]') WHERE personal_catalog IS NULL AND catalog ? 'products';
