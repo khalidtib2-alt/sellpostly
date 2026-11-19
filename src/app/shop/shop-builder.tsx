@@ -109,7 +109,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   const count=lines.reduce((sum,line)=>sum+line.quantity,0);
   const total=cartTotal(lines);
   function changeCart(id:string,delta:number){setCart(previous=>({...previous,[id]:Math.max(0,Math.min(99,(previous[id]||0)+delta))}));}
-  useEffect(()=>{setCart({});setCartOpen(false);setCheckout(null);},[shop.shopMode]);
+  useEffect(()=>{setCartOpen(false);setCheckout(null);},[shop.shopMode]);
   const options=[...categories,...new Set(shop.products.map(p=>p.category).filter(c=>!categories.includes(c as typeof categories[number])))];
   const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (genderFilter==="all"||p.gender===genderFilter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   useEffect(()=>setVisible(24),[filter,genderFilter,search]);
@@ -202,4 +202,5 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
 {shared&&<BuyerStoreFooter storeSlug={publicSlug}/>}
   </main>;
 }
+
 

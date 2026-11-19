@@ -1,17 +1,20 @@
-SellPostly Support & Studio Preview Patch
+SellPostly Checkout & Cart Sync Patch
 
-Extract into your SellPostly repository root, preserving src/, public/, scripts/, and tests/ folders.
-Support contact is now sellpostly.support@gmail.com, including transactional email support links and Reply-To. Resend EMAIL_FROM remains your verified sending identity.
-Four local SVG studio product illustrations replace the sample placeholders. Imported seller photos remain untouched. Previous product landing page improvements are included.
+Extract into the repository root, preserving src/, public/, scripts/, and tests/.
+Includes previous support email/studio preview and product landing page fixes.
 
-The inspected checkout had a misplaced duplicate root app/ folder. Before building, run:
+Order Now and Pay with USDC / USDT open the existing CryptoCheckout dialog directly, passing the shop config, public slug, exact quantity total and original item ID/quantity to BuyerOrderForm. Buyer details are collected by the existing form. Preview mode does not submit live orders. Configure the platform Polygon escrow wallet to enable live checkout; no real payment was made in verification.
+
+The product and storefront use sellpostly_cart_<slug>, with isolated preview/snapshot keys. Previous v1 carts migrate automatically. Changes save synchronously; tabs and same-page instances sync, and focus, visibility and browser back/forward restore the latest quantities. Storefront initialization no longer clears the saved cart.
+
+If your checkout has a misplaced duplicate root app/ folder, run:
 node scripts/fix-duplicate-app.mjs
-This guarded command backs up that duplicate outside the repository only when canonical src/app counterparts exist. It refuses to move a valid root app with its own layout.
+The guarded repair backs up the duplicate outside the repository. It refuses to move a root app with its own layout or files missing canonical src/app counterparts.
 
-Then run:
+Verification:
 npm run build
 npm test
-
-Verified in staged copy: build 0 errors; 33 tests passed.
-The local test runner required an environment-only os.userInfo workaround; it is not included in this patch.
-No secrets, environment files, dependencies, database changes, or deployment are included. Original checkout was not modified.
+Build: 0 errors. Tests: 36 passed.
+Local tests required an environment-only os.userInfo workaround; it is not included.
+No environment files, secrets, node_modules, database migrations or deployment included.
+Original checkout remains unchanged; apply this patch before deploying.
