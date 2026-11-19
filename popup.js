@@ -704,7 +704,7 @@ document.querySelector("#open-studio").addEventListener("click",async()=>{
     image:preview&&!preview.hidden?preview.src:"",
     link
   });
-  chrome.tabs.create({url:("https://sellpostly.vercel.app")+"/?"+query+"#formatter"});
+  chrome.tabs.create({url:(await globalThis.SellPostlyFrontend.resolve())+"/?"+query+"#formatter"});
 });
 
 
@@ -737,4 +737,4 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
  finally{button.disabled=false;}
 });
 
-for(const link of document.querySelectorAll("footer a")){const path=new URL(link.href).pathname;link.href=("https://sellpostly.vercel.app")+(path==="/"?"":path);}
+void globalThis.SellPostlyFrontend.resolve().then(base=>{for(const link of document.querySelectorAll("footer a")){const path=new URL(link.href).pathname;link.href=base+(path==="/"?"":path);}});

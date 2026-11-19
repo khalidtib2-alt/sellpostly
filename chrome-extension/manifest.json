@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "SellPostly",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Format seller listings and creator posts locally.",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -23,5 +24,12 @@
   "background": {
     "service_worker": "background.js"
   },
-  "homepage_url": "https://vercel.app"
+  "homepage_url": "https://sellpostly.vercel.app",
+  "host_permissions": [
+    "https://sellpostly.vercel.app/*",
+    "https://sellpostly.com/*",
+    "https://*.sellpostly.com/*",
+    "http://localhost/*",
+    "https://localhost/*"
+  ]
 }

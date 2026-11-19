@@ -1,2 +1,2 @@
 "use strict";
-globalThis.SELLPOSTLY_APP_URL = "https://vercel.app";
+globalThis.SELLPOSTLY_APP_URL = "https://sellpostly.vercel.app";
