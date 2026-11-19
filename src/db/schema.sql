@@ -171,3 +171,54 @@ BEGIN
   INSERT INTO payout_requests(shop_id,amount,coin,network,wallet) VALUES(p_shop,p_amount,p_coin,p_network,p_wallet) RETURNING id INTO result;
   RETURN result;
 END $$;
+
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS expires_at timestamptz;
+-- statement-breakpoint
+ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS subscriptions_provider_check;
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_provider_check CHECK (provider IN ('master','gumroad','development','crypto'));
+-- statement-breakpoint
+CREATE TABLE IF NOT EXISTS pro_upgrade_requests (
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ email text NOT NULL CHECK (length(email) BETWEEN 3 AND 254),
+ plan text NOT NULL CHECK (plan IN ('monthly','lifetime')),
+ amount_usd numeric(12,2) NOT NULL CHECK (amount_usd>0),
+ coin text NOT NULL CHECK (coin IN ('USDC','USDT')),
+ network text NOT NULL DEFAULT 'Polygon' CHECK (network='Polygon'),
+ tx_id text NOT NULL UNIQUE CHECK (tx_id ~ '^0x[0-9a-f]{64}$'),
+ status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+ issued_license_key text UNIQUE,
+ receipt_token_hash text NOT NULL CHECK (receipt_token_hash ~ '^[a-f0-9]{64}$'),
+ created_at timestamptz NOT NULL DEFAULT now(),
+ approved_at timestamptz,
+ CHECK ((status='approved' AND issued_license_key IS NOT NULL AND approved_at IS NOT NULL) OR (status<>'approved' AND issued_license_key IS NULL))
+);
+
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS email text;
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS language text NOT NULL DEFAULT 'en' CHECK (language IN ('en','fr','ar'));
+-- statement-breakpoint
+ALTER TABLE pro_upgrade_requests ADD COLUMN IF NOT EXISTS language text NOT NULL DEFAULT 'en' CHECK (language IN ('en','fr','ar'));
+-- statement-breakpoint
+CREATE TABLE IF NOT EXISTS transactional_email_deliveries(event_key text PRIMARY KEY,sent_at timestamptz NOT NULL DEFAULT now());
+-- statement-breakpoint
+UPDATE subscriptions s SET email=r.email,language=r.language FROM pro_upgrade_requests r WHERE r.status='approved' AND r.issued_license_key IS NOT NULL AND s.owner_key=encode(sha256(convert_to('sellpostly-license:'||r.issued_license_key,'UTF8')),'hex') AND s.provider='crypto' AND s.email IS NULL;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION approve_pro_upgrade_request(request_id uuid, license_key text, owner_hash text)
+RETURNS text LANGUAGE plpgsql AS $$
+DECLARE upgrade pro_upgrade_requests%ROWTYPE;
+BEGIN
+ SELECT * INTO upgrade FROM pro_upgrade_requests WHERE id=request_id FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'Upgrade request not found'; END IF;
+ IF upgrade.status='approved' THEN RETURN upgrade.issued_license_key; END IF;
+ IF upgrade.status<>'pending' THEN RAISE EXCEPTION 'Upgrade request is not pending'; END IF;
+ IF license_key !~ '^SP-PRO-[A-F0-9]{64}$' OR owner_hash !~ '^[a-f0-9]{64}$' THEN RAISE EXCEPTION 'Invalid license'; END IF;
+ INSERT INTO subscriptions(owner_key,provider,status,expires_at,email,language) VALUES(owner_hash,'crypto','active',CASE WHEN upgrade.plan='monthly' THEN now()+interval '30 days' ELSE NULL END,upgrade.email,upgrade.language);
+ UPDATE pro_upgrade_requests SET status='approved',issued_license_key=license_key,approved_at=now() WHERE id=request_id;
+ RETURN license_key;
+END $$;
+-- statement-breakpoint
+REVOKE ALL ON FUNCTION approve_pro_upgrade_request(uuid,text,text) FROM PUBLIC;
+

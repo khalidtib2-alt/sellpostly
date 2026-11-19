@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SellPostly</title>
   <link rel="stylesheet" href="popup.css">
+  <script src="app-config.js" defer></script>
   <script src="popup.js" defer></script>
 </head>
 <body>
@@ -22,6 +23,7 @@
       <button type="button" data-mode="creator" aria-pressed="false"><span data-message="Creator Mode">Creator Mode</span></button>
     </div>
     <form id="seller">
+<div class="fields"><label><span data-message="Category">Category</span><select name="category"><option value="Tech &amp; Gadgets" data-message="Tech &amp; Gadgets">Tech &amp; Gadgets</option><option value="Fashion" data-message="Fashion">Fashion</option><option value="Home &amp; Kitchen" data-message="Home &amp; Kitchen">Home &amp; Kitchen</option><option value="Beauty" data-message="Beauty">Beauty</option><option value="Fitness" data-message="Fitness">Fitness</option><option value="Top Deals" data-message="Top Deals" selected>Top Deals</option><option value="Digital Product" data-message="Digital Product">Digital Product</option><option value="Art" data-message="Art">Art</option><option value="Sport" data-message="Sport">Sport</option><option value="Other" data-message="Other">Other</option></select></label><label><span data-message="Gender / Target Audience">Gender / Target Audience</span><select name="gender"><option value="unisex" data-message="Unisex">Unisex</option><option value="women" data-message="Women">Women</option><option value="men" data-message="Men">Men</option><option value="kids" data-message="Kids">Kids</option></select></label></div>
 <div class="studio-shortcuts"><button type="button" id="open-studio" class="primary"><span data-message="Open Full Studio">Open Full Studio</span></button><button type="button" id="send-shop" class="primary"><span data-message="Send to My Shop (Pro)">Send to My Shop (Pro)</span></button></div>
 
       <button type="button" id="import-page" class="primary"><span data-message="Import From Current Page">Import From Current Page</span></button>
@@ -45,9 +47,9 @@
     <p id="status" role="status"></p>
   </main>
   <footer>
-    <a href="https://sellpostly-git-main-usidk-it.vercel.app" target="_blank" rel="noopener noreferrer"><span data-message="Website">Website</span></a>
-    <a href="https://sellpostly-git-main-usidk-it.vercel.app/prompt-generator" target="_blank" rel="noopener noreferrer"><span data-message="Prompt Generator">Prompt Generator</span></a>
-    <a href="https://sellpostly-git-main-usidk-it.vercel.app/guides" target="_blank" rel="noopener noreferrer"><span data-message="Seller Guides">Seller Guides</span></a>
+    <a href="https://vercel.app" target="_blank" rel="noopener noreferrer"><span data-message="Website">Website</span></a>
+    <a href="https://vercel.app/prompt-generator" target="_blank" rel="noopener noreferrer"><span data-message="Prompt Generator">Prompt Generator</span></a>
+    <a href="https://vercel.app/guides" target="_blank" rel="noopener noreferrer"><span data-message="Seller Guides">Seller Guides</span></a>
   </footer>
 </body>
 </html>

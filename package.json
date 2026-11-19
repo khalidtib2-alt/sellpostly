@@ -7,7 +7,10 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "test": "node --conditions=react-server --import tsx --test tests/*.test.ts"
+    "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
+    "extension:configure": "node scripts/configure-extension.mjs",
+    "prebuild": "npm run extension:configure",
+    "db:init": "node scripts/init-db.mjs"
   },
   "type": "module",
   "dependencies": {

@@ -14,7 +14,7 @@ export async function initializeDatabase(){
   const schema=await readFile(path.join(process.cwd(),'src/db/schema.sql'),'utf8');
   const sql=db();
   // Fixed repository-owned statements only; no request text is executed as SQL.
-  const statements=schema.split('-- statement-breakpoint').map(value=>value.trim()).filter(Boolean);
+  const statements=schema.split(/^[ \t]*-- statement-breakpoint[ \t]*\r?$/m).map(value=>value.trim()).filter(Boolean);
   await sql.transaction(statements.map(statement=>sql.query(statement)),{isolationLevel:'Serializable'});
 }
 export async function recordSubscription(identity:ProIdentity){
@@ -22,7 +22,7 @@ export async function recordSubscription(identity:ProIdentity){
   await sql`INSERT INTO subscriptions(owner_key,provider) VALUES(${identity.ownerKey},${identity.provider}) ON CONFLICT(owner_key) DO UPDATE SET provider=excluded.provider,verified_at=now()`;
 }
 export const PUBLISH_SHOP_SQL=`INSERT INTO shops(owner_key,slug,name,logo,catalog)
- SELECT $1,$2,$3,$4,$5::jsonb FROM subscriptions WHERE owner_key=$1 AND status='active'
+ SELECT $1,$2,$3,$4,$5::jsonb FROM subscriptions WHERE owner_key=$1 AND status='active' AND (expires_at IS NULL OR expires_at>now())
  ON CONFLICT(owner_key) DO UPDATE SET name=excluded.name,logo=excluded.logo,catalog=excluded.catalog,published=true,updated_at=now()
  RETURNING slug,escrow_hold_days`;
 export async function publishShop(identity:ProIdentity,value:unknown){

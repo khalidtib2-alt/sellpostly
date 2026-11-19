@@ -1,24 +1,222 @@
 ﻿"use strict";
 
 const messages = {
-"Send to My Shop (Pro)": {"fr":"Envoyer vers ma boutique (Pro)","ar":"إرسال إلى متجري (Pro)"},
-"Sending to My Shop…": {"fr":"Envoi vers ma boutique…","ar":"جارٍ الإرسال إلى متجري…"},
-"Enter a product name or import the current page first.": {"fr":"Saisissez un nom de produit ou importez d’abord la page actuelle.","ar":"أدخل اسم المنتج أو استورد الصفحة الحالية أولًا."},
-"Opening My Shop. Activate Pro on the website if requested.": {"fr":"Ouverture de Ma boutique. Activez Pro sur le site si nécessaire.","ar":"جارٍ فتح متجري. فعّل Pro على الموقع إذا طُلب ذلك."},
-"Could not open My Shop. Reload the extension and try again.": {"fr":"Impossible d’ouvrir Ma boutique. Rechargez l’extension et réessayez.","ar":"تعذر فتح متجري. أعد تحميل الإضافة وحاول مجددًا."},
-"Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption":{"fr":"Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.","ar":"تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."},
-"Shop Category":{"fr":"Catégorie de boutique","ar":"فئة المتجر"},"Gender / Audience":{"fr":"Genre / Public","ar":"الجنس أو الجمهور"},"All / Unisex":{"fr":"Tous / Mixte","ar":"الكل / للجنسين"},"Men":{"fr":"Hommes","ar":"رجال"},"Women":{"fr":"Femmes","ar":"نساء"},"Unisex":{"fr":"Mixte","ar":"للجنسين"},"Edit Product":{"fr":"Modifier le produit","ar":"تعديل المنتج"},
-"Category":{"fr":"Catégorie","ar":"الفئة"},"Tech & Gadgets":{"fr":"Tech et gadgets","ar":"التقنية والأجهزة"},"Fashion":{"fr":"Mode","ar":"الأزياء"},"Home & Kitchen":{"fr":"Maison et cuisine","ar":"المنزل والمطبخ"},"Beauty":{"fr":"Beauté","ar":"الجمال"},"Fitness":{"fr":"Fitness","ar":"اللياقة"},"Top Deals":{"fr":"Meilleures offres","ar":"أفضل العروض"},"Other":{"fr":"Autre","ar":"أخرى"},
-"Open Full Studio": {fr:"Ouvrir le studio complet",ar:"فتح الاستوديو الكامل"},
-"Website": {fr:"Site web",ar:"Ø§Ù„Ù…ÙˆÙ‚Ø¹"},
-"Prompt Generator": {fr:"GÃ©nÃ©rateur de prompts",ar:"Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª"},
-"Seller Guides": {fr:"Guides pour les vendeurs",ar:"Ø£Ø¯Ù„Ø© Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"},
-"Text & Image copied! Paste (Ctrl+V) directly into your post or chat.":{"fr":"Texte et image copiÃ©s ! Collez-les (Ctrl+V) dans votre publication ou conversation.","ar":"ØªÙ… Ù†Ø³Ø® Ø§Ù„Ù†Øµ ÙˆØ§Ù„ØµÙˆØ±Ø©! Ø§Ù„ØµÙ‚ (Ctrl+V) ÙÙŠ Ø§Ù„Ù…Ù†Ø´ÙˆØ± Ø£Ùˆ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø©."},
-"Upload or import a product photo first.":{"fr":"Importez dâ€™abord une photo produit.","ar":"Ø§Ø±ÙØ¹ Ø£Ùˆ Ø§Ø³ØªÙˆØ±Ø¯ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ù‹Ø§."},"Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.":{"fr":"Collez lâ€™URL dâ€™une fiche produit prÃ©cise, ou utilisez lâ€™extension Chrome SellPostly sur cette fiche.","ar":"Ø§Ù„ØµÙ‚ Ø±Ø§Ø¨Ø· ØµÙØ­Ø© Ù…Ù†ØªØ¬ Ù…Ø­Ø¯Ø¯ Ø¨Ø¯Ù„ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ù…ØªØ¬Ø±ØŒ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ù… Ø¥Ø¶Ø§ÙØ© SellPostly Ø¹Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ù…Ù†ØªØ¬."},"Image copied! Press Ctrl+V in chat to attach the photo.":{"fr":"Image copiÃ©e ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.","ar":"ØªÙ… Ù†Ø³Ø® Ø§Ù„ØµÙˆØ±Ø©! Ø§Ø¶ØºØ· Ctrl+V ÙÙŠ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø© Ù„Ø¥Ø±ÙØ§Ù‚Ù‡Ø§."},"Send Text":{"fr":"Envoyer le texte","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ù†Øµ"},"Send Image + Text":{"fr":"Envoyer lâ€™image et le texte","ar":"Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØµÙˆØ±Ø© ÙˆØ§Ù„Ù†Øµ"},"Image downloaded. Attach it and paste the caption.":{"fr":"Image tÃ©lÃ©chargÃ©e. Joignez-la et collez la lÃ©gende.","ar":"ØªÙ… ØªÙ†Ø²ÙŠÙ„ Ø§Ù„ØµÙˆØ±Ø©. Ø£Ø±ÙÙ‚Ù‡Ø§ ÙˆØ§Ù„ØµÙ‚ Ø§Ù„Ù†Øµ."},"Sharing failed. Copy the text or download the image.":{"fr":"Ã‰chec du partage. Copiez le texte ou tÃ©lÃ©chargez lâ€™image.","ar":"ØªØ¹Ø°Ù‘Ø±Øª Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©. Ø§Ù†Ø³Ø® Ø§Ù„Ù†Øµ Ø£Ùˆ Ù†Ø²Ù‘Ù„ Ø§Ù„ØµÙˆØ±Ø©."},
-"Delivery":{"fr":"Livraison","ar":"Ø§Ù„ØªÙˆØµÙŠÙ„"},"Reply *ORDER* now to claim yours!":{"fr":"RÃ©pondez *COMMANDER* pour passer commande !","ar":"Ø£Ø±Ø³Ù„ *Ø·Ù„Ø¨* Ø§Ù„Ø¢Ù† Ù„Ø·Ù„Ø¨ Ù…Ù†ØªØ¬Ùƒ!"},
-"Import From Current Page": {fr:"Importer depuis cette page",ar:"Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ù…Ù† Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©"},
-"Page imported. Review the details.": {fr:"Page importÃ©e. VÃ©rifiez les dÃ©tails.",ar:"ØªÙ… Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯. Ø±Ø§Ø¬Ø¹ Ø§Ù„ØªÙØ§ØµÙŠÙ„."},
-"Could not read this page. Open a product page and try again.": {fr:"Lecture impossible. Ouvrez une page produit et rÃ©essayez.",ar:"ØªØ¹Ø°Ù‘Ø±Øª Ù‚Ø±Ø§Ø¡Ø© Ø§Ù„ØµÙØ­Ø©. Ø§ÙØªØ­ ØµÙØ­Ø© Ù…Ù†ØªØ¬ ÙˆØ­Ø§ÙˆÙ„ Ù…Ø¬Ø¯Ø¯Ù‹Ø§."},
+  "Could not load or save email preferences.": {
+    "fr": "Impossible de charger ou d’enregistrer les préférences e-mail.",
+    "ar": "تعذّر تحميل تفضيلات البريد أو حفظها."
+  },
+  "Email preferences saved.": {
+    "fr": "Préférences e-mail enregistrées.",
+    "ar": "تم حفظ تفضيلات البريد."
+  },
+  "Save Email Preferences": {
+    "fr": "Enregistrer les préférences e-mail",
+    "ar": "حفظ تفضيلات البريد"
+  },
+  "Payout updates use this private email and your current language. Leave blank to disable seller emails.": {
+    "fr": "Les mises à jour des retraits utilisent cet e-mail privé et votre langue actuelle. Laissez vide pour désactiver les e-mails vendeur.",
+    "ar": "تُرسل تحديثات السحب إلى هذا البريد الخاص بلغتك الحالية. اتركه فارغاً لتعطيل رسائل البائع."
+  },
+  "Seller Notification Email": {
+    "fr": "E-mail de notification du vendeur",
+    "ar": "البريد الإلكتروني لإشعارات البائع"
+  },
+  "WhatsApp Phone (Optional)": {
+    "fr": "Téléphone WhatsApp (facultatif)",
+    "ar": "رقم واتساب (اختياري)"
+  },
+  "A buyer international phone number is needed for WhatsApp replies.": {
+    "fr": "Un numéro de téléphone international de l’acheteur est nécessaire pour les réponses WhatsApp.",
+    "ar": "يلزم رقم هاتف المشتري بالصيغة الدولية للرد عبر واتساب."
+  },
+  "Delivery Follow-Up": {
+    "fr": "Suivi de la livraison",
+    "ar": "متابعة التسليم"
+  },
+  "Digital Key / Tracking Delivered": {
+    "fr": "Clé numérique / suivi envoyé",
+    "ar": "تم إرسال المفتاح الرقمي أو التتبع"
+  },
+  "Order Confirmed": {
+    "fr": "Commande confirmée",
+    "ar": "تم تأكيد الطلب"
+  },
+  "WhatsApp Quick Replies": {
+    "fr": "Réponses rapides WhatsApp",
+    "ar": "ردود واتساب السريعة"
+  },
+  "Gender / Target Audience": {
+    "fr": "Genre / public cible",
+    "ar": "الجنس أو الجمهور المستهدف"
+  },
+  "Sport": {
+    "fr": "Sport",
+    "ar": "رياضة"
+  },
+  "Art": {
+    "fr": "Art",
+    "ar": "فن"
+  },
+  "Digital Product": {
+    "fr": "Produit numérique",
+    "ar": "منتج رقمي"
+  },
+  "Kids": {
+    "fr": "Enfants",
+    "ar": "الأطفال"
+  },
+  "Send to My Shop (Pro)": {
+    "fr": "Envoyer vers ma boutique (Pro)",
+    "ar": "إرسال إلى متجري (Pro)"
+  },
+  "Sending to My Shop…": {
+    "fr": "Envoi vers ma boutique…",
+    "ar": "جارٍ الإرسال إلى متجري…"
+  },
+  "Enter a product name or import the current page first.": {
+    "fr": "Saisissez un nom de produit ou importez d’abord la page actuelle.",
+    "ar": "أدخل اسم المنتج أو استورد الصفحة الحالية أولًا."
+  },
+  "Opening My Shop. Activate Pro on the website if requested.": {
+    "fr": "Ouverture de Ma boutique. Activez Pro sur le site si nécessaire.",
+    "ar": "جارٍ فتح متجري. فعّل Pro على الموقع إذا طُلب ذلك."
+  },
+  "Could not open My Shop. Reload the extension and try again.": {
+    "fr": "Impossible d’ouvrir Ma boutique. Rechargez l’extension et réessayez.",
+    "ar": "تعذر فتح متجري. أعد تحميل الإضافة وحاول مجددًا."
+  },
+  "Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption": {
+    "fr": "Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.",
+    "ar": "تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."
+  },
+  "Shop Category": {
+    "fr": "Catégorie de boutique",
+    "ar": "فئة المتجر"
+  },
+  "Gender / Audience": {
+    "fr": "Genre / Public",
+    "ar": "الجنس أو الجمهور"
+  },
+  "All / Unisex": {
+    "fr": "Tous / Mixte",
+    "ar": "الكل / للجنسين"
+  },
+  "Men": {
+    "fr": "Hommes",
+    "ar": "الرجال"
+  },
+  "Women": {
+    "fr": "Femmes",
+    "ar": "النساء"
+  },
+  "Unisex": {
+    "fr": "Mixte",
+    "ar": "للجميع"
+  },
+  "Edit Product": {
+    "fr": "Modifier le produit",
+    "ar": "تعديل المنتج"
+  },
+  "Category": {
+    "fr": "Catégorie",
+    "ar": "الفئة"
+  },
+  "Tech & Gadgets": {
+    "fr": "Tech et gadgets",
+    "ar": "التقنية والأجهزة"
+  },
+  "Fashion": {
+    "fr": "Mode",
+    "ar": "الأزياء"
+  },
+  "Home & Kitchen": {
+    "fr": "Maison et cuisine",
+    "ar": "المنزل والمطبخ"
+  },
+  "Beauty": {
+    "fr": "Beauté",
+    "ar": "الجمال"
+  },
+  "Fitness": {
+    "fr": "Fitness",
+    "ar": "اللياقة البدنية"
+  },
+  "Top Deals": {
+    "fr": "Meilleures offres",
+    "ar": "أفضل العروض"
+  },
+  "Other": {
+    "fr": "Autre",
+    "ar": "أخرى"
+  },
+  "Open Full Studio": {
+    "fr": "Ouvrir le studio complet",
+    "ar": "فتح الاستوديو الكامل"
+  },
+  "Website": {
+    "fr": "Site web",
+    "ar": "Ø§Ù„Ù…ÙˆÙ‚Ø¹"
+  },
+  "Prompt Generator": {
+    "fr": "GÃ©nÃ©rateur de prompts",
+    "ar": "Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª"
+  },
+  "Seller Guides": {
+    "fr": "Guides pour les vendeurs",
+    "ar": "Ø£Ø¯Ù„Ø© Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"
+  },
+  "Text & Image copied! Paste (Ctrl+V) directly into your post or chat.": {
+    "fr": "Texte et image copiÃ©s ! Collez-les (Ctrl+V) dans votre publication ou conversation.",
+    "ar": "ØªÙ… Ù†Ø³Ø® Ø§Ù„Ù†Øµ ÙˆØ§Ù„ØµÙˆØ±Ø©! Ø§Ù„ØµÙ‚ (Ctrl+V) ÙÙŠ Ø§Ù„Ù…Ù†Ø´ÙˆØ± Ø£Ùˆ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø©."
+  },
+  "Upload or import a product photo first.": {
+    "fr": "Importez dâ€™abord une photo produit.",
+    "ar": "Ø§Ø±ÙØ¹ Ø£Ùˆ Ø§Ø³ØªÙˆØ±Ø¯ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ù‹Ø§."
+  },
+  "Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.": {
+    "fr": "Collez lâ€™URL dâ€™une fiche produit prÃ©cise, ou utilisez lâ€™extension Chrome SellPostly sur cette fiche.",
+    "ar": "Ø§Ù„ØµÙ‚ Ø±Ø§Ø¨Ø· ØµÙØ­Ø© Ù…Ù†ØªØ¬ Ù…Ø­Ø¯Ø¯ Ø¨Ø¯Ù„ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ù…ØªØ¬Ø±ØŒ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ù… Ø¥Ø¶Ø§ÙØ© SellPostly Ø¹Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ù…Ù†ØªØ¬."
+  },
+  "Image copied! Press Ctrl+V in chat to attach the photo.": {
+    "fr": "Image copiÃ©e ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.",
+    "ar": "ØªÙ… Ù†Ø³Ø® Ø§Ù„ØµÙˆØ±Ø©! Ø§Ø¶ØºØ· Ctrl+V ÙÙŠ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø© Ù„Ø¥Ø±ÙØ§Ù‚Ù‡Ø§."
+  },
+  "Send Text": {
+    "fr": "Envoyer le texte",
+    "ar": "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ù†Øµ"
+  },
+  "Send Image + Text": {
+    "fr": "Envoyer lâ€™image et le texte",
+    "ar": "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØµÙˆØ±Ø© ÙˆØ§Ù„Ù†Øµ"
+  },
+  "Image downloaded. Attach it and paste the caption.": {
+    "fr": "Image tÃ©lÃ©chargÃ©e. Joignez-la et collez la lÃ©gende.",
+    "ar": "ØªÙ… ØªÙ†Ø²ÙŠÙ„ Ø§Ù„ØµÙˆØ±Ø©. Ø£Ø±ÙÙ‚Ù‡Ø§ ÙˆØ§Ù„ØµÙ‚ Ø§Ù„Ù†Øµ."
+  },
+  "Sharing failed. Copy the text or download the image.": {
+    "fr": "Ã‰chec du partage. Copiez le texte ou tÃ©lÃ©chargez lâ€™image.",
+    "ar": "ØªØ¹Ø°Ù‘Ø±Øª Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©. Ø§Ù†Ø³Ø® Ø§Ù„Ù†Øµ Ø£Ùˆ Ù†Ø²Ù‘Ù„ Ø§Ù„ØµÙˆØ±Ø©."
+  },
+  "Delivery": {
+    "fr": "Livraison",
+    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„"
+  },
+  "Reply *ORDER* now to claim yours!": {
+    "fr": "RÃ©pondez *COMMANDER* pour passer commande !",
+    "ar": "Ø£Ø±Ø³Ù„ *Ø·Ù„Ø¨* Ø§Ù„Ø¢Ù† Ù„Ø·Ù„Ø¨ Ù…Ù†ØªØ¬Ùƒ!"
+  },
+  "Import From Current Page": {
+    "fr": "Importer depuis cette page",
+    "ar": "Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ù…Ù† Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©"
+  },
+  "Page imported. Review the details.": {
+    "fr": "Page importÃ©e. VÃ©rifiez les dÃ©tails.",
+    "ar": "ØªÙ… Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯. Ø±Ø§Ø¬Ø¹ Ø§Ù„ØªÙØ§ØµÙŠÙ„."
+  },
+  "Could not read this page. Open a product page and try again.": {
+    "fr": "Lecture impossible. Ouvrez une page produit et rÃ©essayez.",
+    "ar": "ØªØ¹Ø°Ù‘Ø±Øª Ù‚Ø±Ø§Ø¡Ø© Ø§Ù„ØµÙØ­Ø©. Ø§ÙØªØ­ ØµÙØ­Ø© Ù…Ù†ØªØ¬ ÙˆØ­Ø§ÙˆÙ„ Ù…Ø¬Ø¯Ø¯Ù‹Ø§."
+  },
   "Formatting mode": {
     "fr": "Mode de mise en forme",
     "ar": "ÙˆØ¶Ø¹ Ø§Ù„ØªÙ†Ø³ÙŠÙ‚"
@@ -506,7 +704,7 @@ document.querySelector("#open-studio").addEventListener("click",async()=>{
     image:preview&&!preview.hidden?preview.src:"",
     link
   });
-  chrome.tabs.create({url:"https://sellpostly-git-main-usidk-it.vercel.app/?"+query+"#formatter"});
+  chrome.tabs.create({url:(globalThis.SELLPOSTLY_APP_URL||"https://vercel.app")+"/?"+query+"#formatter"});
 });
 
 
@@ -532,9 +730,11 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   const data=new FormData(form),title=String(data.get("name")||"").trim();
   if(!title){feedback.textContent=t("Enter a product name or import the current page first.");return;}
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.getAttribute("src")||"",url:tab?.url||""}});
+  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
   if(!result?.ok)throw Error();
   feedback.textContent=t("Opening My Shop. Activate Pro on the website if requested.");
  }catch{feedback.textContent=t("Could not open My Shop. Reload the extension and try again.");}
  finally{button.disabled=false;}
 });
+
+for(const link of document.querySelectorAll("footer a")){const path=new URL(link.href).pathname;link.href=(globalThis.SELLPOSTLY_APP_URL||"https://vercel.app")+(path==="/"?"":path);}

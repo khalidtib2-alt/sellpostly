@@ -1,4 +1,6 @@
 import 'server-only';
+import {locale} from './locale';
+import {buyerPhone} from './whatsapp-replies';
 import { db } from './db';
 import { ApiError,object,text,contact,coin,network,txId,uuid,priceItems,units } from './order-validation';
 import { validateShop } from '../app/shop/shop-data';
@@ -16,7 +18,8 @@ export async function submitOrder(value:unknown,query:Query=run){
  if(shops[0].suspended)throw new ApiError('STORE_SUSPENDED',403);
  const shop=validateShop(shops[0].catalog);if(shop.shopMode!=='personal')throw new ApiError('CHECKOUT_UNAVAILABLE');
  const priced=priceItems(shop.products,raw.items,selectedCoin);
- const details={items:priced.items,buyer:{name,contact:buyerContact},delivery_note:typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet};
+ const phone=buyer.phone===undefined||buyer.phone===''?'':buyerPhone(buyer.phone);if(buyer.phone&&!phone)throw new ApiError('INVALID_CONTACT');
+ const details={language:locale(raw.language),items:priced.items,buyer:{name,contact:buyerContact,phone},delivery_note:typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet};
  // INSERT SELECT also checks the catalog has not changed during price calculation.
  const rows=await query(`INSERT INTO orders(shop_id,gross_amount,coin,network,tx_id,details)
  SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND catalog=$7::jsonb

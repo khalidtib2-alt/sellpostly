@@ -32,3 +32,5 @@ button:disabled { opacity: .6; cursor: wait; }
 
 .studio-shortcuts { display:flex; gap:6px; margin:10px 0; }
 .studio-shortcuts button { flex:1; font-size:12px; }
+
+.fields select {width:100%;min-width:0;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;padding:9px;font:inherit;}

@@ -22,5 +22,6 @@
   },
   "background": {
     "service_worker": "background.js"
-  }
+  },
+  "homepage_url": "https://vercel.app"
 }

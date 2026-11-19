@@ -2,7 +2,7 @@ import { normalizeGender,safeImage,safeUrl,shopKey,type Product,type Shop } from
 export const pendingShopKey='sellpostly_pending_shop_item';
 export const proKey='sellpostly-pro-key';
 type StorageLike=Pick<Storage,'getItem'|'setItem'|'removeItem'>;
-export type PendingShopItem={id:string;title:string;price:string;image:string;description:string;url:string;category:string;gender:'unisex'|'men'|'women';source:string};
+export type PendingShopItem={id:string;title:string;price:string;image:string;description:string;url:string;category:string;gender:'unisex'|'men'|'women'|'kids';source:string};
 const text=(value:unknown,max:number)=>typeof value==='string'?value.trim().slice(0,max):'';
 export function sourceForUrl(value:string){
  try{const host=new URL(value).hostname;

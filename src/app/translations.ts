@@ -187,7 +187,10 @@ export const translations = {
     "fr": "Collez votre texte ou votre accroche",
     "ar": "الصق مسودتك أو عبارتك الافتتاحية"
   },
-  "Order": {"fr":"Commande","ar":"الطلب"},
+  "Order": {
+    "fr": "Commande",
+    "ar": "الطلب"
+  },
   "Message to order.": {
     "fr": "Envoyez un message pour commander.",
     "ar": "راسلنا للطلب."
@@ -335,10 +338,19 @@ export const translations = {
   "Act as an SEO editor and social strategist. Identify the likely search intent, propose a title and meta description, and outline the article with H2s and the questions each should answer. Then create a one-week repurposing plan with platform, format, opening hook, and CTA. Label keyword ideas as hypotheses and omit unverified search-volume figures.": {
     "fr": "Agis en tant qu’éditeur SEO et stratège social. Identifie l’intention de recherche probable, propose un titre et une méta-description, puis un plan d’article avec des H2 et les questions à traiter. Prépare une semaine de déclinaisons avec la plateforme, le format, l’accroche et l’appel à l’action. Présente les mots-clés comme des hypothèses et écarte les volumes de recherche non vérifiés.",
     "ar": "تصرّف كمحرر متخصص في تحسين محركات البحث وخبير في منصات التواصل. حدّد نية البحث المحتملة واقترح عنوانًا ووصفًا تعريفيًا ومخططًا بعناوين H2 والأسئلة التي يجيب عنها كل قسم. ضع خطة أسبوعية لإعادة استخدام المحتوى تشمل المنصة والصيغة والعبارة الافتتاحية والدعوة إلى اتخاذ إجراء. قدّم الكلمات المفتاحية بوصفها فرضيات وتجنّب أرقام حجم البحث غير الموثّقة."
-  }
-  ,"What has worked for you?": { fr: "Qu’est-ce qui a fonctionné pour vous ?", ar: "ما الذي نجح معكم؟" },
-  "Your take?": { fr: "Votre avis ?", ar: "ما رأيكم؟" },
-  "Share your experience below.": { fr: "Partagez votre expérience en commentaire.", ar: "شاركونا تجاربكم في التعليقات." },
+  },
+  "What has worked for you?": {
+    "fr": "Qu’est-ce qui a fonctionné pour vous ?",
+    "ar": "ما الذي نجح معكم؟"
+  },
+  "Your take?": {
+    "fr": "Votre avis ?",
+    "ar": "ما رأيكم؟"
+  },
+  "Share your experience below.": {
+    "fr": "Partagez votre expérience en commentaire.",
+    "ar": "شاركونا تجاربكم في التعليقات."
+  },
   "About SellPostly": {
     "fr": "À propos de SellPostly",
     "ar": "حول SellPostly"
@@ -775,7 +787,10 @@ export const translations = {
     "fr": "Importation…",
     "ar": "جارٍ الاستيراد…"
   },
-  "Import failed. The store may block access. Enter the details manually.": {"fr":"Les boutiques comme Amazon peuvent bloquer les requêtes serveur. Sur la page produit, utilisez le bouton Importer depuis cette page de l’extension Chrome SellPostly, ou saisissez les détails manuellement.","ar":"قد تمنع متاجر مثل Amazon طلبات الخادم. أثناء عرض المنتج، استخدم زر استيراد من الصفحة الحالية في إضافة SellPostly لمتصفح Chrome، أو أدخل التفاصيل يدويًا."},
+  "Import failed. The store may block access. Enter the details manually.": {
+    "fr": "Les boutiques comme Amazon peuvent bloquer les requêtes serveur. Sur la page produit, utilisez le bouton Importer depuis cette page de l’extension Chrome SellPostly, ou saisissez les détails manuellement.",
+    "ar": "قد تمنع متاجر مثل Amazon طلبات الخادم. أثناء عرض المنتج، استخدم زر استيراد من الصفحة الحالية في إضافة SellPostly لمتصفح Chrome، أو أدخل التفاصيل يدويًا."
+  },
   "Product imported. Review the details before publishing.": {
     "fr": "Produit importé. Vérifiez les détails avant publication.",
     "ar": "تم استيراد المنتج. راجع التفاصيل قبل النشر."
@@ -1050,7 +1065,7 @@ export const translations = {
   },
   "Fitness": {
     "fr": "Fitness",
-    "ar": "اللياقة"
+    "ar": "اللياقة البدنية"
   },
   "Top Deals": {
     "fr": "Meilleures offres",
@@ -1120,7 +1135,10 @@ export const translations = {
     "fr": "Texte et image copiés ! Collez-les (Ctrl+V) dans votre publication ou conversation.",
     "ar": "تم نسخ النص والصورة! الصق (Ctrl+V) في المنشور أو المحادثة."
   },
-  "Send to My Shop": {"fr":"Envoyer vers ma boutique","ar":"إرسال إلى متجري"},
+  "Send to My Shop": {
+    "fr": "Envoyer vers ma boutique",
+    "ar": "إرسال إلى متجري"
+  },
   "Image Size": {
     "fr": "Taille de l’image",
     "ar": "حجم الصورة"
@@ -1201,8 +1219,14 @@ export const translations = {
     "fr": "Aucun produit trouvé.",
     "ar": "لم يتم العثور على منتجات."
   },
-"Clean White": {"fr":"Blanc pur","ar":"أبيض نقي"},
-"Soft Mint": {"fr":"Menthe douce","ar":"نعناعي فاتح"},
+  "Clean White": {
+    "fr": "Blanc pur",
+    "ar": "أبيض نقي"
+  },
+  "Soft Mint": {
+    "fr": "Menthe douce",
+    "ar": "نعناعي فاتح"
+  },
   "Theme & Color": {
     "fr": "Thème et couleur",
     "ar": "المظهر واللون"
@@ -1235,7 +1259,10 @@ export const translations = {
     "fr": "Fond de la boutique",
     "ar": "خلفية المتجر"
   },
-"Product added to My Shop!": {"fr":"Produit ajouté à ma boutique !","ar":"تمت إضافة المنتج إلى متجري!"},
+  "Product added to My Shop!": {
+    "fr": "Produit ajouté à ma boutique !",
+    "ar": "تمت إضافة المنتج إلى متجري!"
+  },
   "Shop Category": {
     "fr": "Catégorie de boutique",
     "ar": "فئة المتجر"
@@ -1250,21 +1277,24 @@ export const translations = {
   },
   "Men": {
     "fr": "Hommes",
-    "ar": "رجال"
+    "ar": "الرجال"
   },
   "Women": {
     "fr": "Femmes",
-    "ar": "نساء"
+    "ar": "النساء"
   },
   "Unisex": {
     "fr": "Mixte",
-    "ar": "للجنسين"
+    "ar": "للجميع"
   },
   "Edit Product": {
     "fr": "Modifier le produit",
     "ar": "تعديل المنتج"
   },
-"Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption":{"fr":"Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.","ar":"تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."},
+  "Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption": {
+    "fr": "Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.",
+    "ar": "تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."
+  },
   "Pay with USDC / USDT": {
     "fr": "Payer en USDC / USDT",
     "ar": "الدفع بـ USDC / USDT"
@@ -1457,240 +1487,1101 @@ export const translations = {
     "fr": "Payer le total en USDC / USDT",
     "ar": "دفع الإجمالي بـ USDC / USDT"
   },
-"Clear Cart": {"fr":"Vider le panier","ar":"إفراغ السلة"},
-"Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.": {"fr":"Ajoutez votre numéro WhatsApp dans les paramètres de la boutique ci-dessus pour activer les commandes WhatsApp.","ar":"أضف رقم واتساب في إعدادات المتجر أعلاه لتفعيل الطلب عبر واتساب."},
-"Language": {"fr":"Langue","ar":"اللغة"},
-"Loading storefront…": {"fr":"Chargement de la boutique…","ar":"جارٍ تحميل المتجر…"},
-"Edit My Own Shop": {"fr":"Modifier ma propre boutique","ar":"تعديل متجري الخاص"},
-"WhatsApp checkout is unavailable for this shop.": {"fr":"La commande sur WhatsApp est indisponible pour cette boutique.","ar":"الطلب عبر واتساب غير متاح لهذا المتجر."},
-"SellPostly Pro Storefront": {"fr": "Vitrine SellPostly Pro", "ar": "واجهة متجر SellPostly Pro"},
-"Your brand. Your catalog. A storefront built to sell.": {"fr": "Votre marque, votre catalogue, une boutique conçue pour vendre.", "ar": "علامتك التجارية وكتالوجك في متجر مصمم للبيع."},
-"Branded storefront and public shop link": {"fr": "Vitrine à votre image et lien public", "ar": "واجهة بعلامتك التجارية ورابط عام للمتجر"},
-"Affiliate deals or personal seller cart": {"fr": "Offres affiliées ou panier de vente directe", "ar": "عروض تسويق بالعمولة أو سلة للبيع المباشر"},
-"Store logo and configurable escrow hold": {"fr": "Logo et durée de séquestre personnalisables", "ar": "شعار المتجر ومدة حجز الضمان القابلة للتعديل"},
-"Activate Pro License": {"fr": "Activer la licence Pro", "ar": "تفعيل ترخيص Pro"},
-"Checking license…": {"fr": "Vérification de la licence…", "ar": "جارٍ التحقق من الترخيص…"},
-"The social formatter stays free. Buyers never need a license.": {"fr": "Le formateur de publications reste gratuit. Les acheteurs n’ont jamais besoin de licence.", "ar": "تبقى أداة تنسيق المنشورات مجانية. لا يحتاج المشترون إلى ترخيص."},
-"Your Store Name": {"fr": "Le nom de votre boutique", "ar": "اسم متجرك"},
-"A curated collection, made yours.": {"fr": "Une sélection qui vous ressemble.", "ar": "مجموعة مختارة تعكس ذوقك."},
-"Preview only": {"fr": "Aperçu uniquement", "ar": "معاينة فقط"},
-"Pro License Key": {"fr": "Clé de licence Pro", "ar": "مفتاح ترخيص Pro"},
-"Your key is verified securely and saved only on this device.": {"fr": "Votre clé est vérifiée de manière sécurisée et enregistrée uniquement sur cet appareil.", "ar": "يتم التحقق من مفتاحك بأمان وحفظه على هذا الجهاز فقط."},
-"License could not be activated. Check your key and try again.": {"fr": "Activation impossible. Vérifiez votre clé et réessayez.", "ar": "تعذر تفعيل الترخيص. تحقق من المفتاح وحاول مجددًا."},
-"Deactivate Pro on this device": {"fr": "Désactiver Pro sur cet appareil", "ar": "إلغاء تفعيل Pro على هذا الجهاز"},
-"Store Logo": {"fr": "Logo de la boutique", "ar": "شعار المتجر"},
-"Remove Logo": {"fr": "Supprimer le logo", "ar": "إزالة الشعار"},
-"Escrow Hold Period": {"fr": "Durée de séquestre", "ar": "مدة حجز الضمان"},
-"days": {"fr": "jours", "ar": "أيام"},
-"Escrow Protected": {"fr": "Protection par séquestre", "ar": "حماية الضمان"},
-"Escrow checkout is unavailable. The platform escrow wallet has not been configured.": {"fr": "Le paiement sous séquestre est indisponible. Le portefeuille de la plateforme n’a pas été configuré.", "ar": "الدفع بالضمان غير متاح. لم يتم إعداد محفظة ضمان المنصة."},
-"Escrow settings are recorded for future verified payments. Automatic release is not enabled in Milestone 1.": {"fr": "Ces paramètres sont prévus pour les futurs paiements vérifiés. Le déblocage automatique n’est pas activé à cette étape.", "ar": "تُحفظ إعدادات الضمان للمدفوعات المتحقق منها مستقبلًا. الإفراج التلقائي عن الأموال غير مفعّل في المرحلة الأولى."},
-"Could not publish the shop. Check your Pro license and database setup.": {"fr": "Publication impossible. Vérifiez votre licence Pro et la configuration de la base de données.", "ar": "تعذر نشر المتجر. تحقق من ترخيص Pro وإعداد قاعدة البيانات."},
-"Publish your latest changes to update your public storefront.": {"fr": "Publiez vos modifications pour mettre à jour votre vitrine publique.", "ar": "انشر أحدث تغييراتك لتحديث واجهة متجرك العامة."},
-"AI Hashtags": {"fr": "Hashtags pour l’IA", "ar": "وسوم للذكاء الاصطناعي"},
-"Social Preview": {"fr": "Aperçu des publications", "ar": "معاينة المنشورات"},
-"Multi-Platform Send": {"fr": "Envoi multiplateforme", "ar": "الإرسال إلى منصات متعددة"},
-"Keyword-based suggestions to refine with your AI prompt. No AI service is called.": {"fr": "Suggestions issues de vos mots-clés, à affiner avec votre prompt IA. Aucun service d’IA n’est appelé.", "ar": "اقتراحات مستندة إلى كلماتك المفتاحية لتحسينها باستخدام تعليمات الذكاء الاصطناعي. لا يتم الاتصال بأي خدمة ذكاء اصطناعي."},
-"Pending": {"fr":"En attente","ar":"قيد الانتظار"},
-"Held": {"fr":"Sous séquestre","ar":"محجوز بالضمان"},
-"Released / Success": {"fr":"Débloqué / Réussi","ar":"تم الإفراج / ناجح"},
-"Disputed": {"fr":"En litige","ar":"متنازع عليه"},
-"Failed / Refunded": {"fr":"Échoué / Remboursé","ar":"فشل / تم الاسترداد"},
-"Approved": {"fr":"Approuvé","ar":"تمت الموافقة"},
-"Paid": {"fr":"Payé","ar":"تم الدفع"},
-"Rejected": {"fr":"Refusé","ar":"مرفوض"},
-"Your Pro session expired. Activate your license again.": {"fr":"Votre session Pro a expiré. Réactivez votre licence.","ar":"انتهت جلسة Pro. فعّل ترخيصك مجددًا."},
-"Minimum payout is 10.00 USDC / USDT.": {"fr":"Le retrait minimum est de 10,00 USDC / USDT.","ar":"الحد الأدنى للسحب هو 10.00 USDC / USDT."},
-"Insufficient released balance. Pending payouts are already reserved.": {"fr":"Solde débloqué insuffisant. Les retraits en cours sont déjà réservés.","ar":"الرصيد المُفرج عنه غير كافٍ. مبالغ طلبات السحب المعلقة محجوزة بالفعل."},
-"This order is not eligible for fulfillment.": {"fr":"Cette commande ne peut pas être livrée dans son état actuel.","ar":"حالة هذا الطلب لا تسمح بتسجيل التسليم."},
-"Could not load or save dashboard data. Check your connection and database setup.": {"fr":"Chargement ou enregistrement impossible. Vérifiez votre connexion et la configuration de la base de données.","ar":"تعذر تحميل بيانات لوحة التحكم أو حفظها. تحقق من الاتصال وإعداد قاعدة البيانات."},
-"Gross Sales": {"fr":"Ventes brutes","ar":"إجمالي المبيعات"},
-"5% Commission": {"fr":"Commission de 5 %","ar":"عمولة 5%"},
-"Pending Escrow (3–15d)": {"fr":"Séquestre en cours (3–15 j)","ar":"ضمان معلق (3–15 يومًا)"},
-"Available Balance": {"fr":"Solde disponible","ar":"الرصيد المتاح"},
-"Redeemed": {"fr":"Montants retirés","ar":"المبالغ المسحوبة"},
-"Seller Dashboard": {"fr":"Tableau de bord vendeur","ar":"لوحة تحكم البائع"},
-"Your store overview": {"fr":"Vue d’ensemble de votre boutique","ar":"نظرة عامة على متجرك"},
-"Refresh": {"fr":"Actualiser","ar":"تحديث"},
-"Loading dashboard…": {"fr":"Chargement du tableau de bord…","ar":"جارٍ تحميل لوحة التحكم…"},
-"Publish your shop first to start receiving orders.": {"fr":"Publiez d’abord votre boutique pour recevoir des commandes.","ar":"انشر متجرك أولًا لبدء استقبال الطلبات."},
-"Balances are separate for each coin and network. Gross sales exclude unverified and refunded payments.": {"fr":"Les soldes sont séparés par devise et réseau. Les ventes brutes excluent les paiements non vérifiés et remboursés.","ar":"الأرصدة منفصلة حسب العملة والشبكة. لا يشمل إجمالي المبيعات المدفوعات غير المتحقق منها أو المستردة."},
-"Orders": {"fr":"Commandes","ar":"الطلبات"},
-"Order status": {"fr":"Statut des commandes","ar":"حالة الطلبات"},
-"Buyer": {"fr":"Acheteur","ar":"المشتري"},
-"Amount": {"fr":"Montant","ar":"المبلغ"},
-"Status": {"fr":"Statut","ar":"الحالة"},
-"Escrow release": {"fr":"Fin du séquestre","ar":"انتهاء حجز الضمان"},
-"Fulfillment": {"fr":"Livraison","ar":"التنفيذ والتسليم"},
-"Receipt confirmed": {"fr":"Réception confirmée","ar":"تم تأكيد الاستلام"},
-"Awaiting verification": {"fr":"En attente de vérification","ar":"بانتظار التحقق"},
-"Not eligible": {"fr":"Non admissible","ar":"غير مؤهل"},
-"Delivery saved": {"fr":"Livraison enregistrée","ar":"تم حفظ التسليم"},
-"No orders in this view.": {"fr":"Aucune commande dans cette vue.","ar":"لا توجد طلبات في هذا العرض."},
-"Payout History": {"fr":"Historique des retraits","ar":"سجل السحوبات"},
-"Date": {"fr":"Date","ar":"التاريخ"},
-"No payout requests yet.": {"fr":"Aucune demande de retrait pour le moment.","ar":"لا توجد طلبات سحب حتى الآن."},
-"Fulfill / Deliver Key": {"fr":"Livrer / Envoyer une clé","ar":"تنفيذ الطلب / تسليم المفتاح"},
-"Fulfillment saved.": {"fr":"Informations de livraison enregistrées.","ar":"تم حفظ معلومات التسليم."},
-"Tracking / Delivery Reference": {"fr":"Suivi / Référence de livraison","ar":"رقم التتبع / مرجع التسليم"},
-"Digital Key / Delivery Notes": {"fr":"Clé numérique / Instructions de livraison","ar":"المفتاح الرقمي / ملاحظات التسليم"},
-"Buyers can retrieve delivery notes with their order ID and matching contact.": {"fr":"Les acheteurs peuvent consulter les instructions avec leur numéro de commande et leurs coordonnées correspondantes.","ar":"يمكن للمشترين عرض ملاحظات التسليم باستخدام معرّف الطلب وبيانات الاتصال المطابقة."},
-"Saving…": {"fr":"Enregistrement…","ar":"جارٍ الحفظ…"},
-"Save Delivery": {"fr":"Enregistrer la livraison","ar":"حفظ التسليم"},
-"Redeem Payout ($10 Min)": {"fr":"Demander un retrait (10 $ min.)","ar":"طلب سحب (10 دولارات كحد أدنى)"},
-"Payout requested. Funds are reserved until review.": {"fr":"Retrait demandé. Les fonds sont réservés jusqu’à l’examen de la demande.","ar":"تم تقديم طلب السحب. المبلغ محجوز حتى مراجعة الطلب."},
-"Coin / Network": {"fr":"Devise / Réseau","ar":"العملة / الشبكة"},
-"Select a balance": {"fr":"Choisir un solde","ar":"اختر رصيدًا"},
-"Payout Amount": {"fr":"Montant du retrait","ar":"مبلغ السحب"},
-"Receiving Wallet": {"fr":"Portefeuille destinataire","ar":"محفظة الاستلام"},
-"Only released funds can be redeemed. Payouts require review and are not sent automatically.": {"fr":"Seuls les fonds débloqués peuvent être retirés. Les retraits sont examinés et ne sont pas envoyés automatiquement.","ar":"يمكن سحب الأموال المُفرج عنها فقط. تُراجع طلبات السحب ولا تُرسل تلقائيًا."},
-"Request Payout": {"fr":"Demander le retrait","ar":"تقديم طلب السحب"},
-"This transaction has already been submitted. Use your existing order ID.": {"fr":"Cette transaction a déjà été soumise. Utilisez votre numéro de commande existant.","ar":"تم تقديم هذه المعاملة سابقًا. استخدم معرّف طلبك الحالي."},
-"Order not found, contact did not match, or this action is unavailable.": {"fr":"Commande introuvable, coordonnées incorrectes ou action indisponible.","ar":"لم يُعثر على الطلب، أو بيانات الاتصال غير مطابقة، أو الإجراء غير متاح."},
-"The catalog changed. Refresh the shop and check the current price.": {"fr":"Le catalogue a changé. Actualisez la boutique et vérifiez le prix actuel.","ar":"تغيّر الكتالوج. حدّث المتجر وتحقق من السعر الحالي."},
-"Enter the complete transaction hash for this network.": {"fr":"Saisissez l’identifiant complet de la transaction pour ce réseau.","ar":"أدخل معرّف المعاملة كاملًا لهذه الشبكة."},
-"Enter a valid email address or international phone number.": {"fr":"Saisissez une adresse e-mail ou un numéro de téléphone international valide.","ar":"أدخل بريدًا إلكترونيًا أو رقم هاتف دوليًا صالحًا."},
-"Could not submit the request. Check your details and try again.": {"fr":"Envoi impossible. Vérifiez vos informations et réessayez.","ar":"تعذر إرسال الطلب. تحقق من بياناتك وحاول مجددًا."},
-"Order submitted. Keep your order ID and contact to manage delivery or disputes.": {"fr":"Commande soumise. Conservez son numéro et vos coordonnées pour suivre la livraison ou ouvrir un litige.","ar":"تم تقديم الطلب. احتفظ بمعرّف الطلب وبيانات الاتصال لمتابعة التسليم أو فتح نزاع."},
-"Dispute opened. Funds remain on hold.": {"fr":"Litige ouvert. Les fonds restent sous séquestre.","ar":"تم فتح النزاع. تبقى الأموال محجوزة."},
-"Receipt confirmed. The original escrow hold still applies.": {"fr":"Réception confirmée. La durée de séquestre initiale reste applicable.","ar":"تم تأكيد الاستلام. تظل مدة حجز الضمان الأصلية سارية."},
-"Order status updated.": {"fr":"Statut de la commande actualisé.","ar":"تم تحديث حالة الطلب."},
-"Submit Payment / Track Order": {"fr":"Soumettre le paiement / Suivre la commande","ar":"تسجيل الدفع / متابعة الطلب"},
-"Submitting a TxID records a pending order. Payment must be verified before fulfillment.": {"fr":"Un identifiant de transaction crée une commande en attente. Le paiement doit être vérifié avant la livraison.","ar":"تقديم معرّف المعاملة يسجّل طلبًا معلقًا. يجب التحقق من الدفع قبل تنفيذ الطلب."},
-"Buyer Name": {"fr":"Nom de l’acheteur","ar":"اسم المشتري"},
-"Email or International Phone": {"fr":"E-mail ou téléphone international","ar":"البريد الإلكتروني أو الهاتف الدولي"},
-"Submit Pending Order": {"fr":"Soumettre la commande en attente","ar":"تقديم الطلب المعلق"},
-"Manage an Existing Order": {"fr":"Gérer une commande existante","ar":"إدارة طلب سابق"},
-"Order ID": {"fr":"Numéro de commande","ar":"معرّف الطلب"},
-"Use the same contact entered above. Keep your order ID private.": {"fr":"Utilisez les mêmes coordonnées que ci-dessus. Gardez votre numéro de commande confidentiel.","ar":"استخدم بيانات الاتصال نفسها التي أدخلتها أعلاه. حافظ على سرية معرّف الطلب."},
-"Dispute Reason": {"fr":"Motif du litige","ar":"سبب النزاع"},
-"Check Order": {"fr":"Consulter la commande","ar":"عرض الطلب"},
-"Confirm Receipt": {"fr":"Confirmer la réception","ar":"تأكيد الاستلام"},
-"Open Dispute": {"fr":"Ouvrir un litige","ar":"فتح نزاع"},
-"Delivery Details": {"fr":"Détails de livraison","ar":"تفاصيل التسليم"},
-"Digital Product": {"fr":"Produit numérique","ar":"منتج رقمي"},
-"Art": {"fr":"Art","ar":"الفن"},
-"Sport": {"fr":"Sport","ar":"الرياضة"},
-"Verified Store": {"fr":"Boutique vérifiée","ar":"متجر موثّق"},
-"Store Suspended for Policy Review": {"fr":"Boutique suspendue pour examen","ar":"المتجر معلّق لمراجعة الالتزام بالسياسات"},
-"This store is temporarily unavailable. New orders are disabled while the store is reviewed.": {"fr":"Cette boutique est temporairement indisponible. Les nouvelles commandes sont désactivées pendant l’examen.","ar":"هذا المتجر غير متاح مؤقتًا. أُوقفت الطلبات الجديدة أثناء المراجعة."},
-"Cancelled": {"fr":"Annulé","ar":"ملغى"},
-"Active": {"fr":"Actif","ar":"نشط"},
-"Revoked": {"fr":"Révoqué","ar":"ملغى الترخيص"},
-"Expired": {"fr":"Expiré","ar":"منتهي الصلاحية"},
-"Admin access denied. Check your key.": {"fr":"Accès administrateur refusé. Vérifiez votre clé.","ar":"رُفض وصول المسؤول. تحقق من المفتاح."},
-"Action unavailable. Check the current status and escrow hold deadline.": {"fr":"Action indisponible. Vérifiez le statut et la fin du séquestre.","ar":"الإجراء غير متاح. تحقق من الحالة وموعد انتهاء حجز الضمان."},
-"Check the action and entered values.": {"fr":"Vérifiez l’action et les valeurs saisies.","ar":"تحقق من الإجراء والقيم المدخلة."},
-"Could not load or save admin data. Check your connection, database migration and server configuration.": {"fr":"Chargement ou enregistrement impossible. Vérifiez la connexion, la migration de la base et la configuration du serveur.","ar":"تعذر تحميل البيانات أو حفظها. تحقق من الاتصال وترحيل قاعدة البيانات وإعدادات الخادم."},
-"Verify Payment": {"fr":"Vérifier le paiement","ar":"التحقق من الدفع"},
-"Release Escrow": {"fr":"Débloquer le séquestre","ar":"الإفراج عن الضمان"},
-"Record Refund": {"fr":"Enregistrer le remboursement","ar":"تسجيل الاسترداد"},
-"Cancel Invalid Submission": {"fr":"Annuler une transaction invalide","ar":"إلغاء المعاملة غير الصالحة"},
-"Approve Payout": {"fr":"Approuver le retrait","ar":"الموافقة على السحب"},
-"Mark Paid": {"fr":"Marquer comme payé","ar":"تحديد كمدفوع"},
-"Reject Payout": {"fr":"Refuser le retrait","ar":"رفض السحب"},
-"Activate Subscription": {"fr":"Activer l’abonnement","ar":"تفعيل الاشتراك"},
-"Revoke Subscription": {"fr":"Révoquer l’abonnement","ar":"إلغاء صلاحية الاشتراك"},
-"Admin change saved. No funds were transferred.": {"fr":"Modification enregistrée. Aucun fonds transféré.","ar":"تم حفظ التغيير الإداري. لم تُحوّل أي أموال."},
-"Total GMV": {"fr":"Volume brut des ventes","ar":"إجمالي قيمة المبيعات"},
-"Active Escrow Held": {"fr":"Fonds sous séquestre","ar":"الأموال المحجوزة بالضمان"},
-"Pending Payouts": {"fr":"Retraits en attente","ar":"السحوبات المعلقة"},
-"Paid Payouts": {"fr":"Retraits payés","ar":"السحوبات المدفوعة"},
-"Active Subscriptions": {"fr":"Abonnements actifs","ar":"الاشتراكات النشطة"},
-"Lock Admin Session": {"fr":"Verrouiller la session admin","ar":"قفل جلسة الإدارة"},
-"Admin Control Center": {"fr":"Centre de contrôle administrateur","ar":"مركز تحكم المسؤول"},
-"Enter your admin key to review stores and accounting records.": {"fr":"Saisissez votre clé administrateur pour examiner les boutiques et la comptabilité.","ar":"أدخل مفتاح المسؤول لمراجعة المتاجر والسجلات المحاسبية."},
-"Admin Secret Key": {"fr":"Clé secrète administrateur","ar":"مفتاح المسؤول السري"},
-"The key is kept in this browser tab session only.": {"fr":"La clé reste uniquement dans la session de cet onglet.","ar":"يُحفظ المفتاح لجلسة علامة التبويب هذه فقط."},
-"Checking admin access…": {"fr":"Vérification de l’accès…","ar":"جارٍ التحقق من صلاحية المسؤول…"},
-"Unlock Admin": {"fr":"Déverrouiller l’administration","ar":"فتح لوحة الإدارة"},
-"Accounting records only. Verify transfers independently; these controls never sign or send funds.": {"fr":"Écritures comptables uniquement. Vérifiez les transferts séparément : ces commandes ne signent ni n’envoient de fonds.","ar":"هذه سجلات محاسبية فقط. تحقق من التحويلات بشكل مستقل؛ لا توقّع هذه الأدوات المعاملات ولا ترسل الأموال."},
-"Each coin and network has separate totals. Unverified and refunded payments are excluded from GMV.": {"fr":"Totaux séparés par devise et réseau. Les paiements non vérifiés et remboursés sont exclus des ventes.","ar":"تُفصل الإجماليات حسب العملة والشبكة. تُستثنى المدفوعات غير المتحقق منها والمستردة من إجمالي المبيعات."},
-"Admin Sections": {"fr":"Sections administrateur","ar":"أقسام الإدارة"},
-"Escrow Orders & Disputes": {"fr":"Commandes sous séquestre et litiges","ar":"طلبات الضمان والنزاعات"},
-"Seller Redeems ($10+)": {"fr":"Retraits vendeurs (10 $ et plus)","ar":"سحوبات البائعين (10 دولارات فأكثر)"},
-"Stores (Verify / Suspend)": {"fr":"Boutiques (vérifier / suspendre)","ar":"المتاجر (توثيق / تعليق)"},
-"Pro Subscriptions": {"fr":"Abonnements Pro","ar":"اشتراكات Pro"},
-"Store": {"fr":"Boutique","ar":"المتجر"},
-"Review": {"fr":"Examiner","ar":"مراجعة"},
-"Order Details": {"fr":"Détails de la commande","ar":"تفاصيل الطلب"},
-"Review / Update": {"fr":"Examiner / Modifier","ar":"مراجعة / تحديث"},
-"Public Link": {"fr":"Lien public","ar":"الرابط العام"},
-"Suspended": {"fr":"Suspendu","ar":"معلّق"},
-"Yes": {"fr":"Oui","ar":"نعم"},
-"No": {"fr":"Non","ar":"لا"},
-"Verify / Suspend": {"fr":"Vérifier / Suspendre","ar":"توثيق / تعليق"},
-"License Fingerprint": {"fr":"Empreinte de licence","ar":"بصمة الترخيص"},
-"Provider": {"fr":"Fournisseur","ar":"المزوّد"},
-"Last Verification": {"fr":"Dernière vérification","ar":"آخر تحقق"},
-"Master Key": {"fr":"Clé principale","ar":"مفتاح رئيسي"},
-"Development": {"fr":"Développement","ar":"التطوير"},
-"No records in this section.": {"fr":"Aucun enregistrement dans cette section.","ar":"لا توجد سجلات في هذا القسم."},
-"Suspend Store": {"fr":"Suspendre la boutique","ar":"تعليق المتجر"},
-"Suspension hides the public storefront and blocks new orders. Existing order reviews remain available.": {"fr":"La suspension masque la vitrine et bloque les nouvelles commandes. Les commandes existantes restent accessibles.","ar":"يُخفي التعليق واجهة المتجر ويمنع الطلبات الجديدة. تظل مراجعة الطلبات الحالية متاحة."},
-"Action": {"fr":"Action","ar":"الإجراء"},
-"Admin Review Note": {"fr":"Note de l’administrateur","ar":"ملاحظة مراجعة المسؤول"},
-"Verify the destination, token, network, amount and transaction before recording payment as held.": {"fr":"Vérifiez la destination, le jeton, le réseau, le montant et la transaction avant de placer le paiement sous séquestre.","ar":"تحقق من الوجهة والعملة والشبكة والمبلغ والمعاملة قبل تسجيل الدفع كمحجوز بالضمان."},
-"The original escrow hold has not ended. Early release is blocked.": {"fr":"La durée de séquestre initiale n’est pas écoulée. Le déblocage anticipé est interdit.","ar":"لم تنتهِ مدة حجز الضمان الأصلية. الإفراج المبكر محظور."},
-"Payout TxID (Optional)": {"fr":"Identifiant du retrait (facultatif)","ar":"معرّف معاملة السحب (اختياري)"},
-"Approve first. Mark paid only after independently completing the transfer.": {"fr":"Approuvez d’abord. Marquez comme payé seulement après avoir effectué le transfert séparément.","ar":"وافق أولًا. حدّد الطلب كمدفوع فقط بعد إتمام التحويل بشكل مستقل."},
-"Revocation blocks subsequent Pro requests. Activation still requires a valid master or Gumroad license.": {"fr":"La révocation bloque les prochaines requêtes Pro. L’activation exige une licence principale ou Gumroad valide.","ar":"يمنع إلغاء الصلاحية طلبات Pro اللاحقة. يتطلب التفعيل ترخيصًا رئيسيًا أو ترخيص Gumroad صالحًا."},
-"Save Admin Change": {"fr":"Enregistrer la modification","ar":"حفظ التغيير الإداري"},
-"Admin-assigned escrow hold": {"fr":"Durée de séquestre fixée par l’administrateur","ar":"مدة حجز الضمان التي يحددها المسؤول"},
-"Only the Admin can change this period. Changes apply to new orders; existing orders keep their original hold.": {"fr":"Seul l’administrateur peut modifier cette durée. Les changements concernent les nouvelles commandes ; les commandes existantes conservent leur durée initiale.","ar":"يمكن للمسؤول فقط تغيير هذه المدة. تنطبق التغييرات على الطلبات الجديدة؛ وتحتفظ الطلبات الحالية بمدة الحجز الأصلية."},
-"Default hold shown until admin settings load.": {"fr":"La durée par défaut s’affiche jusqu’au chargement des paramètres administrateur.","ar":"تُعرض المدة الافتراضية حتى تحميل إعدادات المسؤول."},
-"Could not refresh the admin-assigned hold period. Try again.": {"fr":"Impossible d’actualiser la durée fixée par l’administrateur. Réessayez.","ar":"تعذر تحديث مدة الحجز التي حددها المسؤول. حاول مجددًا."},
-"Verify & Hold": {"fr":"Vérifier et placer sous séquestre","ar":"تحقق واحجز بالضمان"},
-"Release Funds": {"fr":"Débloquer les fonds","ar":"الإفراج عن الأموال"},
-"Refund Buyer": {"fr":"Rembourser l’acheteur","ar":"استرداد المشتري"},
-"Cancel": {"fr":"Annuler","ar":"إلغاء"},
-"Pending TxID": {"fr":"Transaction à vérifier","ar":"معرّف معاملة بانتظار التحقق"},
-"Held Until": {"fr":"Sous séquestre jusqu’au","ar":"محجوز حتى"},
-"Ready to Release": {"fr":"Prêt à être débloqué","ar":"جاهز للإفراج"},
-"Released": {"fr":"Débloqué","ar":"تم الإفراج"},
-"Refunded": {"fr":"Remboursé","ar":"تم الاسترداد"},
-"Force Release (Buyer Confirmed)": {"fr":"Déblocage anticipé (réception confirmée)","ar":"إفراج مبكر استثنائي (المشتري أكد الاستلام)"},
-"Force Released (Buyer Confirmed)": {"fr":"Débloqué par anticipation (réception confirmée)","ar":"تم الإفراج المبكر استثنائيًا (تأكيد استلام المشتري)"},
-"Buyer confirmation is required for early release.": {"fr":"La confirmation de réception de l’acheteur est requise pour un déblocage anticipé.","ar":"يلزم تأكيد استلام المشتري للسماح بالإفراج المبكر."},
-"Buyer receipt is confirmed. An explicit override can release before the original deadline.": {"fr":"La réception est confirmée. Une dérogation explicite permet de débloquer les fonds avant l’échéance initiale.","ar":"تم تأكيد استلام المشتري. يمكن للمسؤول الموافقة صراحةً على الإفراج قبل الموعد الأصلي."},
-"Choose a whole-number hold period from 3 to 15 days.": {"fr":"Choisissez une durée entière entre 3 et 15 jours.","ar":"اختر مدة حجز بعدد صحيح من 3 إلى 15 يومًا."},
-"Admin-assigned hold saved. Existing orders keep their original deadline.": {"fr":"Durée administrateur enregistrée. Les commandes existantes conservent leur échéance initiale.","ar":"تم حفظ مدة الحجز المحددة من المسؤول. تحتفظ الطلبات الحالية بموعدها الأصلي."},
-"No escrow orders yet": {"fr":"Aucune commande sous séquestre pour le moment","ar":"لا توجد طلبات ضمان حتى الآن"},
-"This workflow preview explains the controls. It does not create orders or move money.": {"fr":"Cet aperçu explique les commandes. Il ne crée aucune commande et ne transfère aucun fonds.","ar":"توضح هذه المعاينة آلية العمل. لا تُنشئ طلبات ولا تحوّل أموالًا."},
-"Verify & Hold records a checked payment and starts its assigned hold.": {"fr":"Vérifier et placer sous séquestre enregistre un paiement contrôlé et lance sa durée de rétention.","ar":"يسجل إجراء التحقق والحجز دفعًا تمت مراجعته ويبدأ مدة الحجز المخصصة له."},
-"The snapshotted hold period determines the release date.": {"fr":"La durée enregistrée lors de la commande détermine la date de déblocage.","ar":"تحدد مدة الحجز المحفوظة عند إنشاء الطلب موعد الإفراج."},
-"Release Funds becomes available when the hold ends.": {"fr":"Le déblocage des fonds devient disponible à la fin de la durée de rétention.","ar":"يصبح الإفراج عن الأموال متاحًا عند انتهاء مدة الحجز."},
-"Released seller balances become available for redemption.": {"fr":"Les soldes vendeurs débloqués deviennent disponibles au retrait.","ar":"تصبح أرصدة البائع المُفرج عنها متاحة للسحب."},
-"Review the dispute before releasing funds or recording a refund.": {"fr":"Examinez le litige avant de débloquer les fonds ou d’enregistrer un remboursement.","ar":"راجع النزاع قبل الإفراج عن الأموال أو تسجيل الاسترداد."},
-"The refund decision is recorded; transfers are handled separately.": {"fr":"La décision de remboursement est enregistrée ; le transfert est effectué séparément.","ar":"يُسجل قرار الاسترداد، بينما تُنفذ التحويلات بشكل منفصل."},
-"Release date": {"fr":"Date de déblocage","ar":"موعد الإفراج"},
-"Early force release requires a matching buyer receipt confirmation and an explicit admin override.": {"fr":"Le déblocage anticipé exige une confirmation de réception de l’acheteur et une dérogation explicite de l’administrateur.","ar":"يتطلب الإفراج المبكر تأكيد استلام المشتري للطلب وموافقة استثنائية صريحة من المسؤول."},
-"Payments are verified and releases are recorded by the Admin. Transfers are handled separately.": {"fr":"Les paiements sont vérifiés et les déblocages sont enregistrés par l’administrateur. Les transferts sont effectués séparément.","ar":"يتحقق المسؤول من المدفوعات ويسجل قرارات الإفراج. تُنفذ التحويلات بشكل منفصل."},
-"Powered by SellPostly": {"fr":"Propulsé par SellPostly","ar":"بدعم من SellPostly"},
-"Dispute Order / Report Store": {"fr":"Contester une commande / Signaler une boutique","ar":"فتح نزاع بشأن طلب / الإبلاغ عن متجر"},
-"Dispute Order": {"fr":"Ouvrir un litige","ar":"فتح نزاع بشأن طلب"},
-"Matching Contact Information": {"fr":"Coordonnées correspondant à la commande","ar":"بيانات الاتصال المطابقة للطلب"},
-"Email or international phone used for this order": {"fr":"E-mail ou téléphone international utilisé pour cette commande","ar":"البريد الإلكتروني أو الهاتف الدولي المستخدم لهذا الطلب"},
-"Send an order dispute or order-related store report directly to the Admin using your order ID and original contact.": {"fr":"Envoyez un litige ou un signalement lié à une commande directement à l’administrateur avec votre numéro de commande et vos coordonnées d’origine.","ar":"أرسل نزاعًا بشأن طلب أو بلاغًا متعلقًا به مباشرةً إلى المسؤول باستخدام معرّف الطلب وبيانات الاتصال الأصلية."},
-"Only held orders with matching contact information can open a dispute. Your message goes to the Admin for review.": {"fr":"Un litige peut être ouvert pour une commande sous séquestre avec les coordonnées correspondantes. Votre message est envoyé à l’administrateur pour examen.","ar":"يمكن فتح نزاع للطلبات المحجوزة بالضمان باستخدام بيانات الاتصال المطابقة. تُرسل رسالتك إلى المسؤول للمراجعة."},
-"Sending Dispute…": {"fr":"Envoi du litige…","ar":"جارٍ إرسال النزاع…"},
-"Dispute Submitted": {"fr":"Litige envoyé","ar":"تم إرسال النزاع"},
-"Send Dispute to Admin": {"fr":"Envoyer le litige à l’administrateur","ar":"إرسال النزاع إلى المسؤول"},
-"Order not found, contact did not match, or this order cannot be disputed.": {"fr":"Commande introuvable, coordonnées incorrectes ou commande non admissible à un litige.","ar":"لم يُعثر على الطلب، أو بيانات الاتصال غير مطابقة، أو لا يمكن فتح نزاع لهذا الطلب."},
-"Check your order ID, contact and dispute reason.": {"fr":"Vérifiez le numéro de commande, les coordonnées et le motif du litige.","ar":"تحقق من معرّف الطلب وبيانات الاتصال وسبب النزاع."},
-"Could not submit the dispute. Check your connection and try again.": {"fr":"Impossible d’envoyer le litige. Vérifiez votre connexion et réessayez.","ar":"تعذر إرسال النزاع. تحقق من الاتصال وحاول مجددًا."},
-"Your dispute has been sent to the Admin for review. Keep your order ID for follow-up.": {"fr":"Votre litige a été transmis à l’administrateur. Conservez votre numéro de commande pour le suivi.","ar":"تم إرسال نزاعك إلى المسؤول للمراجعة. احتفظ بمعرّف الطلب للمتابعة."},
-"Polygon checkout is unavailable until the platform configures its Polygon escrow wallet.": {"fr":"Le paiement Polygon sera disponible après configuration du portefeuille de séquestre Polygon de la plateforme.","ar":"الدفع عبر Polygon غير متاح حتى إعداد محفظة ضمان Polygon الخاصة بالمنصة."},
-"The same Polygon escrow wallet accepts both USDC and USDT on Polygon. Send only via the Polygon network.": {"fr":"Le même portefeuille de séquestre Polygon accepte USDC et USDT sur Polygon. Envoyez uniquement via le réseau Polygon.","ar":"تقبل محفظة ضمان Polygon نفسها عملتَي USDC وUSDT على Polygon. أرسل عبر شبكة Polygon فقط."},
-"Disputed Orders": {"fr":"Commandes en litige","ar":"الطلبات المتنازع عليها"},
-"All Orders": {"fr":"Toutes les commandes","ar":"جميع الطلبات"},
-"Buyer Dispute Reason": {"fr":"Motif du litige de l’acheteur","ar":"سبب نزاع المشتري"},
-"No dispute reason was recorded.": {"fr":"Aucun motif de litige enregistré.","ar":"لم يُسجّل سبب للنزاع."},
-"No disputed orders right now.": {"fr":"Aucune commande en litige actuellement.","ar":"لا توجد طلبات متنازع عليها حاليًا."},
-"Disputes refresh automatically while this page is visible. Refund Buyer and Release Funds remain subject to the existing escrow rules.": {"fr":"Les litiges s’actualisent automatiquement quand cette page est visible. Le remboursement et le déblocage restent soumis aux règles de séquestre existantes.","ar":"تُحدّث النزاعات تلقائيًا أثناء عرض هذه الصفحة. يظل استرداد المشتري والإفراج عن الأموال خاضعين لقواعد الضمان الحالية."},
-"Sending to My Shop…": {"fr":"Envoi vers ma boutique…","ar":"جارٍ الإرسال إلى متجري…"},
-"Your Pro license could not be verified. Activate it again in My Shop.": {"fr":"Votre licence Pro n’a pas pu être vérifiée. Réactivez-la dans Ma boutique.","ar":"تعذر التحقق من ترخيص Pro. فعّله مجددًا في متجري."},
-"Could not send the product. Device storage may be full or the photo may be too large.": {"fr":"Impossible d’envoyer le produit. Le stockage peut être plein ou la photo trop volumineuse.","ar":"تعذر إرسال المنتج. قد تكون مساحة التخزين ممتلئة أو الصورة كبيرة جدًا."},
-"Product Description": {"fr":"Description du produit","ar":"وصف المنتج"}
+  "Clear Cart": {
+    "fr": "Vider le panier",
+    "ar": "إفراغ السلة"
+  },
+  "Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.": {
+    "fr": "Ajoutez votre numéro WhatsApp dans les paramètres de la boutique ci-dessus pour activer les commandes WhatsApp.",
+    "ar": "أضف رقم واتساب في إعدادات المتجر أعلاه لتفعيل الطلب عبر واتساب."
+  },
+  "Language": {
+    "fr": "Langue",
+    "ar": "اللغة"
+  },
+  "Loading storefront…": {
+    "fr": "Chargement de la boutique…",
+    "ar": "جارٍ تحميل المتجر…"
+  },
+  "Edit My Own Shop": {
+    "fr": "Modifier ma propre boutique",
+    "ar": "تعديل متجري الخاص"
+  },
+  "WhatsApp checkout is unavailable for this shop.": {
+    "fr": "La commande sur WhatsApp est indisponible pour cette boutique.",
+    "ar": "الطلب عبر واتساب غير متاح لهذا المتجر."
+  },
+  "SellPostly Pro Storefront": {
+    "fr": "Vitrine SellPostly Pro",
+    "ar": "واجهة متجر SellPostly Pro"
+  },
+  "Your brand. Your catalog. A storefront built to sell.": {
+    "fr": "Votre marque, votre catalogue, une boutique conçue pour vendre.",
+    "ar": "علامتك التجارية وكتالوجك في متجر مصمم للبيع."
+  },
+  "Branded storefront and public shop link": {
+    "fr": "Vitrine à votre image et lien public",
+    "ar": "واجهة بعلامتك التجارية ورابط عام للمتجر"
+  },
+  "Affiliate deals or personal seller cart": {
+    "fr": "Offres affiliées ou panier de vente directe",
+    "ar": "عروض تسويق بالعمولة أو سلة للبيع المباشر"
+  },
+  "Store logo and configurable escrow hold": {
+    "fr": "Logo et durée de séquestre personnalisables",
+    "ar": "شعار المتجر ومدة حجز الضمان القابلة للتعديل"
+  },
+  "Activate Pro License": {
+    "fr": "Activer la licence Pro",
+    "ar": "تفعيل ترخيص Pro"
+  },
+  "Checking license…": {
+    "fr": "Vérification de la licence…",
+    "ar": "جارٍ التحقق من الترخيص…"
+  },
+  "The social formatter stays free. Buyers never need a license.": {
+    "fr": "Le formateur de publications reste gratuit. Les acheteurs n’ont jamais besoin de licence.",
+    "ar": "تبقى أداة تنسيق المنشورات مجانية. لا يحتاج المشترون إلى ترخيص."
+  },
+  "Your Store Name": {
+    "fr": "Le nom de votre boutique",
+    "ar": "اسم متجرك"
+  },
+  "A curated collection, made yours.": {
+    "fr": "Une sélection qui vous ressemble.",
+    "ar": "مجموعة مختارة تعكس ذوقك."
+  },
+  "Preview only": {
+    "fr": "Aperçu uniquement",
+    "ar": "معاينة فقط"
+  },
+  "Pro License Key": {
+    "fr": "Clé de licence Pro",
+    "ar": "مفتاح ترخيص Pro"
+  },
+  "Your key is verified securely and saved only on this device.": {
+    "fr": "Votre clé est vérifiée de manière sécurisée et enregistrée uniquement sur cet appareil.",
+    "ar": "يتم التحقق من مفتاحك بأمان وحفظه على هذا الجهاز فقط."
+  },
+  "License could not be activated. Check your key and try again.": {
+    "fr": "Activation impossible. Vérifiez votre clé et réessayez.",
+    "ar": "تعذر تفعيل الترخيص. تحقق من المفتاح وحاول مجددًا."
+  },
+  "Deactivate Pro on this device": {
+    "fr": "Désactiver Pro sur cet appareil",
+    "ar": "إلغاء تفعيل Pro على هذا الجهاز"
+  },
+  "Store Logo": {
+    "fr": "Logo de la boutique",
+    "ar": "شعار المتجر"
+  },
+  "Remove Logo": {
+    "fr": "Supprimer le logo",
+    "ar": "إزالة الشعار"
+  },
+  "Escrow Hold Period": {
+    "fr": "Durée de séquestre",
+    "ar": "مدة حجز الضمان"
+  },
+  "days": {
+    "fr": "jours",
+    "ar": "أيام"
+  },
+  "Escrow Protected": {
+    "fr": "Protection par séquestre",
+    "ar": "حماية الضمان"
+  },
+  "Escrow checkout is unavailable. The platform escrow wallet has not been configured.": {
+    "fr": "Le paiement sous séquestre est indisponible. Le portefeuille de la plateforme n’a pas été configuré.",
+    "ar": "الدفع بالضمان غير متاح. لم يتم إعداد محفظة ضمان المنصة."
+  },
+  "Escrow settings are recorded for future verified payments. Automatic release is not enabled in Milestone 1.": {
+    "fr": "Ces paramètres sont prévus pour les futurs paiements vérifiés. Le déblocage automatique n’est pas activé à cette étape.",
+    "ar": "تُحفظ إعدادات الضمان للمدفوعات المتحقق منها مستقبلًا. الإفراج التلقائي عن الأموال غير مفعّل في المرحلة الأولى."
+  },
+  "Could not publish the shop. Check your Pro license and database setup.": {
+    "fr": "Publication impossible. Vérifiez votre licence Pro et la configuration de la base de données.",
+    "ar": "تعذر نشر المتجر. تحقق من ترخيص Pro وإعداد قاعدة البيانات."
+  },
+  "Publish your latest changes to update your public storefront.": {
+    "fr": "Publiez vos modifications pour mettre à jour votre vitrine publique.",
+    "ar": "انشر أحدث تغييراتك لتحديث واجهة متجرك العامة."
+  },
+  "AI Hashtags": {
+    "fr": "Hashtags pour l’IA",
+    "ar": "وسوم للذكاء الاصطناعي"
+  },
+  "Social Preview": {
+    "fr": "Aperçu des publications",
+    "ar": "معاينة المنشورات"
+  },
+  "Multi-Platform Send": {
+    "fr": "Envoi multiplateforme",
+    "ar": "الإرسال إلى منصات متعددة"
+  },
+  "Keyword-based suggestions to refine with your AI prompt. No AI service is called.": {
+    "fr": "Suggestions issues de vos mots-clés, à affiner avec votre prompt IA. Aucun service d’IA n’est appelé.",
+    "ar": "اقتراحات مستندة إلى كلماتك المفتاحية لتحسينها باستخدام تعليمات الذكاء الاصطناعي. لا يتم الاتصال بأي خدمة ذكاء اصطناعي."
+  },
+  "Pending": {
+    "fr": "En attente",
+    "ar": "قيد الانتظار"
+  },
+  "Held": {
+    "fr": "Sous séquestre",
+    "ar": "محجوز بالضمان"
+  },
+  "Released / Success": {
+    "fr": "Débloqué / Réussi",
+    "ar": "تم الإفراج / ناجح"
+  },
+  "Disputed": {
+    "fr": "En litige",
+    "ar": "متنازع عليه"
+  },
+  "Failed / Refunded": {
+    "fr": "Échoué / Remboursé",
+    "ar": "فشل / تم الاسترداد"
+  },
+  "Approved": {
+    "fr": "Approuvé",
+    "ar": "تمت الموافقة"
+  },
+  "Paid": {
+    "fr": "Payé",
+    "ar": "تم الدفع"
+  },
+  "Rejected": {
+    "fr": "Refusé",
+    "ar": "مرفوض"
+  },
+  "Your Pro session expired. Activate your license again.": {
+    "fr": "Votre session Pro a expiré. Réactivez votre licence.",
+    "ar": "انتهت جلسة Pro. فعّل ترخيصك مجددًا."
+  },
+  "Minimum payout is 10.00 USDC / USDT.": {
+    "fr": "Le retrait minimum est de 10,00 USDC / USDT.",
+    "ar": "الحد الأدنى للسحب هو 10.00 USDC / USDT."
+  },
+  "Insufficient released balance. Pending payouts are already reserved.": {
+    "fr": "Solde débloqué insuffisant. Les retraits en cours sont déjà réservés.",
+    "ar": "الرصيد المُفرج عنه غير كافٍ. مبالغ طلبات السحب المعلقة محجوزة بالفعل."
+  },
+  "This order is not eligible for fulfillment.": {
+    "fr": "Cette commande ne peut pas être livrée dans son état actuel.",
+    "ar": "حالة هذا الطلب لا تسمح بتسجيل التسليم."
+  },
+  "Could not load or save dashboard data. Check your connection and database setup.": {
+    "fr": "Chargement ou enregistrement impossible. Vérifiez votre connexion et la configuration de la base de données.",
+    "ar": "تعذر تحميل بيانات لوحة التحكم أو حفظها. تحقق من الاتصال وإعداد قاعدة البيانات."
+  },
+  "Gross Sales": {
+    "fr": "Ventes brutes",
+    "ar": "إجمالي المبيعات"
+  },
+  "5% Commission": {
+    "fr": "Commission de 5 %",
+    "ar": "عمولة 5%"
+  },
+  "Pending Escrow (3–15d)": {
+    "fr": "Séquestre en cours (3–15 j)",
+    "ar": "ضمان معلق (3–15 يومًا)"
+  },
+  "Available Balance": {
+    "fr": "Solde disponible",
+    "ar": "الرصيد المتاح"
+  },
+  "Redeemed": {
+    "fr": "Montants retirés",
+    "ar": "المبالغ المسحوبة"
+  },
+  "Seller Dashboard": {
+    "fr": "Tableau de bord vendeur",
+    "ar": "لوحة تحكم البائع"
+  },
+  "Your store overview": {
+    "fr": "Vue d’ensemble de votre boutique",
+    "ar": "نظرة عامة على متجرك"
+  },
+  "Refresh": {
+    "fr": "Actualiser",
+    "ar": "تحديث"
+  },
+  "Loading dashboard…": {
+    "fr": "Chargement du tableau de bord…",
+    "ar": "جارٍ تحميل لوحة التحكم…"
+  },
+  "Publish your shop first to start receiving orders.": {
+    "fr": "Publiez d’abord votre boutique pour recevoir des commandes.",
+    "ar": "انشر متجرك أولًا لبدء استقبال الطلبات."
+  },
+  "Balances are separate for each coin and network. Gross sales exclude unverified and refunded payments.": {
+    "fr": "Les soldes sont séparés par devise et réseau. Les ventes brutes excluent les paiements non vérifiés et remboursés.",
+    "ar": "الأرصدة منفصلة حسب العملة والشبكة. لا يشمل إجمالي المبيعات المدفوعات غير المتحقق منها أو المستردة."
+  },
+  "Orders": {
+    "fr": "Commandes",
+    "ar": "الطلبات"
+  },
+  "Order status": {
+    "fr": "Statut des commandes",
+    "ar": "حالة الطلبات"
+  },
+  "Buyer": {
+    "fr": "Acheteur",
+    "ar": "المشتري"
+  },
+  "Amount": {
+    "fr": "Montant",
+    "ar": "المبلغ"
+  },
+  "Status": {
+    "fr": "Statut",
+    "ar": "الحالة"
+  },
+  "Escrow release": {
+    "fr": "Fin du séquestre",
+    "ar": "انتهاء حجز الضمان"
+  },
+  "Fulfillment": {
+    "fr": "Livraison",
+    "ar": "التنفيذ والتسليم"
+  },
+  "Receipt confirmed": {
+    "fr": "Réception confirmée",
+    "ar": "تم تأكيد الاستلام"
+  },
+  "Awaiting verification": {
+    "fr": "En attente de vérification",
+    "ar": "بانتظار التحقق"
+  },
+  "Not eligible": {
+    "fr": "Non admissible",
+    "ar": "غير مؤهل"
+  },
+  "Delivery saved": {
+    "fr": "Livraison enregistrée",
+    "ar": "تم حفظ التسليم"
+  },
+  "No orders in this view.": {
+    "fr": "Aucune commande dans cette vue.",
+    "ar": "لا توجد طلبات في هذا العرض."
+  },
+  "Payout History": {
+    "fr": "Historique des retraits",
+    "ar": "سجل السحوبات"
+  },
+  "Date": {
+    "fr": "Date",
+    "ar": "التاريخ"
+  },
+  "No payout requests yet.": {
+    "fr": "Aucune demande de retrait pour le moment.",
+    "ar": "لا توجد طلبات سحب حتى الآن."
+  },
+  "Fulfill / Deliver Key": {
+    "fr": "Livrer / Envoyer une clé",
+    "ar": "تنفيذ الطلب / تسليم المفتاح"
+  },
+  "Fulfillment saved.": {
+    "fr": "Informations de livraison enregistrées.",
+    "ar": "تم حفظ معلومات التسليم."
+  },
+  "Tracking / Delivery Reference": {
+    "fr": "Suivi / Référence de livraison",
+    "ar": "رقم التتبع / مرجع التسليم"
+  },
+  "Digital Key / Delivery Notes": {
+    "fr": "Clé numérique / Instructions de livraison",
+    "ar": "المفتاح الرقمي / ملاحظات التسليم"
+  },
+  "Buyers can retrieve delivery notes with their order ID and matching contact.": {
+    "fr": "Les acheteurs peuvent consulter les instructions avec leur numéro de commande et leurs coordonnées correspondantes.",
+    "ar": "يمكن للمشترين عرض ملاحظات التسليم باستخدام معرّف الطلب وبيانات الاتصال المطابقة."
+  },
+  "Saving…": {
+    "fr": "Enregistrement…",
+    "ar": "جارٍ الحفظ…"
+  },
+  "Save Delivery": {
+    "fr": "Enregistrer la livraison",
+    "ar": "حفظ التسليم"
+  },
+  "Redeem Payout ($10 Min)": {
+    "fr": "Demander un retrait (10 $ min.)",
+    "ar": "طلب سحب (10 دولارات كحد أدنى)"
+  },
+  "Payout requested. Funds are reserved until review.": {
+    "fr": "Retrait demandé. Les fonds sont réservés jusqu’à l’examen de la demande.",
+    "ar": "تم تقديم طلب السحب. المبلغ محجوز حتى مراجعة الطلب."
+  },
+  "Coin / Network": {
+    "fr": "Devise / Réseau",
+    "ar": "العملة / الشبكة"
+  },
+  "Select a balance": {
+    "fr": "Choisir un solde",
+    "ar": "اختر رصيدًا"
+  },
+  "Payout Amount": {
+    "fr": "Montant du retrait",
+    "ar": "مبلغ السحب"
+  },
+  "Receiving Wallet": {
+    "fr": "Portefeuille destinataire",
+    "ar": "محفظة الاستلام"
+  },
+  "Only released funds can be redeemed. Payouts require review and are not sent automatically.": {
+    "fr": "Seuls les fonds débloqués peuvent être retirés. Les retraits sont examinés et ne sont pas envoyés automatiquement.",
+    "ar": "يمكن سحب الأموال المُفرج عنها فقط. تُراجع طلبات السحب ولا تُرسل تلقائيًا."
+  },
+  "Request Payout": {
+    "fr": "Demander le retrait",
+    "ar": "تقديم طلب السحب"
+  },
+  "This transaction has already been submitted. Use your existing order ID.": {
+    "fr": "Cette transaction a déjà été soumise. Utilisez votre numéro de commande existant.",
+    "ar": "تم تقديم هذه المعاملة سابقًا. استخدم معرّف طلبك الحالي."
+  },
+  "Order not found, contact did not match, or this action is unavailable.": {
+    "fr": "Commande introuvable, coordonnées incorrectes ou action indisponible.",
+    "ar": "لم يُعثر على الطلب، أو بيانات الاتصال غير مطابقة، أو الإجراء غير متاح."
+  },
+  "The catalog changed. Refresh the shop and check the current price.": {
+    "fr": "Le catalogue a changé. Actualisez la boutique et vérifiez le prix actuel.",
+    "ar": "تغيّر الكتالوج. حدّث المتجر وتحقق من السعر الحالي."
+  },
+  "Enter the complete transaction hash for this network.": {
+    "fr": "Saisissez l’identifiant complet de la transaction pour ce réseau.",
+    "ar": "أدخل معرّف المعاملة كاملًا لهذه الشبكة."
+  },
+  "Enter a valid email address or international phone number.": {
+    "fr": "Saisissez une adresse e-mail ou un numéro de téléphone international valide.",
+    "ar": "أدخل بريدًا إلكترونيًا أو رقم هاتف دوليًا صالحًا."
+  },
+  "Could not submit the request. Check your details and try again.": {
+    "fr": "Envoi impossible. Vérifiez vos informations et réessayez.",
+    "ar": "تعذر إرسال الطلب. تحقق من بياناتك وحاول مجددًا."
+  },
+  "Order submitted. Keep your order ID and contact to manage delivery or disputes.": {
+    "fr": "Commande soumise. Conservez son numéro et vos coordonnées pour suivre la livraison ou ouvrir un litige.",
+    "ar": "تم تقديم الطلب. احتفظ بمعرّف الطلب وبيانات الاتصال لمتابعة التسليم أو فتح نزاع."
+  },
+  "Dispute opened. Funds remain on hold.": {
+    "fr": "Litige ouvert. Les fonds restent sous séquestre.",
+    "ar": "تم فتح النزاع. تبقى الأموال محجوزة."
+  },
+  "Receipt confirmed. The original escrow hold still applies.": {
+    "fr": "Réception confirmée. La durée de séquestre initiale reste applicable.",
+    "ar": "تم تأكيد الاستلام. تظل مدة حجز الضمان الأصلية سارية."
+  },
+  "Order status updated.": {
+    "fr": "Statut de la commande actualisé.",
+    "ar": "تم تحديث حالة الطلب."
+  },
+  "Submit Payment / Track Order": {
+    "fr": "Soumettre le paiement / Suivre la commande",
+    "ar": "تسجيل الدفع / متابعة الطلب"
+  },
+  "Submitting a TxID records a pending order. Payment must be verified before fulfillment.": {
+    "fr": "Un identifiant de transaction crée une commande en attente. Le paiement doit être vérifié avant la livraison.",
+    "ar": "تقديم معرّف المعاملة يسجّل طلبًا معلقًا. يجب التحقق من الدفع قبل تنفيذ الطلب."
+  },
+  "Buyer Name": {
+    "fr": "Nom de l’acheteur",
+    "ar": "اسم المشتري"
+  },
+  "Email or International Phone": {
+    "fr": "E-mail ou téléphone international",
+    "ar": "البريد الإلكتروني أو الهاتف الدولي"
+  },
+  "Submit Pending Order": {
+    "fr": "Soumettre la commande en attente",
+    "ar": "تقديم الطلب المعلق"
+  },
+  "Manage an Existing Order": {
+    "fr": "Gérer une commande existante",
+    "ar": "إدارة طلب سابق"
+  },
+  "Order ID": {
+    "fr": "Numéro de commande",
+    "ar": "معرّف الطلب"
+  },
+  "Use the same contact entered above. Keep your order ID private.": {
+    "fr": "Utilisez les mêmes coordonnées que ci-dessus. Gardez votre numéro de commande confidentiel.",
+    "ar": "استخدم بيانات الاتصال نفسها التي أدخلتها أعلاه. حافظ على سرية معرّف الطلب."
+  },
+  "Dispute Reason": {
+    "fr": "Motif du litige",
+    "ar": "سبب النزاع"
+  },
+  "Check Order": {
+    "fr": "Consulter la commande",
+    "ar": "عرض الطلب"
+  },
+  "Confirm Receipt": {
+    "fr": "Confirmer la réception",
+    "ar": "تأكيد الاستلام"
+  },
+  "Open Dispute": {
+    "fr": "Ouvrir un litige",
+    "ar": "فتح نزاع"
+  },
+  "Delivery Details": {
+    "fr": "Détails de livraison",
+    "ar": "تفاصيل التسليم"
+  },
+  "Digital Product": {
+    "fr": "Produit numérique",
+    "ar": "منتج رقمي"
+  },
+  "Art": {
+    "fr": "Art",
+    "ar": "فن"
+  },
+  "Sport": {
+    "fr": "Sport",
+    "ar": "رياضة"
+  },
+  "Verified Store": {
+    "fr": "Boutique vérifiée",
+    "ar": "متجر موثّق"
+  },
+  "Store Suspended for Policy Review": {
+    "fr": "Boutique suspendue pour examen",
+    "ar": "المتجر معلّق لمراجعة الالتزام بالسياسات"
+  },
+  "This store is temporarily unavailable. New orders are disabled while the store is reviewed.": {
+    "fr": "Cette boutique est temporairement indisponible. Les nouvelles commandes sont désactivées pendant l’examen.",
+    "ar": "هذا المتجر غير متاح مؤقتًا. أُوقفت الطلبات الجديدة أثناء المراجعة."
+  },
+  "Cancelled": {
+    "fr": "Annulé",
+    "ar": "ملغى"
+  },
+  "Active": {
+    "fr": "Actif",
+    "ar": "نشط"
+  },
+  "Revoked": {
+    "fr": "Révoqué",
+    "ar": "ملغى الترخيص"
+  },
+  "Expired": {
+    "fr": "Expiré",
+    "ar": "منتهي الصلاحية"
+  },
+  "Admin access denied. Check your key.": {
+    "fr": "Accès administrateur refusé. Vérifiez votre clé.",
+    "ar": "رُفض وصول المسؤول. تحقق من المفتاح."
+  },
+  "Action unavailable. Check the current status and escrow hold deadline.": {
+    "fr": "Action indisponible. Vérifiez le statut et la fin du séquestre.",
+    "ar": "الإجراء غير متاح. تحقق من الحالة وموعد انتهاء حجز الضمان."
+  },
+  "Check the action and entered values.": {
+    "fr": "Vérifiez l’action et les valeurs saisies.",
+    "ar": "تحقق من الإجراء والقيم المدخلة."
+  },
+  "Could not load or save admin data. Check your connection, database migration and server configuration.": {
+    "fr": "Chargement ou enregistrement impossible. Vérifiez la connexion, la migration de la base et la configuration du serveur.",
+    "ar": "تعذر تحميل البيانات أو حفظها. تحقق من الاتصال وترحيل قاعدة البيانات وإعدادات الخادم."
+  },
+  "Verify Payment": {
+    "fr": "Vérifier le paiement",
+    "ar": "التحقق من الدفع"
+  },
+  "Release Escrow": {
+    "fr": "Débloquer le séquestre",
+    "ar": "الإفراج عن الضمان"
+  },
+  "Record Refund": {
+    "fr": "Enregistrer le remboursement",
+    "ar": "تسجيل الاسترداد"
+  },
+  "Cancel Invalid Submission": {
+    "fr": "Annuler une transaction invalide",
+    "ar": "إلغاء المعاملة غير الصالحة"
+  },
+  "Approve Payout": {
+    "fr": "Approuver le retrait",
+    "ar": "الموافقة على السحب"
+  },
+  "Mark Paid": {
+    "fr": "Marquer comme payé",
+    "ar": "تحديد كمدفوع"
+  },
+  "Reject Payout": {
+    "fr": "Refuser le retrait",
+    "ar": "رفض السحب"
+  },
+  "Activate Subscription": {
+    "fr": "Activer l’abonnement",
+    "ar": "تفعيل الاشتراك"
+  },
+  "Revoke Subscription": {
+    "fr": "Révoquer l’abonnement",
+    "ar": "إلغاء صلاحية الاشتراك"
+  },
+  "Admin change saved. No funds were transferred.": {
+    "fr": "Modification enregistrée. Aucun fonds transféré.",
+    "ar": "تم حفظ التغيير الإداري. لم تُحوّل أي أموال."
+  },
+  "Total GMV": {
+    "fr": "Volume brut des ventes",
+    "ar": "إجمالي قيمة المبيعات"
+  },
+  "Active Escrow Held": {
+    "fr": "Fonds sous séquestre",
+    "ar": "الأموال المحجوزة بالضمان"
+  },
+  "Pending Payouts": {
+    "fr": "Retraits en attente",
+    "ar": "السحوبات المعلقة"
+  },
+  "Paid Payouts": {
+    "fr": "Retraits payés",
+    "ar": "السحوبات المدفوعة"
+  },
+  "Active Subscriptions": {
+    "fr": "Abonnements actifs",
+    "ar": "الاشتراكات النشطة"
+  },
+  "Lock Admin Session": {
+    "fr": "Verrouiller la session admin",
+    "ar": "قفل جلسة الإدارة"
+  },
+  "Admin Control Center": {
+    "fr": "Centre de contrôle administrateur",
+    "ar": "مركز تحكم المسؤول"
+  },
+  "Enter your admin key to review stores and accounting records.": {
+    "fr": "Saisissez votre clé administrateur pour examiner les boutiques et la comptabilité.",
+    "ar": "أدخل مفتاح المسؤول لمراجعة المتاجر والسجلات المحاسبية."
+  },
+  "Admin Secret Key": {
+    "fr": "Clé secrète administrateur",
+    "ar": "مفتاح المسؤول السري"
+  },
+  "The key is kept in this browser tab session only.": {
+    "fr": "La clé reste uniquement dans la session de cet onglet.",
+    "ar": "يُحفظ المفتاح لجلسة علامة التبويب هذه فقط."
+  },
+  "Checking admin access…": {
+    "fr": "Vérification de l’accès…",
+    "ar": "جارٍ التحقق من صلاحية المسؤول…"
+  },
+  "Unlock Admin": {
+    "fr": "Déverrouiller l’administration",
+    "ar": "فتح لوحة الإدارة"
+  },
+  "Accounting records only. Verify transfers independently; these controls never sign or send funds.": {
+    "fr": "Écritures comptables uniquement. Vérifiez les transferts séparément : ces commandes ne signent ni n’envoient de fonds.",
+    "ar": "هذه سجلات محاسبية فقط. تحقق من التحويلات بشكل مستقل؛ لا توقّع هذه الأدوات المعاملات ولا ترسل الأموال."
+  },
+  "Each coin and network has separate totals. Unverified and refunded payments are excluded from GMV.": {
+    "fr": "Totaux séparés par devise et réseau. Les paiements non vérifiés et remboursés sont exclus des ventes.",
+    "ar": "تُفصل الإجماليات حسب العملة والشبكة. تُستثنى المدفوعات غير المتحقق منها والمستردة من إجمالي المبيعات."
+  },
+  "Admin Sections": {
+    "fr": "Sections administrateur",
+    "ar": "أقسام الإدارة"
+  },
+  "Escrow Orders & Disputes": {
+    "fr": "Commandes sous séquestre et litiges",
+    "ar": "طلبات الضمان والنزاعات"
+  },
+  "Seller Redeems ($10+)": {
+    "fr": "Retraits vendeurs (10 $ et plus)",
+    "ar": "سحوبات البائعين (10 دولارات فأكثر)"
+  },
+  "Stores (Verify / Suspend)": {
+    "fr": "Boutiques (vérifier / suspendre)",
+    "ar": "المتاجر (توثيق / تعليق)"
+  },
+  "Pro Subscriptions": {
+    "fr": "Abonnements Pro",
+    "ar": "اشتراكات Pro"
+  },
+  "Store": {
+    "fr": "Boutique",
+    "ar": "المتجر"
+  },
+  "Review": {
+    "fr": "Examiner",
+    "ar": "مراجعة"
+  },
+  "Order Details": {
+    "fr": "Détails de la commande",
+    "ar": "تفاصيل الطلب"
+  },
+  "Review / Update": {
+    "fr": "Examiner / Modifier",
+    "ar": "مراجعة / تحديث"
+  },
+  "Public Link": {
+    "fr": "Lien public",
+    "ar": "الرابط العام"
+  },
+  "Suspended": {
+    "fr": "Suspendu",
+    "ar": "معلّق"
+  },
+  "Yes": {
+    "fr": "Oui",
+    "ar": "نعم"
+  },
+  "No": {
+    "fr": "Non",
+    "ar": "لا"
+  },
+  "Verify / Suspend": {
+    "fr": "Vérifier / Suspendre",
+    "ar": "توثيق / تعليق"
+  },
+  "License Fingerprint": {
+    "fr": "Empreinte de licence",
+    "ar": "بصمة الترخيص"
+  },
+  "Provider": {
+    "fr": "Fournisseur",
+    "ar": "المزوّد"
+  },
+  "Last Verification": {
+    "fr": "Dernière vérification",
+    "ar": "آخر تحقق"
+  },
+  "Master Key": {
+    "fr": "Clé principale",
+    "ar": "مفتاح رئيسي"
+  },
+  "Development": {
+    "fr": "Développement",
+    "ar": "التطوير"
+  },
+  "No records in this section.": {
+    "fr": "Aucun enregistrement dans cette section.",
+    "ar": "لا توجد سجلات في هذا القسم."
+  },
+  "Suspend Store": {
+    "fr": "Suspendre la boutique",
+    "ar": "تعليق المتجر"
+  },
+  "Suspension hides the public storefront and blocks new orders. Existing order reviews remain available.": {
+    "fr": "La suspension masque la vitrine et bloque les nouvelles commandes. Les commandes existantes restent accessibles.",
+    "ar": "يُخفي التعليق واجهة المتجر ويمنع الطلبات الجديدة. تظل مراجعة الطلبات الحالية متاحة."
+  },
+  "Action": {
+    "fr": "Action",
+    "ar": "الإجراء"
+  },
+  "Admin Review Note": {
+    "fr": "Note de l’administrateur",
+    "ar": "ملاحظة مراجعة المسؤول"
+  },
+  "Verify the destination, token, network, amount and transaction before recording payment as held.": {
+    "fr": "Vérifiez la destination, le jeton, le réseau, le montant et la transaction avant de placer le paiement sous séquestre.",
+    "ar": "تحقق من الوجهة والعملة والشبكة والمبلغ والمعاملة قبل تسجيل الدفع كمحجوز بالضمان."
+  },
+  "The original escrow hold has not ended. Early release is blocked.": {
+    "fr": "La durée de séquestre initiale n’est pas écoulée. Le déblocage anticipé est interdit.",
+    "ar": "لم تنتهِ مدة حجز الضمان الأصلية. الإفراج المبكر محظور."
+  },
+  "Payout TxID (Optional)": {
+    "fr": "Identifiant du retrait (facultatif)",
+    "ar": "معرّف معاملة السحب (اختياري)"
+  },
+  "Approve first. Mark paid only after independently completing the transfer.": {
+    "fr": "Approuvez d’abord. Marquez comme payé seulement après avoir effectué le transfert séparément.",
+    "ar": "وافق أولًا. حدّد الطلب كمدفوع فقط بعد إتمام التحويل بشكل مستقل."
+  },
+  "Revocation blocks subsequent Pro requests. Activation still requires a valid master or Gumroad license.": {
+    "fr": "La révocation bloque les prochaines requêtes Pro. L’activation exige une licence principale ou Gumroad valide.",
+    "ar": "يمنع إلغاء الصلاحية طلبات Pro اللاحقة. يتطلب التفعيل ترخيصًا رئيسيًا أو ترخيص Gumroad صالحًا."
+  },
+  "Save Admin Change": {
+    "fr": "Enregistrer la modification",
+    "ar": "حفظ التغيير الإداري"
+  },
+  "Admin-assigned escrow hold": {
+    "fr": "Durée de séquestre fixée par l’administrateur",
+    "ar": "مدة حجز الضمان التي يحددها المسؤول"
+  },
+  "Only the Admin can change this period. Changes apply to new orders; existing orders keep their original hold.": {
+    "fr": "Seul l’administrateur peut modifier cette durée. Les changements concernent les nouvelles commandes ; les commandes existantes conservent leur durée initiale.",
+    "ar": "يمكن للمسؤول فقط تغيير هذه المدة. تنطبق التغييرات على الطلبات الجديدة؛ وتحتفظ الطلبات الحالية بمدة الحجز الأصلية."
+  },
+  "Default hold shown until admin settings load.": {
+    "fr": "La durée par défaut s’affiche jusqu’au chargement des paramètres administrateur.",
+    "ar": "تُعرض المدة الافتراضية حتى تحميل إعدادات المسؤول."
+  },
+  "Could not refresh the admin-assigned hold period. Try again.": {
+    "fr": "Impossible d’actualiser la durée fixée par l’administrateur. Réessayez.",
+    "ar": "تعذر تحديث مدة الحجز التي حددها المسؤول. حاول مجددًا."
+  },
+  "Verify & Hold": {
+    "fr": "Vérifier et placer sous séquestre",
+    "ar": "تحقق واحجز بالضمان"
+  },
+  "Release Funds": {
+    "fr": "Débloquer les fonds",
+    "ar": "الإفراج عن الأموال"
+  },
+  "Refund Buyer": {
+    "fr": "Rembourser l’acheteur",
+    "ar": "استرداد المشتري"
+  },
+  "Cancel": {
+    "fr": "Annuler",
+    "ar": "إلغاء"
+  },
+  "Pending TxID": {
+    "fr": "Transaction à vérifier",
+    "ar": "معرّف معاملة بانتظار التحقق"
+  },
+  "Held Until": {
+    "fr": "Sous séquestre jusqu’au",
+    "ar": "محجوز حتى"
+  },
+  "Ready to Release": {
+    "fr": "Prêt à être débloqué",
+    "ar": "جاهز للإفراج"
+  },
+  "Released": {
+    "fr": "Débloqué",
+    "ar": "تم الإفراج"
+  },
+  "Refunded": {
+    "fr": "Remboursé",
+    "ar": "تم الاسترداد"
+  },
+  "Force Release (Buyer Confirmed)": {
+    "fr": "Déblocage anticipé (réception confirmée)",
+    "ar": "إفراج مبكر استثنائي (المشتري أكد الاستلام)"
+  },
+  "Force Released (Buyer Confirmed)": {
+    "fr": "Débloqué par anticipation (réception confirmée)",
+    "ar": "تم الإفراج المبكر استثنائيًا (تأكيد استلام المشتري)"
+  },
+  "Buyer confirmation is required for early release.": {
+    "fr": "La confirmation de réception de l’acheteur est requise pour un déblocage anticipé.",
+    "ar": "يلزم تأكيد استلام المشتري للسماح بالإفراج المبكر."
+  },
+  "Buyer receipt is confirmed. An explicit override can release before the original deadline.": {
+    "fr": "La réception est confirmée. Une dérogation explicite permet de débloquer les fonds avant l’échéance initiale.",
+    "ar": "تم تأكيد استلام المشتري. يمكن للمسؤول الموافقة صراحةً على الإفراج قبل الموعد الأصلي."
+  },
+  "Choose a whole-number hold period from 3 to 15 days.": {
+    "fr": "Choisissez une durée entière entre 3 et 15 jours.",
+    "ar": "اختر مدة حجز بعدد صحيح من 3 إلى 15 يومًا."
+  },
+  "Admin-assigned hold saved. Existing orders keep their original deadline.": {
+    "fr": "Durée administrateur enregistrée. Les commandes existantes conservent leur échéance initiale.",
+    "ar": "تم حفظ مدة الحجز المحددة من المسؤول. تحتفظ الطلبات الحالية بموعدها الأصلي."
+  },
+  "No escrow orders yet": {
+    "fr": "Aucune commande sous séquestre pour le moment",
+    "ar": "لا توجد طلبات ضمان حتى الآن"
+  },
+  "This workflow preview explains the controls. It does not create orders or move money.": {
+    "fr": "Cet aperçu explique les commandes. Il ne crée aucune commande et ne transfère aucun fonds.",
+    "ar": "توضح هذه المعاينة آلية العمل. لا تُنشئ طلبات ولا تحوّل أموالًا."
+  },
+  "Verify & Hold records a checked payment and starts its assigned hold.": {
+    "fr": "Vérifier et placer sous séquestre enregistre un paiement contrôlé et lance sa durée de rétention.",
+    "ar": "يسجل إجراء التحقق والحجز دفعًا تمت مراجعته ويبدأ مدة الحجز المخصصة له."
+  },
+  "The snapshotted hold period determines the release date.": {
+    "fr": "La durée enregistrée lors de la commande détermine la date de déblocage.",
+    "ar": "تحدد مدة الحجز المحفوظة عند إنشاء الطلب موعد الإفراج."
+  },
+  "Release Funds becomes available when the hold ends.": {
+    "fr": "Le déblocage des fonds devient disponible à la fin de la durée de rétention.",
+    "ar": "يصبح الإفراج عن الأموال متاحًا عند انتهاء مدة الحجز."
+  },
+  "Released seller balances become available for redemption.": {
+    "fr": "Les soldes vendeurs débloqués deviennent disponibles au retrait.",
+    "ar": "تصبح أرصدة البائع المُفرج عنها متاحة للسحب."
+  },
+  "Review the dispute before releasing funds or recording a refund.": {
+    "fr": "Examinez le litige avant de débloquer les fonds ou d’enregistrer un remboursement.",
+    "ar": "راجع النزاع قبل الإفراج عن الأموال أو تسجيل الاسترداد."
+  },
+  "The refund decision is recorded; transfers are handled separately.": {
+    "fr": "La décision de remboursement est enregistrée ; le transfert est effectué séparément.",
+    "ar": "يُسجل قرار الاسترداد، بينما تُنفذ التحويلات بشكل منفصل."
+  },
+  "Release date": {
+    "fr": "Date de déblocage",
+    "ar": "موعد الإفراج"
+  },
+  "Early force release requires a matching buyer receipt confirmation and an explicit admin override.": {
+    "fr": "Le déblocage anticipé exige une confirmation de réception de l’acheteur et une dérogation explicite de l’administrateur.",
+    "ar": "يتطلب الإفراج المبكر تأكيد استلام المشتري للطلب وموافقة استثنائية صريحة من المسؤول."
+  },
+  "Payments are verified and releases are recorded by the Admin. Transfers are handled separately.": {
+    "fr": "Les paiements sont vérifiés et les déblocages sont enregistrés par l’administrateur. Les transferts sont effectués séparément.",
+    "ar": "يتحقق المسؤول من المدفوعات ويسجل قرارات الإفراج. تُنفذ التحويلات بشكل منفصل."
+  },
+  "Powered by SellPostly": {
+    "fr": "Propulsé par SellPostly",
+    "ar": "بدعم من SellPostly"
+  },
+  "Dispute Order / Report Store": {
+    "fr": "Contester une commande / Signaler une boutique",
+    "ar": "فتح نزاع بشأن طلب / الإبلاغ عن متجر"
+  },
+  "Dispute Order": {
+    "fr": "Ouvrir un litige",
+    "ar": "فتح نزاع بشأن طلب"
+  },
+  "Matching Contact Information": {
+    "fr": "Coordonnées correspondant à la commande",
+    "ar": "بيانات الاتصال المطابقة للطلب"
+  },
+  "Email or international phone used for this order": {
+    "fr": "E-mail ou téléphone international utilisé pour cette commande",
+    "ar": "البريد الإلكتروني أو الهاتف الدولي المستخدم لهذا الطلب"
+  },
+  "Send an order dispute or order-related store report directly to the Admin using your order ID and original contact.": {
+    "fr": "Envoyez un litige ou un signalement lié à une commande directement à l’administrateur avec votre numéro de commande et vos coordonnées d’origine.",
+    "ar": "أرسل نزاعًا بشأن طلب أو بلاغًا متعلقًا به مباشرةً إلى المسؤول باستخدام معرّف الطلب وبيانات الاتصال الأصلية."
+  },
+  "Only held orders with matching contact information can open a dispute. Your message goes to the Admin for review.": {
+    "fr": "Un litige peut être ouvert pour une commande sous séquestre avec les coordonnées correspondantes. Votre message est envoyé à l’administrateur pour examen.",
+    "ar": "يمكن فتح نزاع للطلبات المحجوزة بالضمان باستخدام بيانات الاتصال المطابقة. تُرسل رسالتك إلى المسؤول للمراجعة."
+  },
+  "Sending Dispute…": {
+    "fr": "Envoi du litige…",
+    "ar": "جارٍ إرسال النزاع…"
+  },
+  "Dispute Submitted": {
+    "fr": "Litige envoyé",
+    "ar": "تم إرسال النزاع"
+  },
+  "Send Dispute to Admin": {
+    "fr": "Envoyer le litige à l’administrateur",
+    "ar": "إرسال النزاع إلى المسؤول"
+  },
+  "Order not found, contact did not match, or this order cannot be disputed.": {
+    "fr": "Commande introuvable, coordonnées incorrectes ou commande non admissible à un litige.",
+    "ar": "لم يُعثر على الطلب، أو بيانات الاتصال غير مطابقة، أو لا يمكن فتح نزاع لهذا الطلب."
+  },
+  "Check your order ID, contact and dispute reason.": {
+    "fr": "Vérifiez le numéro de commande, les coordonnées et le motif du litige.",
+    "ar": "تحقق من معرّف الطلب وبيانات الاتصال وسبب النزاع."
+  },
+  "Could not submit the dispute. Check your connection and try again.": {
+    "fr": "Impossible d’envoyer le litige. Vérifiez votre connexion et réessayez.",
+    "ar": "تعذر إرسال النزاع. تحقق من الاتصال وحاول مجددًا."
+  },
+  "Your dispute has been sent to the Admin for review. Keep your order ID for follow-up.": {
+    "fr": "Votre litige a été transmis à l’administrateur. Conservez votre numéro de commande pour le suivi.",
+    "ar": "تم إرسال نزاعك إلى المسؤول للمراجعة. احتفظ بمعرّف الطلب للمتابعة."
+  },
+  "Polygon checkout is unavailable until the platform configures its Polygon escrow wallet.": {
+    "fr": "Le paiement Polygon sera disponible après configuration du portefeuille de séquestre Polygon de la plateforme.",
+    "ar": "الدفع عبر Polygon غير متاح حتى إعداد محفظة ضمان Polygon الخاصة بالمنصة."
+  },
+  "The same Polygon escrow wallet accepts both USDC and USDT on Polygon. Send only via the Polygon network.": {
+    "fr": "Le même portefeuille de séquestre Polygon accepte USDC et USDT sur Polygon. Envoyez uniquement via le réseau Polygon.",
+    "ar": "تقبل محفظة ضمان Polygon نفسها عملتَي USDC وUSDT على Polygon. أرسل عبر شبكة Polygon فقط."
+  },
+  "Disputed Orders": {
+    "fr": "Commandes en litige",
+    "ar": "الطلبات المتنازع عليها"
+  },
+  "All Orders": {
+    "fr": "Toutes les commandes",
+    "ar": "جميع الطلبات"
+  },
+  "Buyer Dispute Reason": {
+    "fr": "Motif du litige de l’acheteur",
+    "ar": "سبب نزاع المشتري"
+  },
+  "No dispute reason was recorded.": {
+    "fr": "Aucun motif de litige enregistré.",
+    "ar": "لم يُسجّل سبب للنزاع."
+  },
+  "No disputed orders right now.": {
+    "fr": "Aucune commande en litige actuellement.",
+    "ar": "لا توجد طلبات متنازع عليها حاليًا."
+  },
+  "Disputes refresh automatically while this page is visible. Refund Buyer and Release Funds remain subject to the existing escrow rules.": {
+    "fr": "Les litiges s’actualisent automatiquement quand cette page est visible. Le remboursement et le déblocage restent soumis aux règles de séquestre existantes.",
+    "ar": "تُحدّث النزاعات تلقائيًا أثناء عرض هذه الصفحة. يظل استرداد المشتري والإفراج عن الأموال خاضعين لقواعد الضمان الحالية."
+  },
+  "Sending to My Shop…": {
+    "fr": "Envoi vers ma boutique…",
+    "ar": "جارٍ الإرسال إلى متجري…"
+  },
+  "Your Pro license could not be verified. Activate it again in My Shop.": {
+    "fr": "Votre licence Pro n’a pas pu être vérifiée. Réactivez-la dans Ma boutique.",
+    "ar": "تعذر التحقق من ترخيص Pro. فعّله مجددًا في متجري."
+  },
+  "Could not send the product. Device storage may be full or the photo may be too large.": {
+    "fr": "Impossible d’envoyer le produit. Le stockage peut être plein ou la photo trop volumineuse.",
+    "ar": "تعذر إرسال المنتج. قد تكون مساحة التخزين ممتلئة أو الصورة كبيرة جدًا."
+  },
+  "Product Description": {
+    "fr": "Description du produit",
+    "ar": "وصف المنتج"
+  },
+  "Pay with USDC / USDT (Polygon)": {
+    "fr": "Payer en USDC / USDT (Polygon)",
+    "ar": "الدفع بعملة USDC / USDT على Polygon"
+  },
+  "Admin verifies your payment before issuing a Pro key. Monthly access lasts 30 days from approval.": {
+    "fr": "L’administrateur vérifie votre paiement avant d’émettre une clé Pro. L’accès mensuel dure 30 jours à compter de l’approbation.",
+    "ar": "يتحقق المسؤول من دفعتك قبل إصدار مفتاح Pro. يستمر الاشتراك الشهري 30 يوماً من تاريخ الموافقة."
+  },
+  "Pro crypto checkout is unavailable. Use an existing license key or contact support.": {
+    "fr": "Le paiement Pro en cryptomonnaie est indisponible. Utilisez une clé existante ou contactez l’assistance.",
+    "ar": "الدفع بالعملات الرقمية لاشتراك Pro غير متاح. استخدم مفتاح ترخيص موجوداً أو تواصل مع الدعم."
+  },
+  "Subscription Plan": {
+    "fr": "Formule d’abonnement",
+    "ar": "خطة الاشتراك"
+  },
+  "Monthly": {
+    "fr": "Mensuel",
+    "ar": "شهري"
+  },
+  "Lifetime": {
+    "fr": "À vie",
+    "ar": "مدى الحياة"
+  },
+  "Polygon payment address QR code": {
+    "fr": "Code QR de l’adresse de paiement Polygon",
+    "ar": "رمز QR لعنوان الدفع على Polygon"
+  },
+  "Send only USDC or USDT on Polygon to this address. The QR contains the address only; enter the amount and network in your wallet.": {
+    "fr": "Envoyez uniquement des USDC ou USDT sur Polygon à cette adresse. Le QR contient seulement l’adresse ; renseignez le montant et le réseau dans votre portefeuille.",
+    "ar": "أرسل فقط USDC أو USDT عبر شبكة Polygon إلى هذا العنوان. يحتوي رمز QR على العنوان فقط؛ أدخل المبلغ والشبكة في محفظتك."
+  },
+  "Submit Payment for Review": {
+    "fr": "Soumettre le paiement pour vérification",
+    "ar": "إرسال الدفعة للمراجعة"
+  },
+  "Keep this browser data to check your request securely. A public transaction hash alone cannot reveal a license key.": {
+    "fr": "Conservez les données de ce navigateur pour consulter votre demande en toute sécurité. Le seul identifiant public d’une transaction ne permet pas d’obtenir une clé de licence.",
+    "ar": "احتفظ ببيانات هذا المتصفح لمتابعة طلبك بأمان. لا يكفي معرّف المعاملة العام وحده للكشف عن مفتاح الترخيص."
+  },
+  "Check Payment Status": {
+    "fr": "Vérifier le statut du paiement",
+    "ar": "التحقق من حالة الدفع"
+  },
+  "Activate Issued Pro Key": {
+    "fr": "Activer la clé Pro reçue",
+    "ar": "تفعيل مفتاح Pro الصادر"
+  },
+  "Payment was rejected. Contact support before sending another payment.": {
+    "fr": "Le paiement a été refusé. Contactez l’assistance avant d’effectuer un autre paiement.",
+    "ar": "تم رفض الدفعة. تواصل مع الدعم قبل إرسال دفعة أخرى."
+  },
+  "Submit Another Transaction": {
+    "fr": "Soumettre une autre transaction",
+    "ar": "إرسال معاملة أخرى"
+  },
+  "This transaction was already submitted. Check its status using the original browser or contact support.": {
+    "fr": "Cette transaction a déjà été soumise. Consultez son statut depuis le navigateur d’origine ou contactez l’assistance.",
+    "ar": "سبق إرسال هذه المعاملة. تحقق من حالتها باستخدام المتصفح الأصلي أو تواصل مع الدعم."
+  },
+  "Could not submit or check payment. Check your connection and try again.": {
+    "fr": "Impossible de soumettre ou de vérifier le paiement. Vérifiez votre connexion et réessayez.",
+    "ar": "تعذّر إرسال الدفعة أو التحقق منها. تحقق من اتصالك وأعد المحاولة."
+  },
+  "Crypto Pro Upgrade Requests": {
+    "fr": "Demandes d’abonnement Pro par cryptomonnaie",
+    "ar": "طلبات ترقية Pro بالعملات الرقمية"
+  },
+  "Verify the recipient, Polygon network, token, amount and unique transaction on-chain before approval. Approval issues a license; it does not move funds.": {
+    "fr": "Vérifiez sur la blockchain le destinataire, le réseau Polygon, le jeton, le montant et l’unicité de la transaction avant approbation. L’approbation émet une licence sans transférer de fonds.",
+    "ar": "تحقق على البلوكشين من المستلم وشبكة Polygon والعملة والمبلغ وعدم استخدام المعاملة سابقاً قبل الموافقة. تُصدر الموافقة ترخيصاً ولا تنقل أي أموال."
+  },
+  "Could not load or update upgrade requests.": {
+    "fr": "Impossible de charger ou de mettre à jour les demandes d’abonnement.",
+    "ar": "تعذّر تحميل طلبات الترقية أو تحديثها."
+  },
+  "No Pro upgrade requests yet.": {
+    "fr": "Aucune demande d’abonnement Pro pour le moment.",
+    "ar": "لا توجد طلبات ترقية Pro حتى الآن."
+  },
+  "Copy License Key": {
+    "fr": "Copier la clé de licence",
+    "ar": "نسخ مفتاح الترخيص"
+  },
+  "Approve & Issue Key": {
+    "fr": "Approuver et émettre la clé",
+    "ar": "الموافقة وإصدار المفتاح"
+  },
+  "Reject Request": {
+    "fr": "Refuser la demande",
+    "ar": "رفض الطلب"
+  },
+  "Crypto (Polygon)": {
+    "fr": "Cryptomonnaie (Polygon)",
+    "ar": "عملات رقمية (Polygon)"
+  },
+  "Expires": {
+    "fr": "Expiration",
+    "ar": "تاريخ الانتهاء"
+  },
+  "No Expiry": {
+    "fr": "Sans expiration",
+    "ar": "بدون تاريخ انتهاء"
+  },
+  "Kids": {
+    "fr": "Enfants",
+    "ar": "الأطفال"
+  },
+  "Gender / Target Audience": {
+    "fr": "Genre / public cible",
+    "ar": "الجنس أو الجمهور المستهدف"
+  },
+  "WhatsApp Quick Replies": {
+    "fr": "Réponses rapides WhatsApp",
+    "ar": "ردود واتساب السريعة"
+  },
+  "Order Confirmed": {
+    "fr": "Commande confirmée",
+    "ar": "تم تأكيد الطلب"
+  },
+  "Digital Key / Tracking Delivered": {
+    "fr": "Clé numérique / suivi envoyé",
+    "ar": "تم إرسال المفتاح الرقمي أو التتبع"
+  },
+  "Delivery Follow-Up": {
+    "fr": "Suivi de la livraison",
+    "ar": "متابعة التسليم"
+  },
+  "A buyer international phone number is needed for WhatsApp replies.": {
+    "fr": "Un numéro de téléphone international de l’acheteur est nécessaire pour les réponses WhatsApp.",
+    "ar": "يلزم رقم هاتف المشتري بالصيغة الدولية للرد عبر واتساب."
+  },
+  "WhatsApp Phone (Optional)": {
+    "fr": "Téléphone WhatsApp (facultatif)",
+    "ar": "رقم واتساب (اختياري)"
+  },
+  "Seller Notification Email": {
+    "fr": "E-mail de notification du vendeur",
+    "ar": "البريد الإلكتروني لإشعارات البائع"
+  },
+  "Payout updates use this private email and your current language. Leave blank to disable seller emails.": {
+    "fr": "Les mises à jour des retraits utilisent cet e-mail privé et votre langue actuelle. Laissez vide pour désactiver les e-mails vendeur.",
+    "ar": "تُرسل تحديثات السحب إلى هذا البريد الخاص بلغتك الحالية. اتركه فارغاً لتعطيل رسائل البائع."
+  },
+  "Save Email Preferences": {
+    "fr": "Enregistrer les préférences e-mail",
+    "ar": "حفظ تفضيلات البريد"
+  },
+  "Email preferences saved.": {
+    "fr": "Préférences e-mail enregistrées.",
+    "ar": "تم حفظ تفضيلات البريد."
+  },
+  "Could not load or save email preferences.": {
+    "fr": "Impossible de charger ou d’enregistrer les préférences e-mail.",
+    "ar": "تعذّر تحميل تفضيلات البريد أو حفظها."
+  }
 } as const;
 export type Message = keyof typeof translations;

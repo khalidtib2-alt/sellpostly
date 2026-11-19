@@ -55,7 +55,7 @@ test('extension service worker opens only the trusted gated shop and preserves l
  const product={title:'Imported product',price:'39 USD',image:'https://images.example.com/product.jpg?key='+'x'.repeat(12000),description:'Full product description',url:'https://www.amazon.com/dp/item?tag='+'y'.repeat(12000)};
  const result:any=await new Promise(resolve=>{assert.equal(listener({type:'SELLPOSTLY_SEND_TO_SHOP',product},{id:'test-extension'},resolve),true);});
  assert.equal(result.ok,true);assert.equal(urls.length,1);
- const url=new URL(urls[0]);assert.equal(url.origin,'https://sellpostly-git-main-usidk-it.vercel.app');assert.equal(url.pathname,'/shop');assert.equal(url.search,'');assert.ok(url.hash.length>8000);
+ const url=new URL(urls[0]);assert.equal(url.origin,'https://vercel.app');assert.equal(url.pathname,'/shop');assert.equal(url.search,'');assert.ok(url.hash.length>8000);
  const incoming=importFromHash(url.hash)!;
  assert.equal(incoming.item.title,product.title);assert.equal(incoming.item.url,product.url);assert.equal(incoming.item.image,product.image);assert.equal(incoming.item.description,product.description);assert.equal(incoming.remainingHash,'');
  const denied:any=await new Promise(resolve=>listener({type:'SELLPOSTLY_SEND_TO_SHOP',product},{id:'not-this-extension'},resolve));

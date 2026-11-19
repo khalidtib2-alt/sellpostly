@@ -49,3 +49,7 @@ Buyer-only footers now show Powered by SellPostly and the Dispute Order / Report
 ## Restored Pro shop shortcuts
 
 The homepage exposes Send to My Shop only after server verification of a saved Pro key. The extension restores Send to My Shop (Pro), with /shop handling activation. Product descriptions and clean photos are preserved, and imported products appear first in their chosen category. See PRO-SHOP-SHORTCUT.md. Reload the unpacked extension to activate its new background worker; permissions remain unchanged.
+
+Polygon Pro upgrade checkout setup and API notes: see PRO-CRYPTO-UPGRADE.md.
+
+Transactional emails, WhatsApp quick replies, canonical URL and extension classifications: see EMAILS-QUICK-REPLIES.md.

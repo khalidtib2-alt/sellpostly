@@ -2,8 +2,8 @@ export type ShopMode = "affiliate" | "personal";
 export const dealBadges = ["none","hot","sale","limited","new"] as const;
 export type DealBadge = typeof dealBadges[number];
 import { normalizeNetwork, type CryptoNetwork } from "./crypto-data";
-export type Gender = "unisex" | "men" | "women";
-export function normalizeGender(value: unknown): Gender { return value === "men" || value === "women" ? value : "unisex"; }
+export type Gender = "unisex" | "men" | "women" | "kids";
+export function normalizeGender(value: unknown): Gender { return value === "men" || value === "women" || value === "kids" ? value : "unisex"; }
 import type { Surface } from "../theme-picker";
 export type Product = { description?: string; id: string; name: string; price: string; compareAtPrice?: string; badge?: DealBadge; category: string; gender: Gender; image: string; url: string; source: string };
 export type Shop = { logo?: string; escrowHoldDays?: number; name: string; bio: string; phone: string; shopMode: ShopMode; affiliateDisclosure?: string; cryptoWallet?: string; cryptoNetwork?: CryptoNetwork; shopTheme: Surface; products: Product[] };

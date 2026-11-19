@@ -1,3 +1,4 @@
+import {publicLink} from '../../../lib/public-url';
 import { proIdentity } from '../../../lib/pro-auth';
 import { publishShop,sellerShopSettings } from '../../../lib/db';
 export const runtime='nodejs';
@@ -9,7 +10,7 @@ export async function POST(request:Request){
   let value:unknown;
   try{const body=await request.text();if(body.length>2000000)return Response.json({error:'CATALOG_TOO_LARGE'},{status:413});value=JSON.parse(body);}
   catch{return Response.json({error:'INVALID_CATALOG'},{status:400});}
-  try{const slug=await publishShop(identity,value);return Response.json({slug,url:'/s/'+slug},{headers:{'Cache-Control':'no-store'}});}
+  try{const slug=await publishShop(identity,value);return Response.json({slug,url:publicLink('/s/'+slug)},{headers:{'Cache-Control':'no-store'}});}
   catch{return Response.json({error:'PUBLISH_FAILED'},{status:400});}
 }
 

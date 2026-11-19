@@ -11,12 +11,12 @@ export const ADMIN_OVERVIEW_SQL=`WITH buckets AS (SELECT coin,network FROM order
  (SELECT coalesce(sum(amount),0)::text FROM payout_requests WHERE coin=b.coin AND network=b.network AND status IN ('pending','approved')) AS pending_payouts,
  (SELECT coalesce(sum(amount),0)::text FROM payout_requests WHERE coin=b.coin AND network=b.network AND status='paid') AS paid_payouts FROM buckets b)
  SELECT coalesce((SELECT json_agg(b ORDER BY coin,network) FROM balances b),'[]') AS balances,
- (SELECT count(*)::text FROM subscriptions WHERE status='active') AS active_subscriptions,
+ (SELECT count(*)::text FROM subscriptions WHERE status='active' AND (expires_at IS NULL OR expires_at>now())) AS active_subscriptions,
  coalesce((SELECT json_agg(to_jsonb(o)||jsonb_build_object('gross_amount',o.gross_amount::text,'commission_rate',o.commission_rate::text,'commission_amount',o.commission_amount::text,'net_amount',o.net_amount::text,'shop_name',s.name) ORDER BY o.created_at DESC,o.id) FROM orders o JOIN shops s ON s.id=o.shop_id),'[]') AS orders,
  coalesce((SELECT json_agg(to_jsonb(p)||jsonb_build_object('amount',p.amount::text,'shop_name',s.name) ORDER BY p.created_at DESC,p.id) FROM payout_requests p JOIN shops s ON s.id=p.shop_id),'[]') AS payouts,
  coalesce((SELECT json_agg(json_build_object('id',s.id,'name',s.name,'slug',s.slug,'owner_key',s.owner_key,'verified',s.verified,'suspended',s.suspended,'published',s.published,'escrow_hold_days',s.escrow_hold_days,'created_at',s.created_at) ORDER BY s.created_at DESC,s.id) FROM shops s),'[]') AS shops`;
 export async function overview(query:Query=run){return (await query(ADMIN_OVERVIEW_SQL,[]))[0];}
-export async function subscriptions(query:Query=run){return query('SELECT owner_key,provider,status,verified_at,created_at FROM subscriptions ORDER BY created_at DESC,owner_key',[]);}
+export async function subscriptions(query:Query=run){return query("SELECT owner_key,provider,CASE WHEN status='active' AND expires_at<=now() THEN 'expired' ELSE status END AS status,expires_at,verified_at,created_at FROM subscriptions ORDER BY created_at DESC,owner_key",[]);}
 export async function adminOrder(id:string,query:Query=run){
  uuid(id);const rows=await query(`SELECT to_jsonb(o)||jsonb_build_object('gross_amount',gross_amount::text,'commission_amount',commission_amount::text,'net_amount',net_amount::text) AS record FROM orders o WHERE id=$1::uuid`,[id]);
  if(!rows.length)throw new ApiError('RECORD_NOT_FOUND',404);return rows[0].record;

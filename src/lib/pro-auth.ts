@@ -1,6 +1,6 @@
 import 'server-only';
 import { createHash, timingSafeEqual } from 'node:crypto';
-export type ProIdentity = { ownerKey: string; provider: 'master' | 'gumroad' | 'development' };
+export type ProIdentity = { ownerKey: string; provider: 'master' | 'gumroad' | 'development' | 'crypto' };
 export function constantEqual(a: string, b: string) {
   const digest=(value:string)=>createHash('sha256').update(value).digest();
   return timingSafeEqual(digest(a),digest(b));
@@ -12,6 +12,10 @@ export async function verifyProKey(key: string): Promise<ProIdentity | null> {
   const ownerKey=createHash('sha256').update('sellpostly-license:'+key).digest('hex');
   if(masters.some(master=>constantEqual(key,master)))return {ownerKey,provider:'master'};
   if(!configured&&process.env.NODE_ENV!=='production'&&constantEqual(key,'SELLPOSTLY-PRO-DEV'))return {ownerKey,provider:'development'};
+  if(key.startsWith('SP-PRO-')){
+    if(!process.env.DATABASE_URL)return null;
+    try {const {cryptoSubscriptionActive}=await import('./subscription-access');return await cryptoSubscriptionActive(ownerKey)?{ownerKey,provider:'crypto'}:null;}catch{return null;}
+  }
   if(!process.env.GUMROAD_PRODUCT_ID)return null;
   try {
     const response=await fetch('https://api.gumroad.com/v2/licenses/verify',{
