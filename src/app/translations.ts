@@ -2708,5 +2708,29 @@ export const translations = {
 ,"As an Amazon Associate I earn from qualifying purchases.":{"fr":"En tant que Partenaire Amazon, je réalise un bénéfice sur les achats remplissant les conditions requises.","ar":"بصفتي شريكًا في برنامج أمازون، أربح من عمليات الشراء المؤهلة."}
 ,"Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.":{"fr":"Les images des fiches Amazon ne peuvent pas être utilisées par lien direct : importez votre propre photo de test, utilisez une image du dossier de presse de la marque ou conservez cette illustration de studio.","ar":"لا يمكن ربط صور إعلانات أمازون مباشرةً — ارفع صورة مراجعة التقطتها بنفسك، أو استخدم صورة من الملف الإعلامي للعلامة التجارية، أو احتفظ بهذا الرسم التوضيحي."}
 ,"Studio illustration":{"fr":"Illustration de studio","ar":"رسم توضيحي للمنتج"}
+,"Product Identity & Images":{"fr":"Identité du produit et images","ar":"هوية المنتج والصور"}
+,"Detected:":{"fr":"Détecté :","ar":"تم التعرف على:"}
+,"Enter a product title":{"fr":"Saisissez un titre de produit","ar":"أدخل اسم المنتج"}
+,"Title-based detection. Confirm the exact brand and model before choosing a photo.":{"fr":"Détection à partir du titre. Confirmez la marque et le modèle exacts avant de choisir une photo.","ar":"التعرف مبني على العنوان. تأكد من العلامة والطراز الدقيقين قبل اختيار صورة."}
+,"Confirm Brand / Model":{"fr":"Confirmer la marque / le modèle","ar":"تأكيد العلامة التجارية / الطراز"}
+,"Find Identical Compliant Image":{"fr":"Rechercher une image identique et réutilisable","ar":"البحث عن صورة مطابقة ومسموح باستخدامها"}
+,"Official Brand Media Kit":{"fr":"Kit média officiel de la marque","ar":"الملف الإعلامي الرسمي للعلامة"}
+,"Free Licensed Photos (Unsplash)":{"fr":"Photos sous licence gratuite (Unsplash)","ar":"صور بترخيص مجاني (Unsplash)"}
+,"Check the exact model, image license, attribution and brand permissions. Unsplash searches lifestyle photos; results are not guaranteed to show your exact product.":{"fr":"Vérifiez le modèle exact, la licence, les crédits et les autorisations de la marque. Unsplash recherche des photos d’ambiance, sans garantir le modèle exact.","ar":"تحقق من الطراز الدقيق وترخيص الصورة ومتطلبات نسبها وأذونات العلامة. يبحث Unsplash عن صور أسلوب الحياة ولا يضمن عرض المنتج نفسه."}
+,"Editorial Studio Cover":{"fr":"Couverture éditoriale de studio","ar":"غلاف تحريري بتصميم استوديو"}
+,"Auto-select Cover":{"fr":"Choisir automatiquement","ar":"اختيار الغلاف تلقائيًا"}
+,"Custom photo active. Choose a cover to replace it.":{"fr":"Une photo personnalisée est active. Choisissez une couverture pour la remplacer.","ar":"الصورة المخصصة مفعلة. اختر غلافًا لاستبدالها."}
+,"Studio covers are illustrations, not photographs of the exact model.":{"fr":"Les couvertures sont des illustrations, pas des photographies du modèle exact.","ar":"أغلفة الاستوديو رسوم توضيحية وليست صورًا للطراز الدقيق."}
+,"Upload Custom Photo":{"fr":"Importer votre propre photo","ar":"رفع صورة مخصصة"}
+,"Editorial illustration":{"fr":"Illustration éditoriale","ar":"رسم تحريري"}
+,"Audio":{"fr":"Audio","ar":"الصوتيات"}
+,"Watches":{"fr":"Montres","ar":"الساعات"}
+,"Phones & Tech":{"fr":"Téléphones et technologie","ar":"الهواتف والتقنية"}
+,"Cameras":{"fr":"Appareils photo","ar":"الكاميرات"}
+,"Coffee & Kitchen":{"fr":"Café et cuisine","ar":"القهوة والمطبخ"}
+,"Fashion & Bags":{"fr":"Mode et sacs","ar":"الأزياء والحقائب"}
+,"Beauty & Skincare":{"fr":"Beauté et soins","ar":"الجمال والعناية بالبشرة"}
+,"Gaming":{"fr":"Jeux vidéo","ar":"الألعاب"}
+,"Home & Office":{"fr":"Maison et bureau","ar":"المنزل والمكتب"}
 } as const;
 export type Message = keyof typeof translations;

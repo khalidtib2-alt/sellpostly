@@ -7,7 +7,7 @@ import {supportEmail} from '../src/lib/support';
 import {emailTemplate,sendEmail} from '../src/lib/email';
 test('studio demos are local SVG assets and survive saved/shared catalog validation',async()=>{
  const shop=createSampleShop();assert.equal(shop.products.length,4);assert.equal(shop.shopMode,'affiliate');
- for(const product of demoProducts){const svg=await readFile('public'+product.image,'utf8');assert.ok(svg.includes('viewBox="0 0 480 360"'));assert.ok(svg.includes('<linearGradient'));assert.ok(!/<script|foreignObject|href="https?:/i.test(svg));assert.equal(safeImage(product.image),product.image);}
+ for(const product of demoProducts){const svg=await readFile('public'+product.image,'utf8');assert.ok(svg.includes('viewBox="0 0 1200 900"'));assert.ok(svg.includes('<linearGradient'));assert.ok(!/<script|foreignObject|href="https?:/i.test(svg));assert.equal(safeImage(product.image),product.image);}
  const restored=validateShop(shop);assert.deepEqual(restored.products.map(p=>p.image),shop.products.map(p=>p.image));assert.deepEqual((await decodeShop(await encodeShop(shop))).products.map(p=>p.image),shop.products.map(p=>p.image));
  assert.equal(safeImage('/demo-products/../../bad.svg'),'');assert.equal(safeImage('data:image/svg+xml,<svg/>'),'');
 });

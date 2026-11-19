@@ -111,3 +111,10 @@ input, select, textarea { background-color: var(--card); color: var(--text); bor
 @media(max-width:600px){.curator-hero,.boutique-hero{grid-template-columns:1fr;}.store-hero-art{min-height:280px;padding:2rem;}.store-hero-art img{height:240px;}.store-hero-copy{padding:2rem 1.5rem;}.editorial-products,.boutique-products{grid-template-columns:1fr;}.editorial-product:first-child{display:block;grid-column:auto;}.boutique-trust-strip{justify-content:flex-start;gap:.8rem;}.store-collection-heading h2{font-size:1.6rem;}}
 @media(prefers-reduced-motion:reduce){.store-photo-frame img{transition:none;}.boutique-product:hover .store-photo-frame img{transform:none;}}
 [dir='rtl'] .store-primary-link svg,[dir='rtl'] .store-detail-link svg,[dir='rtl'] .editorial-product .store-buy-button svg { transform:scaleX(-1); }
+/* Full-bleed editorial studio illustrations; custom product photos remain contained. */
+.editorial-product.has-studio-cover .store-card-visual {padding:0;display:flex;align-items:stretch;background:transparent;}
+.editorial-product.has-studio-cover .store-photo-frame {position:relative;height:auto;min-height:280px;aspect-ratio:4/3;padding:0;border-radius:0;flex:1;}
+.editorial-product.has-studio-cover .store-photo-frame img {position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;mix-blend-mode:normal;}
+.editorial-product.has-studio-cover .store-card-number {z-index:2;border:1px solid #ffffff40;background:#0f172a55;color:white;backdrop-filter:blur(8px);padding:.4rem .65rem;border-radius:999px;}
+.studio-cover-caption {position:absolute;bottom:1rem;inset-inline-start:1rem;z-index:2;border-radius:999px;background:#0f172a88;color:#fff;padding:.4rem .7rem;font-size:.6rem;letter-spacing:.07em;}
+@media(max-width:600px){.editorial-product.has-studio-cover .store-photo-frame{min-height:240px;}}

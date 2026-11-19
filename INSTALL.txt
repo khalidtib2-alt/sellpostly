@@ -1,43 +1,47 @@
-SellPostly Affiliate Guardrails + Extension 1.0.4
+SellPostly Product Identity + Editorial Studio Covers
 
 INSTALLATION
-Extract into the repository root, preserving src/, public/, scripts/, tests/ and chrome-extension/. This cumulative patch retains the prior independent catalogs, editorial/boutique templates, product pages, cart, COD, escrow and email changes.
-If a misplaced duplicate root app/ exists, use the guarded backup helper:
+Extract into the repository root, preserving src/, public/, scripts/, tests/ and chrome-extension/ paths. This is cumulative with the prior storefront/guardrails patch. The original checkout remains unchanged and this patch has not been deployed.
+If a misplaced root app/ exists, use the guarded backup helper:
 node scripts/fix-duplicate-app.mjs
+Run npm run build and npm test, then deploy normally.
+This upgrade uses existing catalog JSON for editorialCover and identityOverride; no new database columns are required. If you have not yet applied the prior Phase 2/disclosure migration, run npm run db:init with your own DATABASE_URL before deploying the cumulative patch. No live database operations were performed here.
 
-Run the idempotent migration BEFORE deploying the updated application:
-npm run db:init
-This adds shops.affiliate_disclosure, preserves existing disclosure text from affiliate_catalog, and verifies the new column. Use your own DATABASE_URL/environment configuration; no secrets are included.
+PRODUCT IDENTITY
+extractProductIdentity(title, optionalCategory) cleans common Amazon sales filler and recognizes known Brand + Model patterns, including Sony WH-1000XM5, Apple Watch, Samsung Galaxy, Canon EOS, Nikon, Fujifilm, Garmin, Breville, Nespresso, Logitech and others. Recognized color/storage variants are included in image searches. The original product title is retained in the catalog.
+Detection is local and heuristic, not a verified product-database lookup. Matched, inferred and uncertain results are distinguished in code. Ambiguous names and accessory listings are not treated as confirmed exact-model matches. Sellers can correct the identity in Confirm Brand / Model, and that value persists in catalog JSON and shared links.
+The ten visual niches are audio, watch, phone-tech, camera, coffee-kitchen, fitness, fashion-bag, beauty-skincare, gaming and home-office.
 
-npm run build
-npm test
-Deploy through your normal process. This work has not modified the original checkout, migrated live Neon or deployed.
+IMAGE FINDER IN AFFILIATE EDITOR
+Below Image URL and the prominent Upload Custom Photo button, the Product Identity & Images panel shows the detected name and provides:
+- Official Brand Media Kit: a Google query for the detected model/variant plus official product press-kit images.
+- Wikimedia Commons: an image search on Commons for the detected model/variant.
+- Free Licensed Photos (Unsplash): a visual-niche lifestyle photo search.
+All links open in a new tab; no third-party image search API or automatic scraping/downloading is used.
+These are search helpers. Search results do not verify the model or license. The editor asks sellers to confirm exact-model identity, image license, attribution and brand permissions. Unsplash lifestyle results are not presented as guaranteed identical product photographs. Custom seller photos and authorized non-Amazon image URLs remain supported.
 
-DISCLOSURE EDITOR AND BANNER
-The Affiliate settings now have three preset pills above the editable textarea: Multi-Network Default, Amazon + Multi-Network and Amazon Only. EN preset copy matches the requested wording. FR/AR presets are translated. Save Disclosure publishes through the existing Pro-gated shop endpoint, persisting both catalog JSON and the independent affiliate_disclosure column. Publishing the Personal catalog does not overwrite it.
-The active disclosure appears above the Affiliate hero in public and preview views. Empty disclosure text displays the Multi-Network Default. Known preset wording is displayed in the visitor's current language; custom seller text remains as authored. Seller text is rendered as plain escaped text.
+TEN STUDIO COVERS
+Ten original, local SVG product-showcase scenes use full-bleed gradients, lighting, shadows and niche-specific product illustrations. They contain no brand logos, embedded text, external asset references or scripts. The SVGs total about 21 KB.
+Missing Affiliate photos, blocked Amazon CDN images and older category-placeholder images automatically select the closest title/category cover. Cover choice can be overridden with any of the ten one-click thumbnails, or reset with Auto-select Cover. Manual cover selections persist; uploading/pasting a custom photo takes precedence.
+Affiliate cards render the covers full-bleed, with a visible Editorial illustration caption. Covers are generic niche artwork, not photographs or precise renders of the named model. Custom product photos remain contained. Personal Seller photos/layout and payment behavior remain separate.
+Regenerate the deterministic SVG assets if needed:
+node scripts/generate-editorial-covers.mjs
 
-AMAZON PRICE AND CTA GUARDS
-Amazon regional destination hosts and amzn.to are identified by parsed hostname, not by substrings in a query or path. Lookalike hosts such as amazon.com.evil.example do not match. Affiliate Amazon cards omit current price, compare-at price, computed discounts and promotional badges. They use Check Price on Amazon with nofollow/sponsored/noopener/noreferrer and retain the full affiliate tracking URL. Non-Amazon affiliate cards keep their existing price and discount presentation. Personal Seller checkout/pricing is unchanged.
-The checks are host-based; they do not resolve arbitrary third-party redirect services. These are the requested product guardrails, not an affiliate-network approval workflow.
+AMAZON RULES PRESERVED
+Amazon/amzn.to Affiliate cards still hide static prices, compare-at prices and discount/promotional badges; use Check Price on Amazon; preserve affiliate tags; and keep the nofollow/sponsored/noopener link attributes. The editable disclosure banner and all three presets remain near the top. Raw Amazon CDN image hotlinks remain blocked.
+Extension 1.0.4 remains compatible: its category illustration imports are upgraded by the website into a title-matched editorial cover. No extension permission or version change is required for this website upgrade.
 
-IMAGE GUARDS
-Raw media-amazon.com, images-amazon.com and ssl-images-amazon.com URLs (including their subdomains) are replaced with owned category illustrations in Affiliate products, additional photos and hero images during validation/loading/publishing. Existing saved catalogs are therefore protected when rendered. Affiliate image editor fields substitute on blur and again on save, with the translated helper notice. Own device uploads and non-Amazon press-kit/review photo URLs remain available.
-The extension's Affiliate destination substitutes a packaged local illustration before displaying the imported photo and passes a safe /demo-products/*.svg website path through the existing short-URL bridge. The worker also checks incoming image payloads. Affiliate tags are preserved. Personal destination behavior remains separate. Open Full Studio uses the corresponding website image URL, rather than a chrome-extension resource URL.
-The source assets and image notice are bundled locally; no image generation/tracking API is used at runtime.
-
-EXTENSION INSTALLATION
-The bundle includes a standalone SellPostly-Extension-1.0.4.zip. Extract it, then use chrome://extensions -> Developer mode -> Load unpacked and select the folder containing manifest.json. For an existing unpacked install, reload the updated folder and verify version 1.0.4.
-Version 1.0.4 retains only activeTab, scripting and storage permissions. Affiliate and Personal destination selectors, category/audience controls and EN/FR/AR with RTL are preserved. The default frontend is https://sellpostly.vercel.app; vercel.com remains blocked.
-
-VERIFICATION
+LOCALIZATION AND VERIFICATION
+EN/FR/AR labels and RTL inheritance are preserved. Product and brand names remain as authored; application labels and cover-niche names are translated.
 npm run build: 0 errors.
-npm test: 53 tests passed.
-Checks cover regional/short Amazon links, deceptive hosts, image substitution, packaged SVG availability, popup notices, safe bridge payloads, affiliate-tag preservation, disclosure migration/preset persistence and Personal isolation, rendered price/discount suppression and non-Amazon retention. Existing PostgreSQL, order, email, cart and template tests also pass. Extension scripts passed syntax checks. Local tests used an environment-only os.userInfo workaround that is not shipped.
-No live email, payment, database migration or deployment was performed. No .env files, credentials, node_modules, build outputs or private helper files are included.
+npm test: 57 tests passed.
+Coverage includes identity/model matching and conservative accessory handling, safely encoded source-search URLs, ten asset safety/render checks, automatic/manual cover persistence, preservation of custom photos, editor rendering, and existing Amazon/Neon/cart/checkout/email tests. All ten SVG assets were also rasterized successfully for inspection.
+The local test runner required an environment-only os.userInfo workaround, which is not shipped. No live emails, payments, database migrations or deployments were performed. No secrets, environment files, dependencies, build output or private verification helpers are included.
 
-OFFICIAL REFERENCES
-Amazon Associates Operating Agreement:
-https://affiliate-program.amazon.com/help/operating/agreement
-Amazon Associates Program Policies (price/availability and content-use requirements):
-https://affiliate-program.amazon.com/help/operating/policies
+IMAGE-REUSE REFERENCES
+Wikimedia Commons reuse and per-image licensing:
+https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia
+Unsplash license:
+https://unsplash.com/license
+Unsplash releases and trademarks:
+https://help.unsplash.com/en/articles/2612329-releases-and-trademarks

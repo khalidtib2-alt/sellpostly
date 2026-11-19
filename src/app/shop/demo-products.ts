@@ -1,9 +1,9 @@
 import type {Shop} from './shop-data';
 export const demoProducts=[
- {name:'Wireless headphones',price:'49 USD',category:'Tech & Gadgets',image:'/demo-products/headphones.svg',url:'https://www.amazon.com/',source:'Amazon'},
- {name:'Travel backpack',price:'39 USD',category:'Fashion',image:'/demo-products/backpack.svg',url:'https://www.aliexpress.com/',source:'AliExpress'},
- {name:'Kitchen organizer',price:'24 USD',category:'Home & Kitchen',image:'/demo-products/organizer.svg',url:'https://www.shopify.com/',source:'Shopify'},
- {name:'Fitness bottle',price:'19 USD',category:'Fitness',image:'/demo-products/bottle.svg',url:'https://www.amazon.com/',source:'Amazon'}
+ {name:'Wireless headphones',price:'49 USD',category:'Tech & Gadgets',image:'/studio-covers/audio.svg',url:'https://www.amazon.com/',source:'Amazon'},
+ {name:'Travel backpack',price:'39 USD',category:'Fashion',image:'/studio-covers/fashion-bag.svg',url:'https://www.aliexpress.com/',source:'AliExpress'},
+ {name:'Kitchen organizer',price:'24 USD',category:'Home & Kitchen',image:'/studio-covers/coffee-kitchen.svg',url:'https://www.shopify.com/',source:'Shopify'},
+ {name:'Fitness bottle',price:'19 USD',category:'Fitness',image:'/studio-covers/fitness.svg',url:'https://www.amazon.com/',source:'Amazon'}
 ] as const;
 export function createSampleShop():Shop{
  return {name:'My Shop',bio:'',phone:'',shopMode:'affiliate',shopTheme:'white',products:demoProducts.map((p,index)=>({...p,id:'sample-'+index,gender:'unisex' as const}))};

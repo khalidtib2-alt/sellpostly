@@ -1,4 +1,6 @@
 "use client";
+import AffiliateImageEditor from './affiliate-image-editor';
+import {extractProductIdentity,studioCover,isStudioCover,type VisualNiche} from './product-identity';
 import {disclosurePresets,amazonImageNotice,isAmazonCdnImage,affiliateImage,studioCategoryImage} from './affiliate-compliance';
 import {translations} from '../translations';
 import {StorefrontHero,StorefrontProducts} from './storefront-templates';
@@ -39,7 +41,9 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   const [cartOpen,setCartOpen]=useState(false);
   const [shareTarget,setShareTarget]=useState<{url:string;title:string;product?:boolean}|null>(null),[codLines,setCodLines]=useState<{product:Product;quantity:number}[]|null>(null);
   const [imageNotice,setImageNotice]=useState(false);
+  const [draftTitle,setDraftTitle]=useState(''),[draftCategory,setDraftCategory]=useState(''),[identityOverride,setIdentityOverride]=useState(''),[editorCover,setEditorCover]=useState<VisualNiche|undefined>();
   const [editing,setEditing]=useState<Product | null>(null);
+  useEffect(()=>{setDraftTitle(editing?.name||'');setDraftCategory(editing?.category||'');setIdentityOverride(editing?.identityOverride||'');setEditorCover(editing?.editorialCover);},[editing,adding]);
   const [genderFilter,setGenderFilter]=useState<Gender | "all">("all");
   const [search,setSearch]=useState("");
   const [visible,setVisible]=useState(24);
@@ -196,13 +200,13 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       const get=(key:string)=>String(data.get(key)||"").trim();
 
 
-      const product:Product={stock:get('stock')===''?undefined:Math.min(1000000,Math.max(0,Math.trunc(Number(get('stock'))))),catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:shop.shopMode==='affiliate'?affiliateImage(photo||safeImage(get("image")),get("category")):photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).map(value=>shop.shopMode==='affiliate'?affiliateImage(safeImage(value),get("category")):safeImage(value)).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
+      const product:Product={editorialCover:editorCover,identityOverride,stock:get('stock')===''?undefined:Math.min(1000000,Math.max(0,Math.trunc(Number(get('stock'))))),catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:shop.shopMode==='affiliate'?affiliateImage(photo||safeImage(get("image")),get("category"),identityOverride||get("name"),editorCover):photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).filter(value=>value.trim()).map(value=>shop.shopMode==='affiliate'?affiliateImage(safeImage(value),get("category"),identityOverride||get("name")):safeImage(value)).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
       if(shop.shopMode==='affiliate'&&(isAmazonCdnImage(get("image"))||get("images").split(/\n/).some(isAmazonCdnImage)))setStatus(amazonImageNotice);
       setShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]});
       setEditing(null);
       setAdding(false);setPhoto("");
     }}>
-      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? editing[["name","price","category","image","url"][i] as keyof Product] : ""} name={["name","price","category","image","url"][i]} type={i===4?"url":"text"} onBlur={event=>{if(i===3&&shop.shopMode==='affiliate'&&isAmazonCdnImage(event.target.value)){const form=event.target.form;event.target.value=studioCategoryImage(String(new FormData(form!).get('category')||'Other'));setImageNotice(true);}}} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
+      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? editing[["name","price","category","image","url"][i] as keyof Product] : ""} name={["name","price","category","image","url"][i]} type={i===4?"url":"text"} onChange={e=>{if(i===0)setDraftTitle(e.target.value);if(i===2)setDraftCategory(e.target.value);}} onBlur={event=>{if(i===3&&shop.shopMode==='affiliate'&&isAmazonCdnImage(event.target.value)){const form=event.target.form;event.target.value=affiliateImage(event.target.value,String(new FormData(form!).get('category')||'Other'),identityOverride||draftTitle,editorCover);setPhoto(event.target.value);setImageNotice(true);}else if(i===3){setPhoto(safeImage(event.target.value));setEditorCover(undefined);}}} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
       {imageNotice&&shop.shopMode==='affiliate'&&<p role="status" className="rounded-xl bg-emerald-50 p-4 text-sm sm:col-span-2">{t(amazonImageNotice)}</p>}
       <datalist id="shop-categories">{categories.slice(1).map(c=><option key={c} value={c}>{label(c)}</option>)}</datalist>
       <label>{t("Gender / Audience")}<select className={field} name="gender" defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option><option value="kids">{t("Kids")}</option></select></label>
@@ -212,11 +216,12 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       <label className="sm:col-span-2">{t("Product Description")}<textarea className={field} name="description" rows={3} maxLength={4000} defaultValue={editing?.description||""}/></label>
       <label className="sm:col-span-2">{t("Additional Product Photos")}<textarea className={field} name="images" rows={3} maxLength={16000} defaultValue={(editing?.images||[]).join("\n")} onBlur={e=>{if(shop.shopMode==='affiliate'&&e.target.value.split(/\n/).some(isAmazonCdnImage)){const category=String(new FormData(e.target.form!).get('category')||'Other');e.target.value=e.target.value.split(/\n/).map(value=>affiliateImage(value,category)).join('\n');setImageNotice(true);}}}/><span className="text-xs">{t("One image URL per line (up to 8).")}</span></label>
       <label>{t("Source Badge")}<select className={field} name="source" defaultValue={editing?.source || "Other"}>{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c} value={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
-      <label>{t("Upload Product Photo")}<input className={field} type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
+      <label className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white focus-within:ring-2 focus-within:ring-emerald-300">{t(shop.shopMode==='affiliate'?'Upload Custom Photo':'Upload Product Photo')}<input className="sr-only" type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
         const file=e.target.files?.[0];if(!file)return;
         if(file.size>5000000){setStatus("Photo must be under 5 MB.");return;}
-        const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");const scale=Math.min(1,600/Math.max(img.width,img.height));c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d")!.drawImage(img,0,0,c.width,c.height);setPhoto(c.toDataURL("image/jpeg",0.7));};img.src=String(reader.result);};reader.readAsDataURL(file);
+        const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");const scale=Math.min(1,600/Math.max(img.width,img.height));c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d")!.drawImage(img,0,0,c.width,c.height);setPhoto(c.toDataURL("image/jpeg",0.7));setEditorCover(undefined);};img.src=String(reader.result);};reader.readAsDataURL(file);
       }}/></label>
+      {shop.shopMode==='affiliate'&&<AffiliateImageEditor title={draftTitle} category={draftCategory} override={identityOverride} onOverride={setIdentityOverride} selected={editorCover} customImage={photo||editing?.image||''} onSelect={niche=>{setEditorCover(niche);const value=studioCover(niche||extractProductIdentity(identityOverride||draftTitle,draftCategory).visualNiche);setPhoto(value);const field=document.querySelector<HTMLInputElement>('#shop-product-form input[name="image"]');if(field)field.value=value;}}/>}
       <button className={button}>{t("Save Product")}</button>
     </form>}
     
