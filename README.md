@@ -41,3 +41,11 @@ Digital Product, Art and Sport categories, database-backed store verification/su
 ## Escrow governance update (current rules)
 
 Admin-only 3–15 day assignment, default seven, replaces the seller hold selector. Seller publishing cannot overwrite the database policy. Clear order actions and an empty-state workflow preview are provided in /admin. Explicit buyer-confirmed admin force releases preserve the original deadline and create an audited override. See ESCROW-GOVERNANCE.md; its hold/release rules supersede earlier milestone notes. Rerun the protected database initializer before use.
+
+## Buyer experience and dispute routing (current)
+
+Buyer-only footers now show Powered by SellPostly and the Dispute Order / Report Store portal. Polygon is the checkout network for both USDC and USDT. The admin Escrow Orders tab has a red dispute counter/filter and visible buyer reasons. See BUYER-EXPERIENCE.md for current Polygon configuration, dispute eligibility and verification details. This supersedes older multi-network buyer checkout instructions; historical accounting networks remain supported.
+
+## Restored Pro shop shortcuts
+
+The homepage exposes Send to My Shop only after server verification of a saved Pro key. The extension restores Send to My Shop (Pro), with /shop handling activation. Product descriptions and clean photos are preserved, and imported products appear first in their chosen category. See PRO-SHOP-SHORTCUT.md. Reload the unpacked extension to activate its new background worker; permissions remain unchanged.

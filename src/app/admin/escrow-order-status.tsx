@@ -6,7 +6,7 @@ export function OrderStatusPill({order,now}:{order:AdminOrder;now:number}){
  const ready=order.status==='held'&&!!order.escrow_release_at&&new Date(order.escrow_release_at).getTime()<=now;
  const heldDate=order.escrow_release_at?new Intl.DateTimeFormat(language,{dateStyle:'medium',timeStyle:'short'}).format(new Date(order.escrow_release_at)):'';
  const label=order.status==='pending'?t('Pending TxID'):order.status==='released'?t('Released'):order.status==='refunded'?t('Refunded'):order.status==='disputed'?t('Disputed'):order.status==='cancelled'?t('Cancelled'):ready?t('Ready to Release'):t('Held Until')+' '+heldDate;
- return <><span className={'inline-block rounded-full px-3 py-1 text-xs font-semibold '+(ready||order.status==='released'?'bg-emerald-50 text-emerald-800':'bg-slate-100 text-slate-800')}>{label}</span>{order.force_released_at&&<p className="mt-2 text-xs text-emerald-800">{t('Force Released (Buyer Confirmed)')}</p>}</>;
+ return <><span className={'inline-block rounded-full px-3 py-1 text-xs font-semibold '+(order.status==='disputed'?'bg-red-50 text-red-800':ready||order.status==='released'?'bg-emerald-50 text-emerald-800':'bg-slate-100 text-slate-800')}>{label}</span>{order.force_released_at&&<p className="mt-2 text-xs text-emerald-800">{t('Force Released (Buyer Confirmed)')}</p>}</>;
 }
 export function EmptyEscrowWorkflow(){
  const {t}=useLanguage();

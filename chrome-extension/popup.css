@@ -29,3 +29,6 @@ button:disabled { opacity: .6; cursor: wait; }
 
 .send-actions { display:flex; flex-wrap:wrap; gap:4px; }
 .send-actions button { font-size:12px; }
+
+.studio-shortcuts { display:flex; gap:6px; margin:10px 0; }
+.studio-shortcuts button { flex:1; font-size:12px; }

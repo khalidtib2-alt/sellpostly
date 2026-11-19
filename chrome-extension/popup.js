@@ -1,6 +1,11 @@
 ﻿"use strict";
 
 const messages = {
+"Send to My Shop (Pro)": {"fr":"Envoyer vers ma boutique (Pro)","ar":"إرسال إلى متجري (Pro)"},
+"Sending to My Shop…": {"fr":"Envoi vers ma boutique…","ar":"جارٍ الإرسال إلى متجري…"},
+"Enter a product name or import the current page first.": {"fr":"Saisissez un nom de produit ou importez d’abord la page actuelle.","ar":"أدخل اسم المنتج أو استورد الصفحة الحالية أولًا."},
+"Opening My Shop. Activate Pro on the website if requested.": {"fr":"Ouverture de Ma boutique. Activez Pro sur le site si nécessaire.","ar":"جارٍ فتح متجري. فعّل Pro على الموقع إذا طُلب ذلك."},
+"Could not open My Shop. Reload the extension and try again.": {"fr":"Impossible d’ouvrir Ma boutique. Rechargez l’extension et réessayez.","ar":"تعذر فتح متجري. أعد تحميل الإضافة وحاول مجددًا."},
 "Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption":{"fr":"Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.","ar":"تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."},
 "Shop Category":{"fr":"Catégorie de boutique","ar":"فئة المتجر"},"Gender / Audience":{"fr":"Genre / Public","ar":"الجنس أو الجمهور"},"All / Unisex":{"fr":"Tous / Mixte","ar":"الكل / للجنسين"},"Men":{"fr":"Hommes","ar":"رجال"},"Women":{"fr":"Femmes","ar":"نساء"},"Unisex":{"fr":"Mixte","ar":"للجنسين"},"Edit Product":{"fr":"Modifier le produit","ar":"تعديل المنتج"},
 "Category":{"fr":"Catégorie","ar":"الفئة"},"Tech & Gadgets":{"fr":"Tech et gadgets","ar":"التقنية والأجهزة"},"Fashion":{"fr":"Mode","ar":"الأزياء"},"Home & Kitchen":{"fr":"Maison et cuisine","ar":"المنزل والمطبخ"},"Beauty":{"fr":"Beauté","ar":"الجمال"},"Fitness":{"fr":"Fitness","ar":"اللياقة"},"Top Deals":{"fr":"Meilleures offres","ar":"أفضل العروض"},"Other":{"fr":"Autre","ar":"أخرى"},
@@ -334,7 +339,7 @@ for (const button of document.querySelectorAll("[data-language]")) {
   });
 }
 
-document.querySelector("#import-page").addEventListener("click", async () => {
+async function importCurrentProduct(preserveEdits=false) {
   const button = document.querySelector("#import-page");
   button.disabled = true;
   try {
@@ -388,27 +393,30 @@ document.querySelector("#import-page").addEventListener("click", async () => {
           name: (text('meta[property="og:title"]') || text("#productTitle") || text("h1")).slice(0,120),
           price: price.trim().slice(0,35),
           features: description.filter(Boolean).flatMap(line=>line.split(/(?<=[.!?])\s+/)).filter(line=>!/^about this item$/i.test(line) && !/our wide selection|free shipping and free returns|buy .+ at amazon\.com/i.test(line)).slice(0,4).join("\n").slice(0,1200),
-          image: /^https?:/.test(image) ? image : ""
+          image: (()=>{if(!image)return "";try{const url=new URL(image,location.href);return /^https?:$/.test(url.protocol)?url.href:"";}catch{return "";}})()
         };
       }
     });
     const product = execution?.result;
     if (!product?.name) throw Error();
     const form = document.querySelector("#seller");
-    for (const key of ["name", "price", "features"]) form.elements.namedItem(key).value = product[key] || "";
+    for (const key of ["name", "price", "features"]) {const field=form.elements.namedItem(key);if(!preserveEdits||!field.value.trim())field.value = product[key] || "";}
     const preview = document.querySelector("#imported-image");
     preview.hidden = !product.image;
     preview.onerror = () => { preview.hidden = true; };
     if(product.image) preview.src = product.image;
+    else if(!preserveEdits)preview.removeAttribute("src");
     lastRequest = null;
     results.hidden = true;
     feedback.textContent = t("Page imported. Review the details.");
+    return {...product,url:tab.url};
   } catch {
     feedback.textContent = t("Could not read this page. Open a product page and try again.");
   } finally {
     button.disabled = false;
   }
-});
+}
+document.querySelector("#import-page").addEventListener("click",()=>importCurrentProduct());
 
 function featureLines(value) {
   return String(value).replace(/\*\*/g,"").split(/\n+|(?<=[.!?])\s+/)
@@ -513,3 +521,20 @@ function whatsappUrl(message) {
 }
 
 function setSendStatus(message){feedback.textContent=t(message);}
+
+document.querySelector("#send-shop").addEventListener("click",async()=>{
+ const button=document.querySelector("#send-shop");
+ if(button.disabled)return;button.disabled=true;feedback.textContent=t("Sending to My Shop…");
+ try{
+  const form=document.querySelector("#seller"),preview=document.querySelector("#imported-image");
+  const missing=["name","price","features"].some(key=>!String(form.elements.namedItem(key).value||"").trim())||!preview.getAttribute("src");
+  if(missing)await importCurrentProduct(true);
+  const data=new FormData(form),title=String(data.get("name")||"").trim();
+  if(!title){feedback.textContent=t("Enter a product name or import the current page first.");return;}
+  const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
+  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.getAttribute("src")||"",url:tab?.url||""}});
+  if(!result?.ok)throw Error();
+  feedback.textContent=t("Opening My Shop. Activate Pro on the website if requested.");
+ }catch{feedback.textContent=t("Could not open My Shop. Reload the extension and try again.");}
+ finally{button.disabled=false;}
+});

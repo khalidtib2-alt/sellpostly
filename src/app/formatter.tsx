@@ -1,5 +1,7 @@
 "use client";
 import { safeImage, safeUrl } from "./shop/shop-data";
+import { useHomepagePro } from "./pro-access";
+import { normalizePending,pendingShopKey,prepareShopPhoto,shopPrice } from "../lib/shop-handoff";
 import PromoImageStudio from "./promo-image-studio";
 
 
@@ -128,6 +130,8 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
 
 export default function Formatter() {
   const { language, t } = useLanguage();
+  const {active:proActive,recheck:recheckPro}=useHomepagePro();
+  const [sendingShop,setSendingShop]=useState(false),[shopFeedback,setShopFeedback]=useState<Message|"">("");
   const formRef = useRef<HTMLFormElement>(null);
   const [promo,setPromo] = useState<Blob | null>(null);
   const [image,setImage] = useState("");
@@ -158,7 +162,7 @@ export default function Formatter() {
         const saved=sessionStorage.getItem("sellpostly-post");
         if(!saved)return;
         const entry=JSON.parse(saved);
-        product={title:String(entry.name||""),price:String(entry.price||""),link:String(entry.url||""),image:String(entry.image||"")};
+        product={title:String(entry.name||""),price:String(entry.price||""),link:String(entry.url||""),image:String(entry.image||""),features:String(entry.description||"")};
         sessionStorage.removeItem("sellpostly-post");
       }catch{return;}
     }
@@ -189,6 +193,20 @@ export default function Formatter() {
     }
   },[]);
 
+  async function sendToShop(){
+    const form=formRef.current;if(!form||sendingShop)return;
+    const data=new FormData(form),title=String(data.get("name")||"").trim();
+    if(!title){setError("Enter a product name.");return;}
+    setSendingShop(true);setShopFeedback("");
+    try{
+      if(!await recheckPro()){setShopFeedback("Your Pro license could not be verified. Activate it again in My Shop.");return;}
+      const photo=await prepareShopPhoto(image);
+      const item=normalizePending({id:crypto.randomUUID(),title,price:shopPrice(String(data.get("price")||""),currency),image:photo,description:String(data.get("features")||""),url:safeUrl(String(data.get("contact")||""))||safeUrl(productUrl),category:"Top Deals",gender:"unisex"});
+      localStorage.setItem(pendingShopKey,JSON.stringify(item));
+      window.location.assign("/shop");
+    }catch{setShopFeedback("Could not send the product. Device storage may be full or the photo may be too large.");}
+    finally{setSendingShop(false);}
+  }
   async function importProduct() {
     if(busy)return;
     setBusy(true);setImportStatus("");
@@ -278,6 +296,8 @@ export default function Formatter() {
         </div>
       </form>
 
+      {mode==="seller"&&proActive&&draft.name.trim()&&<div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-white p-4"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">Pro</span><button type="button" disabled={sendingShop||busy} onClick={sendToShop} className="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white disabled:opacity-50">{t(sendingShop?"Sending to My Shop…":"Send to My Shop")}</button></div>}
+      {shopFeedback&&<p role="status" className="mt-3 text-sm text-slate-700">{t(shopFeedback)}</p>}
       {mode === "seller" && <PromoImageStudio name={draft.name} price={draft.price} delivery={delivery} importedImage={image} onImage={setPromo} onProductImage={setImage} />}
       <p role="status" className="sr-only">{posts.length ? posts.length + " · " + t("Posts generated.") : ""}</p>
       {posts.length > 0 && <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4"><h3 className="font-semibold">{t("AI Hashtags")}</h3><p className="mt-1 text-xs text-slate-600">{t("Keyword-based suggestions to refine with your AI prompt. No AI service is called.")}</p><p className="mt-2" dir="auto">{Array.from(new Set((mode==="seller"?draft.name:results.hook).normalize("NFKC").split(/[^\p{L}\p{N}]+/u).filter(word=>word.length>2).slice(0,6).map(word=>"#"+word))).join(" ")}</p></section>}

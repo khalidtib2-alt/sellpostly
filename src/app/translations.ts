@@ -1120,10 +1120,7 @@ export const translations = {
     "fr": "Texte et image copiés ! Collez-les (Ctrl+V) dans votre publication ou conversation.",
     "ar": "تم نسخ النص والصورة! الصق (Ctrl+V) في المنشور أو المحادثة."
   },
-  "Send to My Shop": {
-    "fr": "Envoyer vers ma boutique",
-    "ar": "إرسال إلى متجري"
-  },
+  "Send to My Shop": {"fr":"Envoyer vers ma boutique","ar":"إرسال إلى متجري"},
   "Image Size": {
     "fr": "Taille de l’image",
     "ar": "حجم الصورة"
@@ -1668,6 +1665,32 @@ export const translations = {
 "The refund decision is recorded; transfers are handled separately.": {"fr":"La décision de remboursement est enregistrée ; le transfert est effectué séparément.","ar":"يُسجل قرار الاسترداد، بينما تُنفذ التحويلات بشكل منفصل."},
 "Release date": {"fr":"Date de déblocage","ar":"موعد الإفراج"},
 "Early force release requires a matching buyer receipt confirmation and an explicit admin override.": {"fr":"Le déblocage anticipé exige une confirmation de réception de l’acheteur et une dérogation explicite de l’administrateur.","ar":"يتطلب الإفراج المبكر تأكيد استلام المشتري للطلب وموافقة استثنائية صريحة من المسؤول."},
-"Payments are verified and releases are recorded by the Admin. Transfers are handled separately.": {"fr":"Les paiements sont vérifiés et les déblocages sont enregistrés par l’administrateur. Les transferts sont effectués séparément.","ar":"يتحقق المسؤول من المدفوعات ويسجل قرارات الإفراج. تُنفذ التحويلات بشكل منفصل."}
+"Payments are verified and releases are recorded by the Admin. Transfers are handled separately.": {"fr":"Les paiements sont vérifiés et les déblocages sont enregistrés par l’administrateur. Les transferts sont effectués séparément.","ar":"يتحقق المسؤول من المدفوعات ويسجل قرارات الإفراج. تُنفذ التحويلات بشكل منفصل."},
+"Powered by SellPostly": {"fr":"Propulsé par SellPostly","ar":"بدعم من SellPostly"},
+"Dispute Order / Report Store": {"fr":"Contester une commande / Signaler une boutique","ar":"فتح نزاع بشأن طلب / الإبلاغ عن متجر"},
+"Dispute Order": {"fr":"Ouvrir un litige","ar":"فتح نزاع بشأن طلب"},
+"Matching Contact Information": {"fr":"Coordonnées correspondant à la commande","ar":"بيانات الاتصال المطابقة للطلب"},
+"Email or international phone used for this order": {"fr":"E-mail ou téléphone international utilisé pour cette commande","ar":"البريد الإلكتروني أو الهاتف الدولي المستخدم لهذا الطلب"},
+"Send an order dispute or order-related store report directly to the Admin using your order ID and original contact.": {"fr":"Envoyez un litige ou un signalement lié à une commande directement à l’administrateur avec votre numéro de commande et vos coordonnées d’origine.","ar":"أرسل نزاعًا بشأن طلب أو بلاغًا متعلقًا به مباشرةً إلى المسؤول باستخدام معرّف الطلب وبيانات الاتصال الأصلية."},
+"Only held orders with matching contact information can open a dispute. Your message goes to the Admin for review.": {"fr":"Un litige peut être ouvert pour une commande sous séquestre avec les coordonnées correspondantes. Votre message est envoyé à l’administrateur pour examen.","ar":"يمكن فتح نزاع للطلبات المحجوزة بالضمان باستخدام بيانات الاتصال المطابقة. تُرسل رسالتك إلى المسؤول للمراجعة."},
+"Sending Dispute…": {"fr":"Envoi du litige…","ar":"جارٍ إرسال النزاع…"},
+"Dispute Submitted": {"fr":"Litige envoyé","ar":"تم إرسال النزاع"},
+"Send Dispute to Admin": {"fr":"Envoyer le litige à l’administrateur","ar":"إرسال النزاع إلى المسؤول"},
+"Order not found, contact did not match, or this order cannot be disputed.": {"fr":"Commande introuvable, coordonnées incorrectes ou commande non admissible à un litige.","ar":"لم يُعثر على الطلب، أو بيانات الاتصال غير مطابقة، أو لا يمكن فتح نزاع لهذا الطلب."},
+"Check your order ID, contact and dispute reason.": {"fr":"Vérifiez le numéro de commande, les coordonnées et le motif du litige.","ar":"تحقق من معرّف الطلب وبيانات الاتصال وسبب النزاع."},
+"Could not submit the dispute. Check your connection and try again.": {"fr":"Impossible d’envoyer le litige. Vérifiez votre connexion et réessayez.","ar":"تعذر إرسال النزاع. تحقق من الاتصال وحاول مجددًا."},
+"Your dispute has been sent to the Admin for review. Keep your order ID for follow-up.": {"fr":"Votre litige a été transmis à l’administrateur. Conservez votre numéro de commande pour le suivi.","ar":"تم إرسال نزاعك إلى المسؤول للمراجعة. احتفظ بمعرّف الطلب للمتابعة."},
+"Polygon checkout is unavailable until the platform configures its Polygon escrow wallet.": {"fr":"Le paiement Polygon sera disponible après configuration du portefeuille de séquestre Polygon de la plateforme.","ar":"الدفع عبر Polygon غير متاح حتى إعداد محفظة ضمان Polygon الخاصة بالمنصة."},
+"The same Polygon escrow wallet accepts both USDC and USDT on Polygon. Send only via the Polygon network.": {"fr":"Le même portefeuille de séquestre Polygon accepte USDC et USDT sur Polygon. Envoyez uniquement via le réseau Polygon.","ar":"تقبل محفظة ضمان Polygon نفسها عملتَي USDC وUSDT على Polygon. أرسل عبر شبكة Polygon فقط."},
+"Disputed Orders": {"fr":"Commandes en litige","ar":"الطلبات المتنازع عليها"},
+"All Orders": {"fr":"Toutes les commandes","ar":"جميع الطلبات"},
+"Buyer Dispute Reason": {"fr":"Motif du litige de l’acheteur","ar":"سبب نزاع المشتري"},
+"No dispute reason was recorded.": {"fr":"Aucun motif de litige enregistré.","ar":"لم يُسجّل سبب للنزاع."},
+"No disputed orders right now.": {"fr":"Aucune commande en litige actuellement.","ar":"لا توجد طلبات متنازع عليها حاليًا."},
+"Disputes refresh automatically while this page is visible. Refund Buyer and Release Funds remain subject to the existing escrow rules.": {"fr":"Les litiges s’actualisent automatiquement quand cette page est visible. Le remboursement et le déblocage restent soumis aux règles de séquestre existantes.","ar":"تُحدّث النزاعات تلقائيًا أثناء عرض هذه الصفحة. يظل استرداد المشتري والإفراج عن الأموال خاضعين لقواعد الضمان الحالية."},
+"Sending to My Shop…": {"fr":"Envoi vers ma boutique…","ar":"جارٍ الإرسال إلى متجري…"},
+"Your Pro license could not be verified. Activate it again in My Shop.": {"fr":"Votre licence Pro n’a pas pu être vérifiée. Réactivez-la dans Ma boutique.","ar":"تعذر التحقق من ترخيص Pro. فعّله مجددًا في متجري."},
+"Could not send the product. Device storage may be full or the photo may be too large.": {"fr":"Impossible d’envoyer le produit. Le stockage peut être plein ou la photo trop volumineuse.","ar":"تعذر إرسال المنتج. قد تكون مساحة التخزين ممتلئة أو الصورة كبيرة جدًا."},
+"Product Description": {"fr":"Description du produit","ar":"وصف المنتج"}
 } as const;
 export type Message = keyof typeof translations;

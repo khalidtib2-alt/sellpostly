@@ -28,7 +28,7 @@ export async function submitOrder(value:unknown,query:Query=run){
 export const BUYER_ACTION_SQL=`UPDATE orders SET
  status=CASE WHEN $3='dispute' THEN 'disputed' ELSE status END,
  details=details || CASE WHEN $3='dispute' THEN jsonb_build_object('dispute',jsonb_build_object('reason',$4::text,'opened_at',now())) ELSE jsonb_build_object('buyer_confirmed_at',now()) END
- WHERE id=$1::uuid AND details->'buyer'->>'contact'=$2 AND (status='held' OR ($3='confirm_receipt' AND status='disputed'))
+ WHERE id=$1::uuid AND details->'buyer'->>'contact'=$2 AND (status='held' OR ($3='confirm_receipt' AND status='disputed')) AND ($5::text IS NULL OR EXISTS(SELECT 1 FROM shops WHERE shops.id=orders.shop_id AND shops.slug=$5::text))
  RETURNING id,status,escrow_release_at,details->>'buyer_confirmed_at' AS buyer_confirmed_at`;
 export async function buyerAction(id:string,value:unknown,query:Query=run){
  uuid(id);const raw=object(value),match=contact(raw.contact),action=raw.action||'dispute';
@@ -37,8 +37,10 @@ export async function buyerAction(id:string,value:unknown,query:Query=run){
   const rows=await query(`SELECT id,status,gross_amount::text,coin,network,escrow_release_at,details->'fulfillment' AS fulfillment,details->>'buyer_confirmed_at' AS buyer_confirmed_at FROM orders WHERE id=$1::uuid AND details->'buyer'->>'contact'=$2`,[id,match]);
   if(!rows.length)throw new ApiError('ORDER_NOT_FOUND_OR_NOT_ELIGIBLE',404);return rows[0];
  }
+ const scope=raw.storeSlug===undefined?null:text(raw.storeSlug,64);
+ if(scope&&!/^[a-z0-9][a-z0-9-]{2,63}$/.test(scope))throw new ApiError('INVALID_INPUT');
  const reason=action==='dispute'?text(raw.reason,1000):'';
- const rows=await query(BUYER_ACTION_SQL,[id,match,action,reason]);
+ const rows=await query(BUYER_ACTION_SQL,[id,match,action,reason,scope]);
  if(!rows.length)throw new ApiError('ORDER_NOT_FOUND_OR_NOT_ELIGIBLE',404);
  return rows[0];
 }

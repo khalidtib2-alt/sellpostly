@@ -1,5 +1,7 @@
 "use client";
 import { escrowReady, holdDays } from "./escrow-config";
+import BuyerStoreFooter from "./buyer-store-footer";
+import { consumePending,importFromHash,pendingShopKey } from "../../lib/shop-handoff";
 import CartDrawer from "./cart-drawer";
 import { cartTotal } from "./cart-data";
 
@@ -48,7 +50,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
           let initial=samples();
           try {const saved=localStorage.getItem(shopKey);if(saved)initial=validateShop(JSON.parse(saved));}catch{}
           if(params.get("addTitle")){
-            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
+            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),description:(params.get("addDescription")||"").slice(0,4000),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
             initial.products.push(product);
             setFilter(product.category);
             try {localStorage.setItem(shopKey,JSON.stringify(initial));}catch{setStatus("Could not save. Device storage may be full.");}
@@ -56,26 +58,17 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
           }
 
           try {
-            const pending=localStorage.getItem("sellpostly_pending_shop_item");
-            if(pending){
-              const item=JSON.parse(pending);
-              if(!item || typeof item.title!=="string" || !item.title.trim())throw Error("Invalid product");
-              const product:Product={
-                id:typeof item.id==="string" && item.id ? item.id : crypto.randomUUID(),
-                name:item.title.slice(0,120),
-                price:typeof item.price==="string"?item.price:"",
-                image:safeImage(typeof item.image==="string"?item.image:""),
-                url:safeUrl(typeof item.url==="string"?item.url:""),
-                gender:normalizeGender(item.gender),
-                category:typeof item.category==="string" && item.category?item.category.slice(0,80):"Top Deals",
-                source:typeof item.source==="string"?item.source:"Other"
-              };
-              if(!initial.products.some(existing=>existing.id===product.id))initial.products.push(product);
-              // Commit the catalog before removing the recoverable pending item.
-              localStorage.setItem(shopKey,JSON.stringify(initial));
-              localStorage.removeItem("sellpostly_pending_shop_item");
-              setFilter(product.category);
-              setStatus("Product added to My Shop!");
+            const consume=()=>{
+              const result=consumePending(initial,localStorage);initial=result.shop;
+              if(result.category)setFilter(result.category);
+              if(result.added)setStatus("Product added to My Shop!");
+            };
+            consume();
+            const incoming=importFromHash(location.hash);
+            if(incoming){
+              localStorage.setItem(pendingShopKey,JSON.stringify(incoming.item));
+              history.replaceState(history.state,"",location.pathname+location.search+incoming.remainingHash);
+              consume();
             }
           }catch{setStatus("Could not save. Device storage may be full.");}
           if(cancelled)return;setShop(initial);
@@ -159,7 +152,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       const get=(key:string)=>String(data.get(key)||"").trim();
 
 
-      const product:Product={id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source")};
+      const product:Product={id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),description:get("description").slice(0,4000)};
       setShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]});
       setEditing(null);
       setAdding(false);setPhoto("");
@@ -169,6 +162,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       <label>{t("Gender / Audience")}<select className={field} name="gender" defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option></select></label>
       <label>{t("Compare-at Price")}<input className={field} name="compareAtPrice" maxLength={50} defaultValue={editing?.compareAtPrice||""}/></label>
       <label>{t("Deal Badge")}<select className={field} name="badge" defaultValue={editing?.badge||"none"}>{dealBadges.map(badge=><option key={badge} value={badge}>{t(badge==="none"?"None":badge==="hot"?"Hot":badge==="sale"?"Sale":badge==="limited"?"Limited":"New")}</option>)}</select></label>
+      <label className="sm:col-span-2">{t("Product Description")}<textarea className={field} name="description" rows={3} maxLength={4000} defaultValue={editing?.description||""}/></label>
       <label>{t("Source Badge")}<select className={field} name="source" defaultValue={editing?.source || "Other"}>{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c} value={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
       <label>{t("Upload Product Photo")}<input className={field} type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
         const file=e.target.files?.[0];if(!file)return;
@@ -186,6 +180,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
       <div className="product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
       <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price} {p.compareAtPrice&&<del className="ms-2 text-sm font-normal text-slate-600">{p.compareAtPrice}</del>}</p>{p.badge&&p.badge!=="none"&&<span className="mb-2 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold">{t(p.badge==="hot"?"Hot":p.badge==="sale"?"Sale":p.badge==="limited"?"Limited":"New")}</span>}{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":"Women")}</span>}
+      {p.description&&<p dir="auto" className="my-3 line-clamp-3 whitespace-pre-line text-sm text-slate-600">{p.description}</p>}
       {shop.shopMode==="affiliate"&&shop.affiliateDisclosure&&<p className="my-2 text-xs text-slate-600">{shop.affiliateDisclosure}</p>}
       <div className="flex flex-wrap gap-2 text-sm">
         {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>changeCart(p.id,1)}>{t("Add to Cart")}</button>}
@@ -203,7 +198,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     {shop.shopMode==="personal"&&cartOpen&&<CartDrawer isSharedBuyerView={shared} lines={lines} shop={shop} change={changeCart} onClose={()=>setCartOpen(false)} onPay={(product,details,items)=>setCheckout({product,details,items})}/>}
     {checkout&&<CryptoCheckout storeSlug={publicSlug} orderItems={checkout.items||[{id:checkout.product.id,quantity:1}]} product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
     <p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p>
-{shared&&<footer className="mt-12 border-t border-slate-200 pt-5 text-center text-xs text-slate-600"><a href="/shop" className="underline">{t("Edit My Own Shop")}</a></footer>}
+{shared&&<BuyerStoreFooter storeSlug={publicSlug}/>}
   </main>;
 }
 
