@@ -2756,5 +2756,13 @@ export const translations = {
 "travel bag":{"fr":"Sac de voyage","ar":"حقيبة سفر"}
 ,"Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep a representative style photo.":{"fr":"Les images Amazon ne peuvent pas être utilisées par lien direct. Importez votre photo, une image de presse autorisée ou conservez une photo représentative.","ar":"لا يمكن ربط صور منتجات أمازون مباشرة. ارفع صورتك أو صورة صحفية مرخّصة، أو احتفظ بصورة توضيحية مشابهة."}
 ,"Pexels contributor":{"fr":"Contributeur Pexels","ar":"مساهم في Pexels"}
+,"men athletic sneakers":{"fr":"Baskets de sport pour hommes","ar":"أحذية رياضية رجالية"},
+"women athletic sneakers":{"fr":"Baskets de sport pour femmes","ar":"أحذية رياضية نسائية"},
+"kids athletic sneakers":{"fr":"Baskets de sport pour enfants","ar":"أحذية رياضية للأطفال"},
+"boots":{"fr":"Bottes et bottines","ar":"أحذية برقبة طويلة"},
+"formal shoes":{"fr":"Chaussures habillées","ar":"أحذية رسمية"},
+"flat shoes":{"fr":"Chaussures plates","ar":"أحذية مسطحة"},
+"sandals":{"fr":"Sandales","ar":"صنادل"},
+"footwear":{"fr":"Chaussures","ar":"أحذية"}
 } as const;
 export type Message = keyof typeof translations;

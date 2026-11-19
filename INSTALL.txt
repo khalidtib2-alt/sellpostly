@@ -1,11 +1,7 @@
-SELLPOSTLY REAL PHOTO MATCHING + EXTENSION 1.0.5
+SELLPOSTLY FOOTWEAR SUBTYPE MATCHING PATCH
 
-Copy the src, public, scripts, tests and chrome-extension folders into your existing SellPostly repository, merging folders and replacing matching files. This is a cumulative source patch, not a complete new repository. Your .env.local is not included. The original checkout was not modified; verification was performed in the staged working copy.
+Merge src/, public/, scripts/, tests/ and chrome-extension/ into your existing SellPostly checkout, replacing matching files. This is a cumulative source patch, not a standalone repository. The original checkout was not changed; the staged source is verified before packaging. No environment secrets or database migration is included.
 
-If an obsolete root app/ folder shadows src/app/, run node scripts/fix-duplicate-app.mjs (the existing helper preserves a backup).
+This corrects the previous bow-flat mismatch. The pool now has 23 real photos: footwear is tagged separately as athletic sneakers, boots, formal shoes, flats and sandals. Two kids athletic sneaker photos replace the dress-flat fallback. EN/FR/AR labels remain supported.
 
-Run npm run build and npm test after applying. Verification for this bundle: production build succeeded, 62 tests passed, 0 failed. No new npm dependencies or database migrations are needed for photo matching.
-
-Read STOCK-PHOTOS.md for optional PEXELS_API_KEY / UNSPLASH_ACCESS_KEY settings and photo licensing notes. The 20 bundled JPEGs work without keys.
-
-Extract SellPostly-Extension-1.0.5.zip and load its chrome-extension folder at chrome://extensions. Remove older extension copies first; verify version 1.0.5.
+Read STOCK-PHOTOS.md. Run npm run build and npm test after applying. For the extension, extract SellPostly-Extension-1.0.5.zip and reload the extracted chrome-extension folder at chrome://extensions.

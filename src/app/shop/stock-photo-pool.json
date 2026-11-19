@@ -1,57 +1,83 @@
 [
   {
     "id": "pexels-5022533",
-    "query": "men running shoes",
+    "query": "men athletic sneakers",
     "url": "/stock-photos/pexels-5022533.jpg",
     "provider": "Pexels",
     "photographer": "Rishi",
     "pageUrl": "https://www.pexels.com/photo/a-person-wearing-white-sneakers-5022533/",
-    "licenseUrl": "https://www.pexels.com/license/"
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "sneakers",
+    "audiences": [
+      "men",
+      "women"
+    ]
   },
   {
     "id": "pexels-13560373",
-    "query": "men running shoes",
+    "query": "men athletic sneakers",
     "url": "/stock-photos/pexels-13560373.jpg",
     "provider": "Pexels",
     "photographer": "Sandro Tavares",
     "pageUrl": "https://www.pexels.com/photo/a-person-wearing-white-sneakers-13560373/",
-    "licenseUrl": "https://www.pexels.com/license/"
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "sneakers",
+    "audiences": [
+      "men",
+      "women"
+    ]
   },
   {
     "id": "pexels-27174555",
-    "query": "women shoes",
+    "query": "sandals",
     "url": "/stock-photos/pexels-27174555.jpg",
     "provider": "Pexels",
     "photographer": "José Martin Segura Benites",
     "pageUrl": "https://www.pexels.com/photo/sandal-with-high-heel-27174555/",
-    "licenseUrl": "https://www.pexels.com/license/"
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "sandals",
+    "audiences": [
+      "women"
+    ]
   },
   {
     "id": "pexels-27100529",
-    "query": "women shoes",
+    "query": "sandals",
     "url": "/stock-photos/pexels-27100529.jpg",
     "provider": "Pexels",
     "photographer": "José Martin Segura Benites",
     "pageUrl": "https://www.pexels.com/photo/close-up-of-shoes-27100529/",
-    "licenseUrl": "https://www.pexels.com/license/"
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "sandals",
+    "audiences": [
+      "women"
+    ]
   },
   {
-    "id": "pexels-27128273",
-    "query": "kids sneakers",
-    "url": "/stock-photos/pexels-27128273.jpg",
+    "id": "pexels-5275386",
+    "query": "kids athletic sneakers",
+    "url": "/stock-photos/pexels-5275386.jpg",
     "provider": "Pexels",
-    "photographer": "José Martin Segura Benites",
-    "pageUrl": "https://www.pexels.com/photo/close-up-of-child-shoes-27128273/",
-    "licenseUrl": "https://www.pexels.com/license/"
+    "photographer": "Pexels contributor",
+    "pageUrl": "https://www.pexels.com/photo/close-up-of-little-girl-reaching-to-her-shoes-5275386/",
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "sneakers",
+    "audiences": [
+      "kids"
+    ]
   },
   {
     "id": "pexels-37117672",
-    "query": "kids sneakers",
+    "query": "kids athletic sneakers",
     "url": "/stock-photos/pexels-37117672.jpg",
     "provider": "Pexels",
     "photographer": "Gizem Gökce",
     "pageUrl": "https://www.pexels.com/photo/child-s-feet-in-sneakers-on-grass-37117672/",
-    "licenseUrl": "https://www.pexels.com/license/"
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "sneakers",
+    "audiences": [
+      "kids"
+    ]
   },
   {
     "id": "pexels-30428610",
@@ -178,5 +204,45 @@
     "photographer": "Pexels contributor",
     "pageUrl": "https://www.pexels.com/photo/minimalist-wireless-keyboard-and-mouse-setup-34030131/",
     "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "id": "pexels-29999843",
+    "query": "boots",
+    "url": "/stock-photos/pexels-29999843.jpg",
+    "provider": "Pexels",
+    "photographer": "Pexels contributor",
+    "pageUrl": "https://www.pexels.com/photo/stylish-leather-boots-on-dark-background-29999843/",
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "boots",
+    "audiences": [
+      "men",
+      "women"
+    ]
+  },
+  {
+    "id": "pexels-292999",
+    "query": "formal shoes",
+    "url": "/stock-photos/pexels-292999.jpg",
+    "provider": "Pexels",
+    "photographer": "Pexels contributor",
+    "pageUrl": "https://www.pexels.com/photo/pair-of-black-dress-shoes-292999/",
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "formal",
+    "audiences": [
+      "men"
+    ]
+  },
+  {
+    "id": "pexels-6387628",
+    "query": "flat shoes",
+    "url": "/stock-photos/pexels-6387628.jpg",
+    "provider": "Pexels",
+    "photographer": "Pexels contributor",
+    "pageUrl": "https://www.pexels.com/photo/stylish-decorated-ballet-flats-placed-on-glass-table-6387628/",
+    "licenseUrl": "https://www.pexels.com/license/",
+    "footwearSubtype": "flats",
+    "audiences": [
+      "women"
+    ]
   }
 ]

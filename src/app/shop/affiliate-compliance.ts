@@ -1,5 +1,6 @@
+import {footwearSubtype,unbrandedQuery} from './unbranded-query';
 import {extractProductIdentity,studioCover,isStudioCover,type VisualNiche} from './product-identity';
-import {defaultStock} from './stock-photos';
+import {defaultStock,localPhoto} from './stock-photos';
 function host(value:string){try{const url=new URL(value);return ['http:','https:'].includes(url.protocol)?url.hostname.toLowerCase().replace(/\.$/,''):'';}catch{return '';}}
 export function isAmazonDestination(value:string){const hostname=host(value);return /(^|\.)amzn\.to$/.test(hostname)||/(^|\.)amazon\.(?:com(?:\.[a-z]{2})?|co\.[a-z]{2}|[a-z]{2})$/.test(hostname);}
 export function isAmazonCdnImage(value:string){return /(^|\.)(?:media-amazon|images-amazon|ssl-images-amazon)\.com$/.test(host(value));}
@@ -8,6 +9,9 @@ export function studioCategoryImage(category:string){
  return '/demo-products/'+file+'.svg';
 }
 export function affiliateImage(value:string,category:string,title='',selected?:VisualNiche,gender='unisex'){
+ const expected=footwearSubtype(unbrandedQuery(title,category,gender)),local=localPhoto(value);
+ if(expected&&local&&local.footwearSubtype!==expected)return defaultStock(title,category,gender).url;
+ if(expected==='sneakers'&&local&&unbrandedQuery(title,category,gender).startsWith('kids ')&&!local.audiences?.includes('kids'))return defaultStock(title,category,gender).url;
  const oldStudio=/^\/demo-products\/(headphones|backpack|organizer|bottle|studio-product)\.svg$/.test(value);
  if(!value||isAmazonCdnImage(value)||oldStudio||isStudioCover(value))return defaultStock(title,category,gender).url;
  return value;

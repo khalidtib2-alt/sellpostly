@@ -4,7 +4,7 @@ This update adds generic photo matching to Affiliate imports, the Affiliate prod
 
 ## Setup
 
-No photo API key is required. Twenty real JPEG photographs are bundled under public/stock-photos/, with two alternatives for each required category. Source pages and license references are recorded in public/stock-photos/SOURCES.json.
+No photo API key is required. Twenty-three real JPEG photographs are bundled under public/stock-photos/, with separate sneaker audience groups and explicitly tagged boots, formal shoes, flats, and sandals. Source pages and license references are recorded in public/stock-photos/SOURCES.json.
 
 Optional server environment variables:
 
@@ -38,3 +38,7 @@ npm run build
 npm test
 
 The patch includes regression coverage for generic query parity, real JPEG assets, provider failure and secret handling, Unsplash selection tracking, saved/shared photo metadata, custom-image preservation, Amazon safeguards, and extension handoff.
+
+## Footwear correction
+
+Puma Kids ST Runner Hook and Loop Sneakers resolves to kids athletic sneakers. Athletic sneakers never share a fallback bucket with dress shoes, flats, sandals or boots. The white bow flat was removed from the pool; the two kids sneaker photographs are Pexels 5275386 and 37117672. Provider results with missing, conflicting or incorrect subtype descriptions are rejected in favor of a tagged local match. Existing automatic mismatches are re-matched without replacing uploaded custom images.
