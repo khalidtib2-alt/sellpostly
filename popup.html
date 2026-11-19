@@ -1,0 +1,58 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SellPostly</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="app-config.js" defer></script>
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>SellPostly</h1>
+    <div class="languages" role="group" aria-label="Language" data-label="Language">
+      <button type="button" data-language="en" lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-language="fr" lang="fr" aria-pressed="false">FR</button>
+      <button type="button" data-language="ar" lang="ar" aria-pressed="false">&#1575;&#1604;&#1593;&#1585;&#1576;&#1610;&#1577;</button>
+    </div>
+  </header>
+  <main>
+    <div class="modes" role="group" aria-label="Formatting mode" data-label="Formatting mode">
+      <button type="button" data-mode="seller" aria-pressed="true"><span data-message="Seller Mode">Seller Mode</span></button>
+      <button type="button" data-mode="creator" aria-pressed="false"><span data-message="Creator Mode">Creator Mode</span></button>
+    </div>
+    <form id="seller">
+<div class="fields"><label><span data-message="Category">Category</span><select name="category"><option value="Tech &amp; Gadgets" data-message="Tech &amp; Gadgets">Tech &amp; Gadgets</option><option value="Fashion" data-message="Fashion">Fashion</option><option value="Home &amp; Kitchen" data-message="Home &amp; Kitchen">Home &amp; Kitchen</option><option value="Beauty" data-message="Beauty">Beauty</option><option value="Fitness" data-message="Fitness">Fitness</option><option value="Top Deals" data-message="Top Deals" selected>Top Deals</option><option value="Digital Product" data-message="Digital Product">Digital Product</option><option value="Art" data-message="Art">Art</option><option value="Sport" data-message="Sport">Sport</option><option value="Other" data-message="Other">Other</option></select></label><label><span data-message="Gender / Target Audience">Gender / Target Audience</span><select name="gender"><option value="unisex" data-message="Unisex">Unisex</option><option value="women" data-message="Women">Women</option><option value="men" data-message="Men">Men</option><option value="kids" data-message="Kids">Kids</option></select></label></div>
+<div class="studio-shortcuts"><button type="button" id="open-studio" class="primary"><span data-message="Open Full Studio">Open Full Studio</span></button><button type="button" id="send-shop" class="primary"><span data-message="Send to My Shop (Pro)">Send to My Shop (Pro)</span></button></div>
+
+      <button type="button" id="import-page" class="primary"><span data-message="Import From Current Page">Import From Current Page</span></button>
+      <img id="imported-image" hidden alt="" style="max-width:100%;max-height:140px;object-fit:contain" />
+      <div class="fields">
+        <label><span data-message="Product Name">Product Name</span><input dir="auto" name="name" placeholder="Wireless headphones" data-placeholder="Wireless headphones" required maxlength="120"></label>
+        <label><span data-message="Price">Price</span><input dir="auto" name="price" placeholder="$29" data-placeholder="$29" maxlength="35"></label>
+      </div>
+      <label><span data-message="Delivery / Location">Delivery / Location</span><input dir="auto" name="delivery" placeholder="Local pickup or shipping" data-placeholder="Local pickup or shipping" maxlength="200"></label>
+      <label><span data-message="Key Features">Key Features</span><textarea dir="auto" name="features" rows="3" maxlength="1200" placeholder="One feature per line" data-placeholder="One feature per line"></textarea></label>
+      <button class="primary"><span data-message="Format Posts">Format Posts</span></button>
+    </form>
+    <form id="creator" hidden>
+      <label><span data-message="Quick Post">Quick Post</span><textarea dir="auto" name="post" rows="5" required maxlength="3000" placeholder="Paste your post or hook" data-placeholder="Paste your post or hook"></textarea></label>
+      <button class="primary"><span data-message="Format Posts">Format Posts</span></button>
+    </form>
+    <section id="results" aria-label="Formatted posts" data-label="Formatted posts" hidden>
+      <div id="tabs" role="tablist" aria-label="Platforms" data-label="Platforms"></div>
+      <div id="panels"></div>
+    </section>
+    <p id="status" role="status"></p>
+  </main>
+  <footer>
+    <a href="https://sellpostly.vercel.app" target="_blank" rel="noopener noreferrer"><span data-message="Website">Website</span></a>
+    <a href="https://sellpostly.vercel.app/prompt-generator" target="_blank" rel="noopener noreferrer"><span data-message="Prompt Generator">Prompt Generator</span></a>
+    <a href="https://sellpostly.vercel.app/guides" target="_blank" rel="noopener noreferrer"><span data-message="Seller Guides">Seller Guides</span></a>
+  </footer>
+</body>
+</html>
+
+
+

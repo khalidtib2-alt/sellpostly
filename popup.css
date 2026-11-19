@@ -1,0 +1,36 @@
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; width: 360px; padding: 16px; background: #fff; color: #0f172a; font: 13px/1.45 system-ui, sans-serif; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.languages { display: inline-flex; padding: 3px; border-radius: 999px; background: #f1f5f9; }
+.languages button { border-radius: 999px; padding: 4px 8px; }
+h1 { margin: 0; font-size: 21px; }
+.modes, .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.modes { border-radius: 9px; background: #f1f5f9; padding: 4px; }
+form { display: grid; gap: 8px; margin-top: 12px; }
+label { display: block; font-weight: 600; }
+input, textarea { display: block; width: 100%; margin-top: 3px; border: 1px solid #cbd5e1; border-radius: 7px; padding: 7px 8px; color: inherit; background: #fff; font: inherit; font-weight: 400; }
+textarea { resize: vertical; }
+button { border: 0; border-radius: 7px; padding: 7px 9px; background: transparent; color: inherit; font: inherit; font-weight: 650; cursor: pointer; }
+.primary, [aria-pressed="true"] { background: #047857; color: #fff; }
+:focus-visible { outline: 2px solid #059669; outline-offset: 2px; }
+#results { margin-top: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 9px; padding: 8px; }
+#tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+[role="tab"] { font-size: 11px; padding: 5px 6px; }
+[aria-selected="true"] { background: #d1fae5; color: #065f46; }
+[role="tabpanel"] button { margin-top: 6px; }
+#status { margin: 6px 0; color: #065f46; }
+#status:empty { display: none; }
+footer { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; padding-top: 9px; border-top: 1px solid #e2e8f0; }
+a { color: #065f46; text-underline-offset: 2px; }
+
+#import-page { width: 100%; }
+button:disabled { opacity: .6; cursor: wait; }
+
+.send-actions { display:flex; flex-wrap:wrap; gap:4px; }
+.send-actions button { font-size:12px; }
+
+.studio-shortcuts { display:flex; gap:6px; margin:10px 0; }
+.studio-shortcuts button { flex:1; font-size:12px; }
+
+.fields select {width:100%;min-width:0;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;padding:9px;font:inherit;}
