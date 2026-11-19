@@ -1,4 +1,6 @@
 "use client";
+import {defaultStock,isLocalStock,resolvePhotos,selectStock,type StockPhoto} from './stock-photos';
+import {unbrandedQuery} from './unbranded-query';
 import AffiliateImageEditor from './affiliate-image-editor';
 import {extractProductIdentity,studioCover,isStudioCover,type VisualNiche} from './product-identity';
 import {disclosurePresets,amazonImageNotice,isAmazonCdnImage,affiliateImage,studioCategoryImage} from './affiliate-compliance';
@@ -41,9 +43,10 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   const [cartOpen,setCartOpen]=useState(false);
   const [shareTarget,setShareTarget]=useState<{url:string;title:string;product?:boolean}|null>(null),[codLines,setCodLines]=useState<{product:Product;quantity:number}[]|null>(null);
   const [imageNotice,setImageNotice]=useState(false);
+  const [draftStock,setDraftStock]=useState<StockPhoto|undefined>();const [draftGender,setDraftGender]=useState<Gender>('unisex');
   const [draftTitle,setDraftTitle]=useState(''),[draftCategory,setDraftCategory]=useState(''),[identityOverride,setIdentityOverride]=useState(''),[editorCover,setEditorCover]=useState<VisualNiche|undefined>();
   const [editing,setEditing]=useState<Product | null>(null);
-  useEffect(()=>{setDraftTitle(editing?.name||'');setDraftCategory(editing?.category||'');setIdentityOverride(editing?.identityOverride||'');setEditorCover(editing?.editorialCover);},[editing,adding]);
+  useEffect(()=>{setDraftTitle(editing?.name||'');setDraftCategory(editing?.category||'');setIdentityOverride(editing?.identityOverride||'');setEditorCover(editing?.editorialCover);setDraftStock(editing?.stockPhoto);setDraftGender(editing?.gender||'unisex');},[editing,adding]);
   const [genderFilter,setGenderFilter]=useState<Gender | "all">("all");
   const [search,setSearch]=useState("");
   const [visible,setVisible]=useState(24);
@@ -123,6 +126,20 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     window.addEventListener('message',message);window.addEventListener('storage',storage);window.addEventListener('focus',receive);receive();
     return()=>{window.removeEventListener('message',message);window.removeEventListener('storage',storage);window.removeEventListener('focus',receive);};
   },[loaded,shared]);
+  const unresolved=loaded&&!shared&&shop.shopMode==='affiliate'?shop.products.filter(p=>p.stockPhoto&&p.photoResolvedFor!==unbrandedQuery(p.identityOverride||p.name,p.category,p.gender)).map(p=>[p.id,p.image,p.name,p.category,p.gender].join('|')).join('~'):'';
+  useEffect(()=>{
+    if(!unresolved)return;const controller=new AbortController();
+    const products=shopRef.current.products.filter(p=>p.stockPhoto&&p.photoResolvedFor!==unbrandedQuery(p.identityOverride||p.name,p.category,p.gender));
+    async function assign(){
+      // Limit concurrent requests and ignore stale responses after a custom upload or catalog change.
+      for(const p of products){if(controller.signal.aborted)return;const query=unbrandedQuery(p.identityOverride||p.name,p.category,p.gender);
+        try{const choices=await resolvePhotos(query,controller.signal);let selected=choices[0]||defaultStock(query);try{await selectStock(selected,query);}catch{selected=defaultStock(query);}
+          if(controller.signal.aborted)return;
+          setShop(current=>current.shopMode!=='affiliate'?current:{...current,products:current.products.map(item=>item.id===p.id&&item.image===p.image&&item.name===p.name&&unbrandedQuery(item.identityOverride||item.name,item.category,item.gender)===query?{...item,image:selected.url,stockPhoto:selected,photoResolvedFor:query}:item)});
+        }catch{if(controller.signal.aborted)return;}
+      }
+    }void assign();return()=>controller.abort();
+  },[unresolved]);
   async function share(){
     if(publicSlug||snapshot){setShareTarget({url:productShareUrl(publicSlug?storePath(publicSlug,shop.shopMode):'/shop?'+new URLSearchParams({s:snapshot!})),title:shop.name});return;}
     try{
@@ -200,16 +217,16 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       const get=(key:string)=>String(data.get(key)||"").trim();
 
 
-      const product:Product={editorialCover:editorCover,identityOverride,stock:get('stock')===''?undefined:Math.min(1000000,Math.max(0,Math.trunc(Number(get('stock'))))),catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:shop.shopMode==='affiliate'?affiliateImage(photo||safeImage(get("image")),get("category"),identityOverride||get("name"),editorCover):photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).filter(value=>value.trim()).map(value=>shop.shopMode==='affiliate'?affiliateImage(safeImage(value),get("category"),identityOverride||get("name")):safeImage(value)).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
+      const product:Product={stockPhoto:draftStock,unbrandedQuery:unbrandedQuery(get("name"),get("category"),get("gender")),photoResolvedFor:draftStock?unbrandedQuery(get("name"),get("category"),get("gender")):undefined,editorialCover:undefined,identityOverride,stock:get('stock')===''?undefined:Math.min(1000000,Math.max(0,Math.trunc(Number(get('stock'))))),catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:shop.shopMode==='affiliate'?affiliateImage(photo||safeImage(get("image")),get("category"),identityOverride||get("name"),editorCover,get('gender')):photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).filter(value=>value.trim()).map(value=>shop.shopMode==='affiliate'?affiliateImage(safeImage(value),get("category"),identityOverride||get("name")):safeImage(value)).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
       if(shop.shopMode==='affiliate'&&(isAmazonCdnImage(get("image"))||get("images").split(/\n/).some(isAmazonCdnImage)))setStatus(amazonImageNotice);
-      setShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]});
+      setShop(validateShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]}));
       setEditing(null);
       setAdding(false);setPhoto("");
     }}>
-      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? editing[["name","price","category","image","url"][i] as keyof Product] : ""} name={["name","price","category","image","url"][i]} type={i===4?"url":"text"} onChange={e=>{if(i===0)setDraftTitle(e.target.value);if(i===2)setDraftCategory(e.target.value);}} onBlur={event=>{if(i===3&&shop.shopMode==='affiliate'&&isAmazonCdnImage(event.target.value)){const form=event.target.form;event.target.value=affiliateImage(event.target.value,String(new FormData(form!).get('category')||'Other'),identityOverride||draftTitle,editorCover);setPhoto(event.target.value);setImageNotice(true);}else if(i===3){setPhoto(safeImage(event.target.value));setEditorCover(undefined);}}} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
+      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? String(editing[["name","price","category","image","url"][i] as keyof Product]||"") : ""} name={["name","price","category","image","url"][i]} type={i===4?"url":"text"} onChange={e=>{if(i===0)setDraftTitle(e.target.value);if(i===2)setDraftCategory(e.target.value);}} onBlur={event=>{if(i===3&&shop.shopMode==='affiliate'&&isAmazonCdnImage(event.target.value)){const form=event.target.form;event.target.value=affiliateImage(event.target.value,String(new FormData(form!).get('category')||'Other'),identityOverride||draftTitle,editorCover);setPhoto(event.target.value);setImageNotice(true);}else if(i===3){setPhoto(safeImage(event.target.value));setEditorCover(undefined);setDraftStock(undefined);}}} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
       {imageNotice&&shop.shopMode==='affiliate'&&<p role="status" className="rounded-xl bg-emerald-50 p-4 text-sm sm:col-span-2">{t(amazonImageNotice)}</p>}
       <datalist id="shop-categories">{categories.slice(1).map(c=><option key={c} value={c}>{label(c)}</option>)}</datalist>
-      <label>{t("Gender / Audience")}<select className={field} name="gender" defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option><option value="kids">{t("Kids")}</option></select></label>
+      <label>{t("Gender / Audience")}<select className={field} name="gender" onChange={e=>setDraftGender(normalizeGender(e.target.value))} defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option><option value="kids">{t("Kids")}</option></select></label>
       <label>{t('Stock (Optional)')}<input type="number" name="stock" className={field} min={0} max={1000000} defaultValue={editing?.stock??''}/></label>
       <label>{t("Compare-at Price")}<input className={field} name="compareAtPrice" maxLength={50} defaultValue={editing?.compareAtPrice||""}/></label>
       <label>{t("Deal Badge")}<select className={field} name="badge" defaultValue={editing?.badge||"none"}>{dealBadges.map(badge=><option key={badge} value={badge}>{t(badge==="none"?"None":badge==="hot"?"Hot":badge==="sale"?"Sale":badge==="limited"?"Limited":"New")}</option>)}</select></label>
@@ -219,9 +236,9 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       <label className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white focus-within:ring-2 focus-within:ring-emerald-300">{t(shop.shopMode==='affiliate'?'Upload Custom Photo':'Upload Product Photo')}<input className="sr-only" type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
         const file=e.target.files?.[0];if(!file)return;
         if(file.size>5000000){setStatus("Photo must be under 5 MB.");return;}
-        const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");const scale=Math.min(1,600/Math.max(img.width,img.height));c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d")!.drawImage(img,0,0,c.width,c.height);setPhoto(c.toDataURL("image/jpeg",0.7));setEditorCover(undefined);};img.src=String(reader.result);};reader.readAsDataURL(file);
+        const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas");const scale=Math.min(1,600/Math.max(img.width,img.height));c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d")!.drawImage(img,0,0,c.width,c.height);setPhoto(c.toDataURL("image/jpeg",0.7));setEditorCover(undefined);setDraftStock(undefined);};img.src=String(reader.result);};reader.readAsDataURL(file);
       }}/></label>
-      {shop.shopMode==='affiliate'&&<AffiliateImageEditor title={draftTitle} category={draftCategory} override={identityOverride} onOverride={setIdentityOverride} selected={editorCover} customImage={photo||editing?.image||''} onSelect={niche=>{setEditorCover(niche);const value=studioCover(niche||extractProductIdentity(identityOverride||draftTitle,draftCategory).visualNiche);setPhoto(value);const field=document.querySelector<HTMLInputElement>('#shop-product-form input[name="image"]');if(field)field.value=value;}}/>}
+      {shop.shopMode==='affiliate'&&<AffiliateImageEditor title={draftTitle} category={draftCategory} gender={draftGender} override={identityOverride} onOverride={setIdentityOverride} selected={editorCover} stockPhoto={draftStock} onPhoto={value=>{setDraftStock(value);setPhoto(value.url);const input=document.querySelector<HTMLInputElement>('#shop-product-form input[name="image"]');if(input)input.value=value.url;}} customImage={photo||editing?.image||''} onSelect={niche=>{setEditorCover(niche);const value=studioCover(niche||extractProductIdentity(identityOverride||draftTitle,draftCategory).visualNiche);setPhoto(value);const field=document.querySelector<HTMLInputElement>('#shop-product-form input[name="image"]');if(field)field.value=value;}}/>}
       <button className={button}>{t("Save Product")}</button>
     </form>}
     

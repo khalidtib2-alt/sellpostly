@@ -118,3 +118,7 @@ input, select, textarea { background-color: var(--card); color: var(--text); bor
 .editorial-product.has-studio-cover .store-card-number {z-index:2;border:1px solid #ffffff40;background:#0f172a55;color:white;backdrop-filter:blur(8px);padding:.4rem .65rem;border-radius:999px;}
 .studio-cover-caption {position:absolute;bottom:1rem;inset-inline-start:1rem;z-index:2;border-radius:999px;background:#0f172a88;color:#fff;padding:.4rem .7rem;font-size:.6rem;letter-spacing:.07em;}
 @media(max-width:600px){.editorial-product.has-studio-cover .store-photo-frame{min-height:240px;}}
+
+/* Real editorial photographs keep their natural lighting and fill the cover. */
+.editorial-product.has-representative-photo .store-photo-frame {height:100%; padding:0; background:transparent;}
+.editorial-product.has-representative-photo .store-photo-frame img {width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;mix-blend-mode:normal;}

@@ -1,5 +1,5 @@
 "use strict";
-importScripts("app-config.js","frontend-url.js","affiliate-guard.js");
+importScripts("app-config.js","frontend-url.js","affiliate-guard.js","unbranded-query.js");
 function cleanProductLink(value){
  try{const u=new URL(value);if(!["http:","https:"].includes(u.protocol))return "";
  if(/(^|\.)amazon\.[a-z.]+$/i.test(u.hostname)){const match=u.pathname.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})(?:\/|$)/i);if(match)return u.origin+"/dp/"+match[1].toUpperCase();}
@@ -14,8 +14,8 @@ function prepareProduct(value){
  const destination=["affiliate","personal"].includes(value.destination)?value.destination:undefined,category=text(value.category,80)||"Top Deals";
  const url=destination==="affiliate"?(()=>{try{const u=new URL(value.url);return ["http:","https:"].includes(u.protocol)?u.href:"";}catch{return "";}})():cleanProductLink(value.url);
  let image=typeof value.image==="string"&&(SellPostlyAffiliate.isStudio(value.image)||/^https?:\/\//i.test(value.image))?value.image.slice(0,20000):"";
- if(destination!=="personal"&&SellPostlyAffiliate.isImage(image))image=SellPostlyAffiliate.illustration(category);
- return {destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
+ if(destination==="affiliate"||SellPostlyAffiliate.isImage(image))image="";
+ return {unbrandedQuery:SellPostlyUnbrandedQuery(title,category,value.gender),destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
 }
 async function sendProduct(value){
  const product=prepareProduct(value),base=await SellPostlyFrontend.resolve();

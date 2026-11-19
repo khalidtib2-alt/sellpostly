@@ -97,7 +97,7 @@ test('canonical URLs reject previews and quick replies reject email contacts as 
 test('extension category and Kids audience survive the full storefront handoff and shared catalog',async()=>{
  const code=await readFile('chrome-extension/background.js','utf8');let listener:any,bridged:any;let opened='';
  const context=vm.createContext({importScripts:()=>{},SellPostlyFrontend:{resolve:async()=> 'https://sellpostly.vercel.app'},URL,URLSearchParams,crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},chrome:{scripting:{executeScript:async({args}:{args:any[]})=>{bridged=args[0];return [{result:true}];}},runtime:{id:'test',onMessage:{addListener:(value:any)=>listener=value}},tabs:{create:async({url}:{url:string})=>{opened=url;return {id:1};}}}});
- vm.runInContext(await readFile('chrome-extension/affiliate-guard.js','utf8'),context);vm.runInContext(code,context);
+ vm.runInContext(await readFile('chrome-extension/affiliate-guard.js','utf8'),context);vm.runInContext(await readFile('chrome-extension/unbranded-query.js','utf8'),context);vm.runInContext(code,context);
  for(const category of ['Digital Product','Art','Sport','Fashion']){
   const result:any=await new Promise(resolve=>listener({type:'SELLPOSTLY_SEND_TO_SHOP',product:{title:'Product',category,gender:'kids',image:'https://images.example.com/large.jpg'}},{id:'test'},resolve));assert.equal(result.ok,true);
   assert.equal(new URL(opened).origin,'https://sellpostly.vercel.app');const incoming={item:normalizePending(bridged)};assert.equal(incoming.item.gender,'kids');assert.equal(incoming.item.category,category);

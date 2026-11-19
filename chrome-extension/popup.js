@@ -1,6 +1,28 @@
 ﻿"use strict";
 
 const messages = {
+"Representative style photo":{"fr":"Photo de style représentative","ar":"صورة توضيحية للأسلوب"},
+"Next Similar Photo":{"fr":"Photo similaire suivante","ar":"الصورة المشابهة التالية"},
+"Finding photos…":{"fr":"Recherche de photos…","ar":"جارٍ البحث عن صور…"},
+"Generic photo search":{"fr":"Recherche de photo générique","ar":"بحث عن صورة عامة"},
+"Representative photos show a style, not the exact branded product. Upload your own photo for an exact match.":{"fr":"Ces photos illustrent un style, pas le produit de marque exact. Importez votre propre photo pour une correspondance exacte.","ar":"تُظهر هذه الصور أسلوبًا مشابهًا، وليس المنتج الأصلي بعلامته التجارية. ارفع صورتك لعرض المنتج نفسه."},
+"Could not select this photo. Try another photo or upload your own.":{"fr":"Impossible de sélectionner cette photo. Essayez une autre photo ou importez la vôtre.","ar":"تعذّر اختيار هذه الصورة. جرّب صورة أخرى أو ارفع صورتك."},
+"Use this photo":{"fr":"Utiliser cette photo","ar":"استخدم هذه الصورة"},
+"Photo credit":{"fr":"Crédit photo","ar":"مصدر الصورة"},
+"Photo license":{"fr":"Licence photo","ar":"ترخيص الصورة"},
+"Amazon image blocked. My Shop will match a representative photo automatically.":{"fr":"Image Amazon bloquée. Ma boutique sélectionnera automatiquement une photo représentative.","ar":"تم حظر صورة أمازون. سيختار متجري صورة توضيحية مناسبة تلقائيًا."},
+"Amazon listing images cannot be hotlinked directly-upload your own review photo, use a brand press-kit image, or keep a representative style photo.":{"fr":"Les images Amazon ne peuvent pas être utilisées par lien direct. Importez votre photo, une image de presse autorisée ou conservez une photo représentative.","ar":"لا يمكن ربط صور منتجات أمازون مباشرة. ارفع صورتك أو صورة صحفية مرخّصة، أو احتفظ بصورة توضيحية مشابهة."},
+"men running shoes":{"fr":"Chaussures de course pour hommes","ar":"أحذية جري رجالية"},
+"women shoes":{"fr":"Chaussures pour femmes","ar":"أحذية نسائية"},
+"kids sneakers":{"fr":"Baskets pour enfants","ar":"أحذية رياضية للأطفال"},
+"wireless headphones":{"fr":"Casque sans fil","ar":"سماعات لاسلكية"},
+"wireless noise cancelling headphones":{"fr":"Casque sans fil à réduction de bruit","ar":"سماعات لاسلكية بعزل الضوضاء"},
+"smartwatch":{"fr":"Montre connectée","ar":"ساعة ذكية"},
+"coffee kitchen":{"fr":"Café et cuisine","ar":"القهوة والمطبخ"},
+"fitness equipment":{"fr":"Équipement de fitness","ar":"معدات اللياقة"},
+"skincare beauty":{"fr":"Beauté et soins de la peau","ar":"الجمال والعناية بالبشرة"},
+"office technology":{"fr":"Équipement de bureau","ar":"تقنيات المكتب"},
+"travel bag":{"fr":"Sac de voyage","ar":"حقيبة سفر"},
 "Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.":{"fr":"Les images des fiches Amazon ne peuvent pas être utilisées par lien direct : importez votre propre photo de test, utilisez une image du dossier de presse de la marque ou conservez cette illustration de studio.","ar":"لا يمكن ربط صور إعلانات أمازون مباشرةً — ارفع صورة مراجعة التقطتها بنفسك، أو استخدم صورة من الملف الإعلامي للعلامة التجارية، أو احتفظ بهذا الرسم التوضيحي."},
 "Stock (Optional)":{"fr":"Stock (facultatif)","ar":"المخزون (اختياري)"},
 "Affiliate Deals Shop":{"fr":"Boutique de bonnes affaires affiliées","ar":"متجر العروض بالعمولة"},
@@ -738,7 +760,7 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   if(!title){feedback.textContent=t("Enter a product name or import the current page first.");return;}
   refreshAffiliateImageGuard();
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.dataset.shopImage||preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
+  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{unbrandedQuery:SellPostlyUnbrandedQuery(title,String(data.get("category")||""),String(data.get("gender")||"")),destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.dataset.shopImage||preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
   if(!result?.ok)throw Error();
   feedback.textContent=t("Opening My Shop. Activate Pro on the website if requested.");
  }catch{feedback.textContent=t("Could not open My Shop. Reload the extension and try again.");}
@@ -754,8 +776,8 @@ destinationPicker.addEventListener('change',()=>{try{localStorage.setItem('sellp
 function refreshAffiliateImageGuard(){
  const form=document.querySelector('#seller'),preview=document.querySelector('#imported-image'),notice=document.querySelector('#affiliate-image-notice');
  const source=preview.dataset.rawImage||preview.getAttribute('src')||'',affiliate=form.elements.namedItem('destination').value==='affiliate';
- const blocked=affiliate&&SellPostlyAffiliate.isImage(source);notice.hidden=!blocked;
- if(blocked){const image=SellPostlyAffiliate.illustration(form.elements.namedItem('category').value);preview.dataset.shopImage=image;preview.src=chrome.runtime.getURL(image.slice(1));preview.hidden=false;notice.textContent=t('Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.');}
+ const blocked=SellPostlyAffiliate.isImage(source);notice.hidden=!blocked;
+ if(blocked){preview.dataset.shopImage='';preview.removeAttribute('src');preview.hidden=true;notice.textContent=t('Amazon image blocked. My Shop will match a representative photo automatically.');}
  else{delete preview.dataset.shopImage;if(preview.dataset.rawImage){preview.src=preview.dataset.rawImage;preview.hidden=false;}}
 }
 for(const name of ['destination','category'])document.querySelector('#seller').elements.namedItem(name).addEventListener('change',refreshAffiliateImageGuard);

@@ -2732,5 +2732,29 @@ export const translations = {
 ,"Beauty & Skincare":{"fr":"Beauté et soins","ar":"الجمال والعناية بالبشرة"}
 ,"Gaming":{"fr":"Jeux vidéo","ar":"الألعاب"}
 ,"Home & Office":{"fr":"Maison et bureau","ar":"المنزل والمكتب"}
+,"Representative style photo":{"fr":"Photo de style représentative","ar":"صورة توضيحية للأسلوب"},
+"Next Similar Photo":{"fr":"Photo similaire suivante","ar":"الصورة المشابهة التالية"},
+"Finding photos…":{"fr":"Recherche de photos…","ar":"جارٍ البحث عن صور…"},
+"Generic photo search":{"fr":"Recherche de photo générique","ar":"بحث عن صورة عامة"},
+"Representative photos show a style, not the exact branded product. Upload your own photo for an exact match.":{"fr":"Ces photos illustrent un style, pas le produit de marque exact. Importez votre propre photo pour une correspondance exacte.","ar":"تُظهر هذه الصور أسلوبًا مشابهًا، وليس المنتج الأصلي بعلامته التجارية. ارفع صورتك لعرض المنتج نفسه."},
+"Could not select this photo. Try another photo or upload your own.":{"fr":"Impossible de sélectionner cette photo. Essayez une autre photo ou importez la vôtre.","ar":"تعذّر اختيار هذه الصورة. جرّب صورة أخرى أو ارفع صورتك."},
+"Use this photo":{"fr":"Utiliser cette photo","ar":"استخدم هذه الصورة"},
+"Photo credit":{"fr":"Crédit photo","ar":"مصدر الصورة"},
+"Photo license":{"fr":"Licence photo","ar":"ترخيص الصورة"},
+"Amazon image blocked. My Shop will match a representative photo automatically.":{"fr":"Image Amazon bloquée. Ma boutique sélectionnera automatiquement une photo représentative.","ar":"تم حظر صورة أمازون. سيختار متجري صورة توضيحية مناسبة تلقائيًا."},
+"Amazon listing images cannot be hotlinked directly-upload your own review photo, use a brand press-kit image, or keep a representative style photo.":{"fr":"Les images Amazon ne peuvent pas être utilisées par lien direct. Importez votre photo, une image de presse autorisée ou conservez une photo représentative.","ar":"لا يمكن ربط صور منتجات أمازون مباشرة. ارفع صورتك أو صورة صحفية مرخّصة، أو احتفظ بصورة توضيحية مشابهة."},
+"men running shoes":{"fr":"Chaussures de course pour hommes","ar":"أحذية جري رجالية"},
+"women shoes":{"fr":"Chaussures pour femmes","ar":"أحذية نسائية"},
+"kids sneakers":{"fr":"Baskets pour enfants","ar":"أحذية رياضية للأطفال"},
+"wireless headphones":{"fr":"Casque sans fil","ar":"سماعات لاسلكية"},
+"wireless noise cancelling headphones":{"fr":"Casque sans fil à réduction de bruit","ar":"سماعات لاسلكية بعزل الضوضاء"},
+"smartwatch":{"fr":"Montre connectée","ar":"ساعة ذكية"},
+"coffee kitchen":{"fr":"Café et cuisine","ar":"القهوة والمطبخ"},
+"fitness equipment":{"fr":"Équipement de fitness","ar":"معدات اللياقة"},
+"skincare beauty":{"fr":"Beauté et soins de la peau","ar":"الجمال والعناية بالبشرة"},
+"office technology":{"fr":"Équipement de bureau","ar":"تقنيات المكتب"},
+"travel bag":{"fr":"Sac de voyage","ar":"حقيبة سفر"}
+,"Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep a representative style photo.":{"fr":"Les images Amazon ne peuvent pas être utilisées par lien direct. Importez votre photo, une image de presse autorisée ou conservez une photo représentative.","ar":"لا يمكن ربط صور منتجات أمازون مباشرة. ارفع صورتك أو صورة صحفية مرخّصة، أو احتفظ بصورة توضيحية مشابهة."}
+,"Pexels contributor":{"fr":"Contributeur Pexels","ar":"مساهم في Pexels"}
 } as const;
 export type Message = keyof typeof translations;

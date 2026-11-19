@@ -1,3 +1,4 @@
+import {defaultStock} from '../src/app/shop/stock-photos';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -33,19 +34,19 @@ test('ten safe covers are full-bleed SVG scenes, auto-selected and independently
  assert.equal(visualNiches.length,10);
  for(const niche of visualNiches){const path=studioCover(niche),svg=await readFile('public'+path,'utf8');assert.match(svg,/viewBox="0 0 1200 900"/);assert.match(svg,/<linearGradient/);assert.match(svg,/feDropShadow/);assert.ok(!/<script|foreignObject|href=|<text/i.test(svg));assert.equal(safeImage(path),path);}
  const raw={shopMode:'affiliate',products:[{id:'sony',name:'Sony WH-1000XM5 Wireless Headphones',category:'Tech & Gadgets',image:'https://m.media-amazon.com/photo.jpg'}]};
- const auto=validateShop(raw);assert.equal(auto.products[0].image,studioCover('audio'));
- const empty=validateShop({...raw,products:[{...raw.products[0],image:''}]});assert.equal(empty.products[0].image,studioCover('audio'));
- const manual=validateShop({...raw,products:[{...raw.products[0],editorialCover:'camera'}]});assert.equal(manual.products[0].image,studioCover('camera'));assert.equal((await decodeShop(await encodeShop(manual))).products[0].editorialCover,'camera');
+ const auto=validateShop(raw);assert.equal(auto.products[0].image,defaultStock('wireless headphones').url);
+ const empty=validateShop({...raw,products:[{...raw.products[0],image:''}]});assert.equal(empty.products[0].image,defaultStock('wireless headphones').url);
+ const manual=validateShop({...raw,products:[{...raw.products[0],editorialCover:'camera'}]});assert.equal(manual.products[0].image,defaultStock('wireless headphones').url);assert.equal((await decodeShop(await encodeShop(manual))).products[0].editorialCover,'camera');
  const photo=validateShop({...raw,products:[{...raw.products[0],image:'https://press.example/authorized.jpg'}]});assert.equal(photo.products[0].image,'https://press.example/authorized.jpg');
  const personal=validateShop({...raw,shopMode:'personal',products:[{...raw.products[0],image:''}]});assert.equal(personal.products[0].image,'');
- assert.equal(affiliateImage('https://images-amazon.com/a.jpg','Other','Canon EOS R6 Mark II'),studioCover('camera'));assert.equal(safeImage('/studio-covers/../../unsafe.svg'),'');
- const corrected=validateShop({...raw,products:[{...raw.products[0],identityOverride:'Garmin Forerunner 265'}]});assert.equal(corrected.products[0].image,studioCover('watch'));
+ assert.equal(affiliateImage('https://images-amazon.com/a.jpg','Other','Canon EOS R6 Mark II'),defaultStock('office technology').url);assert.equal(safeImage('/studio-covers/../../unsafe.svg'),'');
+ const corrected=validateShop({...raw,products:[{...raw.products[0],identityOverride:'Garmin Forerunner 265'}]});assert.equal(corrected.products[0].image,defaultStock('smartwatch').url);
 });
 test('editor renders all cover controls and image-source links with translated helper copy',()=>{
  for(const key of ['Detected:','Find Identical Compliant Image','Official Brand Media Kit','Free Licensed Photos (Unsplash)','Auto-select Cover','Editorial illustration','Upload Custom Photo'] as const){assert.ok(translations[key].fr);assert.match(translations[key].ar,/[\u0600-\u06ff]/);}
  const result=spawnSync(process.execPath,['--import','tsx','--input-type=module','-e',`
  import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';import assert from 'node:assert/strict';import Editor from './src/app/shop/affiliate-image-editor.tsx';import {LanguageProvider} from './src/app/language-context.tsx';
  const html=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(Editor,{title:'Sony WH-1000XM5 Wireless Headphones',category:'Tech & Gadgets',override:'',onOverride:()=>{},onSelect:()=>{},customImage:''})));
- assert.ok(html.includes('Sony WH-1000XM5'));assert.ok(html.includes('www.google.com/search'));assert.ok(html.includes('commons.wikimedia.org'));assert.ok(html.includes('unsplash.com/s/photos'));assert.equal((html.match(/aria-pressed=/g)||[]).length,10);assert.ok(html.includes('not photographs of the exact model'));
+ assert.ok(html.includes('Sony WH-1000XM5'));assert.ok(html.includes('www.google.com/search'));assert.ok(html.includes('commons.wikimedia.org'));assert.ok(html.includes('unsplash.com/s/photos'));assert.equal((html.match(/aria-pressed=/g)||[]).length,2);assert.ok(html.includes('not the exact branded product'));
  `],{cwd:process.cwd(),encoding:'utf8',timeout:60000});assert.equal(result.status,0,result.stderr||result.stdout);
 });
