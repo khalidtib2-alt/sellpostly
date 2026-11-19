@@ -9,6 +9,6 @@ export const metadata = pageMetadata("/contact", title + " | SellPostly", intro)
 
 export default function Page() {
   return <LocalizedPage title={title} intro={intro}>
-    <p><Localized message={"Email "} /><a className="text-emerald-800 underline" href="mailto:support@sellpostly.com">support@sellpostly.com</a><Localized message={" directly or use the form to prepare a draft in your email app."} /></p><ContactForm />
+    <p><Localized message={"Email "} /><a className="text-emerald-800 underline" href="mailto:sellpostly.support@gmail.com">sellpostly.support@gmail.com</a><Localized message={" directly or use the form to prepare a draft in your email app."} /></p><ContactForm />
   </LocalizedPage>;
 }

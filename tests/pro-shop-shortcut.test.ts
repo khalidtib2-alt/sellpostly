@@ -46,28 +46,28 @@ test('pending imports remain recoverable when catalog storage is full',()=>{
  const result=consumePending(blank(),storage);assert.equal(result.added,true);
 });
 
-test('extension service worker opens only the trusted gated shop and preserves long product fields in a fragment',async()=>{
+test('extension service worker opens only the trusted gated shop and passes long product fields directly without a URL payload',async()=>{
  const source=await readFile('chrome-extension/background.js','utf8');
- let listener:any;const urls:string[]=[];
- const chrome={runtime:{id:'test-extension',onMessage:{addListener:(fn:unknown)=>{listener=fn;}}},tabs:{create:async({url}:{url:string})=>{urls.push(url);return {id:1};}}};
- const context=vm.createContext({chrome,URL,URLSearchParams,crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'}});
+ let listener:any,bridged:any;const urls:string[]=[];
+ const chrome={scripting:{executeScript:async({args}:{args:any[]})=>{bridged=args[0];return [{result:true}];}},runtime:{id:'test-extension',onMessage:{addListener:(fn:unknown)=>{listener=fn;}}},tabs:{create:async({url}:{url:string})=>{urls.push(url);return {id:1};}}};
+ const context=vm.createContext({importScripts:()=>{},SellPostlyFrontend:{resolve:async()=> 'https://sellpostly.vercel.app'},chrome,URL,URLSearchParams,crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'}});
  vm.runInContext(source,context);
  const product={title:'Imported product',price:'39 USD',image:'https://images.example.com/product.jpg?key='+'x'.repeat(12000),description:'Full product description',url:'https://www.amazon.com/dp/item?tag='+'y'.repeat(12000)};
  const result:any=await new Promise(resolve=>{assert.equal(listener({type:'SELLPOSTLY_SEND_TO_SHOP',product},{id:'test-extension'},resolve),true);});
  assert.equal(result.ok,true);assert.equal(urls.length,1);
- const url=new URL(urls[0]);assert.equal(url.origin,'https://vercel.app');assert.equal(url.pathname,'/shop');assert.equal(url.search,'');assert.ok(url.hash.length>8000);
- const incoming=importFromHash(url.hash)!;
- assert.equal(incoming.item.title,product.title);assert.equal(incoming.item.url,product.url);assert.equal(incoming.item.image,product.image);assert.equal(incoming.item.description,product.description);assert.equal(incoming.remainingHash,'');
+ const url=new URL(urls[0]);assert.equal(url.origin,'https://sellpostly.vercel.app');assert.equal(url.pathname,'/shop');assert.equal(url.search,'');assert.equal(url.hash,'');
+ const incoming={item:normalizePending(bridged),remainingHash:''};
+ assert.equal(incoming.item.title,product.title);assert.equal(incoming.item.url,'https://www.amazon.com/dp/item');assert.equal(incoming.item.image,product.image);assert.equal(incoming.item.description,product.description);assert.equal(incoming.remainingHash,'');
  const denied:any=await new Promise(resolve=>listener({type:'SELLPOSTLY_SEND_TO_SHOP',product},{id:'not-this-extension'},resolve));
  assert.equal(denied.ok,false);assert.equal(urls.length,1);
  const failed:any=await new Promise(resolve=>listener({type:'SELLPOSTLY_SEND_TO_SHOP',product:{title:''}},{id:'test-extension'},resolve));
  assert.equal(failed.ok,false);assert.equal(urls.length,1);
 });
 
-test('new extension background support does not add permissions',async()=>{
+test('extension permissions include storage for URL cleanup',async()=>{
  const manifest=JSON.parse(await readFile('chrome-extension/manifest.json','utf8'));
  assert.equal(manifest.manifest_version,3);
  assert.equal(manifest.background.service_worker,'background.js');
- assert.deepEqual(manifest.permissions,['activeTab','scripting']);
+ assert.deepEqual(manifest.permissions,['activeTab','scripting','storage']);
 });
 

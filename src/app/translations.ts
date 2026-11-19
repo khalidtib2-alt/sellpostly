@@ -575,9 +575,9 @@ export const translations = {
     "fr": "Ouvrir un brouillon",
     "ar": "افتح مسودة بريد"
   },
-  "Send the draft from your email app. If it did not open, email support@sellpostly.com directly.": {
-    "fr": "Envoyez le brouillon depuis votre application de messagerie. S’il ne s’est pas ouvert, écrivez directement à support@sellpostly.com.",
-    "ar": "أرسل المسودة من تطبيق البريد. إذا لم تُفتح، راسل support@sellpostly.com مباشرةً."
+  "Send the draft from your email app. If it did not open, email sellpostly.support@gmail.com directly.": {
+    "fr": "Envoyez le brouillon depuis votre application de messagerie. S’il ne s’est pas ouvert, écrivez directement à sellpostly.support@gmail.com.",
+    "ar": "أرسل المسودة من تطبيق البريد. إذا لم تُفتح، راسل sellpostly.support@gmail.com مباشرةً."
   },
   "Find a listing or caption template for the platform you sell on. Replace the bracketed details with your own product information before posting.": {
     "fr": "Trouvez un modèle d’annonce ou de légende pour votre plateforme de vente. Remplacez les éléments entre crochets avant de publier.",
@@ -2582,6 +2582,114 @@ export const translations = {
   "Could not load or save email preferences.": {
     "fr": "Impossible de charger ou d’enregistrer les préférences e-mail.",
     "ar": "تعذّر تحميل تفضيلات البريد أو حفظها."
+  },
+  "Back to Store": {
+    "fr": "Retour à la boutique",
+    "ar": "العودة إلى المتجر"
+  },
+  "Copy Product Link": {
+    "fr": "Copier le lien du produit",
+    "ar": "نسخ رابط المنتج"
+  },
+  "Product Link Copied": {
+    "fr": "Lien du produit copié",
+    "ar": "تم نسخ رابط المنتج"
+  },
+  "Publish your shop to create a shareable product link.": {
+    "fr": "Publiez votre boutique pour créer un lien produit partageable.",
+    "ar": "انشر متجرك لإنشاء رابط منتج قابل للمشاركة."
+  },
+  "Product Gallery": {
+    "fr": "Galerie du produit",
+    "ar": "معرض صور المنتج"
+  },
+  "Open Fullscreen Image": {
+    "fr": "Ouvrir l’image en plein écran",
+    "ar": "فتح الصورة بملء الشاشة"
+  },
+  "No product photo available": {
+    "fr": "Aucune photo du produit disponible",
+    "ar": "لا توجد صورة متاحة للمنتج"
+  },
+  "Hover to zoom. Tap to view fullscreen.": {
+    "fr": "Survolez pour agrandir. Touchez pour afficher en plein écran.",
+    "ar": "مرّر المؤشر للتكبير. اضغط للعرض بملء الشاشة."
+  },
+  "Product Photo": {
+    "fr": "Photo du produit",
+    "ar": "صورة المنتج"
+  },
+  "Product Image Zoom": {
+    "fr": "Agrandissement de l’image produit",
+    "ar": "تكبير صورة المنتج"
+  },
+  "Zoom Out": {
+    "fr": "Réduire",
+    "ar": "تصغير"
+  },
+  "Zoom In": {
+    "fr": "Agrandir",
+    "ar": "تكبير"
+  },
+  "Previous Photo": {
+    "fr": "Photo précédente",
+    "ar": "الصورة السابقة"
+  },
+  "Next Photo": {
+    "fr": "Photo suivante",
+    "ar": "الصورة التالية"
+  },
+  "Product Not Found": {
+    "fr": "Produit introuvable",
+    "ar": "المنتج غير موجود"
+  },
+  "Loading Product": {
+    "fr": "Chargement du produit",
+    "ar": "جارٍ تحميل المنتج"
+  },
+  "Breadcrumb": {
+    "fr": "Fil d’Ariane",
+    "ar": "مسار التنقل"
+  },
+  "Product Highlights": {
+    "fr": "Les points forts du produit",
+    "ar": "أبرز مزايا المنتج"
+  },
+  "Order Now": {
+    "fr": "Commander maintenant",
+    "ar": "اطلب الآن"
+  },
+  "Escrow Buyer Protection": {
+    "fr": "Protection de l’acheteur sous séquestre",
+    "ar": "حماية المشتري بالضمان"
+  },
+  "Payments are verified and held for the store’s assigned escrow period. Report delivery problems before release.": {
+    "fr": "Les paiements sont vérifiés et conservés pendant la période de séquestre attribuée à la boutique. Signalez tout problème de livraison avant leur libération.",
+    "ar": "يتم التحقق من الدفعات والاحتفاظ بها طوال مدة الضمان المحددة للمتجر. أبلغ عن مشاكل التسليم قبل تحرير المبلغ."
+  },
+  "Preview: publish your store to enable escrow checkout.": {
+    "fr": "Aperçu : publiez votre boutique pour activer le paiement sous séquestre.",
+    "ar": "معاينة: انشر متجرك لتفعيل الدفع المحمي بالضمان."
+  },
+  "Product Details": {
+    "fr": "Détails du produit",
+    "ar": "تفاصيل المنتج"
+  },
+  "Added to Cart": {
+    "fr": "Ajouté au panier",
+    "ar": "تمت الإضافة إلى السلة"
+  },
+  "Additional Product Photos": {
+    "fr": "Photos supplémentaires du produit",
+    "ar": "صور إضافية للمنتج"
+  },
+  "One image URL per line (up to 8).": {
+    "fr": "Une URL d’image par ligne (8 maximum).",
+    "ar": "رابط صورة واحد في كل سطر (حتى 8 صور)."
+  },
+  "View Product": {
+    "fr": "Voir le produit",
+    "ar": "عرض المنتج"
   }
 } as const;
 export type Message = keyof typeof translations;

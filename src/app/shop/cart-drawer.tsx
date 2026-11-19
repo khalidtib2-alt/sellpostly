@@ -16,7 +16,7 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuye
   async function whatsapp(){
     try{
       await navigator.clipboard.writeText(receipt);
-      const preview=receipt.length<=1800?receipt:t("Cart Order")+"\n"+t("Full order copied. Paste it into WhatsApp.")+"\n"+t("Total")+": "+total?.amount+" "+total?.currency;
+      const preview=receipt.length<=1800?receipt:t("Cart Order")+"\n"+t("Full order copied. Paste it into WhatsApp.")+"\n"+t("Total")+": "+(total?total.amount+" "+total.currency:t("Confirm prices with the seller."));
       window.open("https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(preview),"_blank","noopener,noreferrer");
       setStatus("Full order copied. Paste it into WhatsApp.");
     }catch{setStatus("Copy failed. Select the text to copy it manually.");}
@@ -33,7 +33,7 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuye
     {!total&&lines.length>0&&<p role="status">{t("Cart totals require compatible USD, USDC, or USDT prices. Confirm other currencies with the seller.")}</p>}
     <p className="my-3 text-sm">{t("Delivery fees are confirmed by the seller.")}</p>
     <div className="grid gap-3">
-      <button type="button" disabled={!total||!shop.phone.replace(/\D/g,"")} onClick={whatsapp} className="rounded-lg bg-emerald-700 px-4 py-3 font-semibold text-white disabled:opacity-50">{t("Order All on WhatsApp")}</button>
+      <button type="button" disabled={!lines.length||!shop.phone.replace(/\D/g,"")} onClick={whatsapp} className="rounded-lg bg-emerald-700 px-4 py-3 font-semibold text-white disabled:opacity-50">{t("Order All on WhatsApp")}</button>
       {<button type="button" disabled={!total} onClick={()=>{
         if(!total)return;
         const order:Product={id:"cart-order",name:t("Cart Order"),price:total.amount+" "+total.currency,category:"Other",gender:"unisex",image:"",url:"",source:"Other"};

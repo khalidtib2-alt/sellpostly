@@ -1,0 +1,17 @@
+SellPostly Support & Studio Preview Patch
+
+Extract into your SellPostly repository root, preserving src/, public/, scripts/, and tests/ folders.
+Support contact is now sellpostly.support@gmail.com, including transactional email support links and Reply-To. Resend EMAIL_FROM remains your verified sending identity.
+Four local SVG studio product illustrations replace the sample placeholders. Imported seller photos remain untouched. Previous product landing page improvements are included.
+
+The inspected checkout had a misplaced duplicate root app/ folder. Before building, run:
+node scripts/fix-duplicate-app.mjs
+This guarded command backs up that duplicate outside the repository only when canonical src/app counterparts exist. It refuses to move a valid root app with its own layout.
+
+Then run:
+npm run build
+npm test
+
+Verified in staged copy: build 0 errors; 33 tests passed.
+The local test runner required an environment-only os.userInfo workaround; it is not included in this patch.
+No secrets, environment files, dependencies, database changes, or deployment are included. Original checkout was not modified.

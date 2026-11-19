@@ -44,7 +44,7 @@ export default function ProCryptoUpgrade({onActivate}:{onActivate:(key:string)=>
  <button className="block text-xs underline" onClick={()=>{setReceipt(null);setStatus(null);setError(false);try{localStorage.removeItem(storage);}catch{}}}>{t('Submit Another Transaction')}</button></div>}
  </>}
  {error&&<p role="alert" className="mt-3 text-sm text-red-700">{t(duplicate?'This transaction was already submitted. Check its status using the original browser or contact support.':'Could not submit or check payment. Check your connection and try again.')}</p>}
- <a className="mt-3 block text-sm underline" href="mailto:support@sellpostly.com">support@sellpostly.com</a>
+ <a className="mt-3 block text-sm underline" href="mailto:sellpostly.support@gmail.com">sellpostly.support@gmail.com</a>
  </section>;
 }
 

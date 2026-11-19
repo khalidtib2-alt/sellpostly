@@ -10,7 +10,7 @@ import {updateOrder,updatePayout} from '../src/lib/admin-service';
 import {fulfill,buyerAction,type Query} from '../src/lib/order-service';
 import {normalizeAppUrl,publicLink} from '../src/lib/public-url';
 import {buyerPhone,quickReplyUrl} from '../src/lib/whatsapp-replies';
-import {importFromHash} from '../src/lib/shop-handoff';
+import {importFromHash,normalizePending} from '../src/lib/shop-handoff';
 import {validateShop,encodeShop,decodeShop} from '../src/app/shop/shop-data';
 import {GET as settingsGet,POST as settingsPost} from '../src/app/api/seller/notifications/route';
 
@@ -95,12 +95,12 @@ test('canonical URLs reject previews and quick replies reject email contacts as 
 });
 
 test('extension category and Kids audience survive the full storefront handoff and shared catalog',async()=>{
- const code=await readFile('chrome-extension/background.js','utf8');let listener:any;let opened='';
- const context=vm.createContext({URL,URLSearchParams,crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},chrome:{runtime:{id:'test',onMessage:{addListener:(value:any)=>listener=value}},tabs:{create:async({url}:{url:string})=>{opened=url;}}}});
+ const code=await readFile('chrome-extension/background.js','utf8');let listener:any,bridged:any;let opened='';
+ const context=vm.createContext({importScripts:()=>{},SellPostlyFrontend:{resolve:async()=> 'https://sellpostly.vercel.app'},URL,URLSearchParams,crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},chrome:{scripting:{executeScript:async({args}:{args:any[]})=>{bridged=args[0];return [{result:true}];}},runtime:{id:'test',onMessage:{addListener:(value:any)=>listener=value}},tabs:{create:async({url}:{url:string})=>{opened=url;return {id:1};}}}});
  vm.runInContext(code,context);
  for(const category of ['Digital Product','Art','Sport','Fashion']){
   const result:any=await new Promise(resolve=>listener({type:'SELLPOSTLY_SEND_TO_SHOP',product:{title:'Product',category,gender:'kids',image:'https://images.example.com/large.jpg'}},{id:'test'},resolve));assert.equal(result.ok,true);
-  assert.equal(new URL(opened).origin,'https://vercel.app');const incoming=importFromHash(new URL(opened).hash)!;assert.equal(incoming.item.gender,'kids');assert.equal(incoming.item.category,category);
+  assert.equal(new URL(opened).origin,'https://sellpostly.vercel.app');const incoming={item:normalizePending(bridged)};assert.equal(incoming.item.gender,'kids');assert.equal(incoming.item.category,category);
   const catalog=validateShop({name:'Kids store',products:[{...incoming.item,name:incoming.item.title}]});assert.equal((await decodeShop(await encodeShop(catalog))).products[0].gender,'kids');
  }
 });

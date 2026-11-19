@@ -1,4 +1,5 @@
 import 'server-only';
+import {supportEmail} from './support';
 import {locale,type Locale} from './locale';
 import {publicLink} from './public-url';
 export type EmailKind='pro'|'held'|'delivered'|'dispute'|'payout';
@@ -14,16 +15,16 @@ export function emailTemplate(data:EmailData){
  const fields:[string,string|number|undefined][]=[[['held','delivered','dispute'].includes(data.kind)?words.order:words.id,data.id],[words.store,data.store],[words.amount,data.amount?data.amount+' '+(data.coin||'') :undefined],[words.network,data.network],[words.hold,data.days],[words.key,data.key],[words.tracking,data.tracking],[words.notes,data.notes],[words.reason,data.reason]];
  const visible=fields.filter(([,value])=>value!==undefined&&value!=='');
  const href=publicLink(data.kind==='pro'?'/shop':data.kind==='payout'?'/dashboard':data.kind==='dispute'?'/admin':'/s/'+encodeURIComponent(data.slug||''));
- const text=[words[data.kind],words.intro,...visible.map(([label,value])=>label+': '+value),words.open+': '+href,words.footer].join('\n\n');
+ const text=[words[data.kind],words.intro,...visible.map(([label,value])=>label+': '+value),words.open+': '+href,words.footer,supportEmail].join('\n\n');
  const rows=visible.map(([label,value])=>'<tr><th style="text-align:start;padding:10px;border-bottom:1px solid #e2e8f0">'+escapeHtml(label)+'</th><td dir="auto" style="padding:10px;border-bottom:1px solid #e2e8f0;white-space:pre-wrap;overflow-wrap:anywhere">'+escapeHtml(value)+'</td></tr>').join('');
- const html='<!doctype html><html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'"><body style="margin:0;background:#f8fafc;font-family:Arial,sans-serif;color:#0f172a"><main style="max-width:600px;margin:24px auto;background:white;border:1px solid #e2e8f0;border-radius:16px;padding:28px"><p style="font-weight:bold;color:#059669">SellPostly</p><h1 style="font-size:24px">'+escapeHtml(words[data.kind])+'</h1><p>'+escapeHtml(words.intro)+'</p><table style="width:100%;border-collapse:collapse">'+rows+'</table><p style="margin-top:28px"><a style="display:inline-block;background:#047857;color:white;padding:12px 20px;border-radius:8px;text-decoration:none" href="'+escapeHtml(href)+'">'+escapeHtml(words.open)+'</a></p><p style="font-size:12px;color:#475569">'+escapeHtml(words.footer)+'</p></main></body></html>';
+ const html='<!doctype html><html lang="'+lang+'" dir="'+(lang==='ar'?'rtl':'ltr')+'"><body style="margin:0;background:#f8fafc;font-family:Arial,sans-serif;color:#0f172a"><main style="max-width:600px;margin:24px auto;background:white;border:1px solid #e2e8f0;border-radius:16px;padding:28px"><p style="font-weight:bold;color:#059669">SellPostly</p><h1 style="font-size:24px">'+escapeHtml(words[data.kind])+'</h1><p>'+escapeHtml(words.intro)+'</p><table style="width:100%;border-collapse:collapse">'+rows+'</table><p style="margin-top:28px"><a style="display:inline-block;background:#047857;color:white;padding:12px 20px;border-radius:8px;text-decoration:none" href="'+escapeHtml(href)+'">'+escapeHtml(words.open)+'</a></p><p style="font-size:12px;color:#475569">'+escapeHtml(words.footer)+'<br/><a href="mailto:'+supportEmail+'">'+supportEmail+'</a></p></main></body></html>';
  return {subject:words[data.kind],html,text};
 }
 export function emailAddress(value:unknown){return typeof value==='string'&&value.length<=254&&/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value)?value.trim():null;}
 export async function sendEmail(to:string,data:EmailData,eventKey:string,request:typeof fetch=fetch):Promise<'sent'|'failed'|'skipped'>{
  const apiKey=process.env.RESEND_API_KEY?.trim();if(!apiKey||!emailAddress(to))return 'skipped';
  try{
-  const response=await request('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json','Idempotency-Key':eventKey},body:JSON.stringify({from:process.env.EMAIL_FROM||'SellPostly <onboarding@resend.dev>',to:[to],...emailTemplate(data)}),signal:AbortSignal.timeout(5000),cache:'no-store'});
+  const response=await request('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json','Idempotency-Key':eventKey},body:JSON.stringify({from:process.env.EMAIL_FROM||'SellPostly <onboarding@resend.dev>',to:[to],reply_to:supportEmail,...emailTemplate(data)}),signal:AbortSignal.timeout(5000),cache:'no-store'});
   if(!response.ok)return 'failed';const result=await response.json();return typeof result.id==='string'?'sent':'failed';
  }catch{return 'failed';}
 }

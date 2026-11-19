@@ -1,4 +1,7 @@
 "use client";
+import {createSampleShop,upgradeDemoPhotos} from './demo-products';
+import {useShopCart} from './use-shop-cart';
+import {productPath,productShareUrl} from './product-links';
 import {publicLink} from "../../lib/public-url";
 
 import { escrowReady, holdDays } from "./escrow-config";
@@ -16,15 +19,6 @@ import { normalizeGender, type Gender, categories, decodeShop, safeImage, safeUr
 
 const field="mt-1 block w-full rounded-lg border border-slate-300 p-2";
 const button="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white";
-function samples(): Shop {
-  const products=["Wireless headphones","Travel backpack","Kitchen organizer","Fitness bottle"].map((name,index)=>{
-    const canvas=document.createElement("canvas");canvas.width=320;canvas.height=240;
-    const context=canvas.getContext("2d")!;context.fillStyle=["#d1fae5","#e2e8f0","#fef3c7","#fce7f3"][index];context.fillRect(0,0,320,240);
-    context.font="80px system-ui";context.textAlign="center";context.fillText(["🎧","🎒","🍽️","💧"][index],160,145);
-    return {gender:"unisex" as const,id:"sample-"+index,name,price:["49 USD","39 USD","24 USD","19 USD"][index],category:["Tech & Gadgets","Fashion","Home & Kitchen","Fitness"][index],image:canvas.toDataURL(),url:["https://www.amazon.com/","https://www.aliexpress.com/","https://www.shopify.com/","https://www.amazon.com/"][index],source:["Amazon","AliExpress","Shopify","Amazon"][index]};
-  });
-  return {name:"My Shop",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products};
-}
 export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicSlug,verifiedStore=false}:{isSharedBuyerView?:boolean;initialShop?:Shop;publicSlug?:string;verifiedStore?:boolean}){
   const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>({name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
@@ -32,12 +26,14 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   const [policyLoaded,setPolicyLoaded]=useState(!!initialShop);
   const [loaded,setLoaded]=useState(false),[shared,setShared]=useState(isSharedBuyerView),[preview,setPreview]=useState(isSharedBuyerView),[adding,setAdding]=useState(false);
   const [checkout,setCheckout]=useState<{product:Product;details:string;items?:{id:string;quantity:number}[]} | null>(null);
-  const [cart,setCart]=useState<Record<string,number>>({});
+
   const [cartOpen,setCartOpen]=useState(false);
   const [editing,setEditing]=useState<Product | null>(null);
   const [genderFilter,setGenderFilter]=useState<Gender | "all">("all");
   const [search,setSearch]=useState("");
   const [visible,setVisible]=useState(24);
+  const snapshot=typeof window==='undefined'?undefined:new URLSearchParams(location.search).get('s')||undefined;
+  const [cart,setCart]=useShopCart(shop,publicSlug,snapshot,loaded&&shop.shopMode==='personal');
   const [filter,setFilter]=useState("All"),[photo,setPhoto]=useState(""),[status,setStatus]=useState<Message|"">("");
   useEffect(()=>{
     let cancelled=false;
@@ -49,8 +45,8 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
           const decoded=await decodeShop(params.get("s")!);if(cancelled)return;
           setShop(decoded);setShared(true);setPreview(true);
         } else {
-          let initial=samples();
-          try {const saved=localStorage.getItem(shopKey);if(saved)initial=validateShop(JSON.parse(saved));}catch{}
+          let initial=createSampleShop();
+          try {const saved=localStorage.getItem(shopKey);if(saved)initial=upgradeDemoPhotos(validateShop(JSON.parse(saved)));}catch{}
           if(params.get("addTitle")){
             const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),description:(params.get("addDescription")||"").slice(0,4000),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
             initial.products.push(product);
@@ -154,7 +150,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       const get=(key:string)=>String(data.get(key)||"").trim();
 
 
-      const product:Product={id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),description:get("description").slice(0,4000)};
+      const product:Product={id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),badge:get("badge") as DealBadge,category:get("category")||"Top Deals",gender:normalizeGender(get("gender")),image:photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).map(safeImage).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
       setShop({...shop,products:editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]});
       setEditing(null);
       setAdding(false);setPhoto("");
@@ -165,6 +161,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       <label>{t("Compare-at Price")}<input className={field} name="compareAtPrice" maxLength={50} defaultValue={editing?.compareAtPrice||""}/></label>
       <label>{t("Deal Badge")}<select className={field} name="badge" defaultValue={editing?.badge||"none"}>{dealBadges.map(badge=><option key={badge} value={badge}>{t(badge==="none"?"None":badge==="hot"?"Hot":badge==="sale"?"Sale":badge==="limited"?"Limited":"New")}</option>)}</select></label>
       <label className="sm:col-span-2">{t("Product Description")}<textarea className={field} name="description" rows={3} maxLength={4000} defaultValue={editing?.description||""}/></label>
+      <label className="sm:col-span-2">{t("Additional Product Photos")}<textarea className={field} name="images" rows={3} maxLength={16000} defaultValue={(editing?.images||[]).join("\n")}/><span className="text-xs">{t("One image URL per line (up to 8).")}</span></label>
       <label>{t("Source Badge")}<select className={field} name="source" defaultValue={editing?.source || "Other"}>{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c} value={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
       <label>{t("Upload Product Photo")}<input className={field} type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
         const file=e.target.files?.[0];if(!file)return;
@@ -179,12 +176,14 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex","kids"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":value==="kids"?"Kids":"Unisex")}</button>)}
     </div>
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
-      <div className="product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl">{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
-      <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price} {p.compareAtPrice&&<del className="ms-2 text-sm font-normal text-slate-600">{p.compareAtPrice}</del>}</p>{p.badge&&p.badge!=="none"&&<span className="mb-2 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold">{t(p.badge==="hot"?"Hot":p.badge==="sale"?"Sale":p.badge==="limited"?"Limited":"New")}</span>}{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":p.gender==="kids"?"Kids":"Women")}</span>}
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} onClick={e=>{if(shop.shopMode==="personal"&&!(e.target as HTMLElement).closest("a,button,input,textarea,select"))location.href=productPath(p.id,publicSlug,snapshot);}} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
+      <div className={(shop.shopMode==="personal"?"cursor-pointer ":"")+"product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl"}>{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
+      <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{shop.shopMode==="personal"?<a href={productPath(p.id,publicSlug,snapshot)} className="hover:underline">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</a>:p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price} {p.compareAtPrice&&<del className="ms-2 text-sm font-normal text-slate-600">{p.compareAtPrice}</del>}</p>{p.badge&&p.badge!=="none"&&<span className="mb-2 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold">{t(p.badge==="hot"?"Hot":p.badge==="sale"?"Sale":p.badge==="limited"?"Limited":"New")}</span>}{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":p.gender==="kids"?"Kids":"Women")}</span>}
       {p.description&&<p dir="auto" className="my-3 line-clamp-3 whitespace-pre-line text-sm text-slate-600">{p.description}</p>}
       {shop.shopMode==="affiliate"&&shop.affiliateDisclosure&&<p className="my-2 text-xs text-slate-600">{shop.affiliateDisclosure}</p>}
       <div className="flex flex-wrap gap-2 text-sm">
+        {shop.shopMode==="personal"&&<a className="rounded-lg border px-3 py-2" href={productPath(p.id,publicSlug,snapshot)}>{t("View Product")}</a>}
+        {shop.shopMode==="personal"&&!shared&&<button type="button" className="rounded-lg border px-3 py-2" onClick={async()=>{try{const response=await fetch("/api/shops",{method:"POST",headers:{"Content-Type":"application/json","x-pro-key":localStorage.getItem("sellpostly-pro-key")||""},body:JSON.stringify(shop)});if(!response.ok)throw Error();const result=await response.json();await navigator.clipboard.writeText(productShareUrl(productPath(p.id,result.slug)));setStatus("Product Link Copied");}catch{setStatus("Publish your shop to create a shareable product link.");}}}>{t("Copy Product Link")}</button>}
         {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>changeCart(p.id,1)}>{t("Add to Cart")}</button>}
         {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>setCheckout({product:p,details:""})}>{t("Pay with USDC / USDT")}</button>}
         {shop.shopMode==="affiliate"&&p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("View Deal / Buy Now")}</a>}

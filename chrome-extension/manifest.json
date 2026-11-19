@@ -24,7 +24,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "homepage_url": "https://sellpostly.vercel.app",
+  "homepage_url": "https://vercel.app",
   "host_permissions": [
     "https://sellpostly.vercel.app/*",
     "https://sellpostly.com/*",
