@@ -10,7 +10,7 @@ export async function POST(request:Request){
   let value:unknown;
   try{const body=await request.text();if(body.length>2000000)return Response.json({error:'CATALOG_TOO_LARGE'},{status:413});value=JSON.parse(body);}
   catch{return Response.json({error:'INVALID_CATALOG'},{status:400});}
-  try{const slug=await publishShop(identity,value);return Response.json({slug,url:publicLink('/s/'+slug)},{headers:{'Cache-Control':'no-store'}});}
+  try{const slug=await publishShop(identity,value);return Response.json({slug,url:publicLink('/s/'+slug),affiliateUrl:publicLink('/s/'+slug+'/affiliate'),personalUrl:publicLink('/s/'+slug+'/personal')},{headers:{'Cache-Control':'no-store'}});}
   catch{return Response.json({error:'PUBLISH_FAILED'},{status:400});}
 }
 

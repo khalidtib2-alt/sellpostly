@@ -222,3 +222,92 @@ END $$;
 -- statement-breakpoint
 REVOKE ALL ON FUNCTION approve_pro_upgrade_request(uuid,text,text) FROM PUBLIC;
 
+
+-- Phase 2: independent public catalogs and seller payment preferences.
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS affiliate_catalog jsonb;
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS personal_catalog jsonb;
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS seller_usdc_wallet text NOT NULL DEFAULT '';
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS seller_email text NOT NULL DEFAULT '';
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS cod_enabled boolean NOT NULL DEFAULT true;
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS escrow_enabled boolean NOT NULL DEFAULT true;
+-- statement-breakpoint
+UPDATE shops SET affiliate_catalog=catalog WHERE affiliate_catalog IS NULL AND coalesce(catalog->>'shopMode','affiliate')='affiliate' AND catalog ? 'products';
+-- statement-breakpoint
+UPDATE shops SET personal_catalog=catalog WHERE personal_catalog IS NULL AND catalog->>'shopMode'='personal' AND catalog ? 'products';
+-- statement-breakpoint
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method text NOT NULL DEFAULT 'CRYPTO' CHECK (payment_method IN ('CRYPTO','COD'));
+-- statement-breakpoint
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS escrow_status text NOT NULL DEFAULT 'PENDING' CHECK (escrow_status IN ('NONE','PENDING','HELD','RELEASED','DISPUTED','REFUNDED','CANCELLED'));
+-- statement-breakpoint
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_coin_check;
+-- statement-breakpoint
+ALTER TABLE orders ADD CONSTRAINT orders_coin_check CHECK ((payment_method='CRYPTO' AND coin IN ('USDC','USDT')) OR (payment_method='COD' AND coin='USD'));
+-- statement-breakpoint
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_network_check;
+-- statement-breakpoint
+ALTER TABLE orders ADD CONSTRAINT orders_network_check CHECK ((payment_method='CRYPTO' AND network IN ('Polygon','Base','Arbitrum','BNB Smart Chain','Solana')) OR (payment_method='COD' AND network='COD'));
+-- statement-breakpoint
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_commission_rate_check;
+-- statement-breakpoint
+ALTER TABLE orders ADD CONSTRAINT orders_commission_rate_check CHECK ((payment_method='CRYPTO' AND commission_rate=0.05) OR (payment_method='COD' AND commission_rate=0));
+-- statement-breakpoint
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_status_check;
+-- statement-breakpoint
+ALTER TABLE orders ADD CONSTRAINT orders_status_check CHECK (status IN ('pending','held','released','disputed','refunded','cancelled','fulfilled'));
+-- statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS orders_cod_request_id ON orders(shop_id,(details->>'request_id')) WHERE payment_method='COD';
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION enforce_order_hold() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE blocked boolean; confirmed_at timestamptz;
+BEGIN
+ IF TG_OP='INSERT' THEN
+  SELECT escrow_hold_days,suspended INTO NEW.escrow_hold_days,blocked FROM shops WHERE id=NEW.shop_id FOR SHARE;
+  IF blocked THEN RAISE EXCEPTION 'Store suspended'; END IF;
+  IF NEW.force_released_at IS NOT NULL THEN RAISE EXCEPTION 'Force release requires an existing buyer-confirmed order'; END IF;
+ ELSE
+  IF NEW.shop_id<>OLD.shop_id OR NEW.payment_method<>OLD.payment_method THEN RAISE EXCEPTION 'Order shop or payment method cannot change'; END IF;
+  NEW.escrow_hold_days:=OLD.escrow_hold_days;
+ END IF;
+ IF NEW.payment_method='COD' THEN
+  IF NEW.status NOT IN ('pending','fulfilled','cancelled') OR NEW.tx_id IS NOT NULL OR NEW.payment_verified_at IS NOT NULL OR NEW.escrow_release_at IS NOT NULL OR NEW.force_released_at IS NOT NULL THEN RAISE EXCEPTION 'COD orders cannot enter crypto escrow'; END IF;
+  NEW.escrow_status:='NONE';NEW.commission_rate:=0;
+  RETURN NEW;
+ END IF;
+ NEW.commission_rate:=0.05;
+ NEW.escrow_status:=CASE NEW.status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE 'PENDING' END;
+ IF NEW.status='fulfilled' THEN RAISE EXCEPTION 'Crypto order uses escrow lifecycle'; END IF;
+ IF TG_OP='UPDATE' THEN
+  IF OLD.payment_verified_at IS NOT NULL AND (NEW.payment_verified_at IS DISTINCT FROM OLD.payment_verified_at OR NEW.gross_amount<>OLD.gross_amount OR NEW.coin<>OLD.coin OR NEW.network<>OLD.network OR NEW.tx_id IS DISTINCT FROM OLD.tx_id) THEN RAISE EXCEPTION 'Verified payment cannot change'; END IF;
+  IF NEW.force_released_at IS DISTINCT FROM OLD.force_released_at THEN
+   IF OLD.force_released_at IS NOT NULL THEN RAISE EXCEPTION 'Force release audit cannot change'; END IF;
+   BEGIN confirmed_at:=(OLD.details->>'buyer_confirmed_at')::timestamptz; EXCEPTION WHEN OTHERS THEN confirmed_at:=NULL; END;
+   IF NEW.status<>'released' OR OLD.status NOT IN ('held','disputed') OR confirmed_at IS NULL OR OLD.payment_verified_at IS NULL OR confirmed_at<OLD.payment_verified_at OR confirmed_at>now() THEN RAISE EXCEPTION 'Buyer confirmation required for force release'; END IF;
+   NEW.force_released_at:=now();
+  END IF;
+ END IF;
+ IF NEW.payment_verified_at IS NOT NULL THEN NEW.escrow_release_at:=NEW.payment_verified_at+make_interval(days=>NEW.escrow_hold_days); END IF;
+ IF NEW.status='released' AND (NEW.escrow_release_at IS NULL OR NEW.escrow_release_at>now()) AND NEW.force_released_at IS NULL THEN RAISE EXCEPTION 'Escrow hold has not ended'; END IF;
+ RETURN NEW;
+END $$;
+-- statement-breakpoint
+UPDATE orders SET escrow_status=CASE status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE 'PENDING' END WHERE payment_method='CRYPTO' AND escrow_status IS DISTINCT FROM CASE status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE 'PENDING' END;
+
+-- statement-breakpoint
+ALTER TABLE shops DROP CONSTRAINT IF EXISTS shops_polygon_payout_wallet;
+-- statement-breakpoint
+ALTER TABLE shops ADD CONSTRAINT shops_polygon_payout_wallet CHECK (seller_usdc_wallet='' OR (seller_usdc_wallet ~ '^0x[0-9a-fA-F]{40}$' AND seller_usdc_wallet <> '0x0000000000000000000000000000000000000000'));
+
+-- statement-breakpoint
+UPDATE shops SET seller_usdc_wallet=personal_catalog->>'cryptoWallet' WHERE seller_usdc_wallet='' AND personal_catalog->>'cryptoWallet' ~ '^0x[0-9a-fA-F]{40}$' AND personal_catalog->>'cryptoWallet' <> '0x0000000000000000000000000000000000000000';
+
+-- Each seller gets both aliases; a never-used mode starts with an empty catalog.
+-- statement-breakpoint
+UPDATE shops SET affiliate_catalog=jsonb_set(jsonb_set(catalog,'{shopMode}','"affiliate"'),'{products}','[]') WHERE affiliate_catalog IS NULL AND catalog ? 'products';
+-- statement-breakpoint
+UPDATE shops SET personal_catalog=jsonb_set(jsonb_set(catalog,'{shopMode}','"personal"'),'{products}','[]') WHERE personal_catalog IS NULL AND catalog ? 'products';

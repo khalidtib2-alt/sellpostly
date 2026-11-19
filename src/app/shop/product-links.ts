@@ -23,3 +23,5 @@ export function cartStorageKey(slug?:string,snapshot?:string){
  return slug?'sellpostly_cart_'+slug:'sellpostly_cart_preview:'+(snapshot?legacyCartStorageKey(undefined,snapshot).split(':').pop():'local');
 }
 
+
+export function storePath(slug:string,mode:'affiliate'|'personal'){return '/s/'+encodeURIComponent(slug)+'/'+mode;}

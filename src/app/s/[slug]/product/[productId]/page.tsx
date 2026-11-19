@@ -4,7 +4,7 @@ import {publicShop} from '../../../../../lib/db';
 import {productShareUrl} from '../../../../shop/product-links';
 import ProductLanding from '../../../../shop/product-landing';
 import StoreSuspended from '../../../../shop/store-suspended';
-const getShop=cache((slug:string)=>publicShop(slug));
+const getShop=cache((slug:string)=>publicShop(slug,undefined,'personal'));
 export const dynamic='force-dynamic';
 type Props={params:Promise<{slug:string;productId:string}>};
 export async function generateMetadata({params}:Props){const {slug,productId}=await params,shop=await getShop(slug),product=!shop?.suspended?shop?.products.find(p=>p.id===productId):undefined;return {title:product?product.name+' | '+shop!.name:'Product | SellPostly',description:product?.description?.slice(0,160),alternates:{canonical:productShareUrl('/s/'+encodeURIComponent(slug)+'/product/'+encodeURIComponent(productId))}};}

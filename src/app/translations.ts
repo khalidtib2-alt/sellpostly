@@ -1451,10 +1451,7 @@ export const translations = {
     "fr": "Augmenter la quantité",
     "ar": "زيادة الكمية"
   },
-  "Quantity": {
-    "fr": "Quantité",
-    "ar": "الكمية"
-  },
+  "Quantity":{"fr":"Quantité","ar":"الكمية"},
   "Delivery City / Note": {
     "fr": "Ville de livraison / Note",
     "ar": "مدينة التوصيل / ملاحظة"
@@ -2583,14 +2580,8 @@ export const translations = {
     "fr": "Impossible de charger ou d’enregistrer les préférences e-mail.",
     "ar": "تعذّر تحميل تفضيلات البريد أو حفظها."
   },
-  "Back to Store": {
-    "fr": "Retour à la boutique",
-    "ar": "العودة إلى المتجر"
-  },
-  "Copy Product Link": {
-    "fr": "Copier le lien du produit",
-    "ar": "نسخ رابط المنتج"
-  },
+  "Back to Store":{"fr":"Retour à la boutique","ar":"العودة إلى المتجر"},
+  "Copy Product Link":{"fr":"Copier le lien du produit","ar":"نسخ رابط المنتج"},
   "Product Link Copied": {
     "fr": "Lien du produit copié",
     "ar": "تم نسخ رابط المنتج"
@@ -2599,70 +2590,22 @@ export const translations = {
     "fr": "Publiez votre boutique pour créer un lien produit partageable.",
     "ar": "انشر متجرك لإنشاء رابط منتج قابل للمشاركة."
   },
-  "Product Gallery": {
-    "fr": "Galerie du produit",
-    "ar": "معرض صور المنتج"
-  },
-  "Open Fullscreen Image": {
-    "fr": "Ouvrir l’image en plein écran",
-    "ar": "فتح الصورة بملء الشاشة"
-  },
-  "No product photo available": {
-    "fr": "Aucune photo du produit disponible",
-    "ar": "لا توجد صورة متاحة للمنتج"
-  },
-  "Hover to zoom. Tap to view fullscreen.": {
-    "fr": "Survolez pour agrandir. Touchez pour afficher en plein écran.",
-    "ar": "مرّر المؤشر للتكبير. اضغط للعرض بملء الشاشة."
-  },
-  "Product Photo": {
-    "fr": "Photo du produit",
-    "ar": "صورة المنتج"
-  },
-  "Product Image Zoom": {
-    "fr": "Agrandissement de l’image produit",
-    "ar": "تكبير صورة المنتج"
-  },
-  "Zoom Out": {
-    "fr": "Réduire",
-    "ar": "تصغير"
-  },
-  "Zoom In": {
-    "fr": "Agrandir",
-    "ar": "تكبير"
-  },
-  "Previous Photo": {
-    "fr": "Photo précédente",
-    "ar": "الصورة السابقة"
-  },
-  "Next Photo": {
-    "fr": "Photo suivante",
-    "ar": "الصورة التالية"
-  },
-  "Product Not Found": {
-    "fr": "Produit introuvable",
-    "ar": "المنتج غير موجود"
-  },
-  "Loading Product": {
-    "fr": "Chargement du produit",
-    "ar": "جارٍ تحميل المنتج"
-  },
-  "Breadcrumb": {
-    "fr": "Fil d’Ariane",
-    "ar": "مسار التنقل"
-  },
-  "Product Highlights": {
-    "fr": "Les points forts du produit",
-    "ar": "أبرز مزايا المنتج"
-  },
-  "Order Now": {
-    "fr": "Commander maintenant",
-    "ar": "اطلب الآن"
-  },
-  "Escrow Buyer Protection": {
-    "fr": "Protection de l’acheteur sous séquestre",
-    "ar": "حماية المشتري بالضمان"
-  },
+  "Product Gallery":{"fr":"Galerie du produit","ar":"معرض صور المنتج"},
+  "Open Fullscreen Image":{"fr":"Ouvrir l’image en plein écran","ar":"فتح الصورة بملء الشاشة"},
+  "No product photo available":{"fr":"Aucune photo disponible","ar":"لا تتوفر صورة للمنتج"},
+  "Hover to zoom. Tap to view fullscreen.":{"fr":"Survolez pour zoomer. Appuyez pour voir en plein écran.","ar":"مرّر المؤشر للتكبير. اضغط لعرض الصورة بملء الشاشة."},
+  "Product Photo":{"fr":"Photo du produit","ar":"صورة المنتج"},
+  "Product Image Zoom":{"fr":"Zoom sur le produit","ar":"تكبير صورة المنتج"},
+  "Zoom Out":{"fr":"Réduire","ar":"تصغير"},
+  "Zoom In":{"fr":"Agrandir","ar":"تكبير"},
+  "Previous Photo":{"fr":"Photo précédente","ar":"الصورة السابقة"},
+  "Next Photo":{"fr":"Photo suivante","ar":"الصورة التالية"},
+  "Product Not Found":{"fr":"Produit introuvable","ar":"المنتج غير موجود"},
+  "Loading Product":{"fr":"Chargement du produit","ar":"جارٍ تحميل المنتج"},
+  "Breadcrumb":{"fr":"Fil d’Ariane","ar":"مسار التنقل"},
+  "Product Highlights":{"fr":"Points forts du produit","ar":"مميزات المنتج"},
+  "Order Now":{"fr":"Commander maintenant","ar":"اطلب الآن"},
+  "Escrow Buyer Protection":{"fr":"Protection des achats par séquestre","ar":"حماية المشتري بضمان الدفع"},
   "Payments are verified and held for the store’s assigned escrow period. Report delivery problems before release.": {
     "fr": "Les paiements sont vérifiés et conservés pendant la période de séquestre attribuée à la boutique. Signalez tout problème de livraison avant leur libération.",
     "ar": "يتم التحقق من الدفعات والاحتفاظ بها طوال مدة الضمان المحددة للمتجر. أبلغ عن مشاكل التسليم قبل تحرير المبلغ."
@@ -2671,10 +2614,7 @@ export const translations = {
     "fr": "Aperçu : publiez votre boutique pour activer le paiement sous séquestre.",
     "ar": "معاينة: انشر متجرك لتفعيل الدفع المحمي بالضمان."
   },
-  "Product Details": {
-    "fr": "Détails du produit",
-    "ar": "تفاصيل المنتج"
-  },
+  "Product Details":{"fr":"Détails du produit","ar":"تفاصيل المنتج"},
   "Added to Cart": {
     "fr": "Ajouté au panier",
     "ar": "تمت الإضافة إلى السلة"
@@ -2687,9 +2627,41 @@ export const translations = {
     "fr": "Une URL d’image par ligne (8 maximum).",
     "ar": "رابط صورة واحد في كل سطر (حتى 8 صور)."
   },
-  "View Product": {
-    "fr": "Voir le produit",
-    "ar": "عرض المنتج"
-  }
+  "View Product":{"fr":"Voir le produit","ar":"عرض المنتج"}
+,"Share Store":{"fr":"Partager la boutique","ar":"مشاركة المتجر"}
+,"Share Product":{"fr":"Partager le produit","ar":"مشاركة المنتج"}
+,"Copy Link":{"fr":"Copier le lien","ar":"نسخ الرابط"}
+,"Cash on Delivery (COD)":{"fr":"Paiement à la livraison","ar":"الدفع عند الاستلام"}
+,"Confirm COD on WhatsApp":{"fr":"Confirmer la commande sur WhatsApp","ar":"تأكيد الطلب عبر واتساب"}
+,"Pay the seller on delivery. COD is arranged on WhatsApp and is not protected by crypto escrow.":{"fr":"Payez le vendeur à la livraison. La commande est organisée sur WhatsApp et ne bénéficie pas de la protection du séquestre crypto.","ar":"ادفع للبائع عند الاستلام. يتم تنسيق الطلب عبر واتساب ولا يشمله ضمان الدفع بالعملات الرقمية."}
+,"Delivery Address":{"fr":"Adresse de livraison","ar":"عنوان التسليم"}
+,"Phone":{"fr":"Téléphone","ar":"رقم الهاتف"}
+,"Each shop type has its own catalog. Switching types never moves products.":{"fr":"Chaque type de boutique possède son propre catalogue. Changer de type ne déplace aucun produit.","ar":"لكل نوع متجر كتالوج مستقل. تغيير النوع لا ينقل المنتجات."}
+,"Affiliate Store Link":{"fr":"Lien boutique affiliée","ar":"رابط متجر العروض بالعمولة"}
+,"Personal Store Link":{"fr":"Lien boutique personnelle","ar":"رابط متجر البائع الشخصي"}
+,"External deals only. No cart or escrow.":{"fr":"Offres externes uniquement. Sans panier ni séquestre.","ar":"عروض خارجية فقط، دون سلة أو ضمان دفع."}
+,"Your products, cart and enabled checkout methods.":{"fr":"Vos produits, le panier et les modes de paiement activés.","ar":"منتجاتك وسلة التسوق وطرق الدفع المفعلة."}
+,"Publish to create this link":{"fr":"Publiez pour créer ce lien","ar":"انشر المتجر لإنشاء الرابط"}
+,"Social Share":{"fr":"Partager","ar":"المشاركة الاجتماعية"}
+,"Personal Seller Payment Settings":{"fr":"Paramètres de paiement du vendeur","ar":"إعدادات الدفع للبائع الشخصي"}
+,"Seller USDC Wallet Address (Polygon)":{"fr":"Adresse USDC du vendeur (Polygon)","ar":"عنوان محفظة البائع USDC على Polygon"}
+,"Payout destination only. Buyers pay the platform escrow wallet.":{"fr":"Adresse de retrait uniquement. Les acheteurs paient le portefeuille de séquestre de la plateforme.","ar":"عنوان لاستلام مستحقاتك فقط. يدفع المشترون إلى محفظة ضمان المنصة."}
+,"Seller Email":{"fr":"E-mail du vendeur","ar":"البريد الإلكتروني للبائع"}
+,"Enable Cash on Delivery":{"fr":"Activer le paiement à la livraison","ar":"تفعيل الدفع عند الاستلام"}
+,"Enable USDC Escrow":{"fr":"Activer le paiement USDC sous séquestre","ar":"تفعيل الدفع بضمان USDC"}
+,"Save Payment Settings":{"fr":"Enregistrer les paramètres de paiement","ar":"حفظ إعدادات الدفع"}
+,"COD is paid to the seller on delivery. No crypto escrow hold or escrow commission applies.":{"fr":"Le paiement se fait au vendeur à la livraison. Aucun séquestre ni commission de séquestre ne s’applique.","ar":"يُدفع المبلغ للبائع عند الاستلام. لا تُحجز أموال في الضمان ولا تُطبق عمولة ضمان."}
+,"Buyer Email":{"fr":"E-mail de l’acheteur","ar":"البريد الإلكتروني للمشتري"}
+,"Place COD Order":{"fr":"Commander avec paiement à la livraison","ar":"تأكيد طلب الدفع عند الاستلام"}
+,"Publish your personal store to accept recorded COD orders.":{"fr":"Publiez votre boutique personnelle pour enregistrer les commandes à la livraison.","ar":"انشر متجرك الشخصي لاستقبال طلبات الدفع عند الاستلام المسجلة."}
+,"COD order recorded. Keep your Order ID.":{"fr":"Commande enregistrée. Conservez votre numéro de commande.","ar":"تم تسجيل الطلب. احتفظ برقم طلبك."}
+,"Could not place the order. Check the current price, COD availability and your contact details.":{"fr":"Commande impossible. Vérifiez le prix, la disponibilité du paiement à la livraison et vos coordonnées.","ar":"تعذر تسجيل الطلب. تحقق من السعر وتوفر الدفع عند الاستلام وبيانات الاتصال."}
+,"Shipping Carrier":{"fr":"Transporteur","ar":"شركة الشحن"}
+,"No escrow (COD)":{"fr":"Sans séquestre (paiement à la livraison)","ar":"بدون ضمان دفع (الدفع عند الاستلام)"}
+,"USDC / USDT Escrow":{"fr":"USDC / USDT sous séquestre","ar":"ضمان USDC / USDT"}
+,"Confirm Funds Arrived":{"fr":"Confirmer la réception des fonds","ar":"تأكيد وصول الأموال"}
+,"Release Escrow Funds":{"fr":"Libérer les fonds sous séquestre","ar":"تحرير أموال الضمان"}
+,"Not configured":{"fr":"Non configuré","ar":"غير مُعدّ"}
+,"Shipped":{"fr":"Expédiée","ar":"تم الشحن"}
 } as const;
 export type Message = keyof typeof translations;

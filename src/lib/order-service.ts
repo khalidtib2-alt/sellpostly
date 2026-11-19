@@ -1,4 +1,5 @@
 import 'server-only';
+import {emailAddress} from './email';
 import {locale} from './locale';
 import {buyerPhone} from './whatsapp-replies';
 import { db } from './db';
@@ -12,17 +13,17 @@ const run:Query=async(sql,parameters)=>await db().query(sql,parameters);
 export async function submitOrder(value:unknown,query:Query=run){
  const raw=object(value),slug=text(raw.slug,64),selectedCoin=coin(raw.coin),net=network(raw.network),tx=txId(raw.tx_id,net);
  if(!escrowReady||net!==escrowNetwork)throw new ApiError('ESCROW_UNAVAILABLE',503);
- const buyer=object(raw.buyer),buyerContact=contact(buyer.contact),name=text(buyer.name,100);
- const shops=await query('SELECT id,catalog,escrow_hold_days,suspended FROM shops WHERE slug=$1 AND published=true',[slug]);
+ const buyer=object(raw.buyer),buyerContact=contact(buyer.contact),name=text(buyer.name,100);if(!emailAddress(buyerContact))throw new ApiError('INVALID_CONTACT');
+ const shops=await query('SELECT id,coalesce(personal_catalog,catalog) AS catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,escrow_hold_days,suspended FROM shops WHERE slug=$1 AND published=true',[slug]);
  if(!shops.length)throw new ApiError('SHOP_NOT_FOUND',404);
  if(shops[0].suspended)throw new ApiError('STORE_SUSPENDED',403);
- const shop=validateShop(shops[0].catalog);if(shop.shopMode!=='personal')throw new ApiError('CHECKOUT_UNAVAILABLE');
+ const shop=validateShop(shops[0].catalog);if(shop.shopMode!=='personal'||shop.escrowEnabled===false||shops[0].escrow_enabled===false)throw new ApiError('CHECKOUT_UNAVAILABLE');
  const priced=priceItems(shop.products,raw.items,selectedCoin);
  const phone=buyer.phone===undefined||buyer.phone===''?'':buyerPhone(buyer.phone);if(buyer.phone&&!phone)throw new ApiError('INVALID_CONTACT');
- const details={language:locale(raw.language),items:priced.items,buyer:{name,contact:buyerContact,phone},delivery_note:typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet};
+ const details={store_name:shop.name,language:locale(raw.language),items:priced.items,buyer:{name,contact:buyerContact,phone},delivery_note:typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet,seller_wallet:shops[0].seller_usdc_wallet||shop.cryptoWallet||''};
  // INSERT SELECT also checks the catalog has not changed during price calculation.
  const rows=await query(`INSERT INTO orders(shop_id,gross_amount,coin,network,tx_id,details)
- SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND catalog=$7::jsonb
+ SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND escrow_enabled=true AND coalesce(personal_catalog,catalog)=$7::jsonb
  RETURNING id,gross_amount::text,coin,network,status,escrow_hold_days,created_at`,
  [shops[0].id,priced.gross,selectedCoin,net,tx,JSON.stringify(details),JSON.stringify(shops[0].catalog)]);
  if(!rows.length)throw new ApiError('CATALOG_CHANGED',409);
@@ -47,13 +48,13 @@ export async function buyerAction(id:string,value:unknown,query:Query=run){
  if(!rows.length)throw new ApiError('ORDER_NOT_FOUND_OR_NOT_ELIGIBLE',404);
  return rows[0];
 }
-export const FULFILL_SQL=`UPDATE orders o SET details=o.details || jsonb_build_object('fulfillment',jsonb_build_object('tracking',$3::text,'delivery_notes',$4::text,'updated_at',now()))
- FROM shops s WHERE o.shop_id=s.id AND s.owner_key=$2 AND o.id=$1::uuid AND o.status IN ('held','released') AND EXISTS (SELECT 1 FROM subscriptions WHERE owner_key=s.owner_key AND status='active')
+export const FULFILL_SQL=`UPDATE orders o SET details=o.details || jsonb_build_object('fulfillment',jsonb_build_object('tracking',$3::text,'delivery_notes',$4::text,'carrier',$5::text,'status','shipped','updated_at',now())),status=CASE WHEN o.payment_method='COD' THEN 'fulfilled' ELSE o.status END
+ FROM shops s WHERE o.shop_id=s.id AND s.owner_key=$2 AND o.id=$1::uuid AND (o.status IN ('held','released') OR (o.payment_method='COD' AND o.status IN ('pending','fulfilled'))) AND EXISTS (SELECT 1 FROM subscriptions WHERE owner_key=s.owner_key AND status='active')
  RETURNING o.id,o.status,o.details->'fulfillment' AS fulfillment`;
 export async function fulfill(id:string,ownerKey:string,value:unknown,query:Query=run){
- uuid(id);const raw=object(value),tracking=text(raw.tracking??'',500,false),notes=text(raw.delivery_notes??'',4000,false);
+ uuid(id);const raw=object(value),tracking=text(raw.tracking??'',500,false),notes=text(raw.delivery_notes??'',4000,false),carrier=text(raw.carrier??'',100,false);
  if(!tracking&&!notes)throw new ApiError('INVALID_INPUT');
- const rows=await query(FULFILL_SQL,[id,ownerKey,tracking,notes]);
+ const rows=await query(FULFILL_SQL,[id,ownerKey,tracking,notes,carrier]);
  if(!rows.length)throw new ApiError('ORDER_NOT_FOUND_OR_NOT_ELIGIBLE',404);return rows[0];
 }
 export async function payout(ownerKey:string,value:unknown,query:Query=run){
@@ -67,7 +68,8 @@ export async function payout(ownerKey:string,value:unknown,query:Query=run){
  }catch(error){if((error as {code?:string}).code==='P0001')throw new ApiError('PAYOUT_NOT_AVAILABLE',409);throw error;}
 }
 export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name,escrow_hold_days FROM shops WHERE owner_key=$1),
- ord AS (SELECT o.* FROM orders o JOIN owned s ON s.id=o.shop_id),
+ all_ord AS (SELECT o.* FROM orders o JOIN owned s ON s.id=o.shop_id),
+ ord AS (SELECT * FROM all_ord WHERE payment_method='CRYPTO'),
  pay AS (SELECT p.* FROM payout_requests p JOIN owned s ON s.id=p.shop_id),
  buckets AS (SELECT coin,network FROM ord UNION SELECT coin,network FROM pay),
  balances AS (SELECT b.coin,b.network,
@@ -79,7 +81,7 @@ export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name,escrow_hold_days 
  FROM buckets b)
  SELECT (SELECT row_to_json(s) FROM owned s) AS shop,
  coalesce((SELECT json_agg(b ORDER BY coin,network) FROM balances b),'[]') AS balances,
- coalesce((SELECT json_agg(json_build_object('id',id,'gross_amount',gross_amount::text,'commission_amount',commission_amount::text,'net_amount',net_amount::text,'coin',coin,'network',network,'status',status,'tx_id',tx_id,'escrow_hold_days',escrow_hold_days,'escrow_release_at',escrow_release_at,'force_released_at',force_released_at,'payment_verified_at',payment_verified_at,'created_at',created_at,'details',details) ORDER BY created_at DESC,id) FROM ord),'[]') AS orders,
+ coalesce((SELECT json_agg(json_build_object('id',id,'gross_amount',gross_amount::text,'commission_amount',commission_amount::text,'net_amount',net_amount::text,'coin',coin,'network',network,'status',status,'tx_id',tx_id,'escrow_hold_days',escrow_hold_days,'escrow_release_at',escrow_release_at,'force_released_at',force_released_at,'payment_verified_at',payment_verified_at,'created_at',created_at,'details',details,'payment_method',payment_method,'escrow_status',escrow_status) ORDER BY created_at DESC,id) FROM all_ord),'[]') AS orders,
  coalesce((SELECT json_agg(json_build_object('id',id,'amount',amount::text,'coin',coin,'network',network,'wallet',wallet,'status',status,'tx_id',tx_id,'created_at',created_at) ORDER BY created_at DESC,id) FROM pay),'[]') AS payouts`;
 export async function dashboard(ownerKey:string,query:Query=run){return (await query(DASHBOARD_SQL,[ownerKey]))[0];}
 

@@ -5,7 +5,7 @@ import type { Message } from "../translations";
 import { cartTotal, type CartLine } from "./cart-data";
 import type { Product, Shop } from "./shop-data";
 
-export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuyerView=false}:{isSharedBuyerView?:boolean;lines:CartLine[];shop:Shop;change:(id:string,delta:number)=>void;onClose:()=>void;onPay:(product:Product,details:string,items:{id:string;quantity:number}[])=>void}){
+export default function CartDrawer({lines,shop,change,onClose,onPay,onCod,isSharedBuyerView=false}:{onCod?:()=>void;isSharedBuyerView?:boolean;lines:CartLine[];shop:Shop;change:(id:string,delta:number)=>void;onClose:()=>void;onPay:(product:Product,details:string,items:{id:string;quantity:number}[])=>void}){
   const {t}=useLanguage();
   const dialog=useRef<HTMLDialogElement>(null);
   const [note,setNote]=useState(""),[status,setStatus]=useState<Message|"">("");
@@ -33,8 +33,9 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,isSharedBuye
     {!total&&lines.length>0&&<p role="status">{t("Cart totals require compatible USD, USDC, or USDT prices. Confirm other currencies with the seller.")}</p>}
     <p className="my-3 text-sm">{t("Delivery fees are confirmed by the seller.")}</p>
     <div className="grid gap-3">
+      {shop.codEnabled!==false&&onCod&&<button type="button" disabled={!lines.length} className="rounded-lg border border-emerald-700 px-4 py-3 font-semibold disabled:opacity-50" onClick={onCod}>{t("Cash on Delivery (COD)")}</button>}
       <button type="button" disabled={!lines.length||!shop.phone.replace(/\D/g,"")} onClick={whatsapp} className="rounded-lg bg-emerald-700 px-4 py-3 font-semibold text-white disabled:opacity-50">{t("Order All on WhatsApp")}</button>
-      {<button type="button" disabled={!total} onClick={()=>{
+      {shop.escrowEnabled!==false&&<button type="button" disabled={!total} onClick={()=>{
         if(!total)return;
         const order:Product={id:"cart-order",name:t("Cart Order"),price:total.amount+" "+total.currency,category:"Other",gender:"unisex",image:"",url:"",source:"Other"};
         dialog.current?.close();onPay(order,details,lines.map(({product,quantity})=>({id:product.id,quantity})));
