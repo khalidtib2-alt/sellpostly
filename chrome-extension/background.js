@@ -1,27 +1,37 @@
 "use strict";
-if(typeof importScripts==="function")importScripts("app-config.js","frontend-url.js");
-const SHOP_SITE = globalThis.SELLPOSTLY_APP_URL || "https://sellpostly.vercel.app";
-function publicUrl(value) {
- if(typeof value!=="string"||value.length>20000)return "";
- try { const url=new URL(value);return ["https:","http:"].includes(url.protocol)?url.href:""; } catch { return ""; }
+importScripts("app-config.js","frontend-url.js");
+function cleanProductLink(value){
+ try{const u=new URL(value);if(!["http:","https:"].includes(u.protocol))return "";
+ if(/(^|\.)amazon\.[a-z.]+$/i.test(u.hostname)){const match=u.pathname.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})(?:\/|$)/i);if(match)return u.origin+"/dp/"+match[1].toUpperCase();}
+ for(const key of [...u.searchParams.keys()])if(/^(utm_|ref|tag$|fbclid$|gclid$|ascsubtag$|linkCode$|camp$|creative$|affiliate|aff_|tracking)/i.test(key))u.searchParams.delete(key);
+ u.hash="";return u.href;
+ }catch{return "";}
 }
-function shopImportUrl(value,base=SHOP_SITE) {
+function prepareProduct(value){
  if(!value||typeof value!=="object")throw Error("INVALID_PRODUCT");
- const clean=(value,max)=>typeof value==="string"?value.trim().slice(0,max):"";
- const title=clean(value.title||value.name,120);
- if(!title)throw Error("INVALID_PRODUCT");
- const url=publicUrl(value.url),host=url?new URL(url).hostname:"";
- const source=/(^|\.)amazon\./i.test(host)?"Amazon":/(^|\.)aliexpress\./i.test(host)?"AliExpress":/(^|\.)myshopify\.com$/i.test(host)?"Shopify":"Other";
- const product={id:crypto.randomUUID(),title,price:clean(value.price,50),description:clean(value.description||value.features,4000),image:publicUrl(value.image),url,category:["Tech & Gadgets","Fashion","Home & Kitchen","Beauty","Fitness","Top Deals","Digital Product","Art","Sport","Other"].includes(value.category)?value.category:"Top Deals",gender:["unisex","women","men","kids"].includes(value.gender)?value.gender:"unisex",source};
- const target=new URL("/shop",base);
- target.hash=new URLSearchParams({importProduct:JSON.stringify(product)}).toString();
- if(target.hash.length>250000)throw Error("IMPORT_TOO_LARGE");
- return target.href;
+ const text=(v,n)=>typeof v==="string"?v.trim().slice(0,n):"";
+ const title=text(value.title||value.name,120);if(!title)throw Error("INVALID_PRODUCT");
+ const url=cleanProductLink(value.url),image=typeof value.image==="string"&&/^https?:\/\//i.test(value.image)?value.image.slice(0,20000):"";
+ return {id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category:text(value.category,80)||"Top Deals",gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
+}
+async function sendProduct(value){
+ const product=prepareProduct(value),base=await SellPostlyFrontend.resolve();
+ const tab=await chrome.tabs.create({url:new URL("/shop",base).href});if(!tab.id)throw Error("TAB_UNAVAILABLE");
+ for(let attempt=0;attempt<30;attempt++){
+  try{
+   const result=await chrome.scripting.executeScript({target:{tabId:tab.id},args:[product,base],func:(item,origin)=>{
+    if(location.origin!==origin||location.pathname!=="/shop")return false;
+    try{localStorage.setItem("sellpostly_pending_shop_item",JSON.stringify(item));window.postMessage({type:"SELLPOSTLY_PRODUCT_IMPORT",product:item},origin);return true;}catch{return false;}
+   }});
+   if(result?.[0]?.result===true)return;
+  }catch{}
+  await new Promise(resolve=>setTimeout(resolve,500));
+ }
+ throw Error("BRIDGE_UNAVAILABLE");
 }
 chrome.runtime.onMessage.addListener((message,sender,respond)=>{
  if(message?.type!=="SELLPOSTLY_SEND_TO_SHOP")return false;
  if(sender.id!==chrome.runtime.id){respond({ok:false,error:"INVALID_SENDER"});return false;}
- (async()=>{try{const base=await globalThis.SellPostlyFrontend.resolve();const url=shopImportUrl(message.product,base);await chrome.tabs.create({url});respond({ok:true});}catch{respond({ok:false,error:"SHOP_IMPORT_FAILED"});}})();
- return true;
+ sendProduct(message.product).then(()=>respond({ok:true})).catch(()=>respond({ok:false,error:"SHOP_IMPORT_FAILED"}));return true;
 });
 
