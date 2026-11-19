@@ -17,7 +17,7 @@ try{
  const names=rows.map(row=>row.table_name);
  if(expected.some(name=>!names.includes(name)))throw Error('MISSING_TABLES');
  const columns=await sql.query("SELECT table_name,column_name FROM information_schema.columns WHERE table_schema='public' AND table_name IN ('shops','orders')");
- for(const [table,column] of [['shops','affiliate_catalog'],['shops','personal_catalog'],['shops','seller_usdc_wallet'],['shops','cod_enabled'],['orders','payment_method'],['orders','escrow_status']])if(!columns.some(row=>row.table_name===table&&row.column_name===column))throw Error('MISSING_PHASE2_COLUMNS');
+ for(const [table,column] of [['shops','affiliate_disclosure'],['shops','affiliate_catalog'],['shops','personal_catalog'],['shops','seller_usdc_wallet'],['shops','cod_enabled'],['orders','payment_method'],['orders','escrow_status']])if(!columns.some(row=>row.table_name===table&&row.column_name===column))throw Error('MISSING_PHASE2_COLUMNS');
  console.log('Database initialized successfully. Phase 2 catalog/payment columns verified. Tables:');
  for(const name of names)console.log(' - '+name);
 }catch(error){

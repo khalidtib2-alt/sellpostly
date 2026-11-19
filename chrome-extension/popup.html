@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="popup.css">
   <script src="app-config.js" defer></script>
   <script src="frontend-url.js" defer></script>
+  <script src="affiliate-guard.js" defer></script>
   <script src="popup.js" defer></script>
 </head>
 <body>
@@ -29,6 +30,7 @@
 <div class="studio-shortcuts"><button type="button" id="open-studio" class="primary"><span data-message="Open Full Studio">Open Full Studio</span></button><button type="button" id="send-shop" class="primary"><span data-message="Send to My Shop (Pro)">Send to My Shop (Pro)</span></button></div>
 
       <button type="button" id="import-page" class="primary"><span data-message="Import From Current Page">Import From Current Page</span></button>
+      <p id="affiliate-image-notice" class="image-notice" role="status" hidden data-message="Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.">Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.</p>
       <img id="imported-image" hidden alt="" style="max-width:100%;max-height:140px;object-fit:contain" />
       <div class="fields">
         <label><span data-message="Product Name">Product Name</span><input dir="auto" name="name" placeholder="Wireless headphones" data-placeholder="Wireless headphones" required maxlength="120"></label>

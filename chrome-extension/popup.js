@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 const messages = {
+"Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.":{"fr":"Les images des fiches Amazon ne peuvent pas être utilisées par lien direct : importez votre propre photo de test, utilisez une image du dossier de presse de la marque ou conservez cette illustration de studio.","ar":"لا يمكن ربط صور إعلانات أمازون مباشرةً — ارفع صورة مراجعة التقطتها بنفسك، أو استخدم صورة من الملف الإعلامي للعلامة التجارية، أو احتفظ بهذا الرسم التوضيحي."},
 "Stock (Optional)":{"fr":"Stock (facultatif)","ar":"المخزون (اختياري)"},
 "Affiliate Deals Shop":{"fr":"Boutique de bonnes affaires affiliées","ar":"متجر العروض بالعمولة"},
 "Personal Seller Shop":{"fr":"Boutique personnelle du vendeur","ar":"متجر البائع الشخصي"},
@@ -607,8 +608,8 @@ async function importCurrentProduct(preserveEdits=false) {
     const preview = document.querySelector("#imported-image");
     preview.hidden = !product.image;
     preview.onerror = () => { preview.hidden = true; };
-    if(product.image) preview.src = product.image;
-    else if(!preserveEdits)preview.removeAttribute("src");
+    if(product.image){preview.dataset.rawImage=product.image;refreshAffiliateImageGuard();}
+    else if(!preserveEdits){preview.removeAttribute("src");delete preview.dataset.rawImage;delete preview.dataset.shopImage;refreshAffiliateImageGuard();}
     lastRequest = null;
     results.hidden = true;
     feedback.textContent = t("Page imported. Review the details.");
@@ -701,15 +702,16 @@ document.querySelector("#open-studio").addEventListener("click",async()=>{
     const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
     if(/^https?:/.test(tab?.url||""))link=tab.url;
   }catch{}
+  const base=await globalThis.SellPostlyFrontend.resolve();
   const query=new URLSearchParams({
     title:String(data.get("name")||""),
     price:String(data.get("price")||""),
     delivery:String(data.get("delivery")||""),
     features:String(data.get("features")||""),
-    image:preview&&!preview.hidden?preview.src:"",
+    image:preview&&!preview.hidden?(preview.dataset.shopImage?new URL(preview.dataset.shopImage,base).href:preview.src):"",
     link
   });
-  chrome.tabs.create({url:(await globalThis.SellPostlyFrontend.resolve())+"/?"+query+"#formatter"});
+  chrome.tabs.create({url:base+"/?"+query+"#formatter"});
 });
 
 
@@ -734,8 +736,9 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   if(missing)await importCurrentProduct(true);
   const data=new FormData(form),title=String(data.get("name")||"").trim();
   if(!title){feedback.textContent=t("Enter a product name or import the current page first.");return;}
+  refreshAffiliateImageGuard();
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
+  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.dataset.shopImage||preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
   if(!result?.ok)throw Error();
   feedback.textContent=t("Opening My Shop. Activate Pro on the website if requested.");
  }catch{feedback.textContent=t("Could not open My Shop. Reload the extension and try again.");}
@@ -747,3 +750,12 @@ void globalThis.SellPostlyFrontend.resolve().then(base=>{for(const link of docum
 const destinationPicker=document.querySelector('#store-destination');
 try{const saved=localStorage.getItem('sellpostly-store-destination');if(saved==='affiliate'||saved==='personal')destinationPicker.value=saved;}catch{}
 destinationPicker.addEventListener('change',()=>{try{localStorage.setItem('sellpostly-store-destination',destinationPicker.value);}catch{}});
+
+function refreshAffiliateImageGuard(){
+ const form=document.querySelector('#seller'),preview=document.querySelector('#imported-image'),notice=document.querySelector('#affiliate-image-notice');
+ const source=preview.dataset.rawImage||preview.getAttribute('src')||'',affiliate=form.elements.namedItem('destination').value==='affiliate';
+ const blocked=affiliate&&SellPostlyAffiliate.isImage(source);notice.hidden=!blocked;
+ if(blocked){const image=SellPostlyAffiliate.illustration(form.elements.namedItem('category').value);preview.dataset.shopImage=image;preview.src=chrome.runtime.getURL(image.slice(1));preview.hidden=false;notice.textContent=t('Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.');}
+ else{delete preview.dataset.shopImage;if(preview.dataset.rawImage){preview.src=preview.dataset.rawImage;preview.hidden=false;}}
+}
+for(const name of ['destination','category'])document.querySelector('#seller').elements.namedItem(name).addEventListener('change',refreshAffiliateImageGuard);

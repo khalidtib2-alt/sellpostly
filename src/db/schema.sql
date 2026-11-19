@@ -311,3 +311,9 @@ UPDATE shops SET seller_usdc_wallet=personal_catalog->>'cryptoWallet' WHERE sell
 UPDATE shops SET affiliate_catalog=jsonb_set(jsonb_set(catalog-'heroTitle'-'heroSubtitle'-'heroImage'-'shopAccent','{shopMode}','"affiliate"'),'{products}','[]') WHERE affiliate_catalog IS NULL AND catalog ? 'products';
 -- statement-breakpoint
 UPDATE shops SET personal_catalog=jsonb_set(jsonb_set(catalog-'heroTitle'-'heroSubtitle'-'heroImage'-'shopAccent','{shopMode}','"personal"'),'{products}','[]') WHERE personal_catalog IS NULL AND catalog ? 'products';
+
+-- Affiliate disclosure is independent of the Personal catalog.
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS affiliate_disclosure text NOT NULL DEFAULT '';
+-- statement-breakpoint
+UPDATE shops SET affiliate_disclosure=left(affiliate_catalog->>'affiliateDisclosure',500) WHERE affiliate_disclosure='' AND coalesce(affiliate_catalog->>'affiliateDisclosure','')<>'';

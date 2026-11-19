@@ -1,37 +1,43 @@
-SellPostly Distinct Storefront Templates + Chrome Extension 1.0.3
+SellPostly Affiliate Guardrails + Extension 1.0.4
 
-WEBSITE PATCH
-Extract this bundle into your repository root, preserving src/, scripts/, tests/, public/ and chrome-extension/. This is cumulative with Phase 1/2, product pages, cart sync, support contact and demo artwork. Original checkout was not modified and nothing was deployed.
-
-If a misplaced root app/ directory exists, run the guarded backup repair:
+INSTALLATION
+Extract into the repository root, preserving src/, public/, scripts/, tests/ and chrome-extension/. This cumulative patch retains the prior independent catalogs, editorial/boutique templates, product pages, cart, COD, escrow and email changes.
+If a misplaced duplicate root app/ exists, use the guarded backup helper:
 node scripts/fix-duplicate-app.mjs
 
-If Phase 2 database columns have not yet been applied, run npm run db:init using your own DATABASE_URL before deploying. This design update stores hero, palette and optional stock settings in the existing catalog JSON. It does not require additional columns beyond Phase 2. The included idempotent schema preserves independent empty-mode design defaults.
+Run the idempotent migration BEFORE deploying the updated application:
+npm run db:init
+This adds shops.affiliate_disclosure, preserves existing disclosure text from affiliate_catalog, and verifies the new column. Use your own DATABASE_URL/environment configuration; no secrets are included.
 
-Run npm run build and npm test, then deploy using your normal process.
+npm run build
+npm test
+Deploy through your normal process. This work has not modified the original checkout, migrated live Neon or deployed.
 
-TWO TEMPLATES
-Affiliate (/s/<slug>/affiliate and Affiliate preview): a magazine-style curator hero, featured editorial pick, numbered photography cards, actual-description highlight bullets, category/audience filters, real compare-at discount calculations, and direct sponsored View Best Deal links. No cart, crypto, COD or escrow UI appears in the buyer Affiliate layout. Verified Store is shown only for an Admin-verified store; the template does not claim each deal is independently verified.
+DISCLOSURE EDITOR AND BANNER
+The Affiliate settings now have three preset pills above the editable textarea: Multi-Network Default, Amazon + Multi-Network and Amazon Only. EN preset copy matches the requested wording. FR/AR presets are translated. Save Disclosure publishes through the existing Pro-gated shop endpoint, persisting both catalog JSON and the independent affiliate_disclosure column. Publishing the Personal catalog does not overwrite it.
+The active disclosure appears above the Affiliate hero in public and preview views. Empty disclosure text displays the Multi-Network Default. Known preset wording is displayed in the visitor's current language; custom seller text remains as authored. Seller text is rendered as plain escaped text.
 
-Personal (/s/<slug>/personal and Personal preview): a boutique hero, brand typography, Admin verification and escrow/payment indicators tied to configuration, hover image zoom, quantity-aware Quick View, full Product Landing Page links, and a slide-out Shopping Bag. Existing escrow, recorded COD and cart persistence remain connected.
+AMAZON PRICE AND CTA GUARDS
+Amazon regional destination hosts and amzn.to are identified by parsed hostname, not by substrings in a query or path. Lookalike hosts such as amazon.com.evil.example do not match. Affiliate Amazon cards omit current price, compare-at price, computed discounts and promotional badges. They use Check Price on Amazon with nofollow/sponsored/noopener/noreferrer and retain the full affiliate tracking URL. Non-Amazon affiliate cards keep their existing price and discount presentation. Personal Seller checkout/pricing is unchanged.
+The checks are host-based; they do not resolve arbitrary third-party redirect services. These are the requested product guardrails, not an affiliate-network approval workflow.
 
-In Builder, choose the shop type and edit Template Design: headline, subtitle, hero image URL, accent palette and background theme. Settings persist independently in each catalog and through published/snapshot links. Preview Template controls let you switch directly between both designs. Imported seller photos remain uncropped with contained product frames; dark themes use a white image frame.
+IMAGE GUARDS
+Raw media-amazon.com, images-amazon.com and ssl-images-amazon.com URLs (including their subdomains) are replaced with owned category illustrations in Affiliate products, additional photos and hero images during validation/loading/publishing. Existing saved catalogs are therefore protected when rendered. Affiliate image editor fields substitute on blur and again on save, with the translated helper notice. Own device uploads and non-Amazon press-kit/review photo URLs remain available.
+The extension's Affiliate destination substitutes a packaged local illustration before displaying the imported photo and passes a safe /demo-products/*.svg website path through the existing short-URL bridge. The worker also checks incoming image payloads. Affiliate tags are preserved. Personal destination behavior remains separate. Open Full Studio uses the corresponding website image URL, rather than a chrome-extension resource URL.
+The source assets and image notice are bundled locally; no image generation/tracking API is used at runtime.
 
-STOCK
-Stock is optional and entered by the seller; no stock quantity is invented or scraped. Zero stock disables buying actions in the buyer template. Checkout rejects quantities exceeding the configured stock. This is a manual availability/quantity limit, not an inventory reservation or automatic decrement system.
-
-EXTENSION 1.0.3
-The bundle contains a standalone SellPostly-Extension-1.0.3.zip. Extract it into a separate folder and use Chrome -> chrome://extensions -> Developer mode -> Load unpacked, choosing the folder containing manifest.json. If updating an existing unpacked install, reload that folder and verify version 1.0.3.
-
-The Destination Store selector above Send to My Shop (Pro) offers Affiliate Deals Shop and Personal Seller Shop and remembers the selection. Category, audience, price, photo, description and optional stock travel in the existing short-URL localStorage/postMessage bridge.
-- Affiliate destination: the complete external affiliate URL, including Amazon tag and campaign parameters, is preserved.
-- Personal destination: store tracking parameters are removed as before, and the product enters only the Personal catalog.
-The website archives the outgoing catalog, consumes the import once, switches to the target category and template preview, and also handles imports arriving after the builder has mounted. Legacy imports without a destination keep their existing active-mode behavior. Pro activation still happens on the website; no license bypass was added.
-
-The extension keeps activeTab/scripting/storage permissions only. The known frontend allowlist and vercel.com rejection remain intact. The extension configuration fallback now uses https://sellpostly.vercel.app, including installed static shortcut links. Use NEXT_PUBLIC_APP_URL for your canonical deployment; do not use a Vercel dashboard or preview URL.
+EXTENSION INSTALLATION
+The bundle includes a standalone SellPostly-Extension-1.0.4.zip. Extract it, then use chrome://extensions -> Developer mode -> Load unpacked and select the folder containing manifest.json. For an existing unpacked install, reload the updated folder and verify version 1.0.4.
+Version 1.0.4 retains only activeTab, scripting and storage permissions. Affiliate and Personal destination selectors, category/audience controls and EN/FR/AR with RTL are preserved. The default frontend is https://sellpostly.vercel.app; vercel.com remains blocked.
 
 VERIFICATION
 npm run build: 0 errors.
-npm test: all 49 tests passed.
-Additional checks: popup.js/background.js syntax, version/permissions, destination handoff, affiliate tag preservation, independent palette/hero serialization, discount/stock validation, repeated imports, dedicated buyer-template rendering, and existing Phase 2 PostgreSQL/email tests. Emails use a mocked Resend service. No live DB migration, payment, email or deployment was performed.
-The environment-specific os.userInfo test workaround is not shipped. No environment files, secrets, dependencies or build outputs are included. EN/FR/AR labels and RTL layout are retained.
+npm test: 53 tests passed.
+Checks cover regional/short Amazon links, deceptive hosts, image substitution, packaged SVG availability, popup notices, safe bridge payloads, affiliate-tag preservation, disclosure migration/preset persistence and Personal isolation, rendered price/discount suppression and non-Amazon retention. Existing PostgreSQL, order, email, cart and template tests also pass. Extension scripts passed syntax checks. Local tests used an environment-only os.userInfo workaround that is not shipped.
+No live email, payment, database migration or deployment was performed. No .env files, credentials, node_modules, build outputs or private helper files are included.
+
+OFFICIAL REFERENCES
+Amazon Associates Operating Agreement:
+https://affiliate-program.amazon.com/help/operating/agreement
+Amazon Associates Program Policies (price/availability and content-use requirements):
+https://affiliate-program.amazon.com/help/operating/policies

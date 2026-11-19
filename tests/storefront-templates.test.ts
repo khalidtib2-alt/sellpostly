@@ -29,13 +29,13 @@ test('destination imports preserve affiliate tags and both catalogs, including r
  db.setItem(pendingShopKey,JSON.stringify(item));assert.equal(consumePending(result.shop,db).shop.products.length,2);
  db.setItem(pendingShopKey,JSON.stringify({...item,id:'personal-import',destination:'personal'}));const own=consumePending(result.shop,db).shop;assert.equal(own.shopMode,'personal');assert.equal(own.heroTitle,'Our pieces');assert.deepEqual(own.products.map(p=>p.id),['personal-import','own']);assert.ok(own.products.every(p=>p.catalogMode==='personal'));
 });
-test('extension 1.0.3 bridges destination and stock, preserves affiliate URL parameters, and cleans personal links',async()=>{
+test('extension 1.0.4 bridges destination and stock, preserves affiliate URL parameters, and cleans personal links',async()=>{
  let listener:any,bridged:any;const opened:string[]=[];
  const context=vm.createContext({URL,URLSearchParams,crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},importScripts:()=>{},SellPostlyFrontend:{resolve:async()=> 'https://sellpostly.vercel.app'},chrome:{runtime:{id:'extension',onMessage:{addListener:(fn:any)=>{listener=fn;}}},tabs:{create:async({url}:{url:string})=>{opened.push(url);return {id:1};}},scripting:{executeScript:async({args}:{args:any[]})=>{bridged=args[0];return [{result:true}];}}}});
- vm.runInContext(await readFile('chrome-extension/background.js','utf8'),context);
+ vm.runInContext(await readFile('chrome-extension/affiliate-guard.js','utf8'),context);vm.runInContext(await readFile('chrome-extension/background.js','utf8'),context);
  const url='https://www.amazon.com/product-name/dp/B012345678?tag=ourshop-20&ascsubtag=summer&utm_source=test';
  for(const destination of ['affiliate','personal']){const result:any=await new Promise(resolve=>listener({type:'SELLPOSTLY_SEND_TO_SHOP',product:{title:'Product',price:'25 USD',url,destination,stock:4}},{id:'extension'},resolve));assert.equal(result.ok,true);assert.equal(bridged.destination,destination);assert.equal(bridged.stock,4);assert.equal(bridged.url,destination==='affiliate'?url:'https://www.amazon.com/dp/B012345678');assert.equal(opened.at(-1),'https://sellpostly.vercel.app/shop');}
- const manifest=JSON.parse(await readFile('chrome-extension/manifest.json','utf8'));assert.equal(manifest.version,'1.0.3');assert.deepEqual(manifest.permissions,['activeTab','scripting','storage']);
+ const manifest=JSON.parse(await readFile('chrome-extension/manifest.json','utf8'));assert.equal(manifest.version,'1.0.4');assert.deepEqual(manifest.permissions,['activeTab','scripting','storage']);
  const popup=await readFile('chrome-extension/popup.html','utf8');assert.ok(popup.includes('name="destination"'));assert.ok(popup.includes('value="affiliate"'));assert.ok(popup.includes('value="personal"'));
 });
 test('discounts reflect compatible prices and stock limits are enforced before checkout',()=>{
@@ -50,7 +50,7 @@ test('public views render distinct templates without affiliate cart/escrow leaka
  import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';import assert from 'node:assert/strict';import Store from './src/app/shop/shop-builder.tsx';import {LanguageProvider} from './src/app/language-context.tsx';
  const base={name:'Store',bio:'',phone:'',shopTheme:'sand',shopAccent:'amber',products:[{id:'p',name:'Product',price:'20 USD',compareAtPrice:'40 USD',category:'Other',gender:'unisex',image:'/demo-products/headphones.svg',url:'https://amazon.com/dp/TEST?tag=ourshop-20',source:'Amazon',description:'Lightweight\\nAdjustable'}]};
  const render=mode=>renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(Store,{initialShop:{...base,shopMode:mode},isSharedBuyerView:true,publicSlug:'seller'})));
- const aff=render('affiliate');assert.ok(aff.includes('data-template="editorial"'));assert.ok(aff.includes('View Best Deal'));assert.ok(aff.includes('tag=ourshop-20'));assert.ok(aff.includes('50%'));for(const text of ['Add to Cart','Pay with USDC','Cash on Delivery','Escrow Buyer Protection','Shopping Bag'])assert.ok(!aff.includes(text),text);
+ const aff=render('affiliate');assert.ok(aff.includes('data-template="editorial"'));assert.ok(aff.includes('Check Price on Amazon'));assert.ok(aff.includes('tag=ourshop-20'));assert.ok(!aff.includes('50%'));assert.ok(!aff.includes('store-card-price'));for(const text of ['Add to Cart','Pay with USDC','Cash on Delivery','Escrow Buyer Protection','Shopping Bag'])assert.ok(!aff.includes(text),text);
  const own=render('personal');for(const text of ['data-template="boutique"','Quick View','Shopping Bag','Add to Cart','Cash on Delivery','/s/seller/product/p'])assert.ok(own.includes(text),text);assert.ok(!own.includes('https://amazon.com/dp/TEST'));
  `],{cwd:process.cwd(),encoding:'utf8',timeout:60000});assert.equal(result.status,0,result.stderr||result.stdout);
 });

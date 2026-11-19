@@ -51,7 +51,7 @@ test('extension service worker opens only the trusted gated shop and passes long
  let listener:any,bridged:any;const urls:string[]=[];
  const chrome={scripting:{executeScript:async({args}:{args:any[]})=>{bridged=args[0];return [{result:true}];}},runtime:{id:'test-extension',onMessage:{addListener:(fn:unknown)=>{listener=fn;}}},tabs:{create:async({url}:{url:string})=>{urls.push(url);return {id:1};}}};
  const context=vm.createContext({importScripts:()=>{},SellPostlyFrontend:{resolve:async()=> 'https://sellpostly.vercel.app'},chrome,URL,URLSearchParams,crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'}});
- vm.runInContext(source,context);
+ vm.runInContext(await readFile('chrome-extension/affiliate-guard.js','utf8'),context);vm.runInContext(source,context);
  const product={title:'Imported product',price:'39 USD',image:'https://images.example.com/product.jpg?key='+'x'.repeat(12000),description:'Full product description',url:'https://www.amazon.com/dp/item?tag='+'y'.repeat(12000)};
  const result:any=await new Promise(resolve=>{assert.equal(listener({type:'SELLPOSTLY_SEND_TO_SHOP',product},{id:'test-extension'},resolve),true);});
  assert.equal(result.ok,true);assert.equal(urls.length,1);
