@@ -1,4 +1,5 @@
 "use client";
+import {cardShareUrl} from '../../lib/storefront-seo';
 import {defaultStock,isLocalStock,resolvePhotos,selectStock,type StockPhoto} from './stock-photos';
 import {unbrandedQuery} from './unbranded-query';
 import AffiliateImageEditor from './affiliate-image-editor';
@@ -141,14 +142,14 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       }
     }void assign();return()=>controller.abort();
   },[unresolved]);
-  async function share(){
-    if(publicSlug||snapshot){setShareTarget({url:productShareUrl(publicSlug?storePath(publicSlug,shop.shopMode):'/shop?'+new URLSearchParams({s:snapshot!})),title:shop.name});return;}
+  async function share(product?:Product){
+    if(publicSlug||snapshot){setShareTarget({url:product?cardShareUrl(shop.shopMode,product.id,publicSlug,snapshot):productShareUrl(publicSlug?storePath(publicSlug,shop.shopMode):'/shop?'+new URLSearchParams({s:snapshot!})),title:product?.name||shop.name,product:!!product});return;}
     try{
       const key=localStorage.getItem("sellpostly-pro-key")||"";
       const response=await fetch("/api/shops",{method:"POST",headers:{"Content-Type":"application/json","x-pro-key":key},body:JSON.stringify(shop)});
       if(!response.ok)throw Error();
       const result=await response.json();
-      setPublishedSlug(result.slug);setShareTarget({url:productShareUrl(storePath(result.slug,shop.shopMode)),title:shop.name});
+      setPublishedSlug(result.slug);setShareTarget({url:product?cardShareUrl(shop.shopMode,product.id,result.slug):productShareUrl(storePath(result.slug,shop.shopMode)),title:product?.name||shop.name,product:!!product});
     }catch{setStatus("Could not publish the shop. Check your Pro license and database setup.");}
   }
   async function shareMode(mode:'affiliate'|'personal',copyOnly=false){
@@ -181,14 +182,14 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
 {shared&&<div role="group" aria-label={t("Language")} className="flex gap-1 rounded-full border border-slate-300 bg-white p-1 text-slate-900">
 {(["en","fr","ar"] as const).map(value=><button type="button" key={value} lang={value} aria-pressed={language===value} onClick={()=>setLanguage(value)} className={language===value?"rounded-full bg-emerald-700 px-3 py-2 text-sm font-semibold text-white":"rounded-full px-3 py-2 text-sm font-semibold"}>{value==="ar"?"العربية":value.toUpperCase()}</button>)}
 </div>}</header>
-{shared&&loaded&&<button type="button" className={button+" mb-5"} onClick={share}>{t("Share Store")}</button>}
+{shared&&loaded&&<button type="button" className={button+" mb-5"} onClick={()=>void share()}>{t("Share Store")}</button>}
 {!loaded&&<p role="status">{t("Loading storefront…")}</p>}
     {(shared||preview)&&loaded&&shop.shopMode==='affiliate'&&<aside className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5" aria-label={t('Affiliate Disclosure')}><p className="mb-2 text-sm font-bold">{t('Affiliate Disclosure')}</p><p className="text-sm leading-relaxed">{(()=>{const value=shop.affiliateDisclosure||disclosurePresets[0].text;const preset=disclosurePresets.find(p=>[p.text,translations[p.text].fr,translations[p.text].ar].some(candidate=>candidate===value));return preset?t(preset.text):value;})()}</p></aside>}
     {(shared||preview)&&loaded&&<StorefrontHero shop={shop} verified={verifiedStore}/>}
     <label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>
     {!shared&&<div className="mb-6 flex flex-wrap gap-3">
       {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>{setPreview(true);setAdding(false);}}>{t("Storefront Preview")}</button></>}
-      <button className={button} disabled={!loaded} onClick={share}>{t("Share Store")}</button>
+      <button className={button} disabled={!loaded} onClick={()=>void share()}>{t("Share Store")}</button>
     </div>}
     {!shared&&loaded&&<div className="mb-6 flex flex-wrap gap-3" aria-label={t('Preview Template')}>{(['affiliate','personal'] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:'rounded-lg border px-4 py-2'} onClick={()=>{try{setShop(switchCatalog(shop,mode,localStorage));setPreview(true);setAdding(false);setFilter('All');setGenderFilter('all');}catch{setStatus('Could not save. Device storage may be full.');}}}>{t(mode==='affiliate'?'Affiliate Deals Shop':'Personal Seller Shop')}</button>)}</div>}
     {!shared&&loaded&&<section className="mb-6 grid gap-4 md:grid-cols-2">{(['affiliate','personal'] as const).map(mode=><article key={mode} className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="text-xl font-bold">{t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')}</h2><p className="my-3 text-sm text-slate-600">{t(mode==='affiliate'?'External deals only. No cart or escrow.':'Your products, cart and enabled checkout methods.')}</p><input aria-label={t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')} readOnly dir="ltr" className={field} value={publishedSlug?productShareUrl(storePath(publishedSlug,mode)):t('Publish to create this link')}/><div className="mt-3 flex gap-3"><button disabled={publishing} type="button" className={button} onClick={()=>shareMode(mode,true)}>{t('Copy Link')}</button><button disabled={publishing} type="button" className="rounded-lg border px-4 py-2" onClick={()=>shareMode(mode)}>{t('Social Share')}</button></div></article>)}</section>}
@@ -248,7 +249,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex","kids"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":value==="kids"?"Kids":"Unisex")}</button>)}
     </div>
-    {(shared||preview)?<><div id="store-collection" className="store-collection-heading"><h2>{t(shop.shopMode==='affiliate'?'The Curated Edit':'The Signature Collection')}</h2><span className="text-sm text-slate-600">{matches.length} {t('pieces to explore')}</span></div><StorefrontProducts shop={shop} products={matches.slice(0,visible)} slug={publicSlug} snapshot={snapshot} onAdd={(p,q)=>changeCart(p.id,q)} onPay={(p,q)=>setCheckout(productCheckout(p,q))} onCod={(p,q)=>setCodLines([{product:p,quantity:q}])}/></>:(<>    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} onClick={e=>{if(shop.shopMode==="personal"&&!(e.target as HTMLElement).closest("a,button,input,textarea,select"))location.href=productPath(p.id,publicSlug,snapshot);}} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
+    {(shared||preview)?<><div id="store-collection" className="store-collection-heading"><h2>{t(shop.shopMode==='affiliate'?'The Curated Edit':'The Signature Collection')}</h2><span className="text-sm text-slate-600">{matches.length} {t('pieces to explore')}</span></div><StorefrontProducts onShare={p=>void share(p)} shop={shop} products={matches.slice(0,visible)} slug={publicSlug} snapshot={snapshot} onAdd={(p,q)=>changeCart(p.id,q)} onPay={(p,q)=>setCheckout(productCheckout(p,q))} onCod={(p,q)=>setCodLines([{product:p,quantity:q}])}/></>:(<>    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matches.slice(0,visible).map(p=><article key={p.id} onClick={e=>{if(shop.shopMode==="personal"&&!(e.target as HTMLElement).closest("a,button,input,textarea,select"))location.href=productPath(p.id,publicSlug,snapshot);}} className="overflow-hidden rounded-xl border border-slate-200 bg-white p-4">
       <div className={(shop.shopMode==="personal"?"cursor-pointer ":"")+"product-image-frame h-52 w-full bg-slate-50 p-4 flex items-center justify-center overflow-hidden rounded-xl"}>{p.image&&<img src={p.image} alt={p.name} className={"max-h-full max-w-full w-auto h-auto object-contain "+(shop.shopTheme==="slate"?"":"mix-blend-multiply")} onError={e=>{e.currentTarget.style.display="none";}}/>}</div>
       <p className="mt-3 text-xs text-emerald-800">{p.source}</p><h2 className="text-xl font-bold">{shop.shopMode==="personal"?<a href={productPath(p.id,publicSlug,snapshot)} className="hover:underline">{p.id.startsWith("sample-")?t(p.name as Message):p.name}</a>:p.id.startsWith("sample-")?t(p.name as Message):p.name}</h2><p className="my-2 font-semibold">{p.price} {p.compareAtPrice&&<del className="ms-2 text-sm font-normal text-slate-600">{p.compareAtPrice}</del>}</p>{p.badge&&p.badge!=="none"&&<span className="mb-2 inline-block rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold">{t(p.badge==="hot"?"Hot":p.badge==="sale"?"Sale":p.badge==="limited"?"Limited":"New")}</span>}{p.gender!=="unisex"&&<span className="mb-2 inline-block rounded-full bg-slate-50 px-3 py-1 text-xs">{t(p.gender==="men"?"Men":p.gender==="kids"?"Kids":"Women")}</span>}
       {p.description&&<p dir="auto" className="my-3 line-clamp-3 whitespace-pre-line text-sm text-slate-600">{p.description}</p>}

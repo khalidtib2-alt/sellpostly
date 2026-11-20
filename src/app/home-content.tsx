@@ -1,6 +1,8 @@
 "use client";
 
 import { useLanguage } from "./language-context";
+import UserGuide from './user-guide';
+import SocialConnect from './social-connect';
 import Formatter from "./formatter";
 
 
@@ -17,16 +19,8 @@ export default function HomeContent() {
           </div>
         </section>
         <section id="formatter" className="mx-auto max-w-6xl scroll-mt-6 px-5 py-14"><Formatter /></section>
-        <section id="guides" className="bg-slate-50 px-5 py-14">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold tracking-tight">{t("How It Works in 3 Steps")}</h2>
-            <ol className="mt-7 grid list-decimal gap-5 ps-5 sm:grid-cols-3">
-              <li className="ps-1"><strong>{t("Enter your details")}</strong><p className="mt-1 text-slate-600">{t("Add product details in Seller Mode or paste a hook in Creator Mode.")}</p></li>
-              <li className="ps-1"><strong>{t("Generate posts")}</strong><p className="mt-1 text-slate-600">{t("Review the text formatted for each platform.")}</p></li>
-              <li className="ps-1"><strong>{t("Copy and publish")}</strong><p className="mt-1 text-slate-600">{t("Paste the text into the platform and add your photos or video before publishing.")}</p></li>
-            </ol>
-          </div>
-        </section>
+        <UserGuide />
+        <SocialConnect />
         <section id="extension" className="mx-auto max-w-6xl px-5 py-10">
           <h2 className="text-2xl font-bold">{t("Chrome Extension")}</h2><p className="mt-2 text-slate-600">{t("Format and copy posts from the Chrome toolbar.")}</p><a href="/extension" className="mt-3 inline-block font-semibold text-emerald-800 underline">{t("Install the Chrome extension")}</a>
         </section>

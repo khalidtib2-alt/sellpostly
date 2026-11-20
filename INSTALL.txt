@@ -1,9 +1,9 @@
-SELLPOSTLY AMAZON-ONLY AFFILIATE GUARDRAILS
+SELLPOSTLY USER GUIDE + SOCIAL SHARING + STOREFRONT SEO
 
-Merge src/, public/, tests/, scripts/ and chrome-extension/ into your existing SellPostly repository, replacing matching files. This is a cumulative source patch, not a complete repository. The original checkout was not modified; verification used the staged working copy.
+Merge the src, public, tests, scripts and chrome-extension folders into your existing SellPostly repository, replacing matching files. This is a cumulative source patch, not a complete repository. The original checkout was not modified; verification used the staged working copy. Environment files and secrets are excluded.
 
-Automatic Amazon image replacement and price hiding now apply only inside Affiliate Deals for Amazon links (including amzn.to and amzn.eu) or Amazon CDN photos. Other affiliate merchant images/prices and all Personal Store images/prices are preserved. Manual stock-photo selection remains available for affiliate products.
+Adds the translated homepage and /how-it-works guide, 5 FAQ answers with matching JSON-LD, 6 inline SVG social icons, store-specific canonical/OpenGraph/Twitter metadata, dynamic PNG previews, refreshed public-storefront sitemap entries and product-card sharing controls.
 
-Extract the included SellPostly-Extension-1.0.5.zip, then reload its chrome-extension folder at chrome://extensions. Read STOCK-PHOTOS.md for behavior details and optional provider keys.
+Read GUIDE-AND-SEO.md to configure NEXT_PUBLIC_APP_URL and optional social profile URLs. Existing Amazon-only Affiliate guardrails and Personal Store behavior are preserved. No new dependencies or database migrations are required.
 
-Verification: npm run build succeeded with 0 errors; npm test passed all 66 tests. No dependency changes, additional permissions or database migrations are required. Environment secrets and local build files are excluded.
+Verification: npm run build succeeded with 0 errors; npm test passed all 72 tests. Run both commands after applying to your checkout.

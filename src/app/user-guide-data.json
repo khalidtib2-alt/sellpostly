@@ -1,0 +1,74 @@
+{
+  "seller": [
+    [
+      "Choose your shop type",
+      "Use Personal Store for your own products and direct orders. Use Affiliate Deals Shop for curated recommendations that link to partner merchants. The catalogs and checkout paths stay separate."
+    ],
+    [
+      "Import in one click",
+      "Use the Chrome Extension on a product page or paste a product URL into the formatter. Review the imported title, price, description, destination link and image before saving. Stores that block URL imports may work through the extension."
+    ],
+    [
+      "Customize and disclose",
+      "Add your branding, photos, covers and useful product details. Affiliate sellers should review their disclosure and image rights. Amazon-related Affiliate items use representative photos when needed and send buyers to Amazon for current prices."
+    ],
+    [
+      "Share anywhere your audience finds you",
+      "Put your store or product link in a TikTok or Instagram bio, Facebook group, YouTube description, Pinterest pin, WhatsApp message, blog or Google business profile. Follow each channel’s rules; search indexing and rich previews are not guaranteed."
+    ]
+  ],
+  "buyer": [
+    [
+      "Browse a clean mobile catalog",
+      "Filter by category or audience and open the products that fit your needs. Affiliate deals and Personal Store products have different ordering paths."
+    ],
+    [
+      "Inspect the details before paying",
+      "Check the description, seller information, delivery terms and destination merchant. A Verified Store badge applies only to a store with that status; a representative style photo is not proof of the exact product. Confirm details with the merchant when unsure."
+    ],
+    [
+      "Choose the right checkout path",
+      "Affiliate buttons open the partner merchant, whose checkout, delivery and returns rules apply. Personal Stores can offer direct WhatsApp orders, cash on delivery or an enabled crypto escrow checkout. Read the displayed payment and protection terms before ordering."
+    ]
+  ],
+  "audiences": [
+    [
+      "Social Media Creators",
+      "Turn product recommendations into a clear catalog link for bios, videos and communities."
+    ],
+    [
+      "Affiliate Marketers",
+      "Curate deals from multiple merchants, keep affiliate tags and disclose your relationships."
+    ],
+    [
+      "Local & Independent Merchants",
+      "Present your own products with delivery details and the ordering options you actually support."
+    ],
+    [
+      "Reviewers & Bloggers",
+      "Give readers an organized collection alongside your reviews, comparisons and buying guides."
+    ]
+  ],
+  "faq": [
+    [
+      "Does SellPostly work only with one social platform?",
+      "No. Share a storefront link across social profiles, groups, videos, messages, websites and search listings. Available previews and posting tools depend on the channel."
+    ],
+    [
+      "What is the difference between Personal Store and Affiliate Deals Shop?",
+      "A Personal Store sells your own catalog with direct ordering options. An Affiliate Deals Shop recommends products and sends buyers to external merchant checkout. Affiliate items do not use the Personal Store cart or escrow flow."
+    ],
+    [
+      "Do I need to connect my social media passwords?",
+      "No. SellPostly formats text and prepares sharing links without asking for your social account passwords. You review and publish through your own accounts. The extension reads a product page only when you request an import."
+    ],
+    [
+      "Can I replace an imported or representative photo?",
+      "Yes. Upload a photo you have permission to use or choose a representative alternative. Amazon-related Affiliate photos have specific safeguards. Other affiliate merchant images and all Personal Store images are preserved by default."
+    ],
+    [
+      "Where do buyers pay and what protection applies?",
+      "Affiliate purchases are paid on the partner merchant’s website under its terms. Personal Store payment methods vary by seller. Any escrow protection applies only to an eligible order using the displayed escrow flow, not to every purchase or external link."
+    ]
+  ]
+}

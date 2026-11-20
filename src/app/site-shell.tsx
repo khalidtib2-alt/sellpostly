@@ -6,6 +6,7 @@ import ThemePicker from "./theme-picker";
 import Link from "next/link";
 
 const links = [
+ ["/how-it-works","How SellPostly Works"],
  ["/shop","My Shop"],
   ["/prompt-generator", "Prompt Generator"], ["/guides", "Seller Guides"], ["/about", "About"], ["/contact", "Contact"],
   ["/privacy-policy", "Privacy Policy"], ["/terms", "Terms"],
@@ -16,7 +17,7 @@ export function Header() {
   return <header className="border-b border-slate-200"><nav aria-label={t("Main navigation")} className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
     <Link href="/" className="text-xl font-black tracking-tight"><BrandLogo /></Link>
     <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-slate-700">
-      <Link href="/shop">{t("My Shop")}</Link><Link href="/#formatter">{t("Post Formatter")}</Link><Link href="/prompt-generator">{t("Prompt Generator")}</Link><Link href="/guides">{t("Seller Guides")}</Link><Link href="/extension">{t("Chrome Extension")}</Link><Link href="/about">{t("About")}</Link><Link href="/contact">{t("Contact")}</Link>
+      <Link href="/shop">{t("My Shop")}</Link><Link href="/#formatter">{t("Post Formatter")}</Link><Link href="/prompt-generator">{t("Prompt Generator")}</Link><Link href="/guides">{t("Seller Guides")}</Link><Link href="/extension">{t("Chrome Extension")}</Link><Link href="/how-it-works">{t("How SellPostly Works")}</Link><Link href="/about">{t("About")}</Link><Link href="/contact">{t("Contact")}</Link>
     </div>
     <div role="group" aria-label={language === "ar" ? "اللغة" : language === "fr" ? "Langue" : "Language"} className="inline-flex rounded-full bg-slate-100 p-1 text-sm font-bold">
       {([["en", "EN"], ["fr", "FR"], ["ar", "العربية"]] as const).map(([code, label]) => (

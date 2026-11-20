@@ -1,0 +1,7 @@
+import {ImageResponse} from 'next/og';
+import type {Shop} from './shop-data';
+export function storefrontPreviewImage(shop:(Shop&{suspended?:boolean})|null){
+ const active=shop&&!shop.suspended?shop:null,affiliate=active?.shopMode==='affiliate';
+ const background=active?.shopTheme==='slate'?'#0f172a':active?.shopTheme==='sand'?'#faf5eb':active?.shopTheme==='mint'?'#ecfdf5':'#ffffff',ink=active?.shopTheme==='slate'?'#f8fafc':'#0f172a';
+ return new ImageResponse(<div style={{width:'100%',height:'100%',display:'flex',flexDirection:'column',background,color:ink,padding:'64px',fontFamily:'sans-serif'}}><div style={{display:'flex',alignItems:'center',gap:18,color:'#059669',fontSize:28,fontWeight:700}}><div style={{display:'flex',width:48,height:48,background:'#059669',borderRadius:12,color:'white',alignItems:'center',justifyContent:'center'}}>SP</div>SellPostly</div><div style={{display:'flex',marginTop:44,fontSize:64,fontWeight:700,lineHeight:1.05}}>{(active?.name||'Store unavailable').slice(0,80)}</div><div style={{display:'flex',fontSize:26,marginTop:24,lineHeight:1.4}}>{(active?.bio|| (active?affiliate?'Curated picks. Discover your next find.':'Explore the collection. Order directly.':'This storefront is not available.')).replace(/<[^>]*>/g,' ').slice(0,160)}</div><div style={{display:'flex',gap:16,marginTop:'auto'}}>{active?.products.slice(0,3).map(p=><div key={p.id} style={{display:'flex',border:'1px solid #94a3b8',borderRadius:16,padding:'16px 20px',fontSize:19,maxWidth:330}}>{p.name.slice(0,44)}</div>)}</div></div>,{width:1200,height:630});
+}
