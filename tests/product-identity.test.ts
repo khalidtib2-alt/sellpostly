@@ -33,7 +33,7 @@ test('image search links carry exact identity and variation without unsafe navig
 test('ten safe covers are full-bleed SVG scenes, auto-selected and independently persisted',async()=>{
  assert.equal(visualNiches.length,10);
  for(const niche of visualNiches){const path=studioCover(niche),svg=await readFile('public'+path,'utf8');assert.match(svg,/viewBox="0 0 1200 900"/);assert.match(svg,/<linearGradient/);assert.match(svg,/feDropShadow/);assert.ok(!/<script|foreignObject|href=|<text/i.test(svg));assert.equal(safeImage(path),path);}
- const raw={shopMode:'affiliate',products:[{id:'sony',name:'Sony WH-1000XM5 Wireless Headphones',category:'Tech & Gadgets',image:'https://m.media-amazon.com/photo.jpg'}]};
+ const raw={shopMode:'affiliate',products:[{id:'sony',url:'https://amazon.com/dp/B012345678',name:'Sony WH-1000XM5 Wireless Headphones',category:'Tech & Gadgets',image:'https://m.media-amazon.com/photo.jpg'}]};
  const auto=validateShop(raw);assert.equal(auto.products[0].image,defaultStock('wireless headphones').url);
  const empty=validateShop({...raw,products:[{...raw.products[0],image:''}]});assert.equal(empty.products[0].image,defaultStock('wireless headphones').url);
  const manual=validateShop({...raw,products:[{...raw.products[0],editorialCover:'camera'}]});assert.equal(manual.products[0].image,defaultStock('wireless headphones').url);assert.equal((await decodeShop(await encodeShop(manual))).products[0].editorialCover,'camera');

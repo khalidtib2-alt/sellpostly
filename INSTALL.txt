@@ -1,7 +1,9 @@
-SELLPOSTLY FOOTWEAR SUBTYPE MATCHING PATCH
+SELLPOSTLY AMAZON-ONLY AFFILIATE GUARDRAILS
 
-Merge src/, public/, scripts/, tests/ and chrome-extension/ into your existing SellPostly checkout, replacing matching files. This is a cumulative source patch, not a standalone repository. The original checkout was not changed; the staged source is verified before packaging. No environment secrets or database migration is included.
+Merge src/, public/, tests/, scripts/ and chrome-extension/ into your existing SellPostly repository, replacing matching files. This is a cumulative source patch, not a complete repository. The original checkout was not modified; verification used the staged working copy.
 
-This corrects the previous bow-flat mismatch. The pool now has 23 real photos: footwear is tagged separately as athletic sneakers, boots, formal shoes, flats and sandals. Two kids athletic sneaker photos replace the dress-flat fallback. EN/FR/AR labels remain supported.
+Automatic Amazon image replacement and price hiding now apply only inside Affiliate Deals for Amazon links (including amzn.to and amzn.eu) or Amazon CDN photos. Other affiliate merchant images/prices and all Personal Store images/prices are preserved. Manual stock-photo selection remains available for affiliate products.
 
-Read STOCK-PHOTOS.md. Run npm run build and npm test after applying. For the extension, extract SellPostly-Extension-1.0.5.zip and reload the extracted chrome-extension folder at chrome://extensions.
+Extract the included SellPostly-Extension-1.0.5.zip, then reload its chrome-extension folder at chrome://extensions. Read STOCK-PHOTOS.md for behavior details and optional provider keys.
+
+Verification: npm run build succeeded with 0 errors; npm test passed all 66 tests. No dependency changes, additional permissions or database migrations are required. Environment secrets and local build files are excluded.

@@ -17,7 +17,7 @@ test('host-based Amazon and image recognition handles regions and rejects lookal
  for(const url of ['https://media-amazon.com.evil.example/a','https://img.example.com/?amazon=media-amazon.com','data:image/png;base64,AAAA','/demo-products/bottle.svg'])assert.equal(isAmazonCdnImage(url),false,url);
  assert.equal(affiliateImage('https://m.media-amazon.com/a.jpg','Fashion'),'/stock-photos/pexels-13869858.jpg');assert.equal(studioCategoryImage('Other'),'/demo-products/studio-product.svg');
  const raw={shopMode:'affiliate',heroImage:'https://m.media-amazon.com/hero.jpg',products:[{id:'p',name:'P',category:'Fashion',image:'https://m.media-amazon.com/a.jpg',images:['https://images-amazon.com/b.jpg','https://press.example/authorized.jpg']}]};
- const shop=validateShop(raw);assert.equal(shop.products[0].image,'/stock-photos/pexels-13869858.jpg');assert.ok(shop.products[0].images?.includes('https://press.example/authorized.jpg'));assert.equal(shop.heroImage,'/stock-photos/pexels-28396251.jpg');
+ const shop=validateShop(raw);assert.equal(shop.products[0].image,'/stock-photos/pexels-13869858.jpg');assert.ok(shop.products[0].images?.includes('https://press.example/authorized.jpg'));assert.equal(shop.heroImage,raw.heroImage);
  assert.equal(validateShop({...raw,shopMode:'personal'}).products[0].image,raw.products[0].image);
 });
 test('disclosure column migrates idempotently, saves every preset/custom text and survives Personal publishing',async()=>{

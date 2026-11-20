@@ -14,8 +14,9 @@ function prepareProduct(value){
  const destination=["affiliate","personal"].includes(value.destination)?value.destination:undefined,category=text(value.category,80)||"Top Deals";
  const url=destination==="affiliate"?(()=>{try{const u=new URL(value.url);return ["http:","https:"].includes(u.protocol)?u.href:"";}catch{return "";}})():cleanProductLink(value.url);
  let image=typeof value.image==="string"&&(SellPostlyAffiliate.isStudio(value.image)||/^https?:\/\//i.test(value.image))?value.image.slice(0,20000):"";
- if(destination==="affiliate"||SellPostlyAffiliate.isImage(image))image="";
- return {unbrandedQuery:SellPostlyUnbrandedQuery(title,category,value.gender),destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
+ const amazonImageBlocked=destination==="affiliate"&&SellPostlyAffiliate.isImage(image);
+ if(amazonImageBlocked)image="";
+ return {amazonImageBlocked,unbrandedQuery:SellPostlyUnbrandedQuery(title,category,value.gender),destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
 }
 async function sendProduct(value){
  const product=prepareProduct(value),base=await SellPostlyFrontend.resolve();

@@ -1,44 +1,27 @@
-# Affiliate representative photos
+# Affiliate stock photos: Amazon-only automatic rules
 
-This update adds generic photo matching to Affiliate imports, the Affiliate product editor, and published Affiliate storefronts. It leaves Personal Seller checkout and uploaded seller photos intact.
+Automatic Amazon restrictions are enabled only for products in Affiliate Deals when the destination is an Amazon domain, amzn.to, or amzn.eu, or when a product image uses the Amazon CDN. Lookalike domains do not match.
 
-## Setup
+## Behavior
 
-No photo API key is required. Twenty-three real JPEG photographs are bundled under public/stock-photos/, with separate sneaker audience groups and explicitly tagged boots, formal shoes, flats, and sandals. Source pages and license references are recorded in public/stock-photos/SOURCES.json.
+- Affiliate + Amazon-related: replace raw Amazon CDN images with subtype-matched representative stock photos; hide static prices and discount badges. Amazon destinations keep Check Price on Amazon. A non-Amazon merchant reusing a CDN photo keeps View Best Deal pointing to that merchant.
+- Affiliate + other merchant: keep the imported image and price, including after saving and sharing. Missing images stay empty. Automatic matching is disabled. Sellers may still upload their own photo, use Next Similar Photo, or choose a thumbnail manually.
+- Personal Store: keep the original imported image (including Amazon CDN) and normal prices. No Amazon image blocking, automatic stock matching or price hiding runs in Personal mode.
 
-Optional server environment variables:
+The extension follows the same destination rules. Only Affiliate imports strip raw Amazon CDN photos. A small provenance flag allows the website to assign the replacement and hide static prices after the CDN URL has been removed from the handoff. Personal and ordinary merchant photos remain in the payload. Affiliate URL tags remain intact.
 
-- PEXELS_API_KEY: search Pexels first.
-- UNSPLASH_ACCESS_KEY: search Unsplash if Pexels is unavailable or returns no usable results.
+Previously discarded merchant photos cannot be recovered from a stock photo automatically; re-import the original product if its source image was already removed by an older version.
 
-Set these on the server only, then rebuild/redeploy. Never place provider keys in NEXT_PUBLIC_ variables or Chrome extension files.
+## Photo resolver
 
-GET /api/affiliate/stock-photo?q=kids%20sneakers returns safe photo metadata. Imported brands, model numbers, SKUs, and arbitrary URLs are replaced by a bounded generic category query before contacting either provider. Failed, empty, or unconfigured providers use the bundled JPEG pool. Search results are cached for 30 minutes.
+Twenty-three real JPEGs are bundled under public/stock-photos/. Sources and license links are in SOURCES.json. Optional server-only PEXELS_API_KEY and UNSPLASH_ACCESS_KEY enable provider searches; unconfigured or unavailable providers fall back to the bundled pool. Never put these keys in NEXT_PUBLIC_ variables or extension code.
 
-## Seller workflow
+Athletic sneakers, boots, formal shoes, flats and sandals have distinct fallback tags. Kids athletic sneakers use two kids sneaker photographs, never the removed bow flat. Provider results with incorrect or ambiguous footwear subtype descriptions are rejected. The shared website/extension generic query removes brand and model details from photo searches.
 
-1. Import a product into Affiliate Deals Shop with extension 1.0.5, or add/edit an Affiliate product in My Shop.
-2. SellPostly assigns a representative category photo automatically if no custom photo exists. Raw Amazon CDN images and previous automatic SVG placeholders are replaced.
-3. In the item editor, use Next Similar Photo or a photo thumbnail to select an alternative. Upload Custom Photo still takes priority.
-4. Public Affiliate cards label stock images as Representative style photo and link to source credits. Stock provenance is saved with the product and preserved in shared catalogs.
+Stock photos are labeled Representative style photo, with source credits. They are not guaranteed photos of the exact branded product. Review visible logos, accuracy, licenses and any additional permissions before publishing. Custom seller uploads take priority. Unsplash selections retain hotlinks, attribution and server-side download tracking.
 
-These are style illustrations using real photographs, not guaranteed photographs of the exact branded item. Generic search terms and text filters cannot certify that every provider image is free of trademarks. Review visible logos, product accuracy, the source license, and any additional rights before publishing. Use your own review photo for an exact product match. Photos do not imply a manufacturer endorsement.
+## Install and verify
 
-Pexels source links and license information accompany the bundled images. Unsplash API images retain their returned hotlink URLs and photographer attribution; selecting an Unsplash image records the required download event through the server. Provider keys and tracking endpoints are never sent to the extension.
+Merge this patch into the existing SellPostly repository. Extract the included SellPostly-Extension-1.0.5.zip and reload its chrome-extension folder at chrome://extensions. No new dependencies, permissions or database migrations are required.
 
-Amazon destination links retain affiliate tags. Amazon static prices/discount badges remain hidden, Check Price on Amazon is retained with nofollow sponsored noopener, and the editable affiliate disclosure stays prominent.
-
-## Extension
-
-The bundle contains SellPostly-Extension-1.0.5.zip. Extract it, then load the chrome-extension directory through chrome://extensions with Developer mode enabled. Remove an older copy first if Chrome shows more than one SellPostly extension. The version shown must be 1.0.5. The configured frontend is https://sellpostly.vercel.app; vercel.com remains blocked. No new extension permissions were added.
-
-## Verification
-
-npm run build
-npm test
-
-The patch includes regression coverage for generic query parity, real JPEG assets, provider failure and secret handling, Unsplash selection tracking, saved/shared photo metadata, custom-image preservation, Amazon safeguards, and extension handoff.
-
-## Footwear correction
-
-Puma Kids ST Runner Hook and Loop Sneakers resolves to kids athletic sneakers. Athletic sneakers never share a fallback bucket with dress shoes, flats, sandals or boots. The white bow flat was removed from the pool; the two kids sneaker photographs are Pexels 5275386 and 37117672. Provider results with missing, conflicting or incorrect subtype descriptions are rejected in favor of a tagged local match. Existing automatic mismatches are re-matched without replacing uploaded custom images.
+Run npm run build and npm test. EN/FR/AR labels remain supported.

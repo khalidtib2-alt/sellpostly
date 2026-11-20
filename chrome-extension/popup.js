@@ -760,7 +760,7 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   if(!title){feedback.textContent=t("Enter a product name or import the current page first.");return;}
   refreshAffiliateImageGuard();
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{unbrandedQuery:SellPostlyUnbrandedQuery(title,String(data.get("category")||""),String(data.get("gender")||"")),destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.dataset.shopImage||preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
+  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{unbrandedQuery:SellPostlyUnbrandedQuery(title,String(data.get("category")||""),String(data.get("gender")||"")),destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.dataset.rawImage||preview.dataset.shopImage||preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
   if(!result?.ok)throw Error();
   feedback.textContent=t("Opening My Shop. Activate Pro on the website if requested.");
  }catch{feedback.textContent=t("Could not open My Shop. Reload the extension and try again.");}
@@ -776,7 +776,7 @@ destinationPicker.addEventListener('change',()=>{try{localStorage.setItem('sellp
 function refreshAffiliateImageGuard(){
  const form=document.querySelector('#seller'),preview=document.querySelector('#imported-image'),notice=document.querySelector('#affiliate-image-notice');
  const source=preview.dataset.rawImage||preview.getAttribute('src')||'',affiliate=form.elements.namedItem('destination').value==='affiliate';
- const blocked=SellPostlyAffiliate.isImage(source);notice.hidden=!blocked;
+ const blocked=affiliate&&SellPostlyAffiliate.isImage(source);notice.hidden=!blocked;
  if(blocked){preview.dataset.shopImage='';preview.removeAttribute('src');preview.hidden=true;notice.textContent=t('Amazon image blocked. My Shop will match a representative photo automatically.');}
  else{delete preview.dataset.shopImage;if(preview.dataset.rawImage){preview.src=preview.dataset.rawImage;preview.hidden=false;}}
 }

@@ -6,17 +6,18 @@ import {extractProductIdentity,imageSearchLinks,isStudioCover,type VisualNiche} 
 import {isAmazonCdnImage} from './affiliate-compliance';
 import {unbrandedQuery} from './unbranded-query';
 import {isLocalStock,localPhotos,resolvePhotos,selectStock,type StockPhoto} from './stock-photos';
-export default function AffiliateImageEditor({title,category,gender='unisex',override,onOverride,customImage,stockPhoto,onPhoto}:{title:string;category:string;gender?:string;override:string;onOverride:(v:string)=>void;selected?:VisualNiche;onSelect?:(v:VisualNiche|undefined)=>void;customImage:string;stockPhoto?:StockPhoto;onPhoto?:(v:StockPhoto)=>void}){
+export default function AffiliateImageEditor({title,category,autoMatch=false,gender='unisex',override,onOverride,customImage,stockPhoto,onPhoto}:{title:string;category:string;autoMatch?:boolean;gender?:string;override:string;onOverride:(v:string)=>void;selected?:VisualNiche;onSelect?:(v:VisualNiche|undefined)=>void;customImage:string;stockPhoto?:StockPhoto;onPhoto?:(v:StockPhoto)=>void}){
  const {t}=useLanguage(),identity=extractProductIdentity(override||title,category),links=imageSearchLinks(override||title,category),query=unbrandedQuery(override||title,category,gender);
  const [photos,setPhotos]=useState<StockPhoto[]>(()=>localPhotos(query)),[busy,setBusy]=useState(false),[error,setError]=useState(false);
  const callback=useRef(onPhoto);callback.current=onPhoto;const previousQuery=useRef(query),latestImage=useRef(customImage);latestImage.current=customImage;
  const custom=!!customImage&&!isLocalStock(customImage)&&!stockPhoto&&!isAmazonCdnImage(customImage)&&!isStudioCover(customImage)&&!customImage.startsWith('/demo-products/');
  useEffect(()=>{
+  if(!autoMatch){setPhotos(localPhotos(query));setBusy(false);return;}
   const controller=new AbortController(),queryChanged=previousQuery.current!==query;previousQuery.current=query;setBusy(true);setError(false);
   resolvePhotos(query,controller.signal).then(async choices=>{if(controller.signal.aborted)return;setPhotos(choices);
    if(!custom&&choices[0]&&(!stockPhoto||queryChanged)){try{const p=await selectStock(choices[0],query);if(!controller.signal.aborted)callback.current?.(p);}catch{if(!controller.signal.aborted){setPhotos(localPhotos(query));callback.current?.(localPhotos(query)[0]);}}}
   }).catch(()=>{}).finally(()=>{if(!controller.signal.aborted)setBusy(false);});return()=>controller.abort();
- },[query,custom]);
+ },[query,custom,autoMatch]);
  async function choose(photo:StockPhoto){setBusy(true);setError(false);try{const before=latestImage.current;await selectStock(photo,query);if(latestImage.current===before)callback.current?.(photo);}catch{setError(true);}finally{setBusy(false);}}
  const next=photos[(Math.max(-1,photos.findIndex(p=>p.url===customImage))+1)%photos.length];
  return <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:col-span-2" aria-label={t('Product Identity & Images')}>

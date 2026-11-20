@@ -80,7 +80,7 @@ test('specific footwear subtypes survive de-branding, round trips and strict fal
  assert.equal(matchesFootwearQuery('kids athletic sneakers','child wearing athletic sneakers'),true);
  assert.equal(matchesFootwearQuery('women athletic sneakers','women wearing sandals'),false);
  // Repair a previously auto-assigned wrong local subtype, while keeping custom seller photos.
- const old={id:'shoe',name:cases[0][0],category:'Fashion',gender:'kids',image:'/stock-photos/pexels-27174555.jpg'};
+ const old={id:'shoe',url:'https://amazon.com/dp/B012345678',name:cases[0][0],category:'Fashion',gender:'kids',image:'/stock-photos/pexels-27174555.jpg'};
  const repaired=validateShop({shopMode:'affiliate',products:[old]}).products[0];assert.equal(repaired.stockPhoto?.footwearSubtype,'sneakers');
  const custom=validateShop({shopMode:'affiliate',products:[{...old,stockPhoto:repaired.stockPhoto,image:'https://seller.example/own-photo.jpg'}]}).products[0];assert.equal(custom.image,'https://seller.example/own-photo.jpg');
  const missingTag=validateShop({shopMode:'affiliate',products:[{...old,image:'https://images.pexels.com/old.jpg',stockPhoto:{provider:'Pexels',url:'https://images.pexels.com/old.jpg',pageUrl:'https://www.pexels.com/photo/old-1/'}}]}).products[0];assert.equal(missingTag.stockPhoto?.footwearSubtype,'sneakers');
