@@ -177,7 +177,7 @@ ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS expires_at timestamptz;
 -- statement-breakpoint
 ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS subscriptions_provider_check;
 -- statement-breakpoint
-ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_provider_check CHECK (provider IN ('master','gumroad','development','crypto'));
+ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_provider_check CHECK (provider IN ('master','gumroad','development','crypto','free'));
 -- statement-breakpoint
 CREATE TABLE IF NOT EXISTS pro_upgrade_requests (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -328,3 +328,45 @@ ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_escrow_status_check;
 ALTER TABLE orders ADD CONSTRAINT orders_escrow_status_check CHECK (escrow_status IN ('NONE','PENDING','PENDING_FUNDING','HELD','RELEASED','DISPUTED','REFUNDED','CANCELLED'));
 -- statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS orders_direct_request_id ON orders(shop_id,payment_method,(details->>'request_id')) WHERE payment_method<>'CRYPTO';
+
+-- statement-breakpoint
+CREATE TABLE IF NOT EXISTS shop_account_links (
+ pro_owner text PRIMARY KEY REFERENCES subscriptions(owner_key),
+ account_owner text NOT NULL UNIQUE REFERENCES subscriptions(owner_key),
+ created_at timestamptz NOT NULL DEFAULT now(),
+ CHECK(pro_owner<>account_owner)
+);
+-- Multi-shop: the existing general record retains both primary catalogs and its slug.
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS store_mode text NOT NULL DEFAULT 'general' CHECK (store_mode IN ('general','niche'));
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS shop_type text CHECK (shop_type IN ('affiliate','personal'));
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS niche_name text NOT NULL DEFAULT '';
+-- statement-breakpoint
+ALTER TABLE shops DROP CONSTRAINT IF EXISTS shops_owner_key_key;
+-- statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS shops_primary_owner ON shops(owner_key) WHERE store_mode='general';
+-- statement-breakpoint
+CREATE INDEX IF NOT EXISTS shops_owner_list ON shops(owner_key,created_at);
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION enforce_shop_limit() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE subscription_provider text; subscription_status text; subscription_expiry timestamptz;
+BEGIN
+ SELECT provider,status,expires_at INTO subscription_provider,subscription_status,subscription_expiry FROM subscriptions WHERE owner_key=NEW.owner_key FOR UPDATE;
+ IF TG_OP='INSERT' AND (NOT FOUND OR subscription_status<>'active' OR (subscription_expiry IS NOT NULL AND subscription_expiry<=now())) THEN RAISE EXCEPTION 'ACTIVE_ACCOUNT_REQUIRED'; END IF;
+ IF TG_OP='UPDATE' AND (NEW.owner_key<>OLD.owner_key OR NEW.store_mode<>OLD.store_mode OR NEW.shop_type IS DISTINCT FROM OLD.shop_type) THEN RAISE EXCEPTION 'SHOP_IDENTITY_IMMUTABLE'; END IF;
+ IF NEW.store_mode='niche' THEN
+  IF NEW.shop_type IS NULL OR length(trim(NEW.niche_name))=0 THEN RAISE EXCEPTION 'NICHE_REQUIRED'; END IF;
+  IF TG_OP='INSERT' THEN
+   IF subscription_provider='free' AND NOT EXISTS(SELECT 1 FROM shop_account_links l JOIN subscriptions p ON p.owner_key=l.pro_owner WHERE l.account_owner=NEW.owner_key AND p.provider<>'free' AND p.status='active' AND (p.expires_at IS NULL OR p.expires_at>now())) THEN RAISE EXCEPTION 'PRO_REQUIRED'; END IF;
+   IF (SELECT count(*) FROM shops WHERE owner_key=NEW.owner_key AND store_mode='niche')>=10 THEN RAISE EXCEPTION 'NICHE_LIMIT_REACHED'; END IF;
+  END IF;
+  IF NEW.shop_type='personal' THEN NEW.affiliate_catalog:=NULL; ELSE NEW.personal_catalog:=NULL; END IF;
+ END IF;
+ RETURN NEW;
+END $$;
+-- statement-breakpoint
+DROP TRIGGER IF EXISTS shops_plan_limit ON shops;
+-- statement-breakpoint
+CREATE TRIGGER shops_plan_limit BEFORE INSERT OR UPDATE ON shops FOR EACH ROW EXECUTE FUNCTION enforce_shop_limit();

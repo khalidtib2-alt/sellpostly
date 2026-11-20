@@ -33,5 +33,7 @@ export async function verifyProKey(key: string): Promise<ProIdentity | null> {
 export async function proIdentity(request: Request){
  const identity=await verifyProKey(request.headers.get("x-pro-key")?.trim()||"");
  if(!identity||!process.env.DATABASE_URL)return identity;
- try {const {ensureActiveSubscription}=await import("./subscription-access");return await ensureActiveSubscription(identity)?identity:null;}catch{return null;}
+ try {const {ensureActiveSubscription}=await import("./subscription-access");if(!await ensureActiveSubscription(identity))return null;
+ const {db}=await import('./db');const linked=await db().query("SELECT l.account_owner FROM shop_account_links l JOIN subscriptions s ON s.owner_key=l.account_owner WHERE l.pro_owner=$1 AND s.status='active'",[identity.ownerKey]);
+ return linked[0]?{...identity,ownerKey:linked[0].account_owner}:identity;}catch{return null;}
 }

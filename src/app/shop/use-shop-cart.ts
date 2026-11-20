@@ -4,7 +4,8 @@ import {cartStorageKey,legacyCartStorageKey,normalizeCart} from './product-links
 import {readCart,writeCart,cartChangedEvent} from './cart-storage';
 import type {Shop} from './shop-data';
 export function useShopCart(shop:Shop,slug?:string,snapshot?:string,ready=true){
- const key=cartStorageKey(slug,snapshot),legacy=legacyCartStorageKey(slug,snapshot);
+ const cartSlug=slug||(!snapshot&&shop.storeMode==='niche'?shop.customSlug||shop.shopId:undefined);
+ const key=cartStorageKey(cartSlug,snapshot),legacy=legacyCartStorageKey(cartSlug,snapshot);
  const [cart,setState]=useState<Record<string,number>>({});
  const current=useRef({key:'',cart:{} as Record<string,number>});
  const ids=JSON.stringify(shop.products.map(p=>p.id));

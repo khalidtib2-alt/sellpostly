@@ -35,7 +35,7 @@ test('extension 1.0.4 bridges destination and stock, preserves affiliate URL par
  vm.runInContext(await readFile('chrome-extension/affiliate-guard.js','utf8'),context);vm.runInContext(await readFile('chrome-extension/unbranded-query.js','utf8'),context);vm.runInContext(await readFile('chrome-extension/background.js','utf8'),context);
  const url='https://www.amazon.com/product-name/dp/B012345678?tag=ourshop-20&ascsubtag=summer&utm_source=test';
  for(const destination of ['affiliate','personal']){const result:any=await new Promise(resolve=>listener({type:'SELLPOSTLY_SEND_TO_SHOP',product:{title:'Product',price:'25 USD',url,destination,stock:4}},{id:'extension'},resolve));assert.equal(result.ok,true);assert.equal(bridged.destination,destination);assert.equal(bridged.stock,4);assert.equal(bridged.url,destination==='affiliate'?url:'https://www.amazon.com/dp/B012345678');assert.equal(opened.at(-1),'https://sellpostly.vercel.app/shop');}
- const manifest=JSON.parse(await readFile('chrome-extension/manifest.json','utf8'));assert.equal(manifest.version,'1.0.5');assert.deepEqual(manifest.permissions,['activeTab','scripting','storage']);
+ const manifest=JSON.parse(await readFile('chrome-extension/manifest.json','utf8'));assert.equal(manifest.version,'1.0.6');assert.deepEqual(manifest.permissions,['activeTab','scripting','storage']);
  const popup=await readFile('chrome-extension/popup.html','utf8');assert.ok(popup.includes('name="destination"'));assert.ok(popup.includes('value="affiliate"'));assert.ok(popup.includes('value="personal"'));
 });
 test('discounts reflect compatible prices and stock limits are enforced before checkout',()=>{

@@ -63,13 +63,14 @@ export async function payout(ownerKey:string,value:unknown,query:Query=run){
  const raw=object(value),amount=text(raw.amount,21),selectedCoin=coin(raw.coin),net=network(raw.network),wallet=text(raw.wallet,100);
  if(units(amount)<BigInt(10000000))throw new ApiError('MINIMUM_PAYOUT');
  if(!validWallet(wallet,net))throw new ApiError('INVALID_WALLET');
- const shops=await query('SELECT id FROM shops WHERE owner_key=$1',[ownerKey]);
+ const shopId=typeof raw.shop_id==='string'&&/^[0-9a-f-]{36}$/i.test(raw.shop_id)?raw.shop_id:null;
+ const shops=await query("SELECT id FROM shops WHERE owner_key=$1 AND ($2::uuid IS NULL OR id=$2::uuid) ORDER BY (store_mode='general') DESC,created_at LIMIT 1",[ownerKey,shopId]);
  if(!shops.length)throw new ApiError('SHOP_NOT_FOUND',404);
  try{
   const rows=await query('SELECT request_seller_payout($1::uuid,$2,$3::numeric,$4,$5,$6) AS id',[shops[0].id,ownerKey,amount,selectedCoin,net,wallet]);return rows[0];
  }catch(error){if((error as {code?:string}).code==='P0001')throw new ApiError('PAYOUT_NOT_AVAILABLE',409);throw error;}
 }
-export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name,escrow_hold_days FROM shops WHERE owner_key=$1),
+export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name,escrow_hold_days FROM shops WHERE owner_key=$1 AND ($2::uuid IS NULL OR id=$2::uuid) ORDER BY (store_mode='general') DESC,created_at LIMIT 1),
  all_ord AS (SELECT o.* FROM orders o JOIN owned s ON s.id=o.shop_id),
  ord AS (SELECT * FROM all_ord WHERE payment_method='CRYPTO'),
  pay AS (SELECT p.* FROM payout_requests p JOIN owned s ON s.id=p.shop_id),
@@ -85,5 +86,5 @@ export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name,escrow_hold_days 
  coalesce((SELECT json_agg(b ORDER BY coin,network) FROM balances b),'[]') AS balances,
  coalesce((SELECT json_agg(json_build_object('id',id,'gross_amount',gross_amount::text,'commission_amount',commission_amount::text,'net_amount',net_amount::text,'coin',coin,'network',network,'status',status,'tx_id',tx_id,'escrow_hold_days',escrow_hold_days,'escrow_release_at',escrow_release_at,'force_released_at',force_released_at,'payment_verified_at',payment_verified_at,'created_at',created_at,'details',details,'payment_method',payment_method,'escrow_status',escrow_status) ORDER BY created_at DESC,id) FROM all_ord),'[]') AS orders,
  coalesce((SELECT json_agg(json_build_object('id',id,'amount',amount::text,'coin',coin,'network',network,'wallet',wallet,'status',status,'tx_id',tx_id,'created_at',created_at) ORDER BY created_at DESC,id) FROM pay),'[]') AS payouts`;
-export async function dashboard(ownerKey:string,query:Query=run){return (await query(DASHBOARD_SQL,[ownerKey]))[0];}
+export async function dashboard(ownerKey:string,query:Query=run,shopId?:string){if(shopId&&!/^[0-9a-f-]{36}$/i.test(shopId))throw new ApiError('SHOP_NOT_FOUND',404);return (await query(DASHBOARD_SQL,[ownerKey,shopId||null]))[0];}
 

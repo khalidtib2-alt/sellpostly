@@ -1,4 +1,6 @@
 "use client";
+import MultiShopSwitcher from './multi-shop-switcher';
+import {shopListKey,activeShopKey,shopSelection,readShopList,persistShop,switchShop,shopDraftKey,shopHeaders,targetPendingShop} from './multi-shop-data';
 import {cardShareUrl} from '../../lib/storefront-seo';
 import {defaultStock,isLocalStock,resolvePhotos,selectStock,type StockPhoto} from './stock-photos';
 import {unbrandedQuery} from './unbranded-query';
@@ -39,6 +41,7 @@ const button="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white";
 export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicSlug,verifiedStore=false}:{isSharedBuyerView?:boolean;initialShop?:Shop;publicSlug?:string;verifiedStore?:boolean}){
   const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>(initialShop?validateShop(initialShop):{name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
+  const [shops,setShops]=useState<Shop[]>([]),[tier,setTier]=useState<'free'|'pro'>('free');
   const [publishedSlug,setPublishedSlug]=useState(publicSlug||''),[publishing,setPublishing]=useState(false);
   const [assignedHold,setAssignedHold]=useState(holdDays(initialShop?.escrowHoldDays));
   const [policyLoaded,setPolicyLoaded]=useState(!!initialShop);
@@ -73,16 +76,24 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
           let initial=createSampleShop();
           try {
             const saved=localStorage.getItem(shopKey);if(saved)initial=upgradeDemoPhotos(validateShop(JSON.parse(saved)));
-            const response=await fetch('/api/shops',{headers:{'x-pro-key':localStorage.getItem('sellpostly-pro-key')||''},cache:'no-store'});
-            if(response.ok){const settings=await response.json();if(settings.slug)setPublishedSlug(settings.slug);for(const mode of ['affiliate','personal'] as const){const catalog=settings[mode+'_catalog'];if(catalog&&!localStorage.getItem(modeCatalogKey(mode)))localStorage.setItem(modeCatalogKey(mode),JSON.stringify(validateShop(catalog)));}if(!saved){const mode=params.get('mode')==='personal'?'personal':settings.affiliate_catalog?'affiliate':'personal';const catalog=settings[mode+'_catalog'];if(catalog)initial=validateShop(catalog);}}
+            const response=await fetch('/api/shops',{headers:shopHeaders(localStorage),cache:'no-store'});
+            if(response.ok){const settings=await response.json();setTier(settings.tier==='pro'?'pro':'free');
+ const server:Shop[]=Array.isArray(settings.shops)?settings.shops.map(validateShop):[];
+ for(const mode of ['affiliate','personal'] as const){if(!server.some(s=>s.storeMode!=='niche'&&s.shopMode===mode)){const catalog=settings[mode+'_catalog'];const draft=localStorage.getItem(modeCatalogKey(mode));server.push(validateShop(catalog|| (draft?JSON.parse(draft):{name:initial.name,bio:'',products:[],shopMode:mode})));}}
+ const list=server.map(target=>{const draft=localStorage.getItem(shopDraftKey(target));return draft?validateShop({...JSON.parse(draft),shopId:target.shopId,customSlug:target.customSlug,storeMode:target.storeMode,shopMode:target.shopMode,escrowHoldDays:target.escrowHoldDays}):target;});
+ localStorage.setItem(shopListKey,JSON.stringify(list));setShops(list);
+ const active=params.get('mode')?list.find(s=>s.storeMode!=='niche'&&s.shopMode===params.get('mode')):list.find(s=>shopSelection(s)===(localStorage.getItem(activeShopKey)||shopSelection(initial)));
+ if(active)initial=active;else if(!saved&&list[0])initial=list[0];
+ if(initial.customSlug||settings.slug)setPublishedSlug(initial.customSlug||settings.slug);
+ }
           }catch{}
           if(params.get("mode")==="personal"&&initial.shopMode!=="personal")initial=switchCatalog(initial,"personal",localStorage);
           if(params.get("addTitle")){
-            const destination=params.get("addDestination");if((destination==="affiliate"||destination==="personal")&&initial.shopMode!==destination)initial=switchCatalog(initial,destination,localStorage);
+            const destination=params.get("addDestination");initial=targetPendingShop(initial,params.get('addShopId')||undefined,destination==='affiliate'||destination==='personal'?destination:undefined,localStorage);if((destination==="affiliate"||destination==="personal")&&initial.shopMode!==destination)initial=switchCatalog(initial,destination,localStorage);
             setPreview(true);
-            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),description:(params.get("addDescription")||"").slice(0,4000),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
+            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),description:(params.get("addDescription")||"").slice(0,4000),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:initial.storeMode==='niche'?initial.nicheName||'Other':(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
             initial.products.push(product);
-            setFilter(product.category);
+            setFilter(initial.storeMode==='niche'?'All':product.category);
             try {localStorage.setItem(shopKey,JSON.stringify(initial));}catch{setStatus("Could not save. Device storage may be full.");}
             history.replaceState(null,"",location.pathname);
           }
@@ -108,26 +119,26 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     }
     load();return()=>{cancelled=true;};
   },[initialShop,isSharedBuyerView]);
-  useEffect(()=>{if(loaded&&!shared)try{localStorage.setItem(shopKey,JSON.stringify(shop));localStorage.setItem(modeCatalogKey(shop.shopMode),JSON.stringify(shop));}catch{setStatus("Could not save. Device storage may be full.");}},[shop,loaded,shared]);
+  useEffect(()=>{if(loaded&&!shared)try{localStorage.setItem(shopKey,JSON.stringify(shop));persistShop(shop,localStorage);setShops(readShopList(localStorage));}catch{setStatus("Could not save. Device storage may be full.");}},[shop,loaded,shared]);
   useEffect(()=>{
     if(shared||!loaded)return;
     let active=true;
     async function refreshPolicy(){
       try{
         const key=localStorage.getItem("sellpostly-pro-key")||"";
-        const response=await fetch("/api/shops",{headers:{"x-pro-key":key},cache:"no-store"});
+        const response=await fetch("/api/shops",{headers:shopHeaders(localStorage),cache:"no-store"});
         if(!response.ok)throw Error();
         const settings=await response.json();
-        if(active){if(settings.slug)setPublishedSlug(settings.slug);const days=holdDays(settings.escrow_hold_days);setAssignedHold(days);setPolicyLoaded(true);setShop(previous=>({...previous,escrowHoldDays:days}));}
+        if(active){const current=shopRef.current;const assigned=(settings.shops||[]).find((s:Shop)=>shopSelection(s)===shopSelection(current));if(assigned?.customSlug||current.customSlug||settings.slug)setPublishedSlug(assigned?.customSlug||current.customSlug||settings.slug);const days=holdDays(assigned?.escrowHoldDays??settings.escrow_hold_days);setAssignedHold(days);setPolicyLoaded(true);setShop(previous=>({...previous,escrowHoldDays:days}));}
       }catch{if(active)setStatus("Could not refresh the admin-assigned hold period. Try again.");}
     }
     refreshPolicy();window.addEventListener("focus",refreshPolicy);
     return()=>{active=false;window.removeEventListener("focus",refreshPolicy);};
-  },[shared,loaded]);
+  },[shared,loaded,shop.shopId,shop.shopMode]);
   const shopRef=useRef(shop);shopRef.current=shop;
   useEffect(()=>{
     if(!loaded||shared)return;
-    const receive=()=>{try{const result=consumePending(shopRef.current,localStorage);if(result.added||result.shop.shopMode!==shopRef.current.shopMode){shopRef.current=result.shop;setShop(result.shop);setFilter(result.category||'All');setGenderFilter('all');setPreview(true);setAdding(false);if(result.added)setStatus('Product added to My Shop!');}}catch{setStatus('Could not save. Device storage may be full.');}};
+    const receive=()=>{try{const result=consumePending(shopRef.current,localStorage);if(result.added||shopSelection(result.shop)!==shopSelection(shopRef.current)){shopRef.current=result.shop;setShop(result.shop);setPublishedSlug(result.shop.customSlug||'');setFilter(result.category||'All');setGenderFilter('all');setPreview(true);setAdding(false);if(result.added)setStatus('Product added to My Shop!');}}catch{setStatus('Could not save. Device storage may be full.');}};
     const message=(event:MessageEvent)=>{if(event.source!==window||event.origin!==location.origin||event.data?.type!=='SELLPOSTLY_PRODUCT_IMPORT')return;try{const item=normalizePending(event.data.product);localStorage.setItem(pendingShopKey,JSON.stringify(item));receive();}catch{setStatus('Could not save. Device storage may be full.');}};
     const storage=(event:StorageEvent)=>{if(event.key===pendingShopKey)receive();};
     window.addEventListener('message',message);window.addEventListener('storage',storage);window.addEventListener('focus',receive);receive();
@@ -151,7 +162,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     if(publicSlug||snapshot){setShareTarget({url:product?cardShareUrl(shop.shopMode,product.id,publicSlug,snapshot):productShareUrl(publicSlug?storePath(publicSlug,shop.shopMode):'/shop?'+new URLSearchParams({s:snapshot!})),title:product?.name||shop.name,product:!!product});return;}
     try{
       const key=localStorage.getItem("sellpostly-pro-key")||"";
-      const response=await fetch("/api/shops",{method:"POST",headers:{"Content-Type":"application/json","x-pro-key":key},body:JSON.stringify(shop)});
+      const response=await fetch("/api/shops",{method:"POST",headers:{"Content-Type":"application/json",...shopHeaders(localStorage)},body:JSON.stringify(shop)});
       if(!response.ok)throw Error();
       const result=await response.json();
       setPublishedSlug(result.slug);setShareTarget({url:product?cardShareUrl(shop.shopMode,product.id,result.slug):productShareUrl(storePath(result.slug,shop.shopMode)),title:product?.name||shop.name,product:!!product});
@@ -168,7 +179,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   async function shareMode(mode:'affiliate'|'personal',copyOnly=false){
     if(publishing)return;setPublishing(true);
     try{
-      const headers={'Content-Type':'application/json','x-pro-key':localStorage.getItem('sellpostly-pro-key')||''};
+      const headers={'Content-Type':'application/json',...shopHeaders(localStorage)};
       let selected=shop;
       if(mode!==shop.shopMode){const saved=localStorage.getItem(modeCatalogKey(mode));if(saved)selected=validateShop(JSON.parse(saved));else{const settings=await fetch('/api/shops',{headers,cache:'no-store'});if(!settings.ok)throw Error();const value=await settings.json();selected=value[mode+'_catalog']?validateShop(value[mode+'_catalog']):validateShop({...shop,shopMode:mode,products:[]});}}
       const response=await fetch('/api/shops',{method:'POST',headers,body:JSON.stringify(selected)});if(!response.ok)throw Error();
@@ -176,6 +187,9 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       if(copyOnly){await navigator.clipboard.writeText(url);setStatus('Copied!');}else setShareTarget({url,title:selected.name});
     }catch{setStatus('Could not publish the shop. Check your Pro license and database setup.');}finally{setPublishing(false);}
   }
+  function primaryShop(mode:'affiliate'|'personal'){return readShopList(localStorage).find(s=>s.storeMode!=='niche'&&s.shopMode===mode)||validateShop({name:'',bio:'',shopMode:mode,products:[]});}
+  function activateShop(target:Shop){try{const next=switchShop(shopRef.current,target,localStorage);shopRef.current=next;setShop(next);setPublishedSlug(next.customSlug||'');setAssignedHold(holdDays(next.escrowHoldDays));setFilter('All');setGenderFilter('all');setSearch('');setAdding(false);setEditing(null);setCartOpen(false);setCheckout(null);setCodLines(null);setPaymentMessage('');setStatus('');}catch{setStatus('Could not save. Device storage may be full.');}}
+  async function createNiche(value:Record<string,string>){const r=await fetch('/api/shops',{method:'POST',headers:{'Content-Type':'application/json',...shopHeaders(localStorage)},body:JSON.stringify({action:'createNiche',shop:value})});const result=await r.json();if(!r.ok)throw Error(result.error);const next=validateShop(result.shop);const list=[...readShopList(localStorage),next];localStorage.setItem(shopListKey,JSON.stringify(list));setShops(list);activateShop(next);setPreview(false);}
   function createPost(product:Product){
     try{sessionStorage.setItem("sellpostly-post",JSON.stringify(product));location.href="/#formatter";}catch{setStatus("Could not save. Device storage may be full.");}
   }
@@ -186,7 +200,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   function changeCart(id:string,delta:number){setCart(previous=>({...previous,[id]:Math.max(0,Math.min(99,(previous[id]||0)+delta))}));}
   useEffect(()=>{setCartOpen(false);setCheckout(null);setCodLines(null);},[shop.shopMode]);
   const options=[...categories,...new Set(shop.products.map(p=>p.category).filter(c=>!categories.includes(c as typeof categories[number])))];
-  const matches=shop.products.filter(p=>(filter==="All"||p.category===filter) && (genderFilter==="all"||p.gender===genderFilter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+  const matches=shop.products.filter(p=>(shop.storeMode==='niche'||filter==="All"||p.category===filter) && (genderFilter==="all"||p.gender===genderFilter) && (p.name+" "+p.category+" "+p.source).toLocaleLowerCase().includes(search.toLocaleLowerCase()));
   useEffect(()=>setVisible(24),[filter,genderFilter,search]);
   function label(value:string){return categories.includes(value as typeof categories[number])?t(value as Message):value;}
   return <main data-surface={shop.shopTheme} data-accent={shop.shopAccent||'emerald'} className="shop-surface storefront-layout mx-auto max-w-7xl px-5 py-12">{shared&&publicSlug&&loaded&&<StorefrontSeoLocale shop={shop} slug={publicSlug}/>}
@@ -204,11 +218,13 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       {!shared && <><button className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button className={button} onClick={()=>{setPreview(true);setAdding(false);}}>{t("Storefront Preview")}</button></>}
       <button className={button} disabled={!loaded} onClick={()=>void share()}>{t("Share Store")}</button>
     </div>}
-    {!shared&&loaded&&<div className="mb-6 flex flex-wrap gap-3" aria-label={t('Preview Template')}>{(['affiliate','personal'] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:'rounded-lg border px-4 py-2'} onClick={()=>{try{setShop(switchCatalog(shop,mode,localStorage));setPreview(true);setAdding(false);setFilter('All');setGenderFilter('all');}catch{setStatus('Could not save. Device storage may be full.');}}}>{t(mode==='affiliate'?'Affiliate Deals Shop':'Personal Seller Shop')}</button>)}</div>}
-    {!shared&&loaded&&<section className="mb-6 grid gap-4 md:grid-cols-2">{(['affiliate','personal'] as const).map(mode=><article key={mode} className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="text-xl font-bold">{t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')}</h2><p className="my-3 text-sm text-slate-600">{t(mode==='affiliate'?'External deals only. No cart or escrow.':'Your products, cart and enabled checkout methods.')}</p><input aria-label={t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')} readOnly dir="ltr" className={field} value={publishedSlug?productShareUrl(storePath(publishedSlug,mode)):t('Publish to create this link')}/><div className="mt-3 flex gap-3"><button disabled={publishing} type="button" className={button} onClick={()=>shareMode(mode,true)}>{t('Copy Link')}</button><button disabled={publishing} type="button" className="rounded-lg border px-4 py-2" onClick={()=>shareMode(mode)}>{t('Social Share')}</button></div></article>)}</section>}
+    {!shared&&loaded&&<MultiShopSwitcher shops={shops} active={shop} tier={tier} onSelect={activateShop} onCreate={createNiche}/> }
+    {!shared&&loaded&&shop.storeMode!=='niche'&&<div className="mb-6 flex flex-wrap gap-3" aria-label={t('Preview Template')}>{(['affiliate','personal'] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:'rounded-lg border px-4 py-2'} onClick={()=>{try{activateShop(primaryShop(mode));setPreview(true);setAdding(false);setFilter('All');setGenderFilter('all');}catch{setStatus('Could not save. Device storage may be full.');}}}>{t(mode==='affiliate'?'Affiliate Deals Shop':'Personal Seller Shop')}</button>)}</div>}
+    {!shared&&loaded&&shop.storeMode!=='niche'&&<section className="mb-6 grid gap-4 md:grid-cols-2">{(['affiliate','personal'] as const).map(mode=><article key={mode} className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="text-xl font-bold">{t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')}</h2><p className="my-3 text-sm text-slate-600">{t(mode==='affiliate'?'External deals only. No cart or escrow.':'Your products, cart and enabled checkout methods.')}</p><input aria-label={t(mode==='affiliate'?'Affiliate Store Link':'Personal Store Link')} readOnly dir="ltr" className={field} value={publishedSlug?productShareUrl(storePath(publishedSlug,mode)):t('Publish to create this link')}/><div className="mt-3 flex gap-3"><button disabled={publishing} type="button" className={button} onClick={()=>shareMode(mode,true)}>{t('Copy Link')}</button><button disabled={publishing} type="button" className="rounded-lg border px-4 py-2" onClick={()=>shareMode(mode)}>{t('Social Share')}</button></div></article>)}</section>}
+    {!shared&&loaded&&shop.storeMode==='niche'&&<section className="mb-6 rounded-2xl border bg-white p-5"><h2 className="font-bold">{shop.name}</h2><input aria-label={t('Copy Link')} readOnly dir="ltr" className={field} value={shop.customSlug?productShareUrl(storePath(shop.customSlug,shop.shopMode)):''}/><button type="button" className={button+" mt-3"} onClick={()=>void share()}>{t('Social Share')}</button></section>}
     {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Publish your latest changes to update your public storefront.")}</p>}
     {!preview&&!shared&&loaded && <section className="mb-8 grid gap-4 rounded-xl border bg-slate-50 p-5 sm:grid-cols-3">
-      <fieldset className="sm:col-span-3"><legend className="mb-2 font-semibold">{t("Shop Type")}</legend><div className="flex flex-wrap gap-3">{(["affiliate","personal"] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:"rounded-lg border px-4 py-2"} onClick={()=>{try{setShop(switchCatalog(shop,mode,localStorage));setAdding(false);setEditing(null);setFilter("All");setGenderFilter("all");}catch{setStatus("Could not save. Device storage may be full.");}}}>{t(mode==="affiliate"?"Affiliate Storefront":"Personal Seller Store")}</button>)}</div><p className="mt-2 text-sm text-slate-600">{t("Each shop type has its own catalog. Switching types never moves products.")}</p></fieldset>
+      <fieldset disabled={shop.storeMode==='niche'} className="sm:col-span-3"><legend className="mb-2 font-semibold">{t("Shop Type")}</legend><div className="flex flex-wrap gap-3">{(["affiliate","personal"] as const).map(mode=><button type="button" key={mode} aria-pressed={shop.shopMode===mode} className={shop.shopMode===mode?button:"rounded-lg border px-4 py-2"} onClick={()=>{try{setShop(switchCatalog(shop,mode,localStorage));setAdding(false);setEditing(null);setFilter("All");setGenderFilter("all");}catch{setStatus("Could not save. Device storage may be full.");}}}>{t(mode==="affiliate"?"Affiliate Storefront":"Personal Seller Store")}</button>)}</div><p className="mt-2 text-sm text-slate-600">{t("Each shop type has its own catalog. Switching types never moves products.")}</p></fieldset>
       {shop.shopMode==='affiliate'&&<fieldset className="sm:col-span-3"><legend className="mb-3 font-semibold">{t('Affiliate Disclosure')}</legend><div className="mb-3 flex flex-wrap gap-2">{disclosurePresets.map(preset=><button type="button" key={preset.label} className="rounded-full border border-emerald-700 px-4 py-2 text-sm font-semibold" onClick={()=>setShop({...shop,affiliateDisclosure:t(preset.text)})}>{t(preset.label)}</button>)}</div><label className="block">{t('Editable Affiliate Disclosure')}<textarea className={field} rows={4} maxLength={500} value={shop.affiliateDisclosure||''} placeholder={t(disclosurePresets[0].text)} onChange={e=>setShop({...shop,affiliateDisclosure:e.target.value})}/></label><button type="button" className={button+' mt-3'} disabled={publishing} onClick={()=>shareMode('affiliate')}>{t('Save Disclosure')}</button></fieldset>}
       <label>{t("Store Logo")}<input type="file" accept="image/png,image/jpeg,image/webp" className={field} onChange={event=>{
         const file=event.target.files?.[0];if(!file)return;
@@ -223,6 +239,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       <fieldset className="grid gap-4 rounded-xl border p-4 sm:col-span-3 sm:grid-cols-2"><legend className="font-bold">{t('Template Design')}</legend><label>{t('Hero Headline')}<input className={field} maxLength={140} value={shop.heroTitle||''} onChange={e=>setShop({...shop,heroTitle:e.target.value})}/></label><label>{t('Hero Subtitle')}<input className={field} maxLength={400} value={shop.heroSubtitle||''} onChange={e=>setShop({...shop,heroSubtitle:e.target.value})}/></label><label>{t('Hero Image URL')}<input type="url" className={field} value={shop.heroImage||''} onChange={e=>setShop({...shop,heroImage:e.target.value})}/></label><label>{t('Store Accent Palette')}<select className={field} value={shop.shopAccent||'emerald'} onChange={e=>setShop({...shop,shopAccent:e.target.value as typeof shopAccents[number]})}>{shopAccents.map((value,i)=><option key={value} value={value}>{t(shopAccentNames[i])}</option>)}</select></label><p className="text-sm text-slate-600 sm:col-span-2">{t('Design changes apply only to this storefront template.')}</p></fieldset>
       <label>{t("Shop Background Color")}<select className={field} value={shop.shopTheme} onChange={e=>setShop({...shop,shopTheme:e.target.value as Surface})}>{surfaces.map((surface,index)=><option key={surface} value={surface}>{t(surfaceNames[index])}</option>)}</select></label>
       <label>{t("Shop Name")}<input className={field} maxLength={100} value={shop.name} onChange={e=>setShop({...shop,name:e.target.value})}/></label>
+      {shop.storeMode==='niche'&&<label>{t('Niche Name')}<input className={field} value={shop.nicheName||''} maxLength={100} onChange={e=>setShop({...shop,nicheName:e.target.value})}/></label>}
       <label>{t("Bio")}<input className={field} maxLength={500} value={shop.bio} onChange={e=>setShop({...shop,bio:e.target.value})}/></label>
       <label>{t("WhatsApp Order Number")}<input className={field} dir="ltr" placeholder="+1 555 123 4567" value={shop.phone} onChange={e=>setShop({...shop,phone:e.target.value})}/></label>
       {!shop.phone.replace(/\D/g,"")&&<p className="text-sm sm:col-span-3">{t("Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.")}</p>}
@@ -239,7 +256,8 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       setEditing(null);
       setAdding(false);setPhoto("");
     }}>
-      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=><label key={text}>{t(text)}<input className={field} defaultValue={editing ? String(editing[["name","price","category","image","url"][i] as keyof Product]||"") : ""} name={["name","price","category","image","url"][i]} type={i===4?"url":"text"} onChange={e=>{if(i===4)setDraftUrl(e.target.value);if(i===0)setDraftTitle(e.target.value);if(i===2)setDraftCategory(e.target.value);}} onBlur={event=>{if(i===3&&shop.shopMode==='affiliate'&&isAmazonCdnImage(event.target.value)){const form=event.target.form;event.target.value=affiliateImage(event.target.value,String(new FormData(form!).get('category')||'Other'),identityOverride||draftTitle,editorCover);setPhoto(event.target.value);setImageNotice(true);setDraftAmazonBlocked(true);}else if(i===3){setPhoto(safeImage(event.target.value));setEditorCover(undefined);setDraftStock(undefined);setDraftAmazonBlocked(false);}}} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
+      {shop.storeMode==='niche'&&<input type="hidden" name="category" value={shop.nicheName||"Other"}/>}
+      {(["Product Name","Price","Category","Image URL","Affiliate / Checkout URL"] as const).map((text,i)=>shop.storeMode==='niche'&&i===2?null:<label key={text}>{t(text)}<input className={field} defaultValue={editing ? String(editing[["name","price","category","image","url"][i] as keyof Product]||"") : ""} name={["name","price","category","image","url"][i]} type={i===4?"url":"text"} onChange={e=>{if(i===4)setDraftUrl(e.target.value);if(i===0)setDraftTitle(e.target.value);if(i===2)setDraftCategory(e.target.value);}} onBlur={event=>{if(i===3&&shop.shopMode==='affiliate'&&isAmazonCdnImage(event.target.value)){const form=event.target.form;event.target.value=affiliateImage(event.target.value,String(new FormData(form!).get('category')||'Other'),identityOverride||draftTitle,editorCover);setPhoto(event.target.value);setImageNotice(true);setDraftAmazonBlocked(true);}else if(i===3){setPhoto(safeImage(event.target.value));setEditorCover(undefined);setDraftStock(undefined);setDraftAmazonBlocked(false);}}} required={i===0||(i===4&&shop.shopMode==="affiliate")} maxLength={i===0?120:2048} list={i===2?"shop-categories":undefined}/></label>)}
       {imageNotice&&shop.shopMode==='affiliate'&&<p role="status" className="rounded-xl bg-emerald-50 p-4 text-sm sm:col-span-2">{t(amazonImageNotice)}</p>}
       <datalist id="shop-categories">{categories.slice(1).map(c=><option key={c} value={c}>{label(c)}</option>)}</datalist>
       <label>{t("Gender / Audience")}<select className={field} name="gender" onChange={e=>setDraftGender(normalizeGender(e.target.value))} defaultValue={editing?.gender || "unisex"}><option value="unisex">{t("All / Unisex")}</option><option value="men">{t("Men")}</option><option value="women">{t("Women")}</option><option value="kids">{t("Kids")}</option></select></label>
@@ -260,7 +278,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     </form>}
     
     {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>}
-    <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)} ({c==="All"?shop.products.length:shop.products.filter(p=>p.category===c).length})</button>)}</div>
+    <div hidden={shop.storeMode==='niche'} style={shop.storeMode==='niche'?{display:'none'}:undefined} className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{options.map(c=><button className={filter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={filter===c}>{label(c)} ({c==="All"?shop.products.length:shop.products.filter(p=>p.category===c).length})</button>)}</div>
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex","kids"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":value==="kids"?"Kids":"Unisex")}</button>)}
     </div>
@@ -271,7 +289,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       {shop.shopMode==="affiliate"&&shop.affiliateDisclosure&&<p className="my-2 text-xs text-slate-600">{shop.affiliateDisclosure}</p>}
       <div className="flex flex-wrap gap-2 text-sm">
         {shop.shopMode==="personal"&&<a className="rounded-lg border px-3 py-2" href={productPath(p.id,publicSlug,snapshot)}>{t("View Product")}</a>}
-        {shop.shopMode==="personal"&&!shared&&<button type="button" className="rounded-lg border px-3 py-2" onClick={async()=>{try{const response=await fetch("/api/shops",{method:"POST",headers:{"Content-Type":"application/json","x-pro-key":localStorage.getItem("sellpostly-pro-key")||""},body:JSON.stringify(shop)});if(!response.ok)throw Error();const result=await response.json();setShareTarget({url:productShareUrl(productPath(p.id,result.slug)),title:p.name,product:true});}catch{setStatus("Publish your shop to create a shareable product link.");}}}>{t("Share Product")}</button>}
+        {shop.shopMode==="personal"&&!shared&&<button type="button" className="rounded-lg border px-3 py-2" onClick={async()=>{try{const response=await fetch("/api/shops",{method:"POST",headers:{"Content-Type":"application/json",...shopHeaders(localStorage)},body:JSON.stringify(shop)});if(!response.ok)throw Error();const result=await response.json();setShareTarget({url:productShareUrl(productPath(p.id,result.slug)),title:p.name,product:true});}catch{setStatus("Publish your shop to create a shareable product link.");}}}>{t("Share Product")}</button>}
         {shop.shopMode==="personal"&&<button type="button" className={button} onClick={()=>changeCart(p.id,1)}>{t("Add to Cart")}</button>}
         {shop.shopMode==="personal"&&shop.escrowEnabled!==false&&<button type="button" className={button} onClick={()=>setCheckout({product:p,details:""})}>{t("Pay with USDC / USDT")}</button>}
         {shop.shopMode==="affiliate"&&p.url&&<a className={button} href={safeUrl(p.url)} target="_blank" rel="noopener noreferrer sponsored">{t("View Deal / Buy Now")}</a>}

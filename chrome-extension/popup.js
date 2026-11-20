@@ -1,6 +1,29 @@
 ﻿"use strict";
 
 const messages = {
+"Active Shop":{"fr":"Boutique active","ar":"المتجر النشط"},
+"Primary Personal Store":{"fr":"Boutique personnelle principale","ar":"المتجر الشخصي الأساسي"},
+"Primary Affiliate Deals Shop":{"fr":"Boutique affiliée principale","ar":"متجر العروض بالعمولة الأساسي"},
+"+ New Niche Shop":{"fr":"+ Nouvelle boutique spécialisée","ar":"+ متجر متخصص جديد"},
+"Create Niche Shop":{"fr":"Créer une boutique spécialisée","ar":"إنشاء متجر متخصص"},
+"Creating shop…":{"fr":"Création de la boutique…","ar":"جارٍ إنشاء المتجر…"},
+"Custom URL Slug":{"fr":"Identifiant URL personnalisé","ar":"معرّف الرابط المخصص"},
+"Niche Name":{"fr":"Nom de la spécialité","ar":"اسم التخصص"},
+"Niche Collection":{"fr":"Collection spécialisée","ar":"تشكيلة متخصصة"},
+"Pro includes up to 10 niche shops across both store types.":{"fr":"Pro inclut jusqu’à 10 boutiques spécialisées, tous types confondus.","ar":"تتيح Pro إنشاء ما يصل إلى 10 متاجر متخصصة عبر كلا النوعين."},
+"Free includes one primary personal store and one primary affiliate shop. Upgrade to Pro for niche shops.":{"fr":"L’offre gratuite inclut une boutique personnelle principale et une boutique affiliée principale. Passez à Pro pour les boutiques spécialisées.","ar":"تشمل الخطة المجانية متجرًا شخصيًا أساسيًا ومتجرًا أساسيًا للعروض بالعمولة. اختر Pro لإضافة متاجر متخصصة."},
+"A niche shop has its own catalog, settings and permanent public URL. Broad category tabs are hidden.":{"fr":"Chaque boutique spécialisée possède son catalogue, ses réglages et son URL permanente. Les catégories générales sont masquées.","ar":"لكل متجر متخصص كتالوجه وإعداداته ورابطه العام الدائم. تُخفى تبويبات الفئات العامة."},
+"This URL slug is already taken.":{"fr":"Cet identifiant URL est déjà utilisé.","ar":"معرّف الرابط هذا مستخدم بالفعل."},
+"The 10 niche shop limit has been reached.":{"fr":"La limite de 10 boutiques spécialisées est atteinte.","ar":"تم بلوغ الحد الأقصى البالغ 10 متاجر متخصصة."},
+"Could not create the shop. Check your Pro license and try again.":{"fr":"Création impossible. Vérifiez votre licence Pro et réessayez.","ar":"تعذر إنشاء المتجر. تحقق من ترخيص Pro وحاول مجددًا."},
+"Free Primary Stores":{"fr":"Boutiques principales gratuites","ar":"المتاجر الأساسية المجانية"},
+"Start Free Primary Stores":{"fr":"Créer mes boutiques gratuites","ar":"ابدأ متاجرك الأساسية مجانًا"},
+"Exact Target Shop":{"fr":"Boutique de destination précise","ar":"المتجر المستهدف بالتحديد"},
+"Primary store (selected type)":{"fr":"Boutique principale (type sélectionné)","ar":"المتجر الأساسي (النوع المحدد)"},
+"Sync My Shops":{"fr":"Synchroniser mes boutiques","ar":"مزامنة متاجري"},
+"Niche collection: category is assigned automatically.":{"fr":"Collection spécialisée : catégorie attribuée automatiquement.","ar":"تشكيلة متخصصة: تُعيّن الفئة تلقائيًا."},
+"Shops synced. Choose your import destination.":{"fr":"Boutiques synchronisées. Choisissez la destination de l’import.","ar":"تمت مزامنة المتاجر. اختر وجهة الاستيراد."},
+"Sign in to My Shop on the website, then sync again.":{"fr":"Connectez-vous à Ma boutique sur le site, puis relancez la synchronisation.","ar":"سجّل الدخول إلى متجري على الموقع ثم أعد المزامنة."},
 "Representative style photo":{"fr":"Photo de style représentative","ar":"صورة توضيحية للأسلوب"},
 "Next Similar Photo":{"fr":"Photo similaire suivante","ar":"الصورة المشابهة التالية"},
 "Finding photos…":{"fr":"Recherche de photos…","ar":"جارٍ البحث عن صور…"},
@@ -393,6 +416,7 @@ const t = (message) => messages[message]?.[language] ?? message;
 
 function applyLanguage(next) {
   language = next;
+  if(globalThis.sellpostlySyncedShops)renderSyncedShops(globalThis.sellpostlySyncedShops);
   document.documentElement.lang = next;
   document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
   for (const item of document.querySelectorAll("[data-message]")) item.textContent = t(item.dataset.message);
@@ -760,7 +784,7 @@ document.querySelector("#send-shop").addEventListener("click",async()=>{
   if(!title){feedback.textContent=t("Enter a product name or import the current page first.");return;}
   refreshAffiliateImageGuard();
   const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{unbrandedQuery:SellPostlyUnbrandedQuery(title,String(data.get("category")||""),String(data.get("gender")||"")),destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.dataset.rawImage||preview.dataset.shopImage||preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
+  const result=await chrome.runtime.sendMessage({type:"SELLPOSTLY_SEND_TO_SHOP",product:{targetShopId:exactShopTarget()?.id,unbrandedQuery:SellPostlyUnbrandedQuery(title,String(data.get("category")||""),String(data.get("gender")||"")),destination:String(data.get("destination")||"affiliate"),stock:String(data.get("stock")||"").trim()===""?undefined:Math.max(0,Math.min(1000000,Math.trunc(Number(data.get("stock"))))),title,price:String(data.get("price")||""),description:String(data.get("features")||""),image:preview.dataset.rawImage||preview.dataset.shopImage||preview.getAttribute("src")||"",url:tab?.url||"",category:String(data.get("category")||"Top Deals"),gender:String(data.get("gender")||"unisex")}});
   if(!result?.ok)throw Error();
   feedback.textContent=t("Opening My Shop. Activate Pro on the website if requested.");
  }catch{feedback.textContent=t("Could not open My Shop. Reload the extension and try again.");}
@@ -781,3 +805,20 @@ function refreshAffiliateImageGuard(){
  else{delete preview.dataset.shopImage;if(preview.dataset.rawImage){preview.src=preview.dataset.rawImage;preview.hidden=false;}}
 }
 for(const name of ['destination','category'])document.querySelector('#seller').elements.namedItem(name).addEventListener('change',refreshAffiliateImageGuard);
+
+let syncedShopList=[];
+function exactShopTarget(){return syncedShopList.find(s=>s.id+':'+s.type===document.querySelector('#exact-shop').value);}
+function refreshExactShop(){const selected=exactShopTarget(),category=document.querySelector('#seller').elements.namedItem('category');
+ if(selected)destinationPicker.value=selected.type;
+ category.disabled=selected?.storeMode==='niche';category.closest('label').hidden=category.disabled;
+ document.querySelector('#niche-import-note').hidden=!category.disabled;refreshAffiliateImageGuard();
+}
+function renderSyncedShops(list){globalThis.sellpostlySyncedShops=list;syncedShopList=Array.isArray(list)?list.filter(s=>s&&/^[0-9a-f-]{36}$/i.test(s.id)&&['personal','affiliate'].includes(s.type)):[];
+ const select=document.querySelector('#exact-shop'),previous=select.value;select.replaceChildren(new Option(t('Primary store (selected type)'),''));
+ for(const s of syncedShopList)select.add(new Option((s.name||t(s.type==='personal'?'Personal Seller Shop':'Affiliate Deals Shop'))+' — '+(s.storeMode==='niche'?s.nicheName:t(s.type==='personal'?'Personal Seller Shop':'Affiliate Deals Shop')),s.id+':'+s.type));
+ if([...select.options].some(o=>o.value===previous))select.value=previous;refreshExactShop();
+}
+document.querySelector('#exact-shop').addEventListener('change',refreshExactShop);
+destinationPicker.addEventListener('change',()=>{document.querySelector('#exact-shop').value='';refreshExactShop();});
+document.querySelector('#sync-shops').addEventListener('click',async()=>{const button=document.querySelector('#sync-shops');button.disabled=true;try{const result=await chrome.runtime.sendMessage({type:'SELLPOSTLY_SYNC_SHOPS'});if(!result?.ok)throw Error();renderSyncedShops(result.shops);feedback.textContent=t('Shops synced. Choose your import destination.');}catch{feedback.textContent=t('Sign in to My Shop on the website, then sync again.');}finally{button.disabled=false;}});
+chrome.storage.local.get(['sellpostlyShops','sellpostlyShopsOrigin']).then(async saved=>{const base=await SellPostlyFrontend.resolve();if(saved.sellpostlyShopsOrigin===base)renderSyncedShops(saved.sellpostlyShops);}).catch(()=>{});

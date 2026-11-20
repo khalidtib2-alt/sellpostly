@@ -16,7 +16,7 @@ function prepareProduct(value){
  let image=typeof value.image==="string"&&(SellPostlyAffiliate.isStudio(value.image)||/^https?:\/\//i.test(value.image))?value.image.slice(0,20000):"";
  const amazonImageBlocked=destination==="affiliate"&&SellPostlyAffiliate.isImage(image);
  if(amazonImageBlocked)image="";
- return {amazonImageBlocked,unbrandedQuery:SellPostlyUnbrandedQuery(title,category,value.gender),destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
+ return {targetShopId:typeof value.targetShopId==='string'&&/^[0-9a-f-]{36}$/i.test(value.targetShopId)?value.targetShopId:undefined,amazonImageBlocked,unbrandedQuery:SellPostlyUnbrandedQuery(title,category,value.gender),destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
 }
 async function sendProduct(value){
  const product=prepareProduct(value),base=await SellPostlyFrontend.resolve();
@@ -33,6 +33,25 @@ async function sendProduct(value){
  }
  throw Error("BRIDGE_UNAVAILABLE");
 }
+async function syncShopDestinations(){
+ const base=await SellPostlyFrontend.resolve(),tabs=await chrome.tabs.query({});
+ let tab=tabs.find(t=>SellPostlyFrontend.frontendOrigin(t.url)===base);
+ if(!tab)tab=await chrome.tabs.create({url:new URL('/shop',base).href});
+ for(let attempt=0;attempt<20;attempt++){
+ try{const result=await chrome.scripting.executeScript({target:{tabId:tab.id},args:[base],func:async(origin)=>{
+ if(location.origin!==origin)return null;
+ const headers={'x-pro-key':localStorage.getItem('sellpostly-pro-key')||'','x-shop-key':localStorage.getItem('sellpostly-free-shop-key')||''};
+ const response=await fetch('/api/shops',{headers,cache:'no-store'});if(!response.ok)return {error:'SIGN_IN_REQUIRED'};
+ const data=await response.json();return {shops:(data.shops||[]).map(s=>({id:s.shopId,slug:s.customSlug,name:s.name,type:s.shopMode,storeMode:s.storeMode,nicheName:s.nicheName}))};
+ }});const value=result?.[0]?.result;if(value?.error)throw Error(value.error);if(Array.isArray(value?.shops)){await chrome.storage.local.set({sellpostlyShops:value.shops,sellpostlyShopsOrigin:base});return value.shops;}}
+ catch(e){if(e.message==='SIGN_IN_REQUIRED')throw e;}
+ await new Promise(resolve=>setTimeout(resolve,500));
+ }throw Error('SYNC_FAILED');
+}
+chrome.runtime.onMessage.addListener((message,sender,respond)=>{
+ if(message?.type!=='SELLPOSTLY_SYNC_SHOPS')return false;if(sender.id!==chrome.runtime.id){respond({ok:false});return false;}
+ syncShopDestinations().then(shops=>respond({ok:true,shops})).catch(()=>respond({ok:false}));return true;
+});
 chrome.runtime.onMessage.addListener((message,sender,respond)=>{
  if(message?.type!=="SELLPOSTLY_SEND_TO_SHOP")return false;
  if(sender.id!==chrome.runtime.id){respond({ok:false,error:"INVALID_SENDER"});return false;}

@@ -8,6 +8,7 @@ import {useLanguage} from '../language-context';
 import type {Message} from '../translations';
 import type {Shop,Product} from './shop-data';
 import {categories,safeImage} from './shop-data';
+import {shopHeaders} from './multi-shop-data';
 import {useShopCart} from './use-shop-cart';
 import {productPath,productShareUrl} from './product-links';
 import {cartTotal} from './cart-data';
@@ -24,7 +25,7 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  const [cart,setCart]=useShopCart(shop,slug,snapshot,shop.shopMode==='personal'),product=shop.shopMode==='personal'?shop.products.find(p=>p.id===productId):undefined;
  if(!product)return <main className="mx-auto max-w-3xl p-8"><p>{t('Product Not Found')}</p><a href={slug?'/s/'+encodeURIComponent(slug)+'/personal':'/shop'}>{t('Back to Store')}</a></main>;
  const maximum=Math.max(1,Math.min(99,product.stock??99));
- const back=slug?'/s/'+encodeURIComponent(slug)+'/personal':'/shop'+(snapshot?'?'+new URLSearchParams({s:snapshot}):'?mode=personal');
+ const back=slug?'/s/'+encodeURIComponent(slug)+'/personal':'/shop'+(snapshot?'?'+new URLSearchParams({s:snapshot}):shop.storeMode==='niche'?'':'?mode=personal');
  const lines=shop.products.filter(p=>cart[p.id]>0).map(p=>({product:p,quantity:cart[p.id]})),total=cartTotal(lines),count=lines.reduce((n,line)=>n+line.quantity,0);
  const photos=[...new Set([product.image,...(product.images||[])].map(safeImage).filter(Boolean))].slice(0,9);
  const paragraphs=(product.description||'').split(/\n+/).map(line=>line.trim()).filter(Boolean);
@@ -37,7 +38,7 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
   setCopying(true);
   try{
    let published=slug;
-   if(!published&&!snapshot){const response=await fetch('/api/shops',{method:'POST',headers:{'Content-Type':'application/json','x-pro-key':localStorage.getItem('sellpostly-pro-key')||''},body:JSON.stringify(shop)});if(!response.ok)throw Error();published=(await response.json()).slug;if(!published)throw Error();}
+   if(!published&&!snapshot){const response=await fetch('/api/shops',{method:'POST',headers:{'Content-Type':'application/json',...shopHeaders(localStorage)},body:JSON.stringify(shop)});if(!response.ok)throw Error();published=(await response.json()).slug;if(!published)throw Error();}
    setShareUrl(productShareUrl(productPath(product!.id,published,snapshot)));
   }catch{setStatus('Publish your shop to create a shareable product link.');}finally{setCopying(false);}
  }
