@@ -1,4 +1,6 @@
 'use client';
+import PromoVideoModal from './promo-video-modal';
+import {promoVideo} from './promo-video';
 import ShareModal from './share-modal';
 import CodCheckout from './cod-checkout';
 import {useState} from 'react';
@@ -17,6 +19,7 @@ import BuyerStoreFooter from './buyer-store-footer';
 import {escrowReady,holdDays} from './escrow-config';
 export default function ProductLanding({shop,productId,slug,snapshot,verified=false}:{shop:Shop;productId:string;slug?:string;snapshot?:string;verified?:boolean}){
  const {t,language,setLanguage}=useLanguage(),[quantity,setQuantity]=useState(1),[cartOpen,setCartOpen]=useState(false),[checkout,setCheckout]=useState<{product:Product;details:string;items:{id:string;quantity:number}[]}|null>(null),[status,setStatus]=useState<Message|''>(''),[copying,setCopying]=useState(false);
+ const [demo,setDemo]=useState('');
  const [shareUrl,setShareUrl]=useState(''),[codLines,setCodLines]=useState<{product:Product;quantity:number}[]|null>(null);
  const [cart,setCart]=useShopCart(shop,slug,snapshot,shop.shopMode==='personal'),product=shop.shopMode==='personal'?shop.products.find(p=>p.id===productId):undefined;
  if(!product)return <main className="mx-auto max-w-3xl p-8"><p>{t('Product Not Found')}</p><a href={slug?'/s/'+encodeURIComponent(slug)+'/personal':'/shop'}>{t('Back to Store')}</a></main>;
@@ -59,6 +62,8 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  {paragraphs.length>0&&<section className="my-12 max-w-4xl"><h2 className="mb-5 text-2xl font-bold">{t('Product Details')}</h2><div className="space-y-4 text-base leading-relaxed">{paragraphs.map((line,i)=><p key={i} dir="auto" className="whitespace-pre-wrap">{line}</p>)}</div></section>}
  <div className="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-4 border-t bg-white px-5 py-4 text-slate-900 shadow-lg lg:hidden" style={{paddingBottom:'max(1rem,env(safe-area-inset-bottom))'}}><div><p className="max-w-40 truncate text-xs">{title}</p><p className="font-black">{product.price}</p></div><button type="button" className={button} onClick={()=>add(true)}>{t('Order Now')}</button></div>
  {cartOpen&&<CartDrawer isSharedBuyerView={true} lines={lines} shop={shop} onCod={()=>{setCartOpen(false);setCodLines(lines);}} change={change} onClose={()=>setCartOpen(false)} onPay={(order,details,items)=>{setCartOpen(false);setCheckout({product:order,details,items});}}/>}
+ {promoVideo(product.promo_video_url)&&<button type="button" className="my-4 rounded-full border px-4 py-2 font-bold" onClick={()=>setDemo(product.promo_video_url!)}>{t("Watch Demo")}</button>}
+ {demo&&<PromoVideoModal url={demo} onClose={()=>setDemo('')}/>}
  {shareUrl&&<ShareModal url={shareUrl} title={title} product onClose={()=>setShareUrl('')}/>}
  {codLines&&shop.codEnabled!==false&&<CodCheckout storeSlug={slug} shop={shop} lines={codLines} onClose={()=>setCodLines(null)}/>}
  {checkout&&<CryptoCheckout storeSlug={slug} orderItems={checkout.items} product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}

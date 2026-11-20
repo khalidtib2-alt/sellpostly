@@ -1,0 +1,7 @@
+export type Crop={x:number;y:number;w:number;h:number};
+export function cropForAspect(width:number,height:number,ratio:number):Crop{if(!ratio)return {x:0,y:0,w:1,h:1};const original=width/height;if(original>ratio){const w=ratio/original;return {x:(1-w)/2,y:0,w,h:1};}const h=original/ratio;return {x:0,y:(1-h)/2,w:1,h};}
+export function clampCrop(c:Crop):Crop{const w=Math.min(1,Math.max(.01,c.w)),h=Math.min(1,Math.max(.01,c.h));return {w,h,x:Math.max(0,Math.min(1-w,c.x)),y:Math.max(0,Math.min(1-h,c.y))};}
+export function outputSize(w:number,h:number){w=Math.round(Number(w));h=Math.round(Number(h));if(!Number.isFinite(w)||!Number.isFinite(h)||w<1||h<1||w>4096||h>4096||w*h>12000000)throw Error('IMAGE_DIMENSIONS');return {w,h};}
+export function sharpen(data:Uint8ClampedArray,width:number,height:number,amount:number){const output=new Uint8ClampedArray(data);const a=Math.max(0,Math.min(1.5,amount));if(!a)return output;for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){const i=(y*width+x)*4;for(let c=0;c<3;c++)output[i+c]=data[i+c]*(1+4*a)-a*(data[i-4+c]+data[i+4+c]+data[i-width*4+c]+data[i+width*4+c]);}return output;}
+export function storefrontQrUrl(raw:string,base:string){try{const u=new URL(raw);if(u.protocol!=='https:'||u.origin!==new URL(base).origin||u.username||u.password||!/^\/s\/[a-z0-9][a-z0-9-]{2,63}\/(personal|affiliate)\/?$/.test(u.pathname))return '';return u.origin+u.pathname.replace(/\/$/,'');}catch{return '';}}
+export function mimeExtension(type:string){return type==='image/webp'?'webp':type==='image/jpeg'?'jpg':'png';}

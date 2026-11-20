@@ -1,0 +1,10 @@
+'use client';
+import {useEffect,useRef,useState} from 'react';
+import {useLanguage} from '../language-context';
+import {promoVideo} from './promo-video';
+export default function PromoVideoModal({url,onClose}:{url:string;onClose:()=>void}){
+ const {t}=useLanguage(),dialog=useRef<HTMLDialogElement>(null),[play,setPlay]=useState(false),[failed,setFailed]=useState(false),video=promoVideo(url);
+ useEffect(()=>{dialog.current?.showModal();},[]);
+ if(!video)return null;
+ return <dialog ref={dialog} onClose={onClose} aria-labelledby="demo-title" className="m-auto max-h-[95dvh] w-[min(95vw,60rem)] overflow-y-auto rounded-2xl border bg-white p-5 text-slate-900 backdrop:bg-black/60"><header className="mb-4 flex justify-between gap-4"><h2 id="demo-title" className="text-xl font-bold">{t('Watch Demo')}</h2><button type="button" className="rounded-lg border px-3 py-2" onClick={()=>{setPlay(false);dialog.current?.close();}}>{t('Close')}</button></header>{!play?<div className="rounded-xl bg-slate-50 p-8 text-center"><p className="mb-5 text-sm">{t('Playing loads the seller’s video from its external host. The host’s privacy rules apply.')}</p><button type="button" className="rounded-xl bg-emerald-700 px-5 py-3 font-bold text-white" onClick={()=>setPlay(true)}>{t('Play Video')}</button></div>:video.kind==='direct'?<video className="max-h-[70vh] w-full rounded-xl bg-black" src={video.url} controls playsInline preload="metadata" onError={()=>setFailed(true)}/>:<iframe title={t('Watch Demo')+' — '+video.provider} className="aspect-video w-full rounded-xl bg-black" src={video.embed} sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" allow="fullscreen; picture-in-picture" referrerPolicy="no-referrer" allowFullScreen/>}<p className="my-4 text-sm">{t('If the video cannot play here, open the original page.')}</p>{failed&&<p role="alert" className="my-3">{t('Video unavailable. Try the original page.')}</p>}<a href={video.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-emerald-800 underline">{t('Open Original Video')} · {video.provider}</a></dialog>;
+}
