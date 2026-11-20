@@ -1,9 +1,11 @@
-SELLPOSTLY BROWSER MEDIA TOOLS + PRODUCT PROMO VIDEOS
+SELLPOSTLY PAYMENT SAVE / UNIFORM CARDS / GUIDE & SEO POLISH
 
-Merge these source files into your existing SellPostly checkout with the previous Peer Payments / User Guide patches applied. This focused patch omits unchanged assets and dependencies. The original checkout was not modified; verification used the staged working copy.
+Merge these source files into your existing SellPostly checkout with all previous Media Tools, Peer Payments and User Guide patches applied. This focused patch omits unchanged assets and dependencies. The original checkout was not modified; verification used the staged working copy.
 
-Adds /tools (header/footer/sitemap), local Canvas crop/resize/convert/polish overlays, local video frame capture, QR export and localStorage image handoff. Optional promo_video_url fields are stored in the existing product JSON and shown as Watch Demo controls on both storefront types and Personal product detail pages. EN/FR/AR and Amazon safeguards remain intact.
+Read POLISH-GUIDE-SEO.md. No new dependencies or database migration are required.
 
-Read MEDIA-TOOLS.md. No new npm dependencies, paid APIs or database migrations are needed for this update. Run npm run build and npm test after applying.
+Payment Settings now save in place with inline confirmation, without opening sharing or changing scroll/URL. All storefront image sources use uniform contained 4:3 frames and aligned action groups. The shared guide/FAQ covers the latest features. Metadata and structured data target relevant intent themes with EN/FR/AR support and accurate free-vs-Pro wording.
 
-Verified: production build succeeded with 0 errors; 79 tests passed. Chrome headless checks confirmed actual WebP/JPEG/PNG exports, local video capture, QR generation and clean /shop handoff. No external HTTP requests were recorded during the tested local-tools flow. No environment secrets or browser test artifacts are included.
+Verified: npm run build succeeded with 0 errors; npm test passed all 83 tests. Chrome checks verified exact per-grid card height/button alignment, locale/RTL SEO updates and unchanged URL/scroll after a mocked in-place payment save. No live database write or deployment was performed.
+
+Run npm run build and npm test after applying. Environment files, secrets and browser test artifacts are excluded.

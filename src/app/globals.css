@@ -73,9 +73,6 @@ input, select, textarea { background-color: var(--card); color: var(--text); bor
 .editorial-products,.boutique-products { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1.4rem; }
 .editorial-product,.boutique-product { min-width:0; overflow:hidden; border:1px solid var(--border); background:var(--card); }
 .editorial-product { border-radius:1.25rem; }
-.editorial-product:first-child { grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; }
-.editorial-product:first-child .store-card-body { align-self:center; padding:2rem; }
-.editorial-product:first-child h3 { font-family:Georgia,serif; font-size:2rem; }
 .boutique-product { border:0; border-bottom:1px solid var(--border); border-radius:.35rem .35rem 0 0; padding-bottom:1rem; }
 .store-card-visual { position:relative; padding:2.5rem 1.3rem 1rem; background:var(--muted); overflow:hidden; }
 .store-photo-frame { display:flex; height:208px; width:100%; align-items:center; justify-content:center; padding:1rem; overflow:hidden; border-radius:.8rem; }
@@ -108,17 +105,30 @@ input, select, textarea { background-color: var(--card); color: var(--text); bor
 .store-collection-heading { display:flex; justify-content:space-between; align-items:end; gap:1rem; margin:2.5rem 0 1.5rem; padding-bottom:1.3rem; border-bottom:1px solid var(--border); }
 .store-collection-heading h2 { font-family:Georgia,serif; font-size:2rem; line-height:1.2; }
 @media(max-width:900px){.editorial-products,.boutique-products{grid-template-columns:repeat(2,minmax(0,1fr));}.store-hero-art{padding:2rem;}.store-hero-art img{height:260px;}}
-@media(max-width:600px){.curator-hero,.boutique-hero{grid-template-columns:1fr;}.store-hero-art{min-height:280px;padding:2rem;}.store-hero-art img{height:240px;}.store-hero-copy{padding:2rem 1.5rem;}.editorial-products,.boutique-products{grid-template-columns:1fr;}.editorial-product:first-child{display:block;grid-column:auto;}.boutique-trust-strip{justify-content:flex-start;gap:.8rem;}.store-collection-heading h2{font-size:1.6rem;}}
+@media(max-width:600px){.curator-hero,.boutique-hero{grid-template-columns:1fr;}.store-hero-art{min-height:280px;padding:2rem;}.store-hero-art img{height:240px;}.store-hero-copy{padding:2rem 1.5rem;}.editorial-products,.boutique-products{grid-template-columns:1fr;}.boutique-trust-strip{justify-content:flex-start;gap:.8rem;}.store-collection-heading h2{font-size:1.6rem;}}
 @media(prefers-reduced-motion:reduce){.store-photo-frame img{transition:none;}.boutique-product:hover .store-photo-frame img{transform:none;}}
 [dir='rtl'] .store-primary-link svg,[dir='rtl'] .store-detail-link svg,[dir='rtl'] .editorial-product .store-buy-button svg { transform:scaleX(-1); }
-/* Full-bleed editorial studio illustrations; custom product photos remain contained. */
-.editorial-product.has-studio-cover .store-card-visual {padding:0;display:flex;align-items:stretch;background:transparent;}
-.editorial-product.has-studio-cover .store-photo-frame {position:relative;height:auto;min-height:280px;aspect-ratio:4/3;padding:0;border-radius:0;flex:1;}
-.editorial-product.has-studio-cover .store-photo-frame img {position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;mix-blend-mode:normal;}
-.editorial-product.has-studio-cover .store-card-number {z-index:2;border:1px solid #ffffff40;background:#0f172a55;color:white;backdrop-filter:blur(8px);padding:.4rem .65rem;border-radius:999px;}
-.studio-cover-caption {position:absolute;bottom:1rem;inset-inline-start:1rem;z-index:2;border-radius:999px;background:#0f172a88;color:#fff;padding:.4rem .7rem;font-size:.6rem;letter-spacing:.07em;}
-@media(max-width:600px){.editorial-product.has-studio-cover .store-photo-frame{min-height:240px;}}
 
-/* Real editorial photographs keep their natural lighting and fill the cover. */
-.editorial-product.has-representative-photo .store-photo-frame {height:100%; padding:0; background:transparent;}
-.editorial-product.has-representative-photo .store-photo-frame img {width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;mix-blend-mode:normal;}
+/* Uniform studio frames and action baselines for every product source and mode. */
+.editorial-product,.boutique-product {display:flex;flex-direction:column;height:100%;min-width:0;}
+.store-card-visual {position:relative;padding:0;aspect-ratio:4/3;width:100%;flex:none;background:#f8fafc;overflow:hidden;}
+.store-photo-frame {position:absolute;inset:0;display:flex;width:100%;height:100%;padding:0;border-radius:0;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden;}
+.store-photo-frame img {display:block;width:100%;height:100%;max-width:100%;max-height:100%;padding:1rem;object-fit:contain;mix-blend-mode:multiply;transform:none;}
+.boutique-product:hover .store-photo-frame img {transform:none;}
+.shop-surface[data-surface='slate'] .store-photo-frame {background:#fff;}
+.shop-surface[data-surface='slate'] .store-photo-frame img {mix-blend-mode:normal;}
+.store-card-number {z-index:2;background:#f8fafce8;color:#334155;padding:.25rem .5rem;border-radius:999px;pointer-events:none;}
+.store-card-body {display:flex;flex-direction:column;flex:1;min-width:0;}
+.store-photo-credit {height:2rem;overflow:hidden;font-size:.65rem;line-height:1rem;color:var(--secondary);}
+.store-card-body .store-eyebrow {white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1rem;}
+.store-card-body h3 {height:3.3em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
+.store-price-slot {min-height:2.5rem;}
+.store-card-description {height:3.5em;flex:none;}
+.store-stock {min-height:1.5rem;}
+.store-highlights {min-height:7rem;max-height:7rem;overflow:hidden;}
+.store-highlights li span {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
+.store-card-actions {margin-top:auto;display:flex;flex-direction:column;gap:.75rem;padding-top:1rem;}
+.store-primary-action {min-height:46px;}
+.store-share-action {min-height:2rem;text-align:start;}
+.store-video-slot {min-height:3rem;}
+.studio-cover-caption {position:absolute;bottom:.65rem;inset-inline-start:.65rem;z-index:2;border-radius:999px;background:#f8fafce8;color:#334155;padding:.3rem .6rem;font-size:.6rem;pointer-events:none;}

@@ -2,15 +2,15 @@
   "seller": [
     [
       "Choose your shop type",
-      "Use Personal Store for your own products and direct orders. Use Affiliate Deals Shop for curated recommendations that link to partner merchants. The catalogs and checkout paths stay separate."
+      "Choose Personal Store for your own catalog, product pages, cart and seven configurable payment methods. Choose Affiliate Deals Shop for curated partner deals and external checkout. Inventories stay separate, and publishing a storefront requires an active SellPostly Pro license."
     ],
     [
       "Import in one click",
-      "Use the Chrome Extension on a product page or paste a product URL into the formatter. Review the imported title, price, description, destination link and image before saving. Stores that block URL imports may work through the extension."
+      "Import a product in one click with the Chrome Extension, or paste a supported product URL into the formatter. Check the title, price, description and image, choose the destination catalog, and use the extension on the page if the merchant blocks cloud importing."
     ],
     [
       "Customize and disclose",
-      "Add your branding, photos, covers and useful product details. Affiliate sellers should review their disclosure and image rights. Amazon-related Affiliate items use representative photos when needed and send buyers to Amazon for current prices."
+      "Set your branding, disclosures, payment methods and USDC escrow policy. Use /tools for photo crops, resizing, WebP/PNG/JPG conversion, video cover capture and QR downloads. Add an optional product demo. Amazon Affiliate safeguards apply only to Amazon-related Affiliate items; review all image rights and details before publishing."
     ],
     [
       "Share anywhere your audience finds you",
@@ -20,7 +20,7 @@
   "buyer": [
     [
       "Browse a clean mobile catalog",
-      "Filter by category or audience and open the products that fit your needs. Affiliate deals and Personal Store products have different ordering paths."
+      "Browse a mobile-friendly catalog, filter products and open a Personal Store product page or an affiliate partner link. Use Watch Demo when available. Representative photos illustrate a style, not necessarily the exact branded model."
     ],
     [
       "Inspect the details before paying",
@@ -28,7 +28,7 @@
     ],
     [
       "Choose the right checkout path",
-      "Affiliate buttons open the partner merchant, whose checkout, delivery and returns rules apply. Personal Stores can offer direct WhatsApp orders, cash on delivery or an enabled crypto escrow checkout. Read the displayed payment and protection terms before ordering."
+      "Affiliate purchases use the partner merchant’s checkout and terms. Personal Store buyers select an enabled bank, card link, PayPal, Payoneer, Wise, USDC or COD option. USDC alone can use the seller’s off/optional/required escrow policy. References do not prove payment; direct payments must be confirmed by the independent seller."
     ]
   ],
   "audiences": [
@@ -51,24 +51,50 @@
   ],
   "faq": [
     [
-      "Does SellPostly work only with one social platform?",
-      "No. Share a storefront link across social profiles, groups, videos, messages, websites and search listings. Available previews and posting tools depend on the channel."
+      "Which storefront should I choose?",
+      "Choose Personal Store to sell your own products with a cart and direct payment choices. Choose Affiliate Deals Shop to curate Amazon, AliExpress, Etsy and partner deals that open external merchant checkout. The catalogs stay separate. Amazon-related Affiliate items have disclosure, image and price safeguards with representative photo matching where needed."
     ],
     [
-      "What is the difference between Personal Store and Affiliate Deals Shop?",
-      "A Personal Store sells your own catalog with direct ordering options. An Affiliate Deals Shop recommends products and sends buyers to external merchant checkout. Affiliate items do not use the Personal Store cart or escrow flow."
+      "Can I import products and create media without paid APIs?",
+      "Yes. Use the Chrome Extension or supported URL importer, then edit images locally in /tools: crop, resize, convert WebP/PNG/JPG, polish and add text. Capture local video covers and download storefront QR codes. The core tools use no paid media API. Optional configured stock-photo providers and embedded demos have their own access and privacy rules."
     ],
     [
-      "Do I need to connect my social media passwords?",
-      "No. SellPostly formats text and prepares sharing links without asking for your social account passwords. You review and publish through your own accounts. The extension reads a product page only when you request an import."
+      "How do the seven payment methods work?",
+      "Personal sellers can enable Bank Transfer (RIB / IBAN / SWIFT), a hosted Card Checkout Link (CMI, Payzone, YouCan Pay, Stripe, Gumroad or Creem), PayPal, Payoneer, Wise, USDC and Cash on Delivery. Availability depends on the seller’s setup. Card details are entered only on the external provider’s website; SellPostly never asks for a card number, CVV or expiry date."
     ],
     [
-      "Can I replace an imported or representative photo?",
-      "Yes. Upload a photo you have permission to use or choose a representative alternative. Amazon-related Affiliate photos have specific safeguards. Other affiliate merchant images and all Personal Store images are preserved by default."
+      "When does USDC escrow protection apply?",
+      "Only USDC payments can enter escrow. If the seller makes it optional, the buyer activates the checkout toggle; otherwise the USDC payment is direct. Required governance applies only to USDC. Bank, card links, PayPal, Payoneer, Wise and COD always remain direct. Funding must be verified before held status and release follows the applicable hold rules. SellPostly is SaaS software; independent sellers do not represent its brand."
     ],
     [
-      "Where do buyers pay and what protection applies?",
-      "Affiliate purchases are paid on the partner merchant’s website under its terms. Personal Store payment methods vary by seller. Any escrow protection applies only to an eligible order using the displayed escrow flow, not to every purchase or external link."
+      "Which tools are free, and what needs Pro?",
+      "The post formatter and browser media tools are free to use. Publishing storefronts and using the seller dashboard require an active SellPostly Pro license; check the shop activation screen for current plans. External payment providers or networks may charge their own fees. You can share store links in TikTok and Instagram bios, Pinterest pins, Facebook groups, YouTube descriptions, WhatsApp, blogs or search listings."
+    ]
+  ],
+  "features": [
+    [
+      "Two storefronts, two clear buying paths",
+      "Personal Store gives your own products a catalog, product pages, cart and direct ordering. Affiliate Deals Shop curates Amazon, AliExpress, Etsy and brand-partner links. Amazon-related Affiliate items have disclosure, image and static-price safeguards with automatic unbranded photo matching when needed; other merchant images and Personal Store photos stay unchanged."
+    ],
+    [
+      "Seven peer-to-peer payment choices",
+      "Personal sellers can enable Bank Transfer (RIB / IBAN / SWIFT), a hosted Card Checkout Link (CMI, Payzone, YouCan Pay, Stripe, Gumroad or Creem), PayPal, Payoneer, Wise, USDC and Cash on Delivery. Availability depends on the seller’s setup. Card details are entered only on the external provider’s website; SellPostly never asks for a card number, CVV or expiry date."
+    ],
+    [
+      "USDC-only escrow, chosen at checkout",
+      "Sellers choose off, optional for buyer or required for USDC. With optional governance, Enable Escrow Protection (USDC) starts unchecked: direct USDC goes to the seller, while opting in uses the configured Polygon escrow wallet. The funding workflow is pending_funding → held → released after Admin verification and the applicable hold rules. Every non-USDC payment remains direct, even when USDC escrow is required."
+    ],
+    [
+      "A creator media studio in your browser",
+      "Open /tools to crop and resize product photos, convert WebP, PNG or JPG, adjust photo polish and add badge or watermark text. Capture a cover frame from a local MP4/WebM and download a storefront QR code. Processing stays on your device. Send a finished image to My Shop through local storage without a huge image URL."
+    ],
+    [
+      "One-click imports and channel-ready posts",
+      "Import title, price, description and image through the Chrome Extension or a supported product URL, then review the result. The extension can read the page you are viewing when cloud imports are blocked. Format seller or creator posts, keep affiliate tags where relevant, and share your store anywhere instead of depending on a single social channel."
+    ],
+    [
+      "Product demos that buyers can open",
+      "Add an optional YouTube, YouTube Shorts, TikTok, Instagram Reels, Vimeo or direct MP4 demo link to a product. Watch Demo opens a responsive player with an original-page fallback. External media loads after the buyer chooses Play. Amazon listing videos are never scraped or imported."
     ]
   ]
 }

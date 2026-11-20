@@ -1,4 +1,6 @@
+import {pageSeo} from '../../lib/marketing-seo';
+import LocalizedSeo from '../localized-seo';
 import type {Metadata} from 'next';
 import UserGuide from '../user-guide';
-export const metadata:Metadata={title:'How SellPostly Works & User Guide',description:'A practical guide for sellers and buyers: Personal Stores, Affiliate Deals Shops, product imports, photos, sharing, and checkout.',alternates:{canonical:'/how-it-works'}};
-export default function Page(){return <main><UserGuide standalone/></main>;}
+export const metadata:Metadata=pageSeo('guide');
+export default function Page(){return <main><LocalizedSeo kind="guide"/><UserGuide standalone/></main>;}

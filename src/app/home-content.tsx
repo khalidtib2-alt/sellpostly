@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "./language-context";
+import LocalizedSeo from './localized-seo';
 import UserGuide from './user-guide';
 import SocialConnect from './social-connect';
 import Formatter from "./formatter";
@@ -9,7 +10,7 @@ import Formatter from "./formatter";
 export default function HomeContent() {
   const { t } = useLanguage();
   return (
-      <main>
+      <main><LocalizedSeo kind="home"/>
         <section className="bg-emerald-50 px-5 py-16 text-center sm:py-24">
           <h1 className="mx-auto max-w-4xl text-4xl font-black tracking-tight sm:text-6xl">{t("Turn One Product Into Ready-to-Post Ads in 10 Seconds")}</h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-700">{t("Format once and copy-paste into WhatsApp Business, Instagram, Facebook Marketplace, and TikTok with zero API logins")}</p>

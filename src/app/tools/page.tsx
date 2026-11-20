@@ -1,4 +1,6 @@
+import {pageSeo} from '../../lib/marketing-seo';
+import LocalizedSeo from '../localized-seo';
 import type {Metadata} from 'next';
 import MediaTools from './media-tools';
-export const metadata:Metadata={title:'Seller Media & Storefront Tools | SellPostly',description:'Browser-based image crop, resize, WebP/JPEG/PNG conversion, photo polish, local video frame capture and storefront QR tools.',alternates:{canonical:'/tools'}};
-export default function Page(){return <MediaTools/>;}
+export const metadata:Metadata=pageSeo('tools');
+export default function Page(){return <><LocalizedSeo kind="tools"/><MediaTools/></>;}
