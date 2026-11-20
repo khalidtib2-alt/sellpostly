@@ -6,6 +6,7 @@ import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
 import type { Product, Shop } from "./shop-data";
 import { escrowWallet, escrowNetwork, escrowReady, holdDays } from "./escrow-config";
+import { checkoutAmount } from './checkout-amount';
 import { stableAmount } from "./crypto-data";
 
 export default function CryptoCheckout({ product, shop, onClose, orderDetails = "", storeSlug, orderItems=[] }: {storeSlug?:string;orderItems?:{id:string;quantity:number}[];product:Product;shop:Shop;onClose:()=>void;orderDetails?:string}){
@@ -39,13 +40,14 @@ export default function CryptoCheckout({ product, shop, onClose, orderDetails = 
     <p className="mt-4 font-semibold">{product.name}</p>
     {orderDetails&&<pre className="my-3 whitespace-pre-wrap text-sm">{orderDetails}</pre>}
     <label className="mt-4 block">{t("Coin")}<select className="mt-1 w-full rounded-lg border p-2" value={coin} onChange={e=>setCoin(e.target.value)} disabled={!!payment?.coin}><option>USDC</option></select></label>
-    {payment?<p className="my-3 text-2xl font-bold" dir="ltr">{payment.amount} {coin}</p>:<p role="alert" className="my-3">{t("Set a single USD, USDC, or USDT price to display a payment amount. Other currencies require seller confirmation.")}</p>}
+    {payment?<p className="my-3 text-2xl font-bold" dir="ltr">{checkoutAmount(payment.amount)} {coin}</p>:<p role="alert" className="my-3">{t("Set a single USD, USDC, or USDT price to display a payment amount. Other currencies require seller confirmation.")}</p>}
     <label className="mt-4 block">{t("Network")}<select value={network} disabled className="mt-1 w-full rounded-lg border border-slate-300 p-2"><option value="Polygon">Polygon</option></select></label>
     {escrowReady&&<p className="my-3 rounded-lg bg-emerald-50 p-3 text-sm font-semibold text-emerald-900">{t("Send USDC only to the configured Polygon escrow wallet.")}</p>}
     <p className="my-3 text-sm">{t("Confirm the exact token and network with the seller before sending. Network fees are additional.")}</p>
     <p className="text-sm">{t("QR contains the wallet address only. Choose the coin, network, and amount in your own wallet.")}</p>
     {escrowReady&&<canvas ref={canvas} width={256} height={256} aria-label={t("Wallet QR Code")} className="mx-auto my-4" />}
-    <label className="block">{t("Wallet Address")}<input readOnly dir="ltr" value={escrowWallet} className="my-2 w-full rounded-lg border p-2 font-mono text-sm"/></label>
+    <label className="block">{t("Admin Escrow USDC Wallet (Locked)")}<input readOnly dir="ltr" value={escrowWallet} className="my-2 w-full rounded-lg border p-2 font-mono text-sm"/></label>
+    <p className="mb-3 text-sm">{t("This address is controlled by the platform and cannot be edited at checkout.")}</p>
     <div className="flex flex-wrap gap-2"><button type="button" disabled={!escrowReady} onClick={()=>copy(escrowWallet)} className="rounded-lg border px-4 py-2">{t("Copy Address")}</button><button type="button" disabled={!payment} onClick={()=>payment&&copy(payment.amount)} className="rounded-lg border px-4 py-2 disabled:opacity-50">{t("Copy Amount")}</button></div>
     <label className="mt-4 block">{t("Transaction Hash (TxID)")}<input dir="ltr" maxLength={150} value={txid} onChange={e=>setTxid(e.target.value.replace(/[\r\n]/g,""))} className="mt-1 w-full rounded-lg border p-2"/></label>
     <p className="my-3 text-sm">{t(storeSlug?"Submitting a TxID records a pending order. Payment must be verified before fulfillment.":"Optional receipt only. The seller must verify the transfer on-chain before fulfilling the order.")}</p>

@@ -1,4 +1,6 @@
 export const translations = {
+ "Admin Escrow USDC Wallet (Locked)":{"fr":"Portefeuille USDC de séquestre administrateur (verrouillé)","ar":"محفظة USDC لضمان المسؤول (مقفلة)"},
+ "This address is controlled by the platform and cannot be edited at checkout.":{"fr":"Cette adresse est gérée par la plateforme et ne peut pas être modifiée lors du paiement.","ar":"تدير المنصة هذا العنوان ولا يمكن تعديله عند الدفع."},
   "Post Formatter": {
     "fr": "Outil de mise en forme",
     "ar": "منسّق المنشورات"
