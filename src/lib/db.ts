@@ -45,12 +45,13 @@ export async function publishShop(identity:ProIdentity,value:unknown){
 }
 export async function publicShop(slug:string,query:Query=async(sql,parameters)=>await db().query(sql,parameters),mode?:ShopMode):Promise<(Shop & {verified:boolean;suspended:boolean})|null>{
   if(!/^[a-z0-9][a-z0-9-]{2,63}$/.test(slug))return null;
-  const rows=await query("SELECT id,slug,store_mode,shop_type,niche_name,affiliate_disclosure,catalog,affiliate_catalog,personal_catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,verified,suspended,escrow_hold_days FROM shops WHERE slug=$1 AND published=true LIMIT 1",[slug]);
+  const rows=await query(`SELECT id,slug,store_mode,shop_type,niche_name,affiliate_disclosure,catalog,affiliate_catalog,personal_catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,verified,suspended,escrow_hold_days,
+ (SELECT p.slug FROM shops p WHERE shops.store_mode='niche' AND p.owner_key=shops.owner_key AND p.store_mode='general' AND p.published=true AND p.suspended=false AND (CASE WHEN shops.shop_type='personal' THEN coalesce(p.personal_catalog,p.catalog) ELSE coalesce(p.affiliate_catalog,p.catalog) END)->>'shopMode'=shops.shop_type LIMIT 1) AS main_store_slug FROM shops WHERE slug=$1 AND published=true LIMIT 1`,[slug]);
   const row=rows[0];if(!row||(row.store_mode==='niche'&&mode&&mode!==row.shop_type))return null;
   const catalog=mode?(row[mode+'_catalog']??(row.catalog?.shopMode===mode?row.catalog:null)):row.catalog;
   if(!catalog)return null;
   const shop=validateShop(catalog);if(mode&&shop.shopMode!==mode)return null;
-  return {...shop,shopId:row.id,customSlug:row.slug,storeMode:row.store_mode==='niche'?'niche':'general',nicheName:row.niche_name||'',...(shop.shopMode==='affiliate'?{affiliateDisclosure:row.affiliate_disclosure??shop.affiliateDisclosure}:{}),...(shop.shopMode==='personal'?{cryptoWallet:row.seller_usdc_wallet||shop.cryptoWallet,codEnabled:row.cod_enabled??shop.codEnabled,escrowEnabled:row.escrow_enabled??shop.escrowEnabled}:{}),escrowHoldDays:row.escrow_hold_days,verified:row.verified===true,suspended:row.suspended===true};
+  return {...shop,mainStoreSlug:row.store_mode==='niche'?row.main_store_slug||undefined:undefined,shopId:row.id,customSlug:row.slug,storeMode:row.store_mode==='niche'?'niche':'general',nicheName:row.niche_name||'',...(shop.shopMode==='affiliate'?{affiliateDisclosure:row.affiliate_disclosure??shop.affiliateDisclosure}:{}),...(shop.shopMode==='personal'?{cryptoWallet:row.seller_usdc_wallet||shop.cryptoWallet,codEnabled:row.cod_enabled??shop.codEnabled,escrowEnabled:row.escrow_enabled??shop.escrowEnabled}:{}),escrowHoldDays:row.escrow_hold_days,verified:row.verified===true,suspended:row.suspended===true};
 }
 export async function createPendingOrder(shopId:string,grossAmount:string,coin:'USDC'|'USDT',network:string,details:unknown){
   const sql=db();
