@@ -1,3 +1,4 @@
+import {containsCardData} from '../app/shop/payment-config';
 import 'server-only';
 import {db} from './db';
 import {ApiError,object,text,contact,uuid,priceItems} from './order-validation';
@@ -8,7 +9,7 @@ import {buyerPhone} from './whatsapp-replies';
 import {emailAddress} from './email';
 import type {Query} from './order-service';
 export async function submitCodOrder(value:unknown,query:Query=async(sql,args)=>await db().query(sql,args)){
- const raw=object(value),slug=text(raw.slug,64),requestId=uuid(raw.request_id),buyer=object(raw.buyer);
+ const raw=object(value);if(containsCardData(raw))throw new ApiError('CARD_DATA_NOT_ALLOWED');const slug=text(raw.slug,64),requestId=uuid(raw.request_id),buyer=object(raw.buyer);
  const email=emailAddress(contact(buyer.contact));if(!email)throw new ApiError('INVALID_CONTACT');
  const phone=buyerPhone(text(buyer.phone,30)),address=text(raw.delivery_address,400),name=text(buyer.name,100);
  if(!phone)throw new ApiError('INVALID_CONTACT');

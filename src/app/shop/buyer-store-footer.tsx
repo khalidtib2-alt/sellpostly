@@ -1,4 +1,5 @@
 'use client';
+import PlatformNotice from '../platform-notice';
 import { useRef,useState } from 'react';
 import { useLanguage } from '../language-context';
 import type { Message } from '../translations';
@@ -17,7 +18,7 @@ export default function BuyerStoreFooter({storeSlug}:{storeSlug?:string}){
   }catch{setMessage('Could not submit the dispute. Check your connection and try again.');}finally{setBusy(false);}
  }
  return <footer className="mt-12 border-t border-slate-200 pt-6 text-center">
-  <p className="text-xs font-medium text-slate-600">{t('Powered by SellPostly')}</p>
+  <PlatformNotice/><p className="text-xs font-medium text-slate-600">{t('Powered by SellPostly')}</p>
   <button type="button" onClick={()=>{setMessage('');setSent(false);dialog.current?.showModal();}} className="mt-3 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold">{t('Dispute Order / Report Store')}</button>
   <dialog ref={dialog} aria-labelledby="buyer-dispute-title" className="m-auto max-h-[90dvh] w-[min(95vw,30rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 text-start text-slate-900 backdrop:bg-black/50">
    <div className="flex items-center justify-between gap-4"><h2 id="buyer-dispute-title" className="text-xl font-bold">{t('Dispute Order')}</h2><button type="button" disabled={busy} onClick={()=>dialog.current?.close()}>{t('Close')}</button></div>

@@ -39,7 +39,7 @@ export async function updateOrder(id:string,value:unknown,query:Query=run){
  if(force&&action!=='release')throw new ApiError('INVALID_INPUT');
  const note=raw.note===undefined?'':text(raw.note,1000,false);
  let verifiedTx:string|null=null;
- if(action==='verify'){const order=await adminOrder(id,query);txId(order.tx_id,network(order.network));verifiedTx=order.tx_id;}
+ if(action==='verify'){const order=await adminOrder(id,query);if(order.coin!=='USDC')throw new ApiError('ESCROW_USDC_ONLY');txId(order.tx_id,network(order.network));verifiedTx=order.tx_id;}
  if(force){
   const order=await adminOrder(id,query);
   const confirmed=Date.parse(order.details?.buyer_confirmed_at||'');

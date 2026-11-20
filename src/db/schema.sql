@@ -241,21 +241,21 @@ UPDATE shops SET affiliate_catalog=catalog WHERE affiliate_catalog IS NULL AND c
 -- statement-breakpoint
 UPDATE shops SET personal_catalog=catalog WHERE personal_catalog IS NULL AND catalog->>'shopMode'='personal' AND catalog ? 'products';
 -- statement-breakpoint
-ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method text NOT NULL DEFAULT 'CRYPTO' CHECK (payment_method IN ('CRYPTO','COD'));
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method text NOT NULL DEFAULT 'CRYPTO' CHECK (payment_method IN ('CRYPTO','COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','USDC_DIRECT'));
 -- statement-breakpoint
-ALTER TABLE orders ADD COLUMN IF NOT EXISTS escrow_status text NOT NULL DEFAULT 'PENDING' CHECK (escrow_status IN ('NONE','PENDING','HELD','RELEASED','DISPUTED','REFUNDED','CANCELLED'));
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS escrow_status text NOT NULL DEFAULT 'PENDING' CHECK (escrow_status IN ('NONE','PENDING','PENDING_FUNDING','HELD','RELEASED','DISPUTED','REFUNDED','CANCELLED'));
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_coin_check;
 -- statement-breakpoint
-ALTER TABLE orders ADD CONSTRAINT orders_coin_check CHECK ((payment_method='CRYPTO' AND coin IN ('USDC','USDT')) OR (payment_method='COD' AND coin='USD'));
+ALTER TABLE orders ADD CONSTRAINT orders_coin_check CHECK ((payment_method='CRYPTO' AND coin IN ('USDC','USDT')) OR (payment_method<>'CRYPTO' AND coin IN ('USD','EUR','GBP','MAD','AED','SAR','USDC','USDT')));
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_network_check;
 -- statement-breakpoint
-ALTER TABLE orders ADD CONSTRAINT orders_network_check CHECK ((payment_method='CRYPTO' AND network IN ('Polygon','Base','Arbitrum','BNB Smart Chain','Solana')) OR (payment_method='COD' AND network='COD'));
+ALTER TABLE orders ADD CONSTRAINT orders_network_check CHECK ((payment_method='CRYPTO' AND network IN ('Polygon','Base','Arbitrum','BNB Smart Chain','Solana')) OR (payment_method<>'CRYPTO' AND network IN ('COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','Polygon','Base','Arbitrum','BNB Smart Chain','Solana')));
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_commission_rate_check;
 -- statement-breakpoint
-ALTER TABLE orders ADD CONSTRAINT orders_commission_rate_check CHECK ((payment_method='CRYPTO' AND commission_rate=0.05) OR (payment_method='COD' AND commission_rate=0));
+ALTER TABLE orders ADD CONSTRAINT orders_commission_rate_check CHECK ((payment_method='CRYPTO' AND commission_rate=0.05) OR (payment_method<>'CRYPTO' AND commission_rate=0));
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_status_check;
 -- statement-breakpoint
@@ -274,13 +274,13 @@ BEGIN
   IF NEW.shop_id<>OLD.shop_id OR NEW.payment_method<>OLD.payment_method THEN RAISE EXCEPTION 'Order shop or payment method cannot change'; END IF;
   NEW.escrow_hold_days:=OLD.escrow_hold_days;
  END IF;
- IF NEW.payment_method='COD' THEN
-  IF NEW.status NOT IN ('pending','fulfilled','cancelled') OR NEW.tx_id IS NOT NULL OR NEW.payment_verified_at IS NOT NULL OR NEW.escrow_release_at IS NOT NULL OR NEW.force_released_at IS NOT NULL THEN RAISE EXCEPTION 'COD orders cannot enter crypto escrow'; END IF;
+ IF NEW.payment_method<>'CRYPTO' THEN
+  IF NEW.status NOT IN ('pending','fulfilled','cancelled') OR NEW.tx_id IS NOT NULL OR NEW.payment_verified_at IS NOT NULL OR NEW.escrow_release_at IS NOT NULL OR NEW.force_released_at IS NOT NULL THEN RAISE EXCEPTION 'Direct orders cannot enter crypto escrow'; END IF;
   NEW.escrow_status:='NONE';NEW.commission_rate:=0;
   RETURN NEW;
  END IF;
  NEW.commission_rate:=0.05;
- NEW.escrow_status:=CASE NEW.status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE 'PENDING' END;
+ NEW.escrow_status:=CASE NEW.status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE CASE WHEN NEW.details->>'escrow_governance'='usdc_only' THEN 'PENDING_FUNDING' ELSE 'PENDING' END END;
  IF NEW.status='fulfilled' THEN RAISE EXCEPTION 'Crypto order uses escrow lifecycle'; END IF;
  IF TG_OP='UPDATE' THEN
   IF OLD.payment_verified_at IS NOT NULL AND (NEW.payment_verified_at IS DISTINCT FROM OLD.payment_verified_at OR NEW.gross_amount<>OLD.gross_amount OR NEW.coin<>OLD.coin OR NEW.network<>OLD.network OR NEW.tx_id IS DISTINCT FROM OLD.tx_id) THEN RAISE EXCEPTION 'Verified payment cannot change'; END IF;
@@ -296,7 +296,7 @@ BEGIN
  RETURN NEW;
 END $$;
 -- statement-breakpoint
-UPDATE orders SET escrow_status=CASE status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE 'PENDING' END WHERE payment_method='CRYPTO' AND escrow_status IS DISTINCT FROM CASE status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE 'PENDING' END;
+UPDATE orders SET escrow_status=CASE status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE CASE WHEN details->>'escrow_governance'='usdc_only' THEN 'PENDING_FUNDING' ELSE 'PENDING' END END WHERE payment_method='CRYPTO' AND escrow_status IS DISTINCT FROM CASE status WHEN 'held' THEN 'HELD' WHEN 'released' THEN 'RELEASED' WHEN 'disputed' THEN 'DISPUTED' WHEN 'refunded' THEN 'REFUNDED' WHEN 'cancelled' THEN 'CANCELLED' ELSE 'PENDING' END;
 
 -- statement-breakpoint
 ALTER TABLE shops DROP CONSTRAINT IF EXISTS shops_polygon_payout_wallet;
@@ -317,3 +317,14 @@ UPDATE shops SET personal_catalog=jsonb_set(jsonb_set(catalog-'heroTitle'-'heroS
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS affiliate_disclosure text NOT NULL DEFAULT '';
 -- statement-breakpoint
 UPDATE shops SET affiliate_disclosure=left(affiliate_catalog->>'affiliateDisclosure',500) WHERE affiliate_disclosure='' AND coalesce(affiliate_catalog->>'affiliateDisclosure','')<>'';
+
+-- statement-breakpoint
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_payment_method_check;
+-- statement-breakpoint
+ALTER TABLE orders ADD CONSTRAINT orders_payment_method_check CHECK (payment_method IN ('CRYPTO','COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','USDC_DIRECT'));
+-- statement-breakpoint
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_escrow_status_check;
+-- statement-breakpoint
+ALTER TABLE orders ADD CONSTRAINT orders_escrow_status_check CHECK (escrow_status IN ('NONE','PENDING','PENDING_FUNDING','HELD','RELEASED','DISPUTED','REFUNDED','CANCELLED'));
+-- statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS orders_direct_request_id ON orders(shop_id,payment_method,(details->>'request_id')) WHERE payment_method<>'CRYPTO';

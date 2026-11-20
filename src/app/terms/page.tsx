@@ -1,3 +1,4 @@
+import PlatformNotice from '../platform-notice';
 import { pageMetadata } from "../site";
 import { Localized, LocalizedPage } from "../localized";
 
@@ -8,6 +9,7 @@ export const metadata = pageMetadata("/terms", title + " | SellPostly", intro);
 
 export default function Page() {
   return <LocalizedPage title={title} intro={intro}>
+    <PlatformNotice/>
     <section><h2 className="text-2xl font-bold"><Localized message={"Using SellPostly"} /></h2><p><Localized message={"You may use and adapt the templates and formatted drafts for your own posts. Use content you have permission to publish. Do not use SellPostly to create deceptive listings, infringe someone’s rights, or interfere with the site."} /></p></section>
     <section><h2 className="text-2xl font-bold"><Localized message={"Review before publishing"} /></h2><p><Localized message={"Check prices, availability, product claims, and delivery terms before posting. You are responsible for your listings and compliance with applicable rules and platform policies. Third-party platforms control their own features and accounts."} /></p></section>
     <section><h2 className="text-2xl font-bold"><Localized message={"Availability"} /></h2><p><Localized message={"SellPostly is provided as available. We may update templates or change features. We do not guarantee platform acceptance or sales results."} /></p></section>

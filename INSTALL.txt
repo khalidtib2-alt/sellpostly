@@ -1,9 +1,1 @@
-SELLPOSTLY USER GUIDE + SOCIAL SHARING + STOREFRONT SEO
-
-Merge the src, public, tests, scripts and chrome-extension folders into your existing SellPostly repository, replacing matching files. This is a cumulative source patch, not a complete repository. The original checkout was not modified; verification used the staged working copy. Environment files and secrets are excluded.
-
-Adds the translated homepage and /how-it-works guide, 5 FAQ answers with matching JSON-LD, 6 inline SVG social icons, store-specific canonical/OpenGraph/Twitter metadata, dynamic PNG previews, refreshed public-storefront sitemap entries and product-card sharing controls.
-
-Read GUIDE-AND-SEO.md to configure NEXT_PUBLIC_APP_URL and optional social profile URLs. Existing Amazon-only Affiliate guardrails and Personal Store behavior are preserved. No new dependencies or database migrations are required.
-
-Verification: npm run build succeeded with 0 errors; npm test passed all 72 tests. Run both commands after applying to your checkout.
+Merge these files into your existing SellPostly checkout with the previous User Guide / Social SEO patch applied. This focused source patch omits unchanged assets. Run npm run db:init against your configured database before enabling the new methods, then npm run build and npm test. Read PEER-PAYMENTS.md. Verified in the staged copy: build succeeded; 74 tests passed. No live database or deployment was changed. No environment secrets are included.

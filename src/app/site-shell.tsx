@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "./language-context";
+import PlatformNotice from './platform-notice';
 import BrandLogo from "./brand-logo";
 import ThemePicker from "./theme-picker";
 import Link from "next/link";
@@ -33,7 +34,7 @@ export function Footer() {
   const { t } = useLanguage();
   return <footer className="border-t border-slate-200"><nav aria-label={t("Footer navigation")} className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-3 px-5 py-8 text-sm font-semibold text-slate-700">
     <Link href="/">SellPostly</Link>{links.map(([href, label]) => <Link key={href} href={href}>{t(label)}</Link>)}
-  </nav></footer>;
+  </nav><PlatformNotice/></footer>;
 }
 
 export function ContentPage({ title, intro, children }: { title: string; intro: string; children: React.ReactNode }) {

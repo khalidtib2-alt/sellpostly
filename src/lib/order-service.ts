@@ -1,3 +1,4 @@
+import {containsCardData,governance,normalizePayments} from '../app/shop/payment-config';
 import 'server-only';
 import {emailAddress} from './email';
 import {locale} from './locale';
@@ -11,20 +12,21 @@ export type Row=Record<string,any>;
 export type Query=(sql:string,parameters:unknown[])=>Promise<Row[]>;
 const run:Query=async(sql,parameters)=>await db().query(sql,parameters);
 export async function submitOrder(value:unknown,query:Query=run){
- const raw=object(value),slug=text(raw.slug,64),selectedCoin=coin(raw.coin),net=network(raw.network),tx=txId(raw.tx_id,net);
+ const raw=object(value);if(containsCardData(raw))throw new ApiError('CARD_DATA_NOT_ALLOWED');if(raw.coin!=='USDC')throw new ApiError('ESCROW_USDC_ONLY');const slug=text(raw.slug,64),selectedCoin=coin(raw.coin),net=network(raw.network),tx=txId(raw.tx_id,net);
  if(!escrowReady||net!==escrowNetwork)throw new ApiError('ESCROW_UNAVAILABLE',503);
  const buyer=object(raw.buyer),buyerContact=contact(buyer.contact),name=text(buyer.name,100);if(!emailAddress(buyerContact))throw new ApiError('INVALID_CONTACT');
  const shops=await query('SELECT id,coalesce(personal_catalog,catalog) AS catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,escrow_hold_days,suspended FROM shops WHERE slug=$1 AND published=true',[slug]);
  if(!shops.length)throw new ApiError('SHOP_NOT_FOUND',404);
  if(shops[0].suspended)throw new ApiError('STORE_SUSPENDED',403);
  const shop=validateShop(shops[0].catalog);if(shop.shopMode!=='personal'||shop.escrowEnabled===false||shops[0].escrow_enabled===false)throw new ApiError('CHECKOUT_UNAVAILABLE');
+ if(governance(shop.escrowGovernance)==='off'||!normalizePayments(shop.payments,shop).USDC_DIRECT.enabled)throw new ApiError('ESCROW_UNAVAILABLE');
  const priced=priceItems(shop.products,raw.items,selectedCoin);
  const phone=buyer.phone===undefined||buyer.phone===''?'':buyerPhone(buyer.phone);if(buyer.phone&&!phone)throw new ApiError('INVALID_CONTACT');
- const details={store_name:shop.name,language:locale(raw.language),items:priced.items,buyer:{name,contact:buyerContact,phone},delivery_note:typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet,seller_wallet:shops[0].seller_usdc_wallet||shop.cryptoWallet||''};
+ const details={store_name:shop.name,language:locale(raw.language),items:priced.items,buyer:{name,contact:buyerContact,phone},delivery_note:typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet,escrow_governance:'usdc_only',seller_wallet:shops[0].seller_usdc_wallet||shop.cryptoWallet||''};
  // INSERT SELECT also checks the catalog has not changed during price calculation.
  const rows=await query(`INSERT INTO orders(shop_id,gross_amount,coin,network,tx_id,details)
  SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND escrow_enabled=true AND coalesce(personal_catalog,catalog)=$7::jsonb
- RETURNING id,gross_amount::text,coin,network,status,escrow_hold_days,created_at`,
+ RETURNING id,gross_amount::text,coin,network,status,escrow_status,escrow_hold_days,created_at`,
  [shops[0].id,priced.gross,selectedCoin,net,tx,JSON.stringify(details),JSON.stringify(shops[0].catalog)]);
  if(!rows.length)throw new ApiError('CATALOG_CHANGED',409);
  return rows[0];
@@ -48,8 +50,8 @@ export async function buyerAction(id:string,value:unknown,query:Query=run){
  if(!rows.length)throw new ApiError('ORDER_NOT_FOUND_OR_NOT_ELIGIBLE',404);
  return rows[0];
 }
-export const FULFILL_SQL=`UPDATE orders o SET details=o.details || jsonb_build_object('fulfillment',jsonb_build_object('tracking',$3::text,'delivery_notes',$4::text,'carrier',$5::text,'status','shipped','updated_at',now())),status=CASE WHEN o.payment_method='COD' THEN 'fulfilled' ELSE o.status END
- FROM shops s WHERE o.shop_id=s.id AND s.owner_key=$2 AND o.id=$1::uuid AND (o.status IN ('held','released') OR (o.payment_method='COD' AND o.status IN ('pending','fulfilled'))) AND EXISTS (SELECT 1 FROM subscriptions WHERE owner_key=s.owner_key AND status='active')
+export const FULFILL_SQL=`UPDATE orders o SET details=o.details || jsonb_build_object('fulfillment',jsonb_build_object('tracking',$3::text,'delivery_notes',$4::text,'carrier',$5::text,'status','shipped','updated_at',now())),status=CASE WHEN o.payment_method<>'CRYPTO' THEN 'fulfilled' ELSE o.status END
+ FROM shops s WHERE o.shop_id=s.id AND s.owner_key=$2 AND o.id=$1::uuid AND (o.status IN ('held','released') OR (o.payment_method<>'CRYPTO' AND o.status IN ('pending','fulfilled'))) AND EXISTS (SELECT 1 FROM subscriptions WHERE owner_key=s.owner_key AND status='active')
  RETURNING o.id,o.status,o.details->'fulfillment' AS fulfillment`;
 export async function fulfill(id:string,ownerKey:string,value:unknown,query:Query=run){
  uuid(id);const raw=object(value),tracking=text(raw.tracking??'',500,false),notes=text(raw.delivery_notes??'',4000,false),carrier=text(raw.carrier??'',100,false);

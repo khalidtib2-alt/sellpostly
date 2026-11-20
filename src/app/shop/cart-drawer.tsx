@@ -32,14 +32,14 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,onCod,isShar
     <p className="my-4 text-xl font-bold">{t("Total")}: {total?total.amount+" "+total.currency:"—"}</p>
     {!total&&lines.length>0&&<p role="status">{t("Cart totals require compatible USD, USDC, or USDT prices. Confirm other currencies with the seller.")}</p>}
     <p className="my-3 text-sm">{t("Delivery fees are confirmed by the seller.")}</p>
-    <div className="grid gap-3">
+    <div className="grid gap-3"><button type="button" disabled={!lines.length} className="rounded-lg border border-emerald-700 px-4 py-3 font-semibold" onClick={()=>{const order:Product={id:'cart-order',name:t('Cart Order'),price:total?total.amount+' '+total.currency:'',category:'Other',gender:'unisex',image:'',url:'',source:'Other'};dialog.current?.close();onPay(order,details,lines.map(({product,quantity})=>({id:product.id,quantity})));}}>{t('Payment Options')}</button>
       {shop.codEnabled!==false&&onCod&&<button type="button" disabled={!lines.length} className="rounded-lg border border-emerald-700 px-4 py-3 font-semibold disabled:opacity-50" onClick={onCod}>{t("Cash on Delivery (COD)")}</button>}
       <button type="button" disabled={!lines.length||!shop.phone.replace(/\D/g,"")} onClick={whatsapp} className="rounded-lg bg-emerald-700 px-4 py-3 font-semibold text-white disabled:opacity-50">{t("Order All on WhatsApp")}</button>
       {shop.escrowEnabled!==false&&<button type="button" disabled={!total} onClick={()=>{
         if(!total)return;
         const order:Product={id:"cart-order",name:t("Cart Order"),price:total.amount+" "+total.currency,category:"Other",gender:"unisex",image:"",url:"",source:"Other"};
         dialog.current?.close();onPay(order,details,lines.map(({product,quantity})=>({id:product.id,quantity})));
-      }} className="rounded-lg border border-emerald-700 px-4 py-3 font-semibold disabled:opacity-50">{t("Pay Total with USDC / USDT")}</button>}
+      }} className="rounded-lg border border-emerald-700 px-4 py-3 font-semibold disabled:opacity-50">{t("USDC")}</button>}
     </div>
     {!shop.phone.replace(/\D/g,"")&&<p className="my-3">{t(isSharedBuyerView?"WhatsApp checkout is unavailable for this shop.":"Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.")}</p>}
     <p role="status" className="mt-4 text-sm">{status&&t(status)}</p>

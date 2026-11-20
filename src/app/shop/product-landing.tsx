@@ -11,7 +11,7 @@ import {productPath,productShareUrl} from './product-links';
 import {cartTotal} from './cart-data';
 import {productCheckout} from './product-checkout';
 import CartDrawer from './cart-drawer';
-import CryptoCheckout from './crypto-checkout';
+import CryptoCheckout from './peer-checkout';
 import ProductGallery from './product-gallery';
 import BuyerStoreFooter from './buyer-store-footer';
 import {escrowReady,holdDays} from './escrow-config';
@@ -29,7 +29,7 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  const title=product.id.startsWith('sample-')?t(product.name as Message):product.name;
  const button='rounded-xl bg-emerald-700 px-6 py-3 font-bold text-white disabled:opacity-50';
  function change(id:string,delta:number){setCart(previous=>{const next={...previous},value=Math.min(99,Math.max(0,(previous[id]||0)+delta));if(value)next[id]=value;else delete next[id];return next;});}
- function add(order=false){if(product!.stock!==undefined&&quantity>product!.stock){setStatus('Not enough stock.');return;}change(product!.id,quantity);setStatus('Added to Cart');if(order){if(shop.escrowEnabled!==false)setCheckout(productCheckout(product!,quantity));else if(shop.codEnabled!==false)setCodLines([{product:product!,quantity}]);else setCartOpen(true);}}
+ function add(order=false){if(product!.stock!==undefined&&quantity>product!.stock){setStatus('Not enough stock.');return;}change(product!.id,quantity);setStatus('Added to Cart');if(order){setCheckout(productCheckout(product!,quantity));}}
  async function copy(){
   setCopying(true);
   try{
@@ -48,11 +48,11 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  {highlights.length>0&&<section className="my-6"><h2 className="mb-3 font-bold">{t('Product Highlights')}</h2><ul className="space-y-2">{highlights.map((line,i)=><li key={i} dir="auto" className="flex gap-3"><span aria-hidden="true" className="text-emerald-700">✓</span><span>{line}</span></li>)}</ul></section>}
  <div className="mb-5 flex items-center gap-4"><label className="font-semibold" htmlFor="product-quantity">{t('Quantity')}</label><input id="product-quantity" type="number" min={1} max={maximum} value={quantity} onChange={e=>setQuantity(Math.min(maximum,Math.max(1,Math.trunc(Number(e.target.value))||1)))} className="w-24 rounded-lg border bg-white p-3 text-slate-900"/></div>
  <div className="grid gap-3 sm:grid-cols-2"><button type="button" disabled={product.stock===0} className={button} onClick={()=>add(true)}>{t('Order Now')}</button><button type="button" className="rounded-xl border border-emerald-700 px-6 py-3 font-bold" disabled={product.stock===0} onClick={()=>add()}>{t('Add to Cart')}</button></div>
- {shop.escrowEnabled!==false&&<button type="button" className="mt-3 w-full rounded-xl border border-emerald-700 px-6 py-3 font-bold" disabled={product.stock===0} onClick={()=>add(true)}>{t('Pay with USDC / USDT')}</button>}
+ {shop.escrowEnabled!==false&&<button type="button" className="mt-3 w-full rounded-xl border border-emerald-700 px-6 py-3 font-bold" disabled={product.stock===0} onClick={()=>add(true)}>{t('Pay with USDC')}</button>}
  {shop.codEnabled!==false&&<button type="button" className="mt-3 w-full rounded-xl border px-6 py-3 font-bold" disabled={product.stock===0} onClick={()=>setCodLines([{product,quantity}])}>{t('Cash on Delivery (COD)')}</button>}
  {product.stock===0&&<p className="my-3 font-semibold">{t('Sold Out')}</p>}
  <p className="my-3 text-sm text-slate-600">{t('Delivery fees are confirmed by the seller.')}</p>
- {shop.escrowEnabled!==false&&<section className="my-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-950"><h2 className="font-bold">◇ {t('Escrow Buyer Protection')}</h2>{slug&&escrowReady?<><p className="mt-2 text-sm">{t('Payments are verified and held for the store’s assigned escrow period. Report delivery problems before release.')}</p><p className="mt-2 font-semibold">{holdDays(shop.escrowHoldDays)} {t('days')} · USDC / USDT · Polygon</p></>:<p className="mt-2 text-sm">{t('Preview: publish your store to enable escrow checkout.')}</p>}</section>}
+ {shop.escrowEnabled!==false&&shop.escrowGovernance!=='off'&&<section className="my-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-950"><h2 className="font-bold">◇ {t('Escrow Buyer Protection')}</h2>{slug&&escrowReady?<><p className="mt-2 text-sm">{t('Payments are verified and held for the store’s assigned escrow period. Report delivery problems before release.')}</p><p className="mt-2 font-semibold">{holdDays(shop.escrowHoldDays)} {t('days')} · USDC · Polygon</p></>:<p className="mt-2 text-sm">{t('Preview: publish your store to enable escrow checkout.')}</p>}</section>}
  <button type="button" disabled={copying} className="text-sm font-semibold underline disabled:opacity-50" onClick={copy}>{t('Share Product')}</button>
  {status&&<p role="status" className="mt-3 rounded-xl border p-3 text-sm">{t(status)}</p>}
  </section></div>
@@ -61,7 +61,7 @@ export default function ProductLanding({shop,productId,slug,snapshot,verified=fa
  {cartOpen&&<CartDrawer isSharedBuyerView={true} lines={lines} shop={shop} onCod={()=>{setCartOpen(false);setCodLines(lines);}} change={change} onClose={()=>setCartOpen(false)} onPay={(order,details,items)=>{setCartOpen(false);setCheckout({product:order,details,items});}}/>}
  {shareUrl&&<ShareModal url={shareUrl} title={title} product onClose={()=>setShareUrl('')}/>}
  {codLines&&shop.codEnabled!==false&&<CodCheckout storeSlug={slug} shop={shop} lines={codLines} onClose={()=>setCodLines(null)}/>}
- {checkout&&shop.escrowEnabled!==false&&<CryptoCheckout storeSlug={slug} orderItems={checkout.items} product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
+ {checkout&&<CryptoCheckout storeSlug={slug} orderItems={checkout.items} product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
  <div className="mt-12 border-t pt-6"><BuyerStoreFooter storeSlug={slug}/></div>
  </main>;
 }
