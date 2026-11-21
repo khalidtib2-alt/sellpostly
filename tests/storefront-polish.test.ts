@@ -18,9 +18,10 @@ test('payment save persists the Personal catalog without invoking sharing or nav
  const full=await savePaymentSettings(shop,{getItem:()=>null,setItem:()=>{throw Error('FULL');}},async()=>Response.json({slug:'test-shop'}));assert.equal(full.localSaved,false);
  const source=await readFile('src/app/shop/shop-builder.tsx','utf8'),start=source.indexOf('async function savePayments()'),end=source.indexOf('async function shareMode',start),action=source.slice(start,end);assert.ok(!/setShareTarget|location\.|scrollIntoView|scrollTo|router\./.test(action));assert.ok(source.includes('onSave={()=>void savePayments()}'));
 });
-test('all image sources use the same contained 4:3 frame and fixed action slots',async()=>{
- const source=await readFile('src/app/shop/storefront-templates.tsx','utf8'),css=await readFile('src/app/globals.css','utf8');assert.ok(source.includes('store-card-visual aspect-[4/3] w-full'));assert.equal((source.match(/className="h-full w-full object-contain p-4"/g)||[]).length,2);assert.ok(source.includes('store-card-actions'));assert.ok(source.includes('store-video-slot'));
- assert.ok(!css.includes('.editorial-product:first-child'));assert.ok(!css.includes('has-representative-photo .store-photo-frame'));assert.match(css,/\.store-card-visual \{[^}]*aspect-ratio:4\/3/);assert.match(css,/\.store-card-actions \{[^}]*margin-top:auto/);
+test('all product cards use top-aligned portrait covers while detailed inspection stays contained',async()=>{
+ const source=await readFile('src/app/shop/storefront-templates.tsx','utf8'),css=await readFile('src/app/globals.css','utf8');assert.ok(source.includes('store-card-visual aspect-[3/4] w-full'));assert.equal((source.match(/className="h-full w-full object-cover object-top"/g)||[]).length,2);assert.ok(source.includes('store-card-actions'));assert.ok(source.includes('store-video-slot'));
+ const gallery=await readFile('src/app/shop/product-gallery.tsx','utf8');assert.ok(gallery.includes('h-full w-full object-contain'));assert.ok(!gallery.includes('object-cover'));assert.match(css,/\.store-photo-frame img \{[^}]*padding:0;object-fit:cover;object-position:top/);
+ assert.ok(!css.includes('.editorial-product:first-child'));assert.ok(!css.includes('has-representative-photo .store-photo-frame'));assert.match(css,/\.store-card-visual \{[^}]*aspect-ratio:3\/4/);assert.match(css,/\.store-card-actions \{[^}]*margin-top:auto/);
 });
 test('the shared guide documents all current tools, payment methods, escrow and truthful Pro pricing',()=>{
  assert.equal(guide.features.length,6);assert.equal(guide.faq.length,5);assert.equal(guide.seller.length,4);assert.equal(guide.buyer.length,3);
