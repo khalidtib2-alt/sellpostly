@@ -340,6 +340,10 @@ CREATE TABLE IF NOT EXISTS shop_account_links (
 -- statement-breakpoint
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS store_mode text NOT NULL DEFAULT 'general' CHECK (store_mode IN ('general','niche'));
 -- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS deleted_at timestamptz;
+-- statement-breakpoint
+ALTER TABLE shops ADD COLUMN IF NOT EXISTS is_primary boolean GENERATED ALWAYS AS (store_mode='general') STORED;
+-- statement-breakpoint
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS shop_type text CHECK (shop_type IN ('affiliate','personal'));
 -- statement-breakpoint
 ALTER TABLE shops ADD COLUMN IF NOT EXISTS niche_name text NOT NULL DEFAULT '';
@@ -360,7 +364,7 @@ BEGIN
   IF NEW.shop_type IS NULL OR length(trim(NEW.niche_name))=0 THEN RAISE EXCEPTION 'NICHE_REQUIRED'; END IF;
   IF TG_OP='INSERT' THEN
    IF subscription_provider='free' AND NOT EXISTS(SELECT 1 FROM shop_account_links l JOIN subscriptions p ON p.owner_key=l.pro_owner WHERE l.account_owner=NEW.owner_key AND p.provider<>'free' AND p.status='active' AND (p.expires_at IS NULL OR p.expires_at>now())) THEN RAISE EXCEPTION 'PRO_REQUIRED'; END IF;
-   IF (SELECT count(*) FROM shops WHERE owner_key=NEW.owner_key AND store_mode='niche')>=10 THEN RAISE EXCEPTION 'NICHE_LIMIT_REACHED'; END IF;
+   IF (SELECT count(*) FROM shops WHERE owner_key=NEW.owner_key AND store_mode='niche' AND deleted_at IS NULL)>=10 THEN RAISE EXCEPTION 'NICHE_LIMIT_REACHED'; END IF;
   END IF;
   IF NEW.shop_type='personal' THEN NEW.affiliate_catalog:=NULL; ELSE NEW.personal_catalog:=NULL; END IF;
  END IF;
@@ -399,7 +403,7 @@ BEGIN
   IF NEW.shop_type IS NULL OR length(trim(NEW.niche_name))=0 THEN RAISE EXCEPTION 'NICHE_REQUIRED'; END IF;
   IF TG_OP='INSERT' THEN
    IF seller_effective_plan(NEW.owner_key)<>'pro' THEN RAISE EXCEPTION 'PRO_REQUIRED'; END IF;
-   IF (SELECT count(*) FROM shops WHERE owner_key=NEW.owner_key AND store_mode='niche')>=10 THEN RAISE EXCEPTION 'NICHE_LIMIT_REACHED'; END IF;
+   IF (SELECT count(*) FROM shops WHERE owner_key=NEW.owner_key AND store_mode='niche' AND deleted_at IS NULL)>=10 THEN RAISE EXCEPTION 'NICHE_LIMIT_REACHED'; END IF;
   END IF;
   IF NEW.shop_type='personal' THEN NEW.affiliate_catalog:=NULL; ELSE NEW.personal_catalog:=NULL; END IF;
  END IF;

@@ -1,4 +1,6 @@
 "use client";
+import DeleteShopDialog from './delete-shop-dialog';
+import {removeNicheShopDraft} from './delete-shop-storage';
 import {studioImportKey} from '../../lib/studio-handoff';
 import CopyAssistant from '../generation/copy-assistant';
 import ProductImageGenerator from '../generation/product-image-generator';
@@ -92,7 +94,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
  const list=server.map(target=>{const draft=localStorage.getItem(shopDraftKey(target));return draft?validateShop({...JSON.parse(draft),shopId:target.shopId,customSlug:target.customSlug,storeMode:target.storeMode,shopMode:target.shopMode,escrowHoldDays:target.escrowHoldDays,mainStoreSlug:target.mainStoreSlug}):target;});
  localStorage.setItem(shopListKey,JSON.stringify(list));setShops(list);
  const active=params.get('mode')?list.find(s=>s.storeMode!=='niche'&&s.shopMode===params.get('mode')):list.find(s=>shopSelection(s)===(localStorage.getItem(activeShopKey)||shopSelection(initial)));
- if(active)initial=active;else if(!saved&&list[0])initial=list[0];
+ if(active)initial=active;else if(initial.storeMode==='niche'||!saved)initial=list.find(s=>s.storeMode!=='niche'&&s.shopMode===initial.shopMode)||list[0]||initial;
  if(initial.customSlug||settings.slug)setPublishedSlug(initial.customSlug||settings.slug);
  }
           }catch{}
@@ -203,6 +205,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   }
   function primaryShop(mode:'affiliate'|'personal'){return readShopList(localStorage).find(s=>s.storeMode!=='niche'&&s.shopMode===mode)||validateShop({name:'',bio:'',shopMode:mode,products:[]});}
   function activateShop(target:Shop){try{const next=switchShop(shopRef.current,target,localStorage);shopRef.current=next;setShop(next);setPublishedSlug(next.customSlug||'');setAssignedHold(holdDays(next.escrowHoldDays));setFilter('All');setGenderFilter('all');setSearch('');setAdding(false);setEditing(null);setCartOpen(false);setCheckout(null);setCodLines(null);setPaymentMessage('');setStatus('');}catch{setStatus('Could not save. Device storage may be full.');}}
+  async function deleteActiveNiche(){const target=shopRef.current;if(target.storeMode!=='niche'||target.isPrimary!==false||!target.shopId)throw Error('PRIMARY_SHOP_PROTECTED');setPublishing(true);try{const response=await fetch('/api/shops?id='+encodeURIComponent(target.shopId),{method:'DELETE',headers:shopHeaders(localStorage)});if(!response.ok)throw Error('DELETE_FAILED');try{const result=removeNicheShopDraft(target,localStorage);shopRef.current=result.shop;setShop(result.shop);setShops(result.shops);setPublishedSlug(result.shop.customSlug||'');setAssignedHold(holdDays(result.shop.escrowHoldDays));setAdding(false);setEditing(null);setCartOpen(false);setCheckout(null);setCodLines(null);setPaymentMessage('');setStatus('Niche shop deleted.');}catch{location.replace('/settings');}}finally{setPublishing(false);}}
   async function createNiche(value:Record<string,string>){const r=await fetch('/api/shops',{method:'POST',headers:{'Content-Type':'application/json',...shopHeaders(localStorage)},body:JSON.stringify({action:'createNiche',shop:value})});const result=await r.json();if(!r.ok)throw Error(result.error);const next=validateShop(result.shop);const list=[...readShopList(localStorage),next];localStorage.setItem(shopListKey,JSON.stringify(list));setShops(list);activateShop(next);setPreview(false);}
   function productCopyInput(){const form=document.getElementById('shop-product-form') as HTMLFormElement|null;const data=form?new FormData(form):null;return {title:String(data?.get('name')||draftTitle),description:String(data?.get('description')||''),category:shop.nicheName||draftCategory,destination:shop.shopMode};}
   function applyProductCopy(copy:CopyResult){const form=document.getElementById('shop-product-form') as HTMLFormElement|null;if(!form)return;for(const [key,value] of Object.entries({description:copy.description,keyHighlights:copy.highlights.join('\n'),promoCaption:copy.caption})){const field=form.elements.namedItem(key) as HTMLTextAreaElement|null;if(field)field.value=value;}}
@@ -267,6 +270,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       {!shop.phone.replace(/\D/g,"")&&<p className="text-sm sm:col-span-3">{t("Add your WhatsApp number in Shop Settings above to enable WhatsApp checkout.")}</p>}
 <button type="button" className={button} disabled={publishing} onClick={()=>void saveStoreSettings()}>{t(publishing?'Saving.':'Save Store Settings')}</button>
     </section>}
+    {workspace==='settings'&&!shared&&loaded&&<DeleteShopDialog key={shop.shopId||shop.shopMode} shop={shop} onDelete={deleteActiveNiche} disabled={publishing}/>}
     {workspace==='products'&&!preview&&!shared&&loaded&&<button className={button+' mb-6'} onClick={()=>{setEditing(null);setPhoto('');setAdding(!adding);}}>{t('Add Product')}</button>}
     {workspace==='products'&&adding&&!preview&&!shared && <form key={editing?.id || "new"} id="shop-product-form" className="mb-8 grid gap-4 rounded-xl border p-5 sm:grid-cols-2" onSubmit={e=>{
       e.preventDefault();const data=new FormData(e.currentTarget);

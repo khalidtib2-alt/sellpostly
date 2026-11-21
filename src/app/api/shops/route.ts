@@ -1,3 +1,4 @@
+import {deleteNicheShop} from '../../../lib/delete-niche-shop';
 import {renameShop} from '../../../lib/shop-slug';
 import {publicLink} from '../../../lib/public-url';
 import {shopIdentity} from '../../../lib/shop-auth';
@@ -20,3 +21,5 @@ export async function POST(request:Request){try{
  else {if(value?.storeMode==='niche')return Response.json({error:'PRO_REQUIRED'},{status:403,headers});const {publishFreePrimary}=await import('../../../lib/free-shop-service');slug=await publishFreePrimary(identity.ownerKey,value);}
  return Response.json({slug,url:publicLink('/s/'+slug),affiliateUrl:publicLink('/s/'+slug+'/affiliate'),personalUrl:publicLink('/s/'+slug+'/personal')},{headers});
  }catch(e){return failure(e);}}
+
+export async function DELETE(request:Request){try{const origin=request.headers.get('origin');if((origin&&origin!==new URL(request.url).origin)||request.headers.get('sec-fetch-site')==='cross-site')return Response.json({error:'INVALID_ORIGIN'},{status:403,headers});const identity=await shopIdentity(request);if(!identity)return Response.json({error:'PRO_REQUIRED'},{status:401,headers});const id=new URL(request.url).searchParams.get('id');return Response.json(await deleteNicheShop(identity.ownerKey,id),{headers});}catch(error){return failure(error);}}

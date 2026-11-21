@@ -15,7 +15,7 @@ export async function submitCodOrder(value:unknown,query:Query=async(sql,args)=>
  const email=emailAddress(contact(buyer.contact));if(!email)throw new ApiError('INVALID_CONTACT');
  const phone=buyerPhone(text(buyer.phone,30)),address=text(raw.delivery_address||'',400,false),name=text(buyer.name,100);
  if(!phone)throw new ApiError('INVALID_CONTACT');
- const row=(await query(`SELECT id,coalesce(personal_catalog,catalog) AS catalog,cod_enabled,suspended FROM shops WHERE slug=$1 AND published=true AND (store_mode='general' OR seller_effective_plan(owner_key)='pro')`,[slug]))[0];
+ const row=(await query(`SELECT id,coalesce(personal_catalog,catalog) AS catalog,cod_enabled,suspended FROM shops WHERE slug=$1 AND deleted_at IS NULL AND published=true AND (store_mode='general' OR seller_effective_plan(owner_key)='pro')`,[slug]))[0];
  if(!row)throw new ApiError('SHOP_NOT_FOUND',404);if(row.suspended)throw new ApiError('STORE_SUSPENDED',403);
  const shop=validateShop(row.catalog);if(!storePolicyReady(shop))throw new ApiError('STORE_POLICY_REQUIRED',409);
  if(shop.shopMode!=='personal'||row.cod_enabled===false||shop.codEnabled===false)throw new ApiError('COD_UNAVAILABLE',409);

@@ -17,7 +17,7 @@ export async function submitOrder(value:unknown,query:Query=run){
  const raw=object(value);if(containsCardData(raw))throw new ApiError('CARD_DATA_NOT_ALLOWED');if(raw.coin!=='USDC')throw new ApiError('ESCROW_USDC_ONLY');const slug=text(raw.slug,64),selectedCoin=coin(raw.coin),net=network(raw.network),tx=txId(raw.tx_id,net);
  if(!escrowReady||net!==escrowNetwork)throw new ApiError('ESCROW_UNAVAILABLE',503);
  const buyer=object(raw.buyer),buyerContact=contact(buyer.contact),name=text(buyer.name,100);if(!emailAddress(buyerContact))throw new ApiError('INVALID_CONTACT');
- const shops=await query(`SELECT id,coalesce(personal_catalog,catalog) AS catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,escrow_hold_days,suspended FROM shops WHERE slug=$1 AND published=true AND (store_mode='general' OR seller_effective_plan(owner_key)='pro')`,[slug]);
+ const shops=await query(`SELECT id,coalesce(personal_catalog,catalog) AS catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,escrow_hold_days,suspended FROM shops WHERE slug=$1 AND deleted_at IS NULL AND published=true AND (store_mode='general' OR seller_effective_plan(owner_key)='pro')`,[slug]);
  if(!shops.length)throw new ApiError('SHOP_NOT_FOUND',404);
  if(shops[0].suspended)throw new ApiError('STORE_SUSPENDED',403);
  const shop=validateShop(shops[0].catalog);if(!storePolicyReady(shop))throw new ApiError('STORE_POLICY_REQUIRED',409);if(shop.shopMode!=='personal'||shop.escrowEnabled===false||shops[0].escrow_enabled===false)throw new ApiError('CHECKOUT_UNAVAILABLE');

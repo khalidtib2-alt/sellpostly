@@ -52,7 +52,7 @@ export async function publishShop(identity:ProIdentity,value:unknown){
 export async function publicShop(slug:string,query:Query=async(sql,parameters)=>await db().query(sql,parameters),mode?:ShopMode):Promise<(Shop & {verified:boolean;suspended:boolean})|null>{
   if(!/^[a-z0-9][a-z0-9-]{2,63}$/.test(slug))return null;
   const rows=await query(`SELECT id,slug,store_mode,shop_type,niche_name,affiliate_disclosure,catalog,affiliate_catalog,personal_catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,verified,suspended,escrow_hold_days,
- (SELECT p.slug FROM shops p WHERE shops.store_mode='niche' AND p.owner_key=shops.owner_key AND p.store_mode='general' AND p.published=true AND p.suspended=false AND (CASE WHEN shops.shop_type='personal' THEN coalesce(p.personal_catalog,p.catalog) ELSE coalesce(p.affiliate_catalog,p.catalog) END)->>'shopMode'=shops.shop_type LIMIT 1) AS main_store_slug FROM shops WHERE slug=$1 AND published=true AND (store_mode='general' OR seller_effective_plan(owner_key)='pro') LIMIT 1`,[slug]);
+ (SELECT p.slug FROM shops p WHERE shops.store_mode='niche' AND p.owner_key=shops.owner_key AND p.store_mode='general' AND p.published=true AND p.suspended=false AND (CASE WHEN shops.shop_type='personal' THEN coalesce(p.personal_catalog,p.catalog) ELSE coalesce(p.affiliate_catalog,p.catalog) END)->>'shopMode'=shops.shop_type LIMIT 1) AS main_store_slug FROM shops WHERE slug=$1 AND deleted_at IS NULL AND published=true AND (store_mode='general' OR seller_effective_plan(owner_key)='pro') LIMIT 1`,[slug]);
   const row=rows[0];if(!row||(row.store_mode==='niche'&&mode&&mode!==row.shop_type))return null;
   const catalog=mode?(row[mode+'_catalog']??(row.catalog?.shopMode===mode?row.catalog:null)):row.catalog;
   if(!catalog)return null;

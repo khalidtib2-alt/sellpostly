@@ -6,10 +6,10 @@ const run:Query=async(sql,args)=>db().query(sql,args);
 export async function sellerAccounts(search='',query:Query=run){
  const value=search.trim().slice(0,120);
  return query(`SELECT s.owner_key,s.email,s.status,s.provider,s.plan_override,s.plan_changed_at,seller_effective_plan(s.owner_key) AS plan,
- coalesce((SELECT json_agg(sh.name ORDER BY sh.name) FROM shops sh WHERE sh.owner_key=s.owner_key),'[]') AS shops,
- (SELECT count(*)::integer FROM shops sh WHERE sh.owner_key=s.owner_key AND sh.store_mode='niche') AS niche_count
+ coalesce((SELECT json_agg(sh.name ORDER BY sh.name) FROM shops sh WHERE sh.owner_key=s.owner_key AND sh.deleted_at IS NULL),'[]') AS shops,
+ (SELECT count(*)::integer FROM shops sh WHERE sh.owner_key=s.owner_key AND sh.deleted_at IS NULL AND sh.store_mode='niche') AS niche_count
  FROM subscriptions s WHERE NOT EXISTS(SELECT 1 FROM shop_account_links l WHERE l.pro_owner=s.owner_key)
- AND ($1='' OR s.owner_key ILIKE '%'||$1||'%' OR coalesce(s.email,'') ILIKE '%'||$1||'%' OR EXISTS(SELECT 1 FROM shops sh WHERE sh.owner_key=s.owner_key AND (sh.name ILIKE '%'||$1||'%' OR sh.seller_email ILIKE '%'||$1||'%')))
+ AND ($1='' OR s.owner_key ILIKE '%'||$1||'%' OR coalesce(s.email,'') ILIKE '%'||$1||'%' OR EXISTS(SELECT 1 FROM shops sh WHERE sh.owner_key=s.owner_key AND sh.deleted_at IS NULL AND (sh.name ILIKE '%'||$1||'%' OR sh.seller_email ILIKE '%'||$1||'%')))
  ORDER BY s.created_at DESC,s.owner_key LIMIT 200`,[value]);
 }
 export async function setSellerPlan(value:unknown,query:Query=run){

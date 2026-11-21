@@ -1,4 +1,12 @@
 export const translations = {
+"Niche shop deleted.":{"fr":"Boutique spécialisée supprimée.","ar":"تم حذف المتجر المتخصص."},
+"Could not delete this niche shop. Check your connection and try again.":{"fr":"Impossible de supprimer cette boutique. Vérifiez votre connexion et réessayez.","ar":"تعذّر حذف هذا المتجر. تحقق من اتصالك وحاول مجدداً."},
+"Deleting shop.":{"fr":"Suppression de la boutique.","ar":"جارٍ حذف المتجر."},
+"Yes, Delete Shop":{"fr":"Oui, supprimer la boutique","ar":"نعم، احذف المتجر"},
+"This cannot be undone. The public storefront will stop working and every product in this shop will be removed.":{"fr":"Cette action est irréversible. La vitrine publique sera désactivée et tous les produits de cette boutique seront supprimés.","ar":"لا يمكن التراجع عن هذا الإجراء. ستتوقف واجهة المتجر العامة وستُحذف جميع منتجات هذا المتجر."},
+"Delete this niche shop?":{"fr":"Supprimer cette boutique spécialisée ?","ar":"هل تريد حذف هذا المتجر المتخصص؟"},
+"Delete this specialty shop and all its products. Primary stores are protected. Existing order and payout history is retained.":{"fr":"Supprimez cette boutique et tous ses produits. Les boutiques principales sont protégées. L’historique des commandes et des retraits est conservé.","ar":"احذف هذا المتجر المتخصص وجميع منتجاته. المتاجر الرئيسية محمية. يبقى سجل الطلبات والمستحقات محفوظاً."},
+"Delete Niche Shop":{"fr":"Supprimer la boutique spécialisée","ar":"حذف المتجر المتخصص"},
 "Edit in Creator Studio":{"fr":"Modifier dans le studio","ar":"تعديل في استوديو الإبداع"},
 "Order Link":{"fr":"Lien de commande","ar":"رابط الطلب"},
 "Saving.":{"fr":"Enregistrement.","ar":"جارٍ الحفظ."},

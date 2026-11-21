@@ -8,7 +8,7 @@ export const runShopQuery:Query=async(sql,args)=>await db().query(sql,args);
 export class ShopError extends Error{constructor(message:string,public status=400){super(message);}}
 export function validShopSlug(value:unknown):value is string{return typeof value==='string'&&/^[a-z0-9][a-z0-9-]{2,63}$/.test(value);}
 export async function listSellerShops(owner:string,query:Query=runShopQuery){
- const rows=await query('SELECT id,slug,name,published,suspended,catalog,affiliate_catalog,personal_catalog,store_mode,shop_type,niche_name,escrow_hold_days,affiliate_disclosure,seller_usdc_wallet,seller_email,cod_enabled,escrow_enabled FROM shops WHERE owner_key=$1 ORDER BY created_at,id',[owner]);
+ const rows=await query('SELECT id,slug,name,published,suspended,catalog,affiliate_catalog,personal_catalog,store_mode,shop_type,niche_name,escrow_hold_days,affiliate_disclosure,seller_usdc_wallet,seller_email,cod_enabled,escrow_enabled FROM shops WHERE owner_key=$1 AND deleted_at IS NULL ORDER BY created_at,id',[owner]);
  const shops:Shop[]=[];const primary=rows.find(row=>row.store_mode==='general'&&row.published!==false&&row.suspended!==true);
  for(const row of rows){for(const mode of (row.store_mode==='niche'?[row.shop_type]:['personal','affiliate']) as ShopMode[]){
  const catalog=row[mode+'_catalog']||((row.catalog?.shopMode||'affiliate')===mode?row.catalog:null)||{name:row.name||'',bio:'',products:[]};
@@ -32,6 +32,6 @@ export async function saveNicheShop(owner:string,value:Shop,query:Query=runShopQ
  if(!storePolicyReady(shop))throw new ShopError('STORE_POLICY_REQUIRED');
  if(!shop.shopId)throw new ShopError('SHOP_NOT_FOUND',404);
  const rows=await query(`UPDATE shops SET name=$3,logo=$4,catalog=$5::jsonb,affiliate_catalog=CASE WHEN shop_type='affiliate' THEN $5::jsonb END,personal_catalog=CASE WHEN shop_type='personal' THEN $5::jsonb END,niche_name=$6,affiliate_disclosure=CASE WHEN shop_type='affiliate' THEN coalesce($5::jsonb->>'affiliateDisclosure','') ELSE '' END,seller_usdc_wallet=CASE WHEN shop_type='personal' THEN coalesce($5::jsonb->>'cryptoWallet','') ELSE '' END,seller_email=CASE WHEN shop_type='personal' THEN coalesce($5::jsonb->>'sellerEmail','') ELSE '' END,cod_enabled=coalesce(($5::jsonb->>'codEnabled')::boolean,false),escrow_enabled=coalesce(($5::jsonb->>'escrowEnabled')::boolean,false),updated_at=now()
- WHERE id=$2::uuid AND owner_key=$1 AND store_mode='niche' AND shop_type=$7 AND seller_effective_plan($1)='pro' AND EXISTS(SELECT 1 FROM subscriptions WHERE owner_key=$1 AND status='active') RETURNING id,slug`,[owner,shop.shopId,shop.name,shop.logo||'',JSON.stringify(shop),shop.nicheName||'',shop.shopMode]);
+ WHERE id=$2::uuid AND owner_key=$1 AND store_mode='niche' AND deleted_at IS NULL AND shop_type=$7 AND seller_effective_plan($1)='pro' AND EXISTS(SELECT 1 FROM subscriptions WHERE owner_key=$1 AND status='active') RETURNING id,slug`,[owner,shop.shopId,shop.name,shop.logo||'',JSON.stringify(shop),shop.nicheName||'',shop.shopMode]);
  if(!rows[0])throw new ShopError('SHOP_NOT_FOUND',404);return rows[0];
 }
