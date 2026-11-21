@@ -11,4 +11,4 @@ export function targetPendingShop(current:Shop,shopId:string|undefined,mode:Shop
  if(mode&&(mode!==current.shopMode||current.storeMode==='niche')){const target=readShopList(storage).find(s=>s.storeMode!=='niche'&&s.shopMode===mode);if(target)return switchShop(current,target,storage);}
  return current;
 }
-export function shopHeaders(storage:Pick<Storage,'getItem'>){return {'x-pro-key':storage.getItem('sellpostly-pro-key')||'','x-shop-key':storage.getItem('sellpostly-free-shop-key')||''};}
+export function shopHeaders(storage:Pick<Storage,'getItem'>){return {'x-pro-key':storage.getItem('sellpostly-pro-key')?.trim()||'','x-shop-key':storage.getItem('sellpostly-free-shop-key')?.trim()||''};}

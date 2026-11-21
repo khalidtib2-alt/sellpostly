@@ -1,4 +1,5 @@
 'use client';
+import {shopHeaders} from './multi-shop-data';
 import {demoProducts} from './demo-products';
 import dynamic from 'next/dynamic';
 import ProCryptoUpgrade from './pro-crypto-upgrade';
@@ -25,14 +26,14 @@ export default function ProGate({children,workspace='products'}:{children?:React
     check();return()=>{active=false;};
   },[]);
   async function activateIssued(issued:string){
-    const response=await fetch('/api/pro/verify',{method:'POST',headers:{'x-pro-key':issued},cache:'no-store'});
+    const response=await fetch('/api/pro/verify',{method:'POST',headers:{...shopHeaders(localStorage),'x-pro-key':issued},cache:'no-store'});
     if(!response.ok)throw Error();
     localStorage.setItem(proStorageKey,issued);setVerified(true);dialog.current?.close();
   }
   async function activate(event:React.FormEvent){
     event.preventDefault();setBusy(true);setError(false);
     try{
-      const response=await fetch('/api/pro/verify',{method:'POST',headers:{'x-pro-key':key.trim()},cache:'no-store'});
+      const response=await fetch('/api/pro/verify',{method:'POST',headers:{...shopHeaders(localStorage),'x-pro-key':key.trim()},cache:'no-store'});
       if(!response.ok)throw Error();
       localStorage.setItem(proStorageKey,key.trim());setVerified(true);dialog.current?.close();
     }catch{setError(true);}finally{setBusy(false);}

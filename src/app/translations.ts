@@ -1,4 +1,9 @@
 export const translations = {
+"Enter a shop name, a valid URL slug and a niche name.":{"fr":"Saisissez un nom de boutique, un identifiant URL valide et un nom de spécialité.","ar":"أدخل اسم المتجر ومعرّف رابط صالحاً واسم التخصص."},
+"This license is linked to another store account. Sign in to that account or use another license.":{"fr":"Cette licence est liée à un autre compte. Connectez-vous à ce compte ou utilisez une autre licence.","ar":"هذا الترخيص مرتبط بحساب متجر آخر. سجّل الدخول إلى ذلك الحساب أو استخدم ترخيصاً آخر."},
+"The database needs an update. Ask the administrator to run database initialization.":{"fr":"La base de données doit être mise à jour. Demandez à l’administrateur de lancer son initialisation.","ar":"تحتاج قاعدة البيانات إلى تحديث. اطلب من المسؤول تشغيل تهيئة قاعدة البيانات."},
+"A Pro plan or a valid Pro license is required for niche shops.":{"fr":"Une formule Pro ou une licence Pro valide est nécessaire pour les boutiques spécialisées.","ar":"تتطلب المتاجر المتخصصة خطة Pro أو ترخيص Pro صالحاً."},
+"Sign in again before creating a niche shop.":{"fr":"Reconnectez-vous avant de créer une boutique spécialisée.","ar":"سجّل الدخول مجدداً قبل إنشاء متجر متخصص."},
 "Niche shop deleted.":{"fr":"Boutique spécialisée supprimée.","ar":"تم حذف المتجر المتخصص."},
 "Could not delete this niche shop. Check your connection and try again.":{"fr":"Impossible de supprimer cette boutique. Vérifiez votre connexion et réessayez.","ar":"تعذّر حذف هذا المتجر. تحقق من اتصالك وحاول مجدداً."},
 "Deleting shop.":{"fr":"Suppression de la boutique.","ar":"جارٍ حذف المتجر."},

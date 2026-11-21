@@ -1,6 +1,4 @@
-import { proIdentity } from '../../../../lib/pro-auth';
+import {resolveSellerPlan} from '../../../../lib/resolve-seller-plan';
+import {ShopError} from '../../../../lib/multi-shop-service';
 export const runtime='nodejs';
-export async function POST(request:Request){
-  const identity=await proIdentity(request);
-  return Response.json({valid:!!identity},{status:identity?200:401,headers:{'Cache-Control':'no-store'}});
-}
+export async function POST(request:Request){try{const origin=request.headers.get('origin');if((origin&&origin!==new URL(request.url).origin)||request.headers.get('sec-fetch-site')==='cross-site')return Response.json({valid:false,error:'INVALID_ORIGIN'},{status:403});const identity=await resolveSellerPlan(request),valid=identity?.tier==='pro';return Response.json({valid,plan:identity?.tier||'free',...(!valid?{error:identity?'PRO_PLAN_REQUIRED':'AUTH_REQUIRED'}:{})},{status:valid?200:401,headers:{'Cache-Control':'no-store'}});}catch(error){return Response.json({valid:false,error:error instanceof ShopError?error.message:'ENTITLEMENT_UNAVAILABLE'},{status:error instanceof ShopError?error.status:503,headers:{'Cache-Control':'no-store'}});}}

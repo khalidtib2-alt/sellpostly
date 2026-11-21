@@ -386,8 +386,15 @@ ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS plan_override text CHECK (pla
 -- statement-breakpoint
 ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS plan_changed_at timestamptz;
 -- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS plan text NOT NULL DEFAULT 'free' CHECK (plan IN ('free','pro'));
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS plan_source text;
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS plan_expires_at timestamptz;
+-- statement-breakpoint
 CREATE OR REPLACE FUNCTION seller_effective_plan(p_owner text) RETURNS text LANGUAGE sql STABLE AS $$
- SELECT coalesce((SELECT CASE WHEN a.status<>'active' THEN 'free' WHEN a.plan_override IS NOT NULL THEN a.plan_override
+ SELECT coalesce((SELECT CASE WHEN a.status<>'active' THEN 'free' WHEN a.plan='pro' AND (a.plan_expires_at IS NULL OR a.plan_expires_at>now()) AND (a.plan_source IS NULL OR EXISTS(SELECT 1 FROM subscriptions source WHERE source.owner_key=a.plan_source AND source.status='active' AND (source.expires_at IS NULL OR source.expires_at>now() OR source.plan_override='pro'))) THEN 'pro' WHEN a.plan_override IS NOT NULL THEN a.plan_override
+
  WHEN a.provider<>'free' AND (a.expires_at IS NULL OR a.expires_at>now()) THEN 'pro'
  WHEN EXISTS(SELECT 1 FROM shop_account_links l JOIN subscriptions p ON p.owner_key=l.pro_owner WHERE l.account_owner=a.owner_key AND p.status='active' AND p.plan_override IS DISTINCT FROM 'free' AND (p.expires_at IS NULL OR p.expires_at>now() OR p.plan_override='pro')) THEN 'pro' ELSE 'free' END
  FROM subscriptions a WHERE a.owner_key=coalesce((SELECT account_owner FROM shop_account_links WHERE pro_owner=p_owner),p_owner)),'free')

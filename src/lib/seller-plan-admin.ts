@@ -14,6 +14,6 @@ export async function sellerAccounts(search='',query:Query=run){
 }
 export async function setSellerPlan(value:unknown,query:Query=run){
  const raw=object(value),owner=text(raw.owner_key,64);if(!/^[a-f0-9]{64}$/.test(owner)||!['free','pro'].includes(String(raw.plan)))throw new ApiError('INVALID_INPUT');
- const rows=await query(`UPDATE subscriptions SET plan_override=$2,status='active',plan_changed_at=now() WHERE owner_key=coalesce((SELECT account_owner FROM shop_account_links WHERE pro_owner=$1),$1) RETURNING owner_key,plan_override AS plan,plan_changed_at`,[owner,raw.plan]);
+ const rows=await query(`UPDATE subscriptions SET plan=$2,plan_override=$2,plan_source=NULL,plan_expires_at=NULL,status='active',plan_changed_at=now() WHERE owner_key=coalesce((SELECT account_owner FROM shop_account_links WHERE pro_owner=$1),$1) RETURNING owner_key,plan_override AS plan,plan_changed_at`,[owner,raw.plan]);
  if(!rows[0])throw new ApiError('RECORD_NOT_FOUND',404);return rows[0];
 }

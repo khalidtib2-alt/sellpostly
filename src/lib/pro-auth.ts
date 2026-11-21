@@ -39,6 +39,5 @@ export async function licensedIdentity(request: Request){
 }
 
 export async function proIdentity(request:Request):Promise<ProIdentity|null>{
- if(!process.env.DATABASE_URL)return licensedIdentity(request);
- try{const {shopIdentity}=await import('./shop-auth');const identity=await shopIdentity(request);return identity?.tier==='pro'?identity:null;}catch{return null;}
+ const {resolveSellerPlan}=await import('./resolve-seller-plan');const identity=await resolveSellerPlan(request);return identity?.tier==='pro'?identity:null;
 }
