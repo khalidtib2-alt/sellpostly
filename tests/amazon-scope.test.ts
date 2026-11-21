@@ -17,7 +17,7 @@ test('Amazon restrictions apply only in Affiliate mode; ordinary affiliate and P
   assert.equal((await decodeShop(await encodeShop(shop))).products[0].image,merchant);
   assert.equal(validateShop({...shop,products:[{...shop.products[0],image:''}]}).products[0].image,'');
  }
- const personal=validateShop({shopMode:'personal',products:[product]}).products[0];assert.equal(personal.image,cdn);assert.equal(personal.price,product.price);assert.equal(personal.amazonImageBlocked,false);
+ const personal=validateShop({refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[product]}).products[0];assert.equal(personal.image,cdn);assert.equal(personal.price,product.price);assert.equal(personal.amazonImageBlocked,false);
  for(const url of ['https://amzn.to/p','https://amzn.eu/p','https://amazon.co.uk/p'])assert.equal(isAmazonDestination(url),true);
  for(const url of ['https://amzn.eu.evil.example/p','https://notamazon.com/p'])assert.equal(isAmazonDestination(url),false);
  const reusedCdn=validateShop({shopMode:'affiliate',products:[{...product,url:'https://merchant.example/p'}]}).products[0];assert.equal(reusedCdn.amazonImageBlocked,true);assert.ok(reusedCdn.image.startsWith('/stock-photos/'));assert.equal(amazonAffiliateProduct(reusedCdn),true);

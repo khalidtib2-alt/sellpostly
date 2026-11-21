@@ -44,7 +44,7 @@ test('store metadata has canonical, OpenGraph and Twitter fields without payment
 
 test('public sitemap entries include both published catalogs and exclude suspended or unpublished shops',async()=>{
  const pg=new PGlite(),query:Query=async(sql,args)=>(await pg.query(sql,args)).rows as any[];
- try{await pg.exec(await readFile('src/db/schema.sql','utf8'));const personal={...shop,shopMode:'personal',products:shop.products.map(p=>({...p,catalogMode:'personal'}))};
+ try{await pg.exec(await readFile('src/db/schema.sql','utf8'));const personal={...shop,refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:shop.products.map(p=>({...p,catalogMode:'personal'}))};
   for(const [i,published,suspended] of [[0,true,false],[1,false,false],[2,true,true]] as const){await query('INSERT INTO subscriptions(owner_key,provider) VALUES($1,$2)',['owner-'+i,'master']);await query('INSERT INTO shops(owner_key,slug,name,catalog,affiliate_catalog,personal_catalog,published,suspended) VALUES($1,$2,$3,$4::jsonb,$4::jsonb,$5::jsonb,$6,$7)',['owner-'+i,'store-'+i,'Store',JSON.stringify(shop),JSON.stringify(personal),published,suspended]);}
   const rows=await publicStorefrontEntries(query);assert.equal(rows.length,2);assert.ok(rows.every(p=>p.url.includes('/s/store-0/')));assert.ok(rows.some(p=>p.url.endsWith('/affiliate')));assert.ok(rows.some(p=>p.url.endsWith('/personal')));
  }finally{await pg.close();}

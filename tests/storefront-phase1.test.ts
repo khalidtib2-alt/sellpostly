@@ -18,7 +18,7 @@ test('mode switches archive inventories separately, restore them and never copy 
  assert.equal(affiliate.products[0].id,'affiliate');
 });
 test('validation and shared links exclude products tagged for the other catalog; untagged legacy items stay in their original mode',async()=>{
- const mixed={shopMode:'personal',products:[product('own','personal'),product('deal','affiliate'),{...product('legacy','personal'),catalogMode:undefined}]};
+ const mixed={refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[product('own','personal'),product('deal','affiliate'),{...product('legacy','personal'),catalogMode:undefined}]};
  const shop=validateShop(mixed);assert.deepEqual(shop.products.map(p=>p.id),['own','legacy']);
  assert.ok(shop.products.every(p=>p.catalogMode==='personal'));
  assert.deepEqual((await decodeShop(await encodeShop(shop))).products.map(p=>p.id),['own','legacy']);
@@ -34,7 +34,7 @@ test('social sharing encodes product URLs and text for all six destinations with
  assert.match(links.Email,/^mailto:/);assert.throws(()=>socialShareLinks('javascript:alert(1)',title));
 });
 test('COD receipt and crypto checkout retain the same product quantity and exact total',()=>{
- const shop=validateShop({name:'Seller',shopMode:'personal',products:[product('p','personal')]});
+ const shop=validateShop({name:'Seller',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[product('p','personal')]});
  const lines=[{product:shop.products[0],quantity:3}];
  const message=codMessage(shop,lines,{name:'Buyer',phone:'+212600000000',address:'Street 1'},{heading:'COD',buyer:'Buyer',phone:'Phone',address:'Address',total:'Total',confirm:'Confirm'});
  assert.match(message,/Total: 37.5 USD/);assert.match(message,/p × 3/);assert.match(message,/Address: Street 1/);
@@ -53,7 +53,7 @@ test('buyer rendering enforces affiliate-only external CTA and personal product 
  const affiliate=render(Store,{initialShop:shop,isSharedBuyerView:true,publicSlug:'seller'});
  assert.ok(affiliate.includes("https://amazon.com/dp/TEST"));assert.match(affiliate,/sponsored/);
  for(const forbidden of ['Add to Cart','Pay with USDC','Cash on Delivery','Escrow Protected'])assert.ok(!affiliate.includes(forbidden),forbidden);
- const personal={...shop,shopMode:'personal'};
+ const personal={...shop,refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal'};
  const storefront=render(Store,{initialShop:personal,isSharedBuyerView:true,publicSlug:'seller'});
  assert.ok(storefront.includes("/s/seller/product/owned"));assert.match(storefront,/Add to Cart/);assert.match(storefront,/Cash on Delivery/);
  const landing=render(Landing,{shop:personal,productId:'owned',slug:'seller'});assert.ok(landing.includes('/s/seller/personal')); 

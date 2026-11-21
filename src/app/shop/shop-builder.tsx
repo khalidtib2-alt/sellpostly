@@ -1,4 +1,6 @@
 "use client";
+import StorePolicy from './store-policy';
+import {refundPolicies,refundPolicyLabels} from './store-policy-data';
 import MainStoreLink from './main-store-link';
 import MultiShopSwitcher from './multi-shop-switcher';
 import {shopListKey,activeShopKey,shopSelection,readShopList,persistShop,switchShop,shopDraftKey,shopHeaders,targetPendingShop} from './multi-shop-data';
@@ -131,7 +133,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
         const response=await fetch("/api/shops",{headers:shopHeaders(localStorage),cache:"no-store"});
         if(!response.ok)throw Error();
         const settings=await response.json();
-        if(active){const current=shopRef.current;const assigned=(settings.shops||[]).find((s:Shop)=>shopSelection(s)===shopSelection(current));if(assigned?.customSlug||current.customSlug||settings.slug)setPublishedSlug(assigned?.customSlug||current.customSlug||settings.slug);const days=holdDays(assigned?.escrowHoldDays??settings.escrow_hold_days);setAssignedHold(days);setPolicyLoaded(true);setShop(previous=>({...previous,escrowHoldDays:days,mainStoreSlug:assigned?.mainStoreSlug}));}
+        if(active){setTier(settings.tier==='pro'?'pro':'free');const current=shopRef.current;const assigned=(settings.shops||[]).find((s:Shop)=>shopSelection(s)===shopSelection(current));if(assigned?.customSlug||current.customSlug||settings.slug)setPublishedSlug(assigned?.customSlug||current.customSlug||settings.slug);const days=holdDays(assigned?.escrowHoldDays??settings.escrow_hold_days);setAssignedHold(days);setPolicyLoaded(true);setShop(previous=>({...previous,escrowHoldDays:days,mainStoreSlug:assigned?.mainStoreSlug}));}
       }catch{if(active)setStatus("Could not refresh the admin-assigned hold period. Try again.");}
     }
     refreshPolicy();window.addEventListener("focus",refreshPolicy);
@@ -176,7 +178,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     try{const result=await savePaymentSettings(snapshot,localStorage);setPublishedSlug(result.slug);
       if(shopRef.current===snapshot){setShop(result.shop);setPaymentMessage(result.localSaved?'Payment settings saved.':'Payment settings saved online. Local storage is full.');}
       else setPaymentMessage('Payment settings saved. New edits remain unsaved.');
-    }catch{setPaymentMessage('Could not save payment settings. Check your license and connection.');}finally{setPublishing(false);}
+    }catch(e){setPaymentMessage(e instanceof Error&&e.message==='STORE_POLICY_REQUIRED'?'Select a refund policy and enter a delivery timeframe before saving.':'Could not save payment settings. Check your license and connection.');}finally{setPublishing(false);}
   }
   async function saveStoreSettings(){
     if(publishing)return;setPublishing(true);setStatus('');
@@ -219,7 +221,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
 {shared&&loaded&&<button type="button" className={button+" mb-5"} onClick={()=>void share()}>{t("Share Store")}</button>}
 {!loaded&&<p role="status">{t("Loading storefront…")}</p>}
     {(shared||preview)&&loaded&&shop.shopMode==='affiliate'&&<aside className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5" aria-label={t('Affiliate Disclosure')}><p className="mb-2 text-sm font-bold">{t('Affiliate Disclosure')}</p><p className="text-sm leading-relaxed">{(()=>{const value=shop.affiliateDisclosure||disclosurePresets[0].text;const preset=disclosurePresets.find(p=>[p.text,translations[p.text].fr,translations[p.text].ar].some(candidate=>candidate===value));return preset?t(preset.text):value;})()}</p></aside>}
-    {(shared||preview)&&loaded&&<><StorefrontHero shop={shop} verified={verifiedStore}/><MainStoreLink shop={shop}/></>}
+    {(shared||preview)&&loaded&&<><StorefrontHero shop={shop} verified={verifiedStore}/><MainStoreLink shop={shop}/><StorePolicy shop={shop}/></>}
     <label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>
     {!shared&&<div className="mb-6 flex flex-wrap gap-3">
       {!shared && <><button aria-pressed={!preview} className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button aria-pressed={preview} className={button} onClick={()=>{setPreview(true);setAdding(false);}}>{t("Storefront Preview")}</button></>}
@@ -241,6 +243,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       {shop.shopMode==="personal"&&<><div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4"><p className="font-semibold">{t("Admin-assigned escrow hold")}: {assignedHold} {t("days")}</p><p className="mt-2 text-sm">{t("Only the Admin can change this period. Changes apply to new orders; existing orders keep their original hold.")}</p>{!policyLoaded&&<p className="mt-2 text-xs">{t("Default hold shown until admin settings load.")}</p>}</div>
       <p className="text-sm">{t("Payments are verified and releases are recorded by the Admin. Transfers are handled separately.")}</p>
       {!escrowReady&&<p className="text-sm sm:col-span-3" role="status">{t("Escrow checkout is unavailable. The platform escrow wallet has not been configured.")}</p>}</>}
+      {shop.shopMode==='personal'&&<fieldset className="rounded-xl border bg-white p-5 sm:col-span-3"><legend className="font-bold">{t('Refund & Delivery Policy')}</legend><label className="block">{t('Refund Policy (Required)')}<select required className={field} value={shop.refundPolicy||''} onChange={e=>setShop({...shop,refundPolicy:e.target.value as Shop['refundPolicy']})}><option value="">{t('Select a refund policy')}</option>{refundPolicies.map(policy=><option key={policy} value={policy}>{t(refundPolicyLabels[policy])}</option>)}</select></label><label className="mt-4 block">{t('Delivery Timeframe (Required)')}<textarea required maxLength={300} rows={2} className={field} value={shop.deliveryTimeframe||''} onChange={e=>setShop({...shop,deliveryTimeframe:e.target.value})}/></label><p className="mt-3 text-sm text-slate-600">{t('Include dispatch or digital delivery timing. Save Payment Settings to publish this policy.')}</p></fieldset>}
       {shop.shopMode==='personal'&&<PaymentSettingsEditor shop={shop} onChange={setShop} saving={publishing} message={paymentMessage} onSave={()=>void savePayments()}/>}
       {shop.shopMode==='personal'&&<fieldset className="rounded-xl border bg-white p-4 sm:col-span-3"><legend className="font-bold">{t('Personal Seller Payment Settings')}</legend><label className="block">{t('Seller USDC Wallet Address (Polygon)')}<input dir="ltr" className={field} maxLength={42} placeholder="0x..." value={shop.cryptoWallet||''} onChange={e=>setShop({...shop,cryptoWallet:e.target.value.trim()})}/></label><p className="mt-2 text-sm text-slate-600">{t('Payout destination only. Buyers pay the platform escrow wallet.')}</p><label className="mt-4 block">{t('Seller Email')}<input type="email" className={field} maxLength={254} value={shop.sellerEmail||''} onChange={e=>setShop({...shop,sellerEmail:e.target.value})}/></label></fieldset>}
       <fieldset className="grid gap-4 rounded-xl border p-4 sm:col-span-3 sm:grid-cols-2"><legend className="font-bold">{t('Template Design')}</legend><label>{t('Hero Headline')}<input className={field} maxLength={140} value={shop.heroTitle||''} onChange={e=>setShop({...shop,heroTitle:e.target.value})}/></label><label>{t('Hero Subtitle')}<input className={field} maxLength={400} value={shop.heroSubtitle||''} onChange={e=>setShop({...shop,heroSubtitle:e.target.value})}/></label><label>{t('Hero Image URL')}<input type="url" className={field} value={shop.heroImage||''} onChange={e=>setShop({...shop,heroImage:e.target.value})}/></label><label>{t('Store Accent Palette')}<select className={field} value={shop.shopAccent||'emerald'} onChange={e=>setShop({...shop,shopAccent:e.target.value as typeof shopAccents[number]})}>{shopAccents.map((value,i)=><option key={value} value={value}>{t(shopAccentNames[i])}</option>)}</select></label><p className="text-sm text-slate-600 sm:col-span-2">{t('Design changes apply only to this storefront template.')}</p></fieldset>

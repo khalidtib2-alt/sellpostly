@@ -10,7 +10,7 @@ import {translations} from '../src/app/translations';
 import type {Query} from '../src/lib/order-service';
 
 test('main-store preference defaults on and survives snapshots without linking general stores',async()=>{
- const niche=validateShop({storeMode:'niche',nicheName:'Shoes',mainStoreSlug:'main-shop',shopMode:'personal',products:[]});
+ const niche=validateShop({storeMode:'niche',nicheName:'Shoes',mainStoreSlug:'main-shop',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[]});
  assert.equal(niche.showMainStoreLink,true);assert.equal(mainStoreHref(niche),'/s/main-shop/personal');
  const off=await decodeShop(await encodeShop({...niche,showMainStoreLink:false}));assert.equal(mainStoreHref(off),null);
  assert.equal(mainStoreHref({...niche,shopMode:'affiliate'}),'/s/main-shop/affiliate');
@@ -23,10 +23,10 @@ test('public niche links resolve only matching same-owner published primary stor
  try{
  await pg.exec(await readFile('src/db/schema.sql','utf8'));
  await query("INSERT INTO subscriptions(owner_key,provider) VALUES('seller','master'),('other','master')",[]);
- const personal=validateShop({name:'Main',shopMode:'personal',products:[]}),affiliate=validateShop({name:'Deals',shopMode:'affiliate',products:[]});
+ const personal=validateShop({name:'Main',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[]}),affiliate=validateShop({name:'Deals',shopMode:'affiliate',products:[]});
  await query(PUBLISH_SHOP_SQL,['seller','seller-main','Main','',JSON.stringify(personal)]);await query(PUBLISH_SHOP_SQL,['seller','unused-slug','Deals','',JSON.stringify(affiliate)]);
  await query(PUBLISH_SHOP_SQL,['other','other-main','Other','',JSON.stringify(personal)]);
- const p=await createNicheShop('seller',{name:'Shoes',shopMode:'personal',customSlug:'shoes-niche',nicheName:'Shoes'},query),a=await createNicheShop('seller',{name:'Deals',shopMode:'affiliate',customSlug:'deals-niche',nicheName:'Kitchen'},query);
+ const p=await createNicheShop('seller',{name:'Shoes',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',customSlug:'shoes-niche',nicheName:'Shoes'},query),a=await createNicheShop('seller',{name:'Deals',shopMode:'affiliate',customSlug:'deals-niche',nicheName:'Kitchen'},query);
  assert.equal(mainStoreHref((await publicShop('shoes-niche',query,'personal'))!),'/s/seller-main/personal');
  assert.equal(mainStoreHref((await publicShop('deals-niche',query,'affiliate'))!),'/s/seller-main/affiliate');
  assert.equal((await listSellerShops('seller',query)).find(s=>s.shopId===p.shopId)?.mainStoreSlug,'seller-main');

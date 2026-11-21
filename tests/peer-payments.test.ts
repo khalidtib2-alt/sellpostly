@@ -8,7 +8,7 @@ import {translations} from '../src/app/translations';
 import type {Query} from '../src/lib/order-service';
 
 const payments=normalizePayments({TRON_USDT:{enabled:true,wallet:"TA4Wt1DUCqz6YegbnsmqsWC5uUfbdBqPxm"},BANK:{enabled:true,bank:'Bank',holder:'Independent Seller',account:'123456789012345678901234',swift:'ABCDMA22'},CARD_LINK:{enabled:true,url:'https://checkout.stripe.com/pay/seller'},PAYPAL:{enabled:true,destination:'seller@example.com'},PAYONEER:{enabled:true,destination:'https://payoneer.com/pay/seller'},WISE:{enabled:true,destination:'@seller'},USDC_DIRECT:{enabled:true,wallet:'0x'+'2'.repeat(40),network:'Polygon'},COD:{enabled:true}});
-const shop=validateShop({shopMode:'personal',name:'Independent shop',payments,escrowGovernance:'optional_for_buyer',products:[{id:'own',name:'Product',price:'25 USD',stock:8}]});
+const shop=validateShop({refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',name:'Independent shop',payments,escrowGovernance:'optional_for_buyer',products:[{id:'own',name:'Product',price:'25 USD',stock:8}]});
 
 test('payment configuration is whitelisted, safely linked, translated and preserved in share links',async()=>{
  assert.ok(validBankAccount('GB82 WEST 1234 5698 7654 32'));assert.ok(validBankAccount('123456789012345678901234'));assert.equal(validBankAccount('GB00 INVALID'),false);

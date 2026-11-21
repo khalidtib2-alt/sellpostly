@@ -20,7 +20,7 @@ test('hero, palette, surface and stock survive separate catalog switching and co
  assert.equal(validateShop({...affiliate,heroImage:'javascript:alert(1)',shopAccent:'invalid'}).heroImage,'');
 });
 test('destination imports preserve affiliate tags and both catalogs, including repeated handoffs',()=>{
- const db=memory(),personal=validateShop({name:'Brand',shopMode:'personal',shopAccent:'rose',heroTitle:'Our pieces',products:[{id:'own',name:'Owned',price:'15 USD'}]});
+ const db=memory(),personal=validateShop({name:'Brand',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',shopAccent:'rose',heroTitle:'Our pieces',products:[{id:'own',name:'Owned',price:'15 USD'}]});
  db.setItem(modeCatalogKey('affiliate'),JSON.stringify(validateShop({shopMode:'affiliate',shopAccent:'amber',products:[{id:'old-deal',name:'Old deal'}]})));
  const item=normalizePending({id:'imported',destination:'affiliate',stock:7,title:'Headphones',url:'https://amazon.com/dp/B012345678?tag=ourshop-20',price:'25 USD'});
  db.setItem(pendingShopKey,JSON.stringify(item));const result=consumePending(personal,db);assert.equal(result.shop.shopMode,'affiliate');assert.equal(result.shop.products[0].url,item.url);assert.equal(result.shop.products[0].stock,7);
@@ -39,7 +39,7 @@ test('extension 1.0.4 bridges destination and stock, preserves affiliate URL par
  const popup=await readFile('chrome-extension/popup.html','utf8');assert.ok(popup.includes('name="destination"'));assert.ok(popup.includes('value="affiliate"'));assert.ok(popup.includes('value="personal"'));
 });
 test('discounts reflect compatible prices and stock limits are enforced before checkout',()=>{
- const p=validateShop({shopMode:'personal',products:[{id:'p',name:'P',price:'20 USD',compareAtPrice:'40 USD',stock:2}]}).products[0];
+ const p=validateShop({refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[{id:'p',name:'P',price:'20 USD',compareAtPrice:'40 USD',stock:2}]}).products[0];
  assert.equal(dealDiscount(p),50);assert.equal(dealDiscount({...p,compareAtPrice:'30 EUR'}),null);assert.equal(dealDiscount({...p,compareAtPrice:'10 USD'}),null);
  assert.deepEqual(productHighlights('Lightweight\n• Adjustable\n✅ Travel ready'),['Lightweight','Adjustable','Travel ready']);
  assert.throws(()=>priceItems([p],[{id:'p',quantity:3}],'USDC'),(error:any)=>error.code==='OUT_OF_STOCK');assert.equal(priceItems([p],[{id:'p',quantity:2}],'USDC').gross,'40.000000');

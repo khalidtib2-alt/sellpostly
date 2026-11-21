@@ -1,6 +1,6 @@
 import 'server-only';
 import { createHash, timingSafeEqual } from 'node:crypto';
-export type ProIdentity = { ownerKey: string; provider: 'master' | 'gumroad' | 'development' | 'crypto' };
+export type ProIdentity = { ownerKey: string; provider: 'master' | 'gumroad' | 'development' | 'crypto' | 'free' };
 export function constantEqual(a: string, b: string) {
   const digest=(value:string)=>createHash('sha256').update(value).digest();
   return timingSafeEqual(digest(a),digest(b));
@@ -30,10 +30,15 @@ export async function verifyProKey(key: string): Promise<ProIdentity | null> {
     return {ownerKey,provider:'gumroad'};
   }catch{return null;}
 }
-export async function proIdentity(request: Request){
+export async function licensedIdentity(request: Request){
  const identity=await verifyProKey(request.headers.get("x-pro-key")?.trim()||"");
  if(!identity||!process.env.DATABASE_URL)return identity;
  try {const {ensureActiveSubscription}=await import("./subscription-access");if(!await ensureActiveSubscription(identity))return null;
  const {db}=await import('./db');const linked=await db().query("SELECT l.account_owner FROM shop_account_links l JOIN subscriptions s ON s.owner_key=l.account_owner WHERE l.pro_owner=$1 AND s.status='active'",[identity.ownerKey]);
  return linked[0]?{...identity,ownerKey:linked[0].account_owner}:identity;}catch{return null;}
+}
+
+export async function proIdentity(request:Request):Promise<ProIdentity|null>{
+ if(!process.env.DATABASE_URL)return licensedIdentity(request);
+ try{const {shopIdentity}=await import('./shop-auth');const identity=await shopIdentity(request);return identity?.tier==='pro'?identity:null;}catch{return null;}
 }

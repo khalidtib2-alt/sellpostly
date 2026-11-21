@@ -61,9 +61,9 @@ export function shopPrice(raw:string,currency:string){
 }
 export async function verifyStoredPro(storage:Pick<Storage,'getItem'>,request:typeof fetch=fetch){
  try{
-  const key=storage.getItem(proKey)?.trim();if(!key)return false;
-  const response=await request('/api/pro/verify',{method:'POST',headers:{'x-pro-key':key},cache:'no-store'});
-  const result=await response.json();return response.ok&&result.valid===true&&storage.getItem(proKey)?.trim()===key;
+  const key=storage.getItem(proKey)?.trim()||'',account=storage.getItem('sellpostly-free-shop-key')||'';if(!key&&!account)return false;
+  const response=await request('/api/pro/verify',{method:'POST',headers:{'x-pro-key':key,'x-shop-key':account},cache:'no-store'});
+  const result=await response.json();return response.ok&&result.valid===true&&(storage.getItem(proKey)?.trim()||'')===key&&(storage.getItem('sellpostly-free-shop-key')||'')===account;
  }catch{return false;}
 }
 export async function prepareShopPhoto(value:string){

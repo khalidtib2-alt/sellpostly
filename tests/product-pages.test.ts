@@ -21,7 +21,7 @@ test('carts persist only valid product quantities and retain exact checkout tota
  assert.deepEqual(normalizeCart(null,['a']),{});assert.deepEqual(normalizeCart(['a'],['a']),{});
 });
 test('gallery photos survive validation and compressed links while unsafe URLs are removed',async()=>{
- const input={name:'Store',shopMode:'personal',products:[{id:'id',name:'Product',price:'12 USD',image:'https://img.example/main.jpg',images:['https://img.example/second.jpg','javascript:alert(1)','https://img.example/third.jpg'],category:'Fashion',gender:'kids'}]};
+ const input={name:'Store',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[{id:'id',name:'Product',price:'12 USD',image:'https://img.example/main.jpg',images:['https://img.example/second.jpg','javascript:alert(1)','https://img.example/third.jpg'],category:'Fashion',gender:'kids'}]};
  const shop=validateShop(input);assert.deepEqual(shop.products[0].images,['https://img.example/second.jpg','https://img.example/third.jpg']);
  const decoded=await decodeShop(await encodeShop(shop));assert.deepEqual(decoded.products[0].images,shop.products[0].images);
  assert.equal(validateShop({...input,shopMode:'affiliate'}).shopMode,'affiliate');

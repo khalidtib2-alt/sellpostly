@@ -1,4 +1,7 @@
 "use client";
+import StorePolicy from './store-policy';
+import BuyerSafety from './buyer-safety';
+import {storePolicyReady} from './store-policy-data';
 import { useEffect, useRef, useState } from "react";
 import {digitalOnly} from './digital-data';
 import BuyerOrderForm from "./buyer-order-form";
@@ -38,7 +41,7 @@ export default function CryptoCheckout({ product, shop, onClose, orderDetails = 
     <div className="flex items-center justify-between gap-3"><h2 className="text-2xl font-bold">{t("USDC Escrow")}</h2><button type="button" onClick={()=>dialog.current?.close()} className="rounded-lg border px-3 py-2">{t("Close")}</button></div>
     {escrowReady?<p className="my-4 rounded-xl bg-emerald-50 p-3 font-semibold text-emerald-900">{t("Escrow Protected")} · {holdDays(shop.escrowHoldDays)} {t("days")}</p>:<p role="alert" className="my-4 rounded-xl border border-amber-300 p-3">{t("Polygon checkout is unavailable until the platform configures its Polygon escrow wallet.")}</p>}
     <p className="my-3 text-sm">{t("Payments are verified and releases are recorded by the Admin. Transfers are handled separately.")}</p>
-    <p className="mt-4 font-semibold">{product.name}</p>
+    <StorePolicy shop={shop}/><BuyerSafety/><p className="mt-4 font-semibold">{product.name}</p>
     {orderDetails&&<pre className="my-3 whitespace-pre-wrap text-sm">{orderDetails}</pre>}
     <label className="mt-4 block">{t("Coin")}<select className="mt-1 w-full rounded-lg border p-2" value={coin} onChange={e=>setCoin(e.target.value)} disabled={!!payment?.coin}><option>USDC</option></select></label>
     {payment?<p className="my-3 text-2xl font-bold" dir="ltr">{checkoutAmount(payment.amount)} {coin}</p>:<p role="alert" className="my-3">{t("Set a single USD, USDC, or USDT price to display a payment amount. Other currencies require seller confirmation.")}</p>}
@@ -54,7 +57,7 @@ export default function CryptoCheckout({ product, shop, onClose, orderDetails = 
     <p className="my-3 text-sm">{t(storeSlug?"Submitting a TxID records a pending order. Payment must be verified before fulfillment.":"Optional receipt only. The seller must verify the transfer on-chain before fulfilling the order.")}</p>
     {escrowReady&&payment&&shop.phone.replace(/\D/g,"")&&<a href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(receipt)} target="_blank" rel="noopener noreferrer" className="mt-3 block rounded-lg bg-emerald-700 px-4 py-3 text-center font-semibold text-white">{t("Send Payment Receipt on WhatsApp")}</a>}
     {!shop.phone.replace(/\D/g,"")&&<p className="my-3">{t("Seller WhatsApp number is unavailable.")}</p>}
-    {storeSlug&&escrowReady&&<BuyerOrderForm digitalOnly={digitalOnly((orderItems.length?orderItems:[{id:product.id,quantity:1}]).map(item=>({product:shop.products.find(p=>p.id===item.id)||product,quantity:item.quantity})))} slug={storeSlug} coin={coin} network={network} txid={txid} items={orderItems}/>}
+    {storeSlug&&escrowReady&&storePolicyReady(shop)&&<BuyerOrderForm digitalOnly={digitalOnly((orderItems.length?orderItems:[{id:product.id,quantity:1}]).map(item=>({product:shop.products.find(p=>p.id===item.id)||product,quantity:item.quantity})))} slug={storeSlug} coin={coin} network={network} txid={txid} items={orderItems}/>}
     <p role="status" className="mt-3">{status&&t(status)}</p>
   </dialog>;
 }

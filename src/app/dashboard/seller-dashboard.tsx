@@ -1,4 +1,5 @@
 'use client';
+import {shopHeaders} from '../shop/multi-shop-data';
 import WhatsAppQuickReplies from './whatsapp-quick-replies';
 import NotificationSettings from './notification-settings';
 import { useEffect,useRef,useState } from 'react';
@@ -18,7 +19,7 @@ export default function SellerDashboard(){
  const status=(value:string)=>t(states[value as keyof typeof states]||'Pending');
  async function request(url:string,options:RequestInit={}){
   const key=localStorage.getItem('sellpostly-pro-key')||'';
-  const response=await fetch(url,{...options,headers:{'Content-Type':'application/json','x-pro-key':key},cache:'no-store'});
+  const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...shopHeaders(localStorage)},cache:'no-store'});
   const result=await response.json();
   if(!response.ok)throw Error(result.error||'REQUEST_FAILED');
   return result;

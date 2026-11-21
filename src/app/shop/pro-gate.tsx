@@ -19,8 +19,8 @@ export default function ProGate({children}:{children?:React.ReactNode}){
     async function check(){
       try{
         const saved=localStorage.getItem(proStorageKey);
-        if(saved){const response=await fetch('/api/pro/verify',{method:'POST',headers:{'x-pro-key':saved},cache:'no-store'});if(active)setVerified(response.ok);}
-      }catch{}finally{try{if(!children&&localStorage.getItem('sellpostly-free-shop-key')){const r=await fetch('/api/shops',{headers:{'x-shop-key':localStorage.getItem('sellpostly-free-shop-key')||''},cache:'no-store'});if(active&&r.ok)setFree(true);}}catch{}if(active)setChecking(false);}
+        if(saved){const response=await fetch('/api/pro/verify',{method:'POST',headers:{'x-pro-key':saved,'x-shop-key':localStorage.getItem('sellpostly-free-shop-key')||''},cache:'no-store'});if(active)setVerified(response.ok);if(!response.ok&&!children){const shop=await fetch('/api/shops',{headers:{'x-pro-key':saved,'x-shop-key':localStorage.getItem('sellpostly-free-shop-key')||''},cache:'no-store'});if(active&&shop.ok)setFree(true);}}
+      }catch{}finally{try{if(localStorage.getItem('sellpostly-free-shop-key')){const r=await fetch('/api/shops',{headers:{'x-shop-key':localStorage.getItem('sellpostly-free-shop-key')||''},cache:'no-store'});if(active&&r.ok){const account=await r.json();if(account.tier==='pro')setVerified(true);else if(!children)setFree(true);}}}catch{}if(active)setChecking(false);}
     }
     check();return()=>{active=false;};
   },[]);

@@ -1,4 +1,5 @@
 'use client';
+import StorePolicy from './store-policy';
 import PromoVideoModal from './promo-video-modal';
 import {promoVideo} from './promo-video';
 import ShareModal from './share-modal';

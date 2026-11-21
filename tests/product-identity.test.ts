@@ -38,7 +38,7 @@ test('ten safe covers are full-bleed SVG scenes, auto-selected and independently
  const empty=validateShop({...raw,products:[{...raw.products[0],image:''}]});assert.equal(empty.products[0].image,defaultStock('wireless headphones').url);
  const manual=validateShop({...raw,products:[{...raw.products[0],editorialCover:'camera'}]});assert.equal(manual.products[0].image,defaultStock('wireless headphones').url);assert.equal((await decodeShop(await encodeShop(manual))).products[0].editorialCover,'camera');
  const photo=validateShop({...raw,products:[{...raw.products[0],image:'https://press.example/authorized.jpg'}]});assert.equal(photo.products[0].image,'https://press.example/authorized.jpg');
- const personal=validateShop({...raw,shopMode:'personal',products:[{...raw.products[0],image:''}]});assert.equal(personal.products[0].image,'');
+ const personal=validateShop({...raw,refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[{...raw.products[0],image:''}]});assert.equal(personal.products[0].image,'');
  assert.equal(affiliateImage('https://images-amazon.com/a.jpg','Other','Canon EOS R6 Mark II'),defaultStock('office technology').url);assert.equal(safeImage('/studio-covers/../../unsafe.svg'),'');
  const corrected=validateShop({...raw,products:[{...raw.products[0],identityOverride:'Garmin Forerunner 265'}]});assert.equal(corrected.products[0].image,defaultStock('smartwatch').url);
 });

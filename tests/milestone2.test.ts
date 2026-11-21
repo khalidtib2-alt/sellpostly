@@ -30,7 +30,7 @@ test('buyer and seller workflows enforce contact, ownership, holds and precise i
  try{
   const schema=await readFile('src/db/schema.sql','utf8');await pg.exec(schema);await pg.exec(schema);
   await pg.query("INSERT INTO subscriptions(owner_key,provider) VALUES('owner','master'),('stranger','master')");
-  const catalog={name:'Test Shop',bio:'',phone:'',shopMode:'personal',shopTheme:'white',products:[product]};
+  const catalog={name:'Test Shop',bio:'',phone:'',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',shopTheme:'white',products:[product]};
   const {rows:[shop]}=await pg.query<{id:string}>("INSERT INTO shops(owner_key,slug,name,catalog,escrow_hold_days) VALUES('owner','test-shop','Test',$1::jsonb,9) RETURNING id",[JSON.stringify(catalog)]);
   const request={slug:'test-shop',coin:'USDC',network:'Polygon',tx_id:'0x'+'a'.repeat(64),items:[{id:product.id,quantity:2}],buyer:{name:'Buyer',contact:'Buyer@Example.com'},gross_amount:'0.01',status:'released'};
   const order=await service.submitOrder(request,query);

@@ -377,3 +377,31 @@ CREATE UNIQUE INDEX IF NOT EXISTS orders_tron_payment_reference ON orders(networ
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_tron_direct_only;
 -- statement-breakpoint
 ALTER TABLE orders ADD CONSTRAINT orders_tron_direct_only CHECK ((payment_method<>'TRON_USDT' OR (coin='USDT' AND network='TRON' AND escrow_status='NONE' AND tx_id IS NULL AND details->>'payment_reference' IS NOT NULL AND details->>'payment_reference' ~ '^[a-f0-9]{64}$')) AND (network<>'TRON' OR payment_method='TRON_USDT'));
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS plan_override text CHECK (plan_override IN ('free','pro'));
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS plan_changed_at timestamptz;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION seller_effective_plan(p_owner text) RETURNS text LANGUAGE sql STABLE AS $$
+ SELECT coalesce((SELECT CASE WHEN a.status<>'active' THEN 'free' WHEN a.plan_override IS NOT NULL THEN a.plan_override
+ WHEN a.provider<>'free' AND (a.expires_at IS NULL OR a.expires_at>now()) THEN 'pro'
+ WHEN EXISTS(SELECT 1 FROM shop_account_links l JOIN subscriptions p ON p.owner_key=l.pro_owner WHERE l.account_owner=a.owner_key AND p.status='active' AND p.plan_override IS DISTINCT FROM 'free' AND (p.expires_at IS NULL OR p.expires_at>now() OR p.plan_override='pro')) THEN 'pro' ELSE 'free' END
+ FROM subscriptions a WHERE a.owner_key=coalesce((SELECT account_owner FROM shop_account_links WHERE pro_owner=p_owner),p_owner)),'free')
+$$;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION enforce_shop_limit() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE account_status text;
+BEGIN
+ SELECT status INTO account_status FROM subscriptions WHERE owner_key=NEW.owner_key FOR UPDATE;
+ IF TG_OP='INSERT' AND (NOT FOUND OR account_status<>'active') THEN RAISE EXCEPTION 'ACTIVE_ACCOUNT_REQUIRED'; END IF;
+ IF TG_OP='UPDATE' AND (NEW.owner_key<>OLD.owner_key OR NEW.store_mode<>OLD.store_mode OR NEW.shop_type IS DISTINCT FROM OLD.shop_type) THEN RAISE EXCEPTION 'SHOP_IDENTITY_IMMUTABLE'; END IF;
+ IF NEW.store_mode='niche' THEN
+  IF NEW.shop_type IS NULL OR length(trim(NEW.niche_name))=0 THEN RAISE EXCEPTION 'NICHE_REQUIRED'; END IF;
+  IF TG_OP='INSERT' THEN
+   IF seller_effective_plan(NEW.owner_key)<>'pro' THEN RAISE EXCEPTION 'PRO_REQUIRED'; END IF;
+   IF (SELECT count(*) FROM shops WHERE owner_key=NEW.owner_key AND store_mode='niche')>=10 THEN RAISE EXCEPTION 'NICHE_LIMIT_REACHED'; END IF;
+  END IF;
+  IF NEW.shop_type='personal' THEN NEW.affiliate_catalog:=NULL; ELSE NEW.personal_catalog:=NULL; END IF;
+ END IF;
+ RETURN NEW;
+END $$;

@@ -12,7 +12,7 @@ test('admin-only hold assignment survives forged publishing and preserves order 
  try{
   const schema=await readFile('src/db/schema.sql','utf8');await pg.exec(schema);await pg.exec(schema);
   await pg.query("INSERT INTO subscriptions(owner_key,provider) VALUES($1,'master')",[owner]);
-  const catalog={name:'Governance',bio:'',phone:'',shopMode:'personal',shopTheme:'white',escrowHoldDays:15,products:[]};
+  const catalog={name:'Governance',bio:'',phone:'',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',shopTheme:'white',escrowHoldDays:15,products:[]};
   await query(PUBLISH_SHOP_SQL,[owner,'governance-shop','Governance','',JSON.stringify(catalog)]);
   const shop=(await pg.query<{id:string;escrow_hold_days:number}>('SELECT id,escrow_hold_days FROM shops WHERE owner_key=$1',[owner])).rows[0];
   assert.equal(shop.escrow_hold_days,7);assert.equal((await publicShop('governance-shop',query))?.escrowHoldDays,7);

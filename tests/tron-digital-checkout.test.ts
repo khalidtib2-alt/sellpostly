@@ -15,7 +15,7 @@ import {buyerAction,fulfill,type Query} from '../src/lib/order-service';
 import {translations} from '../src/app/translations';
 function address(){const data=Buffer.concat([Buffer.from([65]),Buffer.alloc(20,1)]),check=createHash('sha256').update(createHash('sha256').update(data).digest()).digest().subarray(0,4);let n=BigInt('0x'+Buffer.concat([data,check]).toString('hex')),out='';const alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';while(n){out=alphabet[Number(n%BigInt(58))]+out;n/=BigInt(58);}return out;}
 const wallet=address();
-const shop=validateShop({shopMode:'personal',name:'Digital store',escrowGovernance:'required',payments:{TRON_USDT:{enabled:true,wallet},COD:{enabled:true},USDC_DIRECT:{enabled:false}},products:[{id:'digital',name:'Course',category:'Digital Product',price:'25 USD',digitalDeliveryNote:'Private instructions',digitalDownloadUrl:'https://downloads.example/private-access-token'},{id:'physical',name:'Book',category:'Other',price:'30 USD'}]});
+const shop=validateShop({refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',name:'Digital store',escrowGovernance:'required',payments:{TRON_USDT:{enabled:true,wallet},COD:{enabled:true},USDC_DIRECT:{enabled:false}},products:[{id:'digital',name:'Course',category:'Digital Product',price:'25 USD',digitalDeliveryNote:'Private instructions',digitalDownloadUrl:'https://downloads.example/private-access-token'},{id:'physical',name:'Book',category:'Other',price:'30 USD'}]});
 
 test('TRON receives structural and checksum validation and cannot request admin escrow',()=>{
  assert.ok(validTronAddress(wallet));assert.ok(validTronChecksum(wallet));assert.equal(validTronChecksum(wallet.slice(0,-1)+(wallet.endsWith('1')?'2':'1')),false);

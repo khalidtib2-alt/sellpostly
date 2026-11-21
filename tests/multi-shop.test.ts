@@ -17,14 +17,14 @@ test('legacy primary catalogs migrate intact; niche shops enforce global slugs, 
  const schema=await readFile('src/db/schema.sql','utf8'),legacy=schema.split('-- statement-breakpoint\nCREATE TABLE IF NOT EXISTS shop_account_links')[0];
  await pg.exec(legacy);
  await query("INSERT INTO subscriptions(owner_key,provider) VALUES('owner','master'),('other','master'),('free','free')",[]);
- const personal=validateShop({shopMode:'personal',name:'Legacy Personal',products:[{id:'p',name:'Own product',price:'75 USD',category:'Fashion'}],payments:{COD:{enabled:true}},escrowGovernance:'off'}),affiliate=validateShop({shopMode:'affiliate',name:'Legacy Deals',affiliateDisclosure:'Custom disclosure',products:[{id:'a',name:'Deal',url:'https://example.com/deal',price:'20 USD',image:'https://example.com/a.jpg'}]});
+ const personal=validateShop({refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',name:'Legacy Personal',products:[{id:'p',name:'Own product',price:'75 USD',category:'Fashion'}],payments:{COD:{enabled:true}},escrowGovernance:'off'}),affiliate=validateShop({shopMode:'affiliate',name:'Legacy Deals',affiliateDisclosure:'Custom disclosure',products:[{id:'a',name:'Deal',url:'https://example.com/deal',price:'20 USD',image:'https://example.com/a.jpg'}]});
  const primary=(await query("INSERT INTO shops(owner_key,slug,name,catalog,personal_catalog,affiliate_catalog,affiliate_disclosure) VALUES('owner','legacy-store','Legacy',$1::jsonb,$1::jsonb,$2::jsonb,'Custom disclosure') RETURNING id",[JSON.stringify(personal),JSON.stringify(affiliate)]))[0];
  await pg.exec(schema);await pg.exec(schema);
  const list=await listSellerShops('owner',query);assert.equal(list.length,2);assert.deepEqual(list.map(s=>s.customSlug),['legacy-store','legacy-store']);assert.equal(list.find(s=>s.shopMode==='personal')?.products[0].id,'p');assert.equal(list.find(s=>s.shopMode==='affiliate')?.affiliateDisclosure,'Custom disclosure');assert.equal(list.find(s=>s.shopMode==='personal')?.payments?.COD.enabled,true);
  const created=[];
- for(let i=0;i<10;i++)created.push(await createNicheShop('owner',{name:'Specialty '+i,shopMode:i%2?'affiliate':'personal',customSlug:'specialty-'+i,nicheName:i%2?'Kitchen Finds':'Running Shoes',bio:'Focused collection'},query));
- await assert.rejects(createNicheShop('owner',{name:'Extra',shopMode:'personal',customSlug:'specialty-extra',nicheName:'Extra'},query),/NICHE_LIMIT_REACHED/);
- await assert.rejects(createNicheShop('other',{name:'Duplicate',shopMode:'personal',customSlug:'specialty-0',nicheName:'Extra'},query),/SLUG_UNAVAILABLE/);
+ for(let i=0;i<10;i++)created.push(await createNicheShop('owner',{name:'Specialty '+i,refundPolicy:'7_day',deliveryTimeframe:'2 days',shopMode:i%2?'affiliate':'personal',customSlug:'specialty-'+i,nicheName:i%2?'Kitchen Finds':'Running Shoes',bio:'Focused collection'},query));
+ await assert.rejects(createNicheShop('owner',{name:'Extra',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',customSlug:'specialty-extra',nicheName:'Extra'},query),/NICHE_LIMIT_REACHED/);
+ await assert.rejects(createNicheShop('other',{name:'Duplicate',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',customSlug:'specialty-0',nicheName:'Extra'},query),/SLUG_UNAVAILABLE/);
  await assert.rejects(createNicheShop('free',{name:'Free niche',shopMode:'affiliate',customSlug:'free-niche',nicheName:'Free'},query),/PRO_REQUIRED/);
  await query(PUBLISH_SHOP_SQL,['free','free-primary','Free','',JSON.stringify(personal)]);await query(PUBLISH_SHOP_SQL,['free','ignored-primary','Free deals','',JSON.stringify(affiliate)]);
  assert.equal((await listSellerShops('free',query)).length,2);
@@ -39,14 +39,14 @@ test('legacy primary catalogs migrate intact; niche shops enforce global slugs, 
  assert.equal((await query("SELECT id FROM shops WHERE owner_key='owner' AND store_mode='general'",[]))[0].id,primary.id);
  // Upgrading a free account adds an entitlement link without moving any shop IDs or URLs.
  await query("INSERT INTO shop_account_links(pro_owner,account_owner) VALUES('other','free')",[]);
- await createNicheShop('free',{name:'Upgraded',shopMode:'personal',customSlug:'upgraded-niche',nicheName:'Art'},query);
+ await createNicheShop('free',{name:'Upgraded',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',customSlug:'upgraded-niche',nicheName:'Art'},query);
  assert.equal((await listSellerShops('free',query)).length,3);
  }finally{await pg.close();}
 });
 
 test('independent drafts, settings, compressed links and exact-shop imports preserve catalog boundaries',async()=>{
  const map=new Map<string,string>(),storage={getItem:(key:string)=>map.get(key)||null,setItem:(key:string,value:string)=>{map.set(key,value);},removeItem:(key:string)=>{map.delete(key);}};
- const p=validateShop({name:'Primary',shopMode:'personal',products:[{id:'old',name:'Old',price:'25 USD'}]}),a=validateShop({name:'Deals',shopMode:'affiliate',affiliateDisclosure:'Own disclosure',products:[]}),n=validateShop({shopId:'11111111-1111-4111-8111-111111111111',customSlug:'sneaker-edit',storeMode:'niche',nicheName:'Running Sneakers',name:'Sneakers',shopMode:'affiliate',affiliateDisclosure:'Niche disclosure',products:[]});
+ const p=validateShop({name:'Primary',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[{id:'old',name:'Old',price:'25 USD'}]}),a=validateShop({name:'Deals',shopMode:'affiliate',affiliateDisclosure:'Own disclosure',products:[]}),n=validateShop({shopId:'11111111-1111-4111-8111-111111111111',customSlug:'sneaker-edit',storeMode:'niche',nicheName:'Running Sneakers',name:'Sneakers',shopMode:'affiliate',affiliateDisclosure:'Niche disclosure',products:[]});
  persistShop(p,storage);persistShop(a,storage);persistShop(n,storage);assert.notEqual(shopDraftKey(n),shopDraftKey(a));
  const selected=switchShop(n,p,storage);assert.equal(selected.products[0].id,'old');assert.equal(readShopList(storage).length,3);
  storage.setItem(pendingShopKey,JSON.stringify({id:'amazon-import',title:'Nike Running Sneakers',price:'75 USD',url:'https://amazon.com/dp/B012345678',image:'https://m.media-amazon.com/images/I/photo.jpg',destination:'affiliate',targetShopId:n.shopId,category:'Fashion'}));

@@ -41,7 +41,7 @@ test('admin ledger transitions, store trust and subscription revocation are enfo
   const schema=await readFile('src/db/schema.sql','utf8');
   await pg.exec(schema);await pg.exec(schema);
   await pg.query("INSERT INTO subscriptions(owner_key,provider) VALUES($1,'master')",[owner]);
-  const catalog={name:'Trust Test',bio:'',phone:'',shopMode:'personal',shopTheme:'white',products:[{id:'product',name:'Guide',price:'100 USD',category:'Digital Product',gender:'unisex',image:'',url:'',source:'Other'}],verified:true,suspended:false};
+  const catalog={name:'Trust Test',bio:'',phone:'',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',shopTheme:'white',products:[{id:'product',name:'Guide',price:'100 USD',category:'Digital Product',gender:'unisex',image:'',url:'',source:'Other'}],verified:true,suspended:false};
   const {rows:[shop]}=await pg.query<{id:string}>("INSERT INTO shops(owner_key,slug,name,catalog,escrow_hold_days) VALUES($1,'trust-test','Trust Test',$2::jsonb,9) RETURNING id",[owner,JSON.stringify(catalog)]);
   assert.equal((await publicShop('trust-test',query))?.verified,false);
   assert.equal((validateShop(catalog) as any).verified,undefined);

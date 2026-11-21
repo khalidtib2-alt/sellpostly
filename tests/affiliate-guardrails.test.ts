@@ -18,7 +18,7 @@ test('host-based Amazon and image recognition handles regions and rejects lookal
  assert.equal(affiliateImage('https://m.media-amazon.com/a.jpg','Fashion'),'/stock-photos/pexels-13869858.jpg');assert.equal(studioCategoryImage('Other'),'/demo-products/studio-product.svg');
  const raw={shopMode:'affiliate',heroImage:'https://m.media-amazon.com/hero.jpg',products:[{id:'p',name:'P',category:'Fashion',image:'https://m.media-amazon.com/a.jpg',images:['https://images-amazon.com/b.jpg','https://press.example/authorized.jpg']}]};
  const shop=validateShop(raw);assert.equal(shop.products[0].image,'/stock-photos/pexels-13869858.jpg');assert.ok(shop.products[0].images?.includes('https://press.example/authorized.jpg'));assert.equal(shop.heroImage,raw.heroImage);
- assert.equal(validateShop({...raw,shopMode:'personal'}).products[0].image,raw.products[0].image);
+ assert.equal(validateShop({...raw,refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal'}).products[0].image,raw.products[0].image);
 });
 test('disclosure column migrates idempotently, saves every preset/custom text and survives Personal publishing',async()=>{
  const pg=new PGlite(),query:Query=async(sql,args)=>(await pg.query(sql,args)).rows as any[];
@@ -30,7 +30,7 @@ test('disclosure column migrates idempotently, saves every preset/custom text an
   for(const text of [...disclosurePresets.map(p=>p.text),'Custom <script>not HTML</script>']){
    await query(PUBLISH_SHOP_SQL,['disclosure-owner','unused-slug','Store','',JSON.stringify({...legacy,affiliateDisclosure:text})]);
    assert.equal((await publicShop('disclosure-shop',query,'affiliate'))?.affiliateDisclosure,text);
-   await query(PUBLISH_SHOP_SQL,['disclosure-owner','unused-slug','Own Store','',JSON.stringify({name:'Own Store',shopMode:'personal',affiliateDisclosure:'Do not overwrite',products:[]})]);
+   await query(PUBLISH_SHOP_SQL,['disclosure-owner','unused-slug','Own Store','',JSON.stringify({name:'Own Store',refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',affiliateDisclosure:'Do not overwrite',products:[]})]);
    assert.equal((await sellerShopSettings('disclosure-owner',query)).affiliate_disclosure,text);
   }
  }finally{await pg.close();}
