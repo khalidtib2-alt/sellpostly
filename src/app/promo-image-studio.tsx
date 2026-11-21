@@ -1,5 +1,6 @@
 "use client";
 
+import {overlayBadgeLayout} from './promo-badge-layout';
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "./language-context";
 
@@ -67,7 +68,7 @@ export default function PromoImageStudio({ name, price, delivery = "", importedI
       const words=title.trim().split(/\s+/);
       const lines:string[]=[];let line="";
       for(const word of words){
-        if(context.measureText(line+" "+word).width>920&&line){lines.push(line);line=word;}
+        if(context.measureText(line+" "+word).width>(textPosition==="badge"?452:920)&&line){lines.push(line);line=word;}
         else line=(line+" "+word).trim();
       }
       if(line)lines.push(line);
@@ -76,30 +77,37 @@ export default function PromoImageStudio({ name, price, delivery = "", importedI
       const groupHeight=titleHeight+keywordHeight+priceHeight+deliveryHeight+
         [titleHeight,keywordHeight,priceHeight,deliveryHeight].filter(Boolean).length*gap;
       let y=textPosition==="bottom"?height-44-groupHeight:textPosition==="top"?24:Math.round(height*0.45);
-      if(textPosition==="badge"){
-        context.fillStyle=colors[0];context.globalAlpha=0.94;
-        context.fillRect(40,y-10,1000,groupHeight+20);context.globalAlpha=1;
+      const badge=overlayBadgeLayout(height,groupHeight,!!title.trim(),language==='ar');
+      if(textPosition==='badge'&&!badge){
+        context.direction='ltr';context.fillStyle=colors[1];context.font='22px system-ui';context.textBaseline='alphabetic';context.fillText(t('Created with SellPostly.com'),540,height-20);
+        setReady(true);if(image){try{element!.toBlob(blob=>{if(!cancelled)onImage(blob);},'image/png');}catch{setFailed(true);onImage(null);}}return;
+      }
+      context.save();
+      if(textPosition==='badge'&&badge){
+        context.fillStyle=colors[0];context.globalAlpha=.94;context.beginPath();context.roundRect(badge.x,badge.y,badge.width,badge.height,24);context.fill();context.globalAlpha=1;
+        context.translate(badge.x+badge.width/2-540,badge.y+badge.padding);y=0;
       }
       context.textBaseline="top";
       context.fillStyle=colors[1];context.font="bold "+fontSize+"px system-ui";
-      for(const text of visibleLines){context.fillText(text,540,y,920);y+=fontSize+6;}
+      for(const text of visibleLines){context.fillText(text,540,y,textPosition==="badge"?452:920);y+=fontSize+6;}
       if(titleHeight)y+=gap;
       if(keywordHeight){
         context.font="bold 28px system-ui";
-        const pillWidth=Math.min(920,context.measureText(keyword).width+48);
+        const pillWidth=Math.min(textPosition==="badge"?452:920,context.measureText(keyword).width+48);
         context.fillStyle=colors[2];context.beginPath();context.roundRect(540-pillWidth/2,y,pillWidth,keywordHeight,24);context.fill();
         context.fillStyle="#fff";context.fillText(keyword,540,y+9,pillWidth-32);
         y+=keywordHeight+gap;
       }
       if(priceHeight){
-        context.fillStyle=colors[2];context.beginPath();context.roundRect(210,y,660,priceHeight,12);context.fill();
-        context.fillStyle="#fff";context.font="bold 36px system-ui";context.fillText(price,540,y+8,620);
+        context.fillStyle=colors[2];context.beginPath();context.roundRect(textPosition==="badge"?320:210,y,textPosition==="badge"?440:660,priceHeight,12);context.fill();
+        context.fillStyle="#fff";context.font="bold 36px system-ui";context.fillText(price,540,y+8,textPosition==="badge"?420:620);
         y+=priceHeight+gap;
       }
       if(deliveryHeight){
         context.fillStyle=colors[1];context.font="bold 26px system-ui";
-        context.fillText(t("Delivery")+": "+delivery,540,y,920);
+        context.fillText(t("Delivery")+": "+delivery,540,y,textPosition==="badge"?452:920);
       }
+      context.restore();
       context.textBaseline="alphabetic";
       context.direction="ltr"; context.fillStyle=colors[1]; context.font="22px system-ui";
       context.fillText(t("Created with SellPostly.com"),540,height-20);

@@ -7,6 +7,8 @@ import PromoImageStudio from "./promo-image-studio";
 
 import { useLanguage } from "./language-context";
 import type { Message } from "./translations";
+import CopyAssistant from './generation/copy-assistant';
+import type {CopyResult} from '../lib/generation-data';
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 type Post = { platform: string; text: string; url?: string };
@@ -201,7 +203,7 @@ export default function Formatter() {
     try{
       if(!await recheckPro()){setShopFeedback("Your Pro license could not be verified. Activate it again in My Shop.");return;}
       const photo=await prepareShopPhoto(image);
-      const item=normalizePending({id:crypto.randomUUID(),title,price:shopPrice(String(data.get("price")||""),currency),image:photo,description:String(data.get("features")||""),url:safeUrl(String(data.get("contact")||""))||safeUrl(productUrl),category:"Top Deals",gender:"unisex"});
+      const item=normalizePending({id:crypto.randomUUID(),title,price:shopPrice(String(data.get("price")||""),currency),image:photo,description:[data.get("description"),data.get("features")].filter(Boolean).join("\n"),url:safeUrl(String(data.get("contact")||""))||safeUrl(productUrl),category:"Top Deals",gender:"unisex"});
       localStorage.setItem(pendingShopKey,JSON.stringify(item));
       window.location.assign("/shop");
     }catch{setShopFeedback("Could not send the product. Device storage may be full or the photo may be too large.");}
@@ -242,6 +244,7 @@ export default function Formatter() {
     c.fillStyle="#064e3b";c.beginPath();c.roundRect(250,440,300,170,25);c.fill();
     setImage(canvas.toDataURL("image/png"));
   }
+  function applyGeneratedCopy(copy:CopyResult){const form=formRef.current;if(!form)return;for(const [key,value] of Object.entries({description:copy.description,features:copy.highlights.join('\n')})){const field=form.elements.namedItem(key) as HTMLTextAreaElement|null;if(field)field.value=value;}const data=new FormData(form);setResults(previous=>({data,hook:String(data.get('name')||''),version:previous.version+1}));}
   function generate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -281,7 +284,7 @@ export default function Formatter() {
         setDraft({name:String(data.get("name")||""),price:[data.get("price"),data.get("currency")].filter(Boolean).join(" ")});
       }} key={mode} onSubmit={generate} className="mt-6 grid gap-4 text-sm font-medium sm:grid-cols-2">
         {mode === "seller" ? <>
-          <label>{t("Product Name")}<input className={fieldStyle} name="name" dir="auto" placeholder={t("Wireless headphones")} required maxLength={120} /></label>
+          <label>{t("Product Name")}<input className={fieldStyle} name="name" dir="auto" placeholder={t("Wireless headphones")} required maxLength={120} /></label><div className="sm:col-span-2"><CopyAssistant getInput={()=>({title:String(new FormData(formRef.current!).get("name")||""),description:String(new FormData(formRef.current!).get("features")||""),destination:"personal"})} onGenerated={applyGeneratedCopy}/></div><label className="sm:col-span-2">{t("Generated Product Description")}<textarea name="description" maxLength={2000} rows={3} className={fieldStyle}/></label>
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <label>{t("Price")}<input className={fieldStyle} name="price" dir="auto" placeholder="29" inputMode="decimal" maxLength={30} /></label>
             <label>{t("Currency")}<select className={fieldStyle} name="currency" value={currency} onChange={e=>setCurrency(e.target.value)}>{Array.from(new Set([currency, "USD", "CAD", "EUR", "GBP", "AUD", "MAD", "INR", "NGN", "MXN"])).map(currency => <option key={currency}>{currency}</option>)}</select></label>

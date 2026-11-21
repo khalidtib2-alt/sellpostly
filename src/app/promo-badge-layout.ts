@@ -1,0 +1,1 @@
+export function overlayBadgeLayout(height:number,groupHeight:number,hasTitle:boolean,rtl=false){const width=500,padding=24,margin=36;return hasTitle&&groupHeight>0?{x:rtl?margin:1080-width-margin,y:Math.max(margin,height-72-groupHeight-padding*2),width,height:groupHeight+padding*2,padding}:null;}
