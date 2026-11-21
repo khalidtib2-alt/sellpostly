@@ -1,2 +1,5 @@
-export type GenerationDiagnostic={code:'QUOTA'|'BILLING'|'AUTH'|'MODEL_UNAVAILABLE'|'TIMEOUT'|'UNAVAILABLE';status?:number};
+import {translations} from '../app/translations';
+export type GenerationDiagnostic={code:'QUOTA'|'BILLING'|'AUTH'|'MODEL_UNAVAILABLE'|'TIMEOUT'|'UNAVAILABLE';status?:number;message?:string};
 export const diagnosticLabels={QUOTA:'Google generation quota reached. Check your Google AI project quota and try again later.',BILLING:'Google requires billing for this generation request. Check billing on your Google AI project.',AUTH:'Google rejected the API key or its permissions. Check the server key and Google AI project access.',MODEL_UNAVAILABLE:'The requested image models are unavailable for this Google project. Check model access.',TIMEOUT:'Google generation timed out. Please try again.',UNAVAILABLE:'Google generation is unavailable. Please try again later.'} as const;
+
+export function diagnosticMessage(code:GenerationDiagnostic['code'],language:'en'|'fr'|'ar'='en'){const label=diagnosticLabels[code];return language==='en'?label:translations[label][language];}
