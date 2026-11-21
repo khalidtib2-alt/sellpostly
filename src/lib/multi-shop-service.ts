@@ -1,4 +1,5 @@
 import 'server-only';
+import {validTronChecksum} from './tron-validation';
 import {db} from './db';
 import type {Query} from './order-service';
 import {validateShop,type Shop,type ShopMode} from '../app/shop/shop-data';
@@ -26,6 +27,7 @@ export async function createNicheShop(owner:string,value:unknown,query:Query=run
 }
 export async function saveNicheShop(owner:string,value:Shop,query:Query=runShopQuery){
  const {escrowHoldDays:_ignored,...shop}=validateShop(value);
+ if(shop.payments?.TRON_USDT.enabled&&!validTronChecksum(shop.payments.TRON_USDT.wallet))throw new ShopError('INVALID_TRON_WALLET');
  if(!shop.shopId)throw new ShopError('SHOP_NOT_FOUND',404);
  const rows=await query(`UPDATE shops SET name=$3,logo=$4,catalog=$5::jsonb,affiliate_catalog=CASE WHEN shop_type='affiliate' THEN $5::jsonb END,personal_catalog=CASE WHEN shop_type='personal' THEN $5::jsonb END,niche_name=$6,affiliate_disclosure=CASE WHEN shop_type='affiliate' THEN coalesce($5::jsonb->>'affiliateDisclosure','') ELSE '' END,seller_usdc_wallet=CASE WHEN shop_type='personal' THEN coalesce($5::jsonb->>'cryptoWallet','') ELSE '' END,seller_email=CASE WHEN shop_type='personal' THEN coalesce($5::jsonb->>'sellerEmail','') ELSE '' END,cod_enabled=coalesce(($5::jsonb->>'codEnabled')::boolean,false),escrow_enabled=coalesce(($5::jsonb->>'escrowEnabled')::boolean,false),updated_at=now()
  WHERE id=$2::uuid AND owner_key=$1 AND store_mode='niche' AND shop_type=$7 AND EXISTS(SELECT 1 FROM subscriptions WHERE owner_key=$1 AND status='active' AND (expires_at IS NULL OR expires_at>now())) RETURNING id,slug`,[owner,shop.shopId,shop.name,shop.logo||'',JSON.stringify(shop),shop.nicheName||'',shop.shopMode]);

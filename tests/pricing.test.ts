@@ -12,7 +12,7 @@ test('pricing displays the actual monthly upgrade amount and suppresses invalid 
 });
 
 test('plan comparison and metadata cover requested capabilities in all languages and link to the real activation flow',async()=>{
- assert.equal(freeFeatures.length,6);assert.equal(proFeatures.length,6);assert.equal(pricingPaymentMethods.length,7);
+ assert.equal(freeFeatures.length,6);assert.equal(proFeatures.length,6);assert.equal(pricingPaymentMethods.length,8);
  assert.ok(freeFeatures.includes('1 Primary Personal Store'));assert.ok(freeFeatures.includes('1 Primary Affiliate Deals Shop'));assert.ok(proFeatures.includes('Up to 10 Specialty Niche Stores'));
  const page=await readFile('src/app/pricing/pricing-content.tsx','utf8');
  const keys=[...freeFeatures,...proFeatures,...pricingPaymentMethods,...Array.from(page.matchAll(/t\('([^']+)'\)/g),m=>m[1])];

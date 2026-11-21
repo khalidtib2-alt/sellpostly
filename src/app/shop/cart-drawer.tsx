@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../language-context";
 import type { Message } from "../translations";
+import {digitalOnly} from './digital-data';
 import { cartTotal, type CartLine } from "./cart-data";
 import type { Product, Shop } from "./shop-data";
 
@@ -11,7 +12,7 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,onCod,isShar
   const [note,setNote]=useState(""),[status,setStatus]=useState<Message|"">("");
   useEffect(()=>{dialog.current?.showModal();},[]);
   const total=cartTotal(lines);
-  const details=lines.map(({product,quantity})=>product.name+" × "+quantity+" — "+product.price).join("\n")+(note.trim()?"\n"+t("Delivery City / Note")+": "+note.trim():"");
+  const details=lines.map(({product,quantity})=>product.name+" × "+quantity+" — "+product.price).join("\n")+(!digitalOnly(lines)&&note.trim()?"\n"+t("Delivery City / Note")+": "+note.trim():"");
   const receipt=t("Cart Order")+"\n"+shop.name+"\n"+details+"\n"+t("Total")+": "+(total?total.amount+" "+total.currency:t("Confirm prices with the seller."));
   async function whatsapp(){
     try{
@@ -28,7 +29,7 @@ export default function CartDrawer({lines,shop,change,onClose,onPay,onCod,isShar
       <div className="flex items-center gap-4">{product.image&&<img src={product.image} alt="" className="h-16 w-16 rounded-xl bg-white object-contain p-2"/>}<p className="font-semibold">{product.name}</p></div><p className="my-2">{product.price}</p>
       <div className="flex flex-wrap items-center gap-4"><button type="button" className="rounded border px-3 py-1" aria-label={t("Decrease quantity")+" "+product.name} onClick={()=>change(product.id,-1)}>−</button><output aria-label={t("Quantity")}>{quantity}</output><button type="button" disabled={quantity>=99} className="rounded border px-3 py-1" aria-label={t("Increase quantity")+" "+product.name} onClick={()=>change(product.id,1)}>+</button><button type="button" className="rounded px-2 py-1 text-sm text-slate-600 underline" aria-label={t("Remove")+" "+product.name} onClick={()=>change(product.id,-quantity)}>{t("Remove")}</button></div>
     </li>)}</ul>
-    <label>{t("Delivery City / Note")}<textarea maxLength={400} className="mt-2 w-full rounded-lg border p-3" value={note} onChange={e=>setNote(e.target.value)}/></label>
+    {!digitalOnly(lines)&&<label>{t("Delivery City / Note")}<textarea maxLength={400} className="mt-2 w-full rounded-lg border p-3" value={note} onChange={e=>setNote(e.target.value)}/></label>}{digitalOnly(lines)&&<p className="my-3 text-sm">{t('Digital order: no shipping address needed. Delivery is sent to your email after payment confirmation.')}</p>}
     <p className="my-4 text-xl font-bold">{t("Total")}: {total?total.amount+" "+total.currency:"—"}</p>
     {!total&&lines.length>0&&<p role="status">{t("Cart totals require compatible USD, USDC, or USDT prices. Confirm other currencies with the seller.")}</p>}
     <p className="my-3 text-sm">{t("Delivery fees are confirmed by the seller.")}</p>

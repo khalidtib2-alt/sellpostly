@@ -1,4 +1,6 @@
 import 'server-only';
+import {publicDigitalProduct} from '../app/shop/digital-data';
+import {validTronChecksum} from './tron-validation';
 import { neon } from '@neondatabase/serverless';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -28,6 +30,7 @@ export const PUBLISH_SHOP_SQL=`INSERT INTO shops(owner_key,slug,name,logo,catalo
  RETURNING slug,escrow_hold_days`;
 export async function publishShop(identity:ProIdentity,value:unknown){
   const {escrowHoldDays:_ignored,...shop}=validateShop(value);
+  if(shop.shopMode==='personal'&&shop.payments?.TRON_USDT.enabled&&!validTronChecksum(shop.payments.TRON_USDT.wallet))throw Error('INVALID_TRON_WALLET');
   if(shop.shopMode==='personal'&&shop.cryptoWallet&&!validWallet(shop.cryptoWallet,'Polygon'))throw Error('INVALID_WALLET');
   if(shop.shopMode==='personal'&&shop.sellerEmail&&!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(shop.sellerEmail))throw Error('INVALID_CONTACT');
   if(shop.storeMode==='niche'){
@@ -51,7 +54,7 @@ export async function publicShop(slug:string,query:Query=async(sql,parameters)=>
   const catalog=mode?(row[mode+'_catalog']??(row.catalog?.shopMode===mode?row.catalog:null)):row.catalog;
   if(!catalog)return null;
   const shop=validateShop(catalog);if(mode&&shop.shopMode!==mode)return null;
-  return {...shop,mainStoreSlug:row.store_mode==='niche'?row.main_store_slug||undefined:undefined,shopId:row.id,customSlug:row.slug,storeMode:row.store_mode==='niche'?'niche':'general',nicheName:row.niche_name||'',...(shop.shopMode==='affiliate'?{affiliateDisclosure:row.affiliate_disclosure??shop.affiliateDisclosure}:{}),...(shop.shopMode==='personal'?{cryptoWallet:row.seller_usdc_wallet||shop.cryptoWallet,codEnabled:row.cod_enabled??shop.codEnabled,escrowEnabled:row.escrow_enabled??shop.escrowEnabled}:{}),escrowHoldDays:row.escrow_hold_days,verified:row.verified===true,suspended:row.suspended===true};
+  return {...shop,products:shop.products.map(publicDigitalProduct),mainStoreSlug:row.store_mode==='niche'?row.main_store_slug||undefined:undefined,shopId:row.id,customSlug:row.slug,storeMode:row.store_mode==='niche'?'niche':'general',nicheName:row.niche_name||'',...(shop.shopMode==='affiliate'?{affiliateDisclosure:row.affiliate_disclosure??shop.affiliateDisclosure}:{}),...(shop.shopMode==='personal'?{cryptoWallet:row.seller_usdc_wallet||shop.cryptoWallet,codEnabled:row.cod_enabled??shop.codEnabled,escrowEnabled:row.escrow_enabled??shop.escrowEnabled}:{}),escrowHoldDays:row.escrow_hold_days,verified:row.verified===true,suspended:row.suspended===true};
 }
 export async function createPendingOrder(shopId:string,grossAmount:string,coin:'USDC'|'USDT',network:string,details:unknown){
   const sql=db();

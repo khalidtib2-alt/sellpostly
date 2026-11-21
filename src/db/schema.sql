@@ -241,7 +241,7 @@ UPDATE shops SET affiliate_catalog=catalog WHERE affiliate_catalog IS NULL AND c
 -- statement-breakpoint
 UPDATE shops SET personal_catalog=catalog WHERE personal_catalog IS NULL AND catalog->>'shopMode'='personal' AND catalog ? 'products';
 -- statement-breakpoint
-ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method text NOT NULL DEFAULT 'CRYPTO' CHECK (payment_method IN ('CRYPTO','COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','USDC_DIRECT'));
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method text NOT NULL DEFAULT 'CRYPTO' CHECK (payment_method IN ('CRYPTO','COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','USDC_DIRECT','TRON_USDT'));
 -- statement-breakpoint
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS escrow_status text NOT NULL DEFAULT 'PENDING' CHECK (escrow_status IN ('NONE','PENDING','PENDING_FUNDING','HELD','RELEASED','DISPUTED','REFUNDED','CANCELLED'));
 -- statement-breakpoint
@@ -251,7 +251,7 @@ ALTER TABLE orders ADD CONSTRAINT orders_coin_check CHECK ((payment_method='CRYP
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_network_check;
 -- statement-breakpoint
-ALTER TABLE orders ADD CONSTRAINT orders_network_check CHECK ((payment_method='CRYPTO' AND network IN ('Polygon','Base','Arbitrum','BNB Smart Chain','Solana')) OR (payment_method<>'CRYPTO' AND network IN ('COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','Polygon','Base','Arbitrum','BNB Smart Chain','Solana')));
+ALTER TABLE orders ADD CONSTRAINT orders_network_check CHECK ((payment_method='CRYPTO' AND network IN ('Polygon','Base','Arbitrum','BNB Smart Chain','Solana')) OR (payment_method<>'CRYPTO' AND network IN ('COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','TRON','Polygon','Base','Arbitrum','BNB Smart Chain','Solana')));
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_commission_rate_check;
 -- statement-breakpoint
@@ -321,7 +321,7 @@ UPDATE shops SET affiliate_disclosure=left(affiliate_catalog->>'affiliateDisclos
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_payment_method_check;
 -- statement-breakpoint
-ALTER TABLE orders ADD CONSTRAINT orders_payment_method_check CHECK (payment_method IN ('CRYPTO','COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','USDC_DIRECT'));
+ALTER TABLE orders ADD CONSTRAINT orders_payment_method_check CHECK (payment_method IN ('CRYPTO','COD','BANK','CARD_LINK','PAYPAL','PAYONEER','WISE','USDC_DIRECT','TRON_USDT'));
 -- statement-breakpoint
 ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_escrow_status_check;
 -- statement-breakpoint
@@ -370,3 +370,10 @@ END $$;
 DROP TRIGGER IF EXISTS shops_plan_limit ON shops;
 -- statement-breakpoint
 CREATE TRIGGER shops_plan_limit BEFORE INSERT OR UPDATE ON shops FOR EACH ROW EXECUTE FUNCTION enforce_shop_limit();
+
+-- statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS orders_tron_payment_reference ON orders(network,lower(details->>'payment_reference')) WHERE payment_method='TRON_USDT';
+-- statement-breakpoint
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_tron_direct_only;
+-- statement-breakpoint
+ALTER TABLE orders ADD CONSTRAINT orders_tron_direct_only CHECK ((payment_method<>'TRON_USDT' OR (coin='USDT' AND network='TRON' AND escrow_status='NONE' AND tx_id IS NULL AND details->>'payment_reference' IS NOT NULL AND details->>'payment_reference' ~ '^[a-f0-9]{64}$')) AND (network<>'TRON' OR payment_method='TRON_USDT'));

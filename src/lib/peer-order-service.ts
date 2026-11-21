@@ -1,4 +1,7 @@
 import 'server-only';
+import {deliverySnapshot} from '../app/shop/digital-data';
+import {validTronTx} from '../app/shop/tron-data';
+import {validTronChecksum} from './tron-validation';
 import {db} from './db';
 import {ApiError,object,text,uuid} from './order-validation';
 import {submitOrder,type Query} from './order-service';
@@ -23,10 +26,13 @@ export async function submitPeerOrder(value:unknown,query:Query=async(sql,args)=
  const lines=[...quantities].map(([id,quantity])=>{const product=shop.products.find(p=>p.id===id);if(!product)throw new ApiError('INVALID_ITEMS');if(product.stock!==undefined&&quantity>product.stock)throw new ApiError('OUT_OF_STOCK',409);return {product,quantity};});
  const total=directTotal(lines);if(!total)throw new ApiError('PRICE_UNAVAILABLE');if(method==='USDC_DIRECT'&&!['USD','USDC'].includes(total.currency))throw new ApiError('PRICE_UNAVAILABLE');
  const reference=text(raw.reference||'',100,false),note=text(raw.delivery_note||'',400,false);
- const details={request_id:requestId,store_name:shop.name,language:locale(raw.language),buyer:{name,contact:email,phone},delivery_note:note,payment_reference:reference,payment_verification:'seller_must_verify',items:lines.map(({product,quantity})=>({id:product.id,name:product.name,quantity,unit_price:decimalMoney(directPrice(product.price)!.amount),line_total:decimalMoney(directPrice(product.price)!.amount*BigInt(quantity))})),...(method==='USDC_DIRECT'?{receiving_wallet:p.USDC_DIRECT.wallet,receiving_network:p.USDC_DIRECT.network}:{})};
- const args=[row.id,total.amount,method==='USDC_DIRECT'?'USDC':total.currency,method==='USDC_DIRECT'?p.USDC_DIRECT.network:method,method,JSON.stringify(details),JSON.stringify(row.catalog)];
+ if(method==='TRON_USDT'&&(!validTronChecksum(p.TRON_USDT.wallet)||!validTronTx(reference)))throw new ApiError('INVALID_TRON_PAYMENT');
+ if(method==='TRON_USDT'&&!['USD','USDT'].includes(total.currency))throw new ApiError('PRICE_UNAVAILABLE');
+ const delivery=deliverySnapshot(lines);
+ const details={...delivery,request_id:requestId,store_name:shop.name,language:locale(raw.language),buyer:{name,contact:email,phone},delivery_note:delivery.digital_only?'':note,payment_reference:method==='TRON_USDT'?reference.toLowerCase():reference,payment_verification:'seller_must_verify',items:lines.map(({product,quantity})=>({id:product.id,name:product.name,quantity,unit_price:decimalMoney(directPrice(product.price)!.amount),line_total:decimalMoney(directPrice(product.price)!.amount*BigInt(quantity))})),...(method==='TRON_USDT'?{receiving_wallet:p.TRON_USDT.wallet,receiving_network:'TRON'}:{}),...(method==='USDC_DIRECT'?{receiving_wallet:p.USDC_DIRECT.wallet,receiving_network:p.USDC_DIRECT.network}:{})};
+ const args=[row.id,total.amount,method==='TRON_USDT'?'USDT':method==='USDC_DIRECT'?'USDC':total.currency,method==='TRON_USDT'?'TRON':method==='USDC_DIRECT'?p.USDC_DIRECT.network:method,method,JSON.stringify(details),JSON.stringify(row.catalog)];
  const rows=await query(`INSERT INTO orders(shop_id,gross_amount,coin,network,payment_method,escrow_status,details)
  SELECT id,$2::numeric,$3,$4,$5,'NONE',$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND coalesce(personal_catalog,catalog)=$7::jsonb
  ON CONFLICT DO NOTHING RETURNING id,status,payment_method,escrow_status,gross_amount::text,coin,network`,args);
- if(rows.length)return rows[0];const previous=await query("SELECT id,status,payment_method,escrow_status,gross_amount::text,coin,network FROM orders WHERE shop_id=$1::uuid AND payment_method=$2 AND details->>'request_id'=$3 AND details=$4::jsonb",[row.id,method,requestId,JSON.stringify(details)]);if(previous.length)return previous[0];throw new ApiError('CATALOG_CHANGED',409);
+ if(rows.length)return rows[0];const previous=await query("SELECT id,status,payment_method,escrow_status,gross_amount::text,coin,network FROM orders WHERE shop_id=$1::uuid AND payment_method=$2 AND details->>'request_id'=$3 AND details=$4::jsonb",[row.id,method,requestId,JSON.stringify(details)]);if(previous.length)return previous[0];if(method==='TRON_USDT')throw new ApiError('TRANSACTION_ALREADY_SUBMITTED',409);throw new ApiError('CATALOG_CHANGED',409);
 }

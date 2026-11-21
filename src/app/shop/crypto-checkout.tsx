@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import {digitalOnly} from './digital-data';
 import BuyerOrderForm from "./buyer-order-form";
 import QRCode from "qrcode";
 import { useLanguage } from "../language-context";
@@ -53,7 +54,7 @@ export default function CryptoCheckout({ product, shop, onClose, orderDetails = 
     <p className="my-3 text-sm">{t(storeSlug?"Submitting a TxID records a pending order. Payment must be verified before fulfillment.":"Optional receipt only. The seller must verify the transfer on-chain before fulfilling the order.")}</p>
     {escrowReady&&payment&&shop.phone.replace(/\D/g,"")&&<a href={"https://wa.me/"+shop.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(receipt)} target="_blank" rel="noopener noreferrer" className="mt-3 block rounded-lg bg-emerald-700 px-4 py-3 text-center font-semibold text-white">{t("Send Payment Receipt on WhatsApp")}</a>}
     {!shop.phone.replace(/\D/g,"")&&<p className="my-3">{t("Seller WhatsApp number is unavailable.")}</p>}
-    {storeSlug&&escrowReady&&<BuyerOrderForm slug={storeSlug} coin={coin} network={network} txid={txid} items={orderItems}/>}
+    {storeSlug&&escrowReady&&<BuyerOrderForm digitalOnly={digitalOnly((orderItems.length?orderItems:[{id:product.id,quantity:1}]).map(item=>({product:shop.products.find(p=>p.id===item.id)||product,quantity:item.quantity})))} slug={storeSlug} coin={coin} network={network} txid={txid} items={orderItems}/>}
     <p role="status" className="mt-3">{status&&t(status)}</p>
   </dialog>;
 }
