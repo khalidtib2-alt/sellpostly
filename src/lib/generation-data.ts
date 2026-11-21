@@ -1,6 +1,7 @@
+import type {GenerationDiagnostic} from './generation-diagnostics';
 import {unbrandedQuery} from '../app/shop/unbranded-query';
 export type CopyInput={title:string;description:string;category:string;language:'en'|'fr'|'ar';destination:'personal'|'affiliate';goal:'product'|'bio'|'script'|'visual'};
-export type CopyResult={description:string;highlights:string[];caption:string;bio:string;script:string;prompt:string;source:'gemini'|'local'};
+export type CopyResult={diagnostic?:GenerationDiagnostic;description:string;highlights:string[];caption:string;bio:string;script:string;prompt:string;source:'gemini'|'local'};
 export function copyInput(raw:unknown):CopyInput{
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('INVALID_INPUT');const v=raw as Record<string,unknown>;
  const clean=(key:string,max:number)=>typeof v[key]==='string'?(v[key] as string).replace(/https?:\/\/\S+/gi,'').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'').trim().slice(0,max):'';

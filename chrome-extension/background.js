@@ -18,14 +18,14 @@ function prepareProduct(value){
  if(amazonImageBlocked)image="";
  return {targetShopId:typeof value.targetShopId==='string'&&/^[0-9a-f-]{36}$/i.test(value.targetShopId)?value.targetShopId:undefined,amazonImageBlocked,unbrandedQuery:SellPostlyUnbrandedQuery(title,category,value.gender),destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
 }
-async function sendProduct(value){
+async function sendProduct(value,studio=false){
  const product=prepareProduct(value),base=await SellPostlyFrontend.resolve();
- const tab=await chrome.tabs.create({url:new URL("/shop",base).href});if(!tab.id)throw Error("TAB_UNAVAILABLE");
+ const path=studio?'/studio':'/shop';const tab=await chrome.tabs.create({url:new URL(path,base).href});if(!tab.id)throw Error("TAB_UNAVAILABLE");
  for(let attempt=0;attempt<30;attempt++){
   try{
-   const result=await chrome.scripting.executeScript({target:{tabId:tab.id},args:[product,base],func:(item,origin)=>{
-    if(location.origin!==origin||location.pathname!=="/shop")return false;
-    try{localStorage.setItem("sellpostly_pending_shop_item",JSON.stringify(item));window.postMessage({type:"SELLPOSTLY_PRODUCT_IMPORT",product:item},origin);return true;}catch{return false;}
+   const result=await chrome.scripting.executeScript({target:{tabId:tab.id},args:[product,base,studio],func:(item,origin,studio)=>{
+    if(location.origin!==origin||location.pathname!==(studio?"/studio":"/shop"))return false;
+    try{localStorage.setItem(studio?"sellpostly_pending_studio_item":"sellpostly_pending_shop_item",JSON.stringify(item));window.postMessage({type:studio?"SELLPOSTLY_STUDIO_IMPORT":"SELLPOSTLY_PRODUCT_IMPORT",product:item},origin);return true;}catch{return false;}
    }});
    if(result?.[0]?.result===true)return;
   }catch{}
@@ -53,8 +53,8 @@ chrome.runtime.onMessage.addListener((message,sender,respond)=>{
  syncShopDestinations().then(shops=>respond({ok:true,shops})).catch(()=>respond({ok:false}));return true;
 });
 chrome.runtime.onMessage.addListener((message,sender,respond)=>{
- if(message?.type!=="SELLPOSTLY_SEND_TO_SHOP")return false;
+ if(!["SELLPOSTLY_SEND_TO_SHOP","SELLPOSTLY_OPEN_STUDIO"].includes(message?.type))return false;
  if(sender.id!==chrome.runtime.id){respond({ok:false,error:"INVALID_SENDER"});return false;}
- sendProduct(message.product).then(()=>respond({ok:true})).catch(()=>respond({ok:false,error:"SHOP_IMPORT_FAILED"}));return true;
+ sendProduct(message.product,message.type==="SELLPOSTLY_OPEN_STUDIO").then(()=>respond({ok:true})).catch(()=>respond({ok:false,error:"SHOP_IMPORT_FAILED"}));return true;
 });
 

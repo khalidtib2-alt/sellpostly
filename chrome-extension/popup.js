@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 const messages = {
+"Import failed. Open a product page and try again.":{"fr":"Importation impossible. Ouvrez une fiche produit et réessayez.","ar":"تعذّر الاستيراد. افتح صفحة المنتج وحاول مجدداً."},
 "Active Shop":{"fr":"Boutique active","ar":"المتجر النشط"},
 "Primary Personal Store":{"fr":"Boutique personnelle principale","ar":"المتجر الشخصي الأساسي"},
 "Primary Affiliate Deals Shop":{"fr":"Boutique affiliée principale","ar":"متجر العروض بالعمولة الأساسي"},
@@ -200,10 +201,7 @@ const messages = {
     "fr": "Autre",
     "ar": "أخرى"
   },
-  "Open Full Studio": {
-    "fr": "Ouvrir le studio complet",
-    "ar": "فتح الاستوديو الكامل"
-  },
+  "Open in Studio First": {"fr":"Ouvrir d’abord dans le studio","ar":"فتح في الاستوديو أولاً"},
   "Website": {
     "fr": "Site web",
     "ar": "Ø§Ù„Ù…ÙˆÙ‚Ø¹"
@@ -739,26 +737,7 @@ async function sendPost(platform,post,withImage) {
 
 
 
-document.querySelector("#open-studio").addEventListener("click",async()=>{
-  const form=document.querySelector("#seller");
-  const data=new FormData(form);
-  const preview=document.querySelector("#imported-image");
-  let link="";
-  try {
-    const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
-    if(/^https?:/.test(tab?.url||""))link=tab.url;
-  }catch{}
-  const base=await globalThis.SellPostlyFrontend.resolve();
-  const query=new URLSearchParams({
-    title:String(data.get("name")||""),
-    price:String(data.get("price")||""),
-    delivery:String(data.get("delivery")||""),
-    features:String(data.get("features")||""),
-    image:preview&&!preview.hidden?(preview.dataset.shopImage?new URL(preview.dataset.shopImage,base).href:preview.src):"",
-    link
-  });
-  chrome.tabs.create({url:base+"/?"+query+"#formatter"});
-});
+document.querySelector('#open-studio').addEventListener('click',async()=>{const data=new FormData(document.querySelector('#seller')),preview=document.querySelector('#imported-image');try{const [tab]=await chrome.tabs.query({active:true,currentWindow:true});const result=await chrome.runtime.sendMessage({type:'SELLPOSTLY_OPEN_STUDIO',product:{title:String(data.get('name')||''),price:String(data.get('price')||''),description:String(data.get('features')||''),url:tab?.url||'',image:preview.dataset.rawImage||preview.dataset.shopImage||preview.getAttribute('src')||'',destination:String(data.get('destination')||'affiliate'),targetShopId:exactShopTarget()?.id,category:String(data.get('category')||'Top Deals'),gender:String(data.get('gender')||'unisex')}});if(!result?.ok)throw Error();}catch{setSendStatus('Import failed. Open a product page and try again.');}});
 
 
 
