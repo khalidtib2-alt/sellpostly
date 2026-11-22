@@ -10,9 +10,9 @@ export default function AffiliateImageEditor({title,category,autoMatch=false,gen
  const {t}=useLanguage(),identity=extractProductIdentity(override||title,category),links=imageSearchLinks(override||title,category),query=unbrandedQuery(override||title,category,gender);
  const [photos,setPhotos]=useState<StockPhoto[]>(()=>localPhotos(query)),[busy,setBusy]=useState(false),[error,setError]=useState(false);
  const callback=useRef(onPhoto);callback.current=onPhoto;const previousQuery=useRef(query),latestImage=useRef(customImage);latestImage.current=customImage;
- const custom=!!customImage&&!isLocalStock(customImage)&&!stockPhoto&&!isAmazonCdnImage(customImage)&&!isStudioCover(customImage)&&!customImage.startsWith('/demo-products/');
+ const custom=!!customImage&&!isLocalStock(customImage)&&!stockPhoto&&!isStudioCover(customImage)&&!customImage.startsWith('/demo-products/');
  useEffect(()=>{
-  if(!autoMatch){setPhotos(localPhotos(query));setBusy(false);return;}
+  if(!autoMatch||custom){setPhotos(localPhotos(query));setBusy(false);return;}
   const controller=new AbortController(),queryChanged=previousQuery.current!==query;previousQuery.current=query;setBusy(true);setError(false);
   resolvePhotos(query,controller.signal).then(async choices=>{if(controller.signal.aborted)return;setPhotos(choices);
    if(!custom&&choices[0]&&(!stockPhoto||queryChanged)){try{const p=await selectStock(choices[0],query);if(!controller.signal.aborted)callback.current?.(p);}catch{if(!controller.signal.aborted){setPhotos(localPhotos(query));callback.current?.(localPhotos(query)[0]);}}}

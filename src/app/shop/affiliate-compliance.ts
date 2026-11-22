@@ -9,16 +9,11 @@ export function studioCategoryImage(category:string){
  return '/demo-products/'+file+'.svg';
 }
 export function affiliateImage(value:string,category:string,title='',selected?:VisualNiche,gender='unisex',destination='',amazonImageBlocked=false){
- if(!amazonImageBlocked&&!isAmazonDestination(destination)&&!isAmazonCdnImage(value))return value;
- const expected=footwearSubtype(unbrandedQuery(title,category,gender)),local=localPhoto(value);
- if(expected&&local&&local.footwearSubtype!==expected)return defaultStock(title,category,gender).url;
- if(expected==='sneakers'&&local&&unbrandedQuery(title,category,gender).startsWith('kids ')&&!local.audiences?.includes('kids'))return defaultStock(title,category,gender).url;
- const oldStudio=/^\/demo-products\/(headphones|backpack|organizer|bottle|studio-product)\.svg$/.test(value);
- if(!value||isAmazonCdnImage(value)||oldStudio||isStudioCover(value))return defaultStock(title,category,gender).url;
- return value;
+ // Imported photos are seller-controlled. Only missing photos receive a default.
+ return value||defaultStock(title,category,gender).url;
 }
 export function amazonAffiliateProduct(p:{url?:string;image?:string;images?:string[];amazonImageBlocked?:boolean}){return isAmazonDestination(p.url||'')||isAmazonCdnImage(p.image||'')||!!p.images?.some(isAmazonCdnImage)||p.amazonImageBlocked===true;}
-export const amazonImageNotice='Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep a representative style photo.';
+export const amazonImageNotice="Amazon Associates Notice: Verify image usage rights or replace with your own/studio photo before publishing";
 export const disclosurePresets=[
  {label:'Multi-Network Default',text:'Disclosure: This storefront contains affiliate links across multiple partner programs. If you click a link and make a purchase, I may earn a commission at no extra cost to you.'},
  {label:'Amazon + Multi-Network',text:'As an Amazon Associate and affiliate partner, I earn from qualifying purchases. Links on this page may earn a commission at no extra cost to you.'},

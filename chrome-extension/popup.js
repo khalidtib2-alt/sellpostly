@@ -1,6 +1,10 @@
 ﻿"use strict";
 
 const messages = {
+"Amazon Associates Notice: Verify image usage rights or replace with your own/studio photo before publishing":{"fr": "Avis Amazon Associates : vérifiez les droits d’utilisation de l’image ou remplacez-la par votre propre photo ou une photo de studio avant publication.", "ar": "تنبيه Amazon Associates: تحقّق من حقوق استخدام الصورة أو استبدلها بصورتك الخاصة أو صورة استوديو قبل النشر."},
+"Product Image URL":{"fr": "URL de la photo du produit", "ar": "رابط صورة المنتج"},
+"Price on this page":{"fr": "Prix affiché sur cette page", "ar": "السعر المعروض في هذه الصفحة"},
+
 "Import failed. Open a product page and try again.":{"fr":"Importation impossible. Ouvrez une fiche produit et réessayez.","ar":"تعذّر الاستيراد. افتح صفحة المنتج وحاول مجدداً."},
 "Active Shop":{"fr":"Boutique active","ar":"المتجر النشط"},
 "Primary Personal Store":{"fr":"Boutique personnelle principale","ar":"المتجر الشخصي الأساسي"},
@@ -593,63 +597,19 @@ async function importCurrentProduct(preserveEdits=false) {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id || !/^https?:/.test(tab.url || "")) throw Error();
-    const [execution] = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => {
-        const text = (selector) => {
-          const element = document.querySelector(selector);
-          return (element?.getAttribute("content") || element?.textContent || "").replace(/\s+/g, " ").trim();
-        };
-        function findProduct(value, depth = 0) {
-          if (!value || typeof value !== "object" || depth > 12) return;
-          if (Array.isArray(value)) {
-            for (const child of value) { const found = findProduct(child, depth + 1); if (found) return found; }
-          } else {
-            if ([value["@type"]].flat().includes("Product")) return value;
-            for (const child of Object.values(value)) { const found = findProduct(child, depth + 1); if (found) return found; }
-          }
-        }
-        let product;
-        for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
-          try { product = findProduct(JSON.parse(script.textContent)); if (product) break; } catch {}
-        }
-
-        const offer = [product?.offers].flat()[0];
-        const schemaPrice = offer?.price ?? offer?.lowPrice;
-        let price = schemaPrice != null ? String(schemaPrice) + " " + (offer.priceCurrency || "") : "";
-        for (const selector of ['[itemprop="price"]', ".a-price .a-offscreen", ".price-item", '[data-testid*="price"]']) {
-          if (!price) price = text(selector);
-        }
-        if (!price) {
-          const pattern = /(?:[$â‚¬Â£]|MAD|AED|SAR)\s*\d[\d.,]*(?:\s*\d{3})*(?:[.,]\d{2})?/i;
-          for (const element of [...document.querySelectorAll("span,p,strong,b")].slice(0,6000)) {
-            if (!element.getClientRects().length || getComputedStyle(element).visibility === "hidden") continue;
-            const value = (element.textContent || "").trim();
-            if (value.length > 100) continue;
-            const match = value.match(pattern);
-            if (match) { price = match[0]; break; }
-          }
-        }
-        const bullets = [...document.querySelectorAll("#feature-bullets li")].map(item => item.textContent.replace(/\s+/g," ").trim()).filter(Boolean);
-        const description = bullets.length ? bullets : [
-          text('[data-testid*="description"]') || text(".product__description") ||
-          text('meta[property="og:description"]') || text('meta[name="description"]')
-        ];
-        const image = document.querySelector('meta[property="og:image"]')?.content ||
-          document.querySelector("#landingImage, .product__media img, [itemprop=image]")?.src || "";
-        return {
-          name: (text('meta[property="og:title"]') || text("#productTitle") || text("h1")).slice(0,120),
-          price: price.trim().slice(0,35),
-          features: description.filter(Boolean).flatMap(line=>line.split(/(?<=[.!?])\s+/)).filter(line=>!/^about this item$/i.test(line) && !/our wide selection|free shipping and free returns|buy .+ at amazon\.com/i.test(line)).slice(0,4).join("\n").slice(0,1200),
-          image: (()=>{if(!image)return "";try{const url=new URL(image,location.href);return /^https?:$/.test(url.protocol)?url.href:"";}catch{return "";}})()
-        };
-      }
-    });
+    await chrome.scripting.executeScript({target:{tabId:tab.id},files:['product-reader.js']});
+    const [execution] = await chrome.scripting.executeScript({target:{tabId:tab.id},func:async()=>{
+      let value=globalThis.SellPostlyProductReader.read();
+      for(let i=0;i<2&&(!value.price||!value.image);i++){await new Promise(resolve=>setTimeout(resolve,350));const next=globalThis.SellPostlyProductReader.read();value={...value,...Object.fromEntries(Object.entries(next).filter(([,v])=>v!==''))};}
+      return value;
+    }});
     const product = execution?.result;
+    const selectedImage=document.querySelector("#product-image-url")?.value?.trim();if(preserveEdits&&selectedImage&&product)product.image=selectedImage;
     if (!product?.name) throw Error();
     const form = document.querySelector("#seller");
     for (const key of ["name", "price", "features"]) {const field=form.elements.namedItem(key);if(!preserveEdits||!field.value.trim())field.value = product[key] || "";}
     const preview = document.querySelector("#imported-image");
+    preview.dataset.sourceUrl=tab.url;document.querySelector("#product-image-url").value=product.image||"";
     preview.hidden = !product.image;
     preview.onerror = () => { preview.hidden = true; };
     if(product.image){preview.dataset.rawImage=product.image;refreshAffiliateImageGuard();}
@@ -779,9 +739,10 @@ destinationPicker.addEventListener('change',()=>{try{localStorage.setItem('sellp
 function refreshAffiliateImageGuard(){
  const form=document.querySelector('#seller'),preview=document.querySelector('#imported-image'),notice=document.querySelector('#affiliate-image-notice');
  const source=preview.dataset.rawImage||preview.getAttribute('src')||'',affiliate=form.elements.namedItem('destination').value==='affiliate';
- const blocked=affiliate&&SellPostlyAffiliate.isImage(source);notice.hidden=!blocked;
- if(blocked){preview.dataset.shopImage='';preview.removeAttribute('src');preview.hidden=true;notice.textContent=t('Amazon image blocked. My Shop will match a representative photo automatically.');}
- else{delete preview.dataset.shopImage;if(preview.dataset.rawImage){preview.src=preview.dataset.rawImage;preview.hidden=false;}}
+ const blocked=false;notice.hidden=!SellPostlyAffiliate.isAmazon(preview.dataset.sourceUrl||'');notice.textContent=t('Amazon Associates Notice: Verify image usage rights or replace with your own/studio photo before publishing');
+ delete preview.dataset.shopImage;
+ if(source){preview.src=source;preview.hidden=false;}else{preview.removeAttribute('src');preview.hidden=true;}
+
 }
 for(const name of ['destination','category'])document.querySelector('#seller').elements.namedItem(name).addEventListener('change',refreshAffiliateImageGuard);
 
@@ -801,3 +762,5 @@ document.querySelector('#exact-shop').addEventListener('change',refreshExactShop
 destinationPicker.addEventListener('change',()=>{document.querySelector('#exact-shop').value='';refreshExactShop();});
 document.querySelector('#sync-shops').addEventListener('click',async()=>{const button=document.querySelector('#sync-shops');button.disabled=true;try{const result=await chrome.runtime.sendMessage({type:'SELLPOSTLY_SYNC_SHOPS'});if(!result?.ok)throw Error();renderSyncedShops(result.shops);feedback.textContent=t('Shops synced. Choose your import destination.');}catch{feedback.textContent=t('Sign in to My Shop on the website, then sync again.');}finally{button.disabled=false;}});
 chrome.storage.local.get(['sellpostlyShops','sellpostlyShopsOrigin']).then(async saved=>{const base=await SellPostlyFrontend.resolve();if(saved.sellpostlyShopsOrigin===base)renderSyncedShops(saved.sellpostlyShops);}).catch(()=>{});
+
+document.querySelector('#product-image-url').addEventListener('input',event=>{const preview=document.querySelector('#imported-image');try{const url=new URL(event.target.value);preview.dataset.rawImage=/^https?:$/.test(url.protocol)?url.href:'';}catch{preview.dataset.rawImage='';}refreshAffiliateImageGuard();});

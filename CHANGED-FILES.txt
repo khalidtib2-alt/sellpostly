@@ -1,0 +1,23 @@
+src/app/translations.ts
+src/lib/shop-handoff.ts
+src/app/studio/studio-workspace.tsx
+src/app/shop/affiliate-image-editor.tsx
+src/app/shop/shop-data.ts
+src/app/shop/shop-builder.tsx
+src/app/shop/affiliate-compliance.ts
+src/app/api/import/route.ts
+src/app/api/import-product/route.ts
+tests/amazon-scope.test.ts
+tests/storefront-templates.test.ts
+tests/affiliate-guardrails.test.ts
+tests/gemini-generation.test.ts
+tests/media-tools.test.ts
+tests/multi-shop.test.ts
+tests/extension-clean-bridge.test.ts
+tests/clean-import-api.test.ts
+tests/product-reader.test.ts
+tests/seller-workspace.test.ts
+tests/product-identity.test.ts
+package.json
+package-lock.json
+chrome-extension/ (complete version 1.0.8)

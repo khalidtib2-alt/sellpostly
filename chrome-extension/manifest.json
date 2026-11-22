@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SellPostly",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Format seller listings and creator posts locally.",
   "permissions": [
     "activeTab",

@@ -34,13 +34,13 @@ test('ten safe covers are full-bleed SVG scenes, auto-selected and independently
  assert.equal(visualNiches.length,10);
  for(const niche of visualNiches){const path=studioCover(niche),svg=await readFile('public'+path,'utf8');assert.match(svg,/viewBox="0 0 1200 900"/);assert.match(svg,/<linearGradient/);assert.match(svg,/feDropShadow/);assert.ok(!/<script|foreignObject|href=|<text/i.test(svg));assert.equal(safeImage(path),path);}
  const raw={shopMode:'affiliate',products:[{id:'sony',url:'https://amazon.com/dp/B012345678',name:'Sony WH-1000XM5 Wireless Headphones',category:'Tech & Gadgets',image:'https://m.media-amazon.com/photo.jpg'}]};
- const auto=validateShop(raw);assert.equal(auto.products[0].image,defaultStock('wireless headphones').url);
+ const auto=validateShop(raw);assert.equal(auto.products[0].image,raw.products[0].image);
  const empty=validateShop({...raw,products:[{...raw.products[0],image:''}]});assert.equal(empty.products[0].image,defaultStock('wireless headphones').url);
- const manual=validateShop({...raw,products:[{...raw.products[0],editorialCover:'camera'}]});assert.equal(manual.products[0].image,defaultStock('wireless headphones').url);assert.equal((await decodeShop(await encodeShop(manual))).products[0].editorialCover,'camera');
+ const manual=validateShop({...raw,products:[{...raw.products[0],editorialCover:'camera'}]});assert.equal(manual.products[0].image,raw.products[0].image);assert.equal((await decodeShop(await encodeShop(manual))).products[0].editorialCover,'camera');
  const photo=validateShop({...raw,products:[{...raw.products[0],image:'https://press.example/authorized.jpg'}]});assert.equal(photo.products[0].image,'https://press.example/authorized.jpg');
  const personal=validateShop({...raw,refundPolicy:'7_day',deliveryTimeframe:'Delivery within 2-3 business days',shopMode:'personal',products:[{...raw.products[0],image:''}]});assert.equal(personal.products[0].image,'');
- assert.equal(affiliateImage('https://images-amazon.com/a.jpg','Other','Canon EOS R6 Mark II'),defaultStock('office technology').url);assert.equal(safeImage('/studio-covers/../../unsafe.svg'),'');
- const corrected=validateShop({...raw,products:[{...raw.products[0],identityOverride:'Garmin Forerunner 265'}]});assert.equal(corrected.products[0].image,defaultStock('smartwatch').url);
+ assert.equal(affiliateImage('https://images-amazon.com/a.jpg','Other','Canon EOS R6 Mark II'),'https://images-amazon.com/a.jpg');assert.equal(safeImage('/studio-covers/../../unsafe.svg'),'');
+ const corrected=validateShop({...raw,products:[{...raw.products[0],identityOverride:'Garmin Forerunner 265'}]});assert.equal(corrected.products[0].image,raw.products[0].image);
 });
 test('editor renders all cover controls and image-source links with translated helper copy',()=>{
  for(const key of ['Detected:','Find Identical Compliant Image','Official Brand Media Kit','Free Licensed Photos (Unsplash)','Auto-select Cover','Editorial illustration','Upload Custom Photo'] as const){assert.ok(translations[key].fr);assert.match(translations[key].ar,/[\u0600-\u06ff]/);}

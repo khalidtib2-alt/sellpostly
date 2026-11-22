@@ -74,6 +74,9 @@ function productIn(value: unknown, depth=0): RecordValue | undefined {
     for (const child of Object.values(record)) { const found=productIn(child,depth+1); if(found) return found; }
   }
 }
+async function publicImageReference(value:string,base:string){
+ try{const url=new URL(value,base),host=url.hostname.replace(/^\[|\]$/g,'');if(!['http:','https:'].includes(url.protocol)||url.username||url.password||(url.port&&!['80','443'].includes(url.port)))return '';const addresses=await Promise.race([lookup(host,{all:true}),new Promise<never>((_,reject)=>{const timer=setTimeout(()=>reject(Error('DNS timeout')),4000);timer.unref();})]);return addresses.length&&addresses.every(a=>publicAddress(a.address))?url.href:'';}catch{return '';}
+}
 export async function POST(request: Request) {
   try {
     if (Number(request.headers.get("content-length")) > 5000) throw Error("Too large");
@@ -95,7 +98,7 @@ export async function POST(request: Request) {
         const product=homepage ? payload.products?.[0] : payload.product;
         if(!product || typeof product.title!=="string" || !product.title.trim())throw Error("No product");
         const imageUrl=product.image?.src || product.images?.[0]?.src;
-        let image="";
+        let image=typeof imageUrl==="string"?await publicImageReference(imageUrl,response.url):"";
         if(typeof imageUrl==="string") {
           try {const asset=await download(new URL(imageUrl,response.url).href,true);image="data:"+asset.type+";base64,"+asset.bytes.toString("base64");} catch {}
         }
@@ -122,7 +125,7 @@ export async function POST(request: Request) {
     const offer=([product?.offers].flat()[0]??{}) as RecordValue;
     const imageValue=([product?.image].flat()[0]);
     const image=clean(typeof imageValue==="object" && imageValue ? (imageValue as RecordValue).url : imageValue) || meta["og:image"];
-    let imageData="";
+    let imageData=image?await publicImageReference(image,page.url):"";
     if(image) {
       try {
         const result=await download(new URL(image,page.url).href,true);
@@ -131,7 +134,7 @@ export async function POST(request: Request) {
     }
     const name=clean(product?.name)||meta["og:title"]||"";
     if(!name) throw Error("No product details");
-    return Response.json({name,description:featureBullets || descriptionLines(product?.description||meta["og:description"]||meta.description||""),price:clean(offer.price??offer.lowPrice),currency:clean(offer.priceCurrency),image:imageData},{headers:{"Cache-Control":"no-store"}});
+    return Response.json({name,description:featureBullets || descriptionLines(product?.description||meta["og:description"]||meta.description||""),price:clean(offer.price??offer.lowPrice)||meta["product:price:amount"]||meta["og:price:amount"]||"",currency:clean(offer.priceCurrency)||meta["product:price:currency"]||meta["og:price:currency"]||"",image:imageData},{headers:{"Cache-Control":"no-store"}});
   } catch {
     return Response.json({error:"IMPORT_FAILED"},{status:400});
   }

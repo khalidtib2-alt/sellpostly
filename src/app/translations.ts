@@ -1,4 +1,8 @@
 export const translations = {
+"Amazon Associates Notice: Verify image usage rights or replace with your own/studio photo before publishing":{"fr": "Avis Amazon Associates : vérifiez les droits d’utilisation de l’image ou remplacez-la par votre propre photo ou une photo de studio avant publication.", "ar": "تنبيه Amazon Associates: تحقّق من حقوق استخدام الصورة أو استبدلها بصورتك الخاصة أو صورة استوديو قبل النشر."},
+"Product Image URL":{"fr": "URL de la photo du produit", "ar": "رابط صورة المنتج"},
+"Price on this page":{"fr": "Prix affiché sur cette page", "ar": "السعر المعروض في هذه الصفحة"},
+
 "Enter a shop name, a valid URL slug and a niche name.":{"fr":"Saisissez un nom de boutique, un identifiant URL valide et un nom de spécialité.","ar":"أدخل اسم المتجر ومعرّف رابط صالحاً واسم التخصص."},
 "This license is linked to another store account. Sign in to that account or use another license.":{"fr":"Cette licence est liée à un autre compte. Connectez-vous à ce compte ou utilisez une autre licence.","ar":"هذا الترخيص مرتبط بحساب متجر آخر. سجّل الدخول إلى ذلك الحساب أو استخدم ترخيصاً آخر."},
 "The database needs an update. Ask the administrator to run database initialization.":{"fr":"La base de données doit être mise à jour. Demandez à l’administrateur de lancer son initialisation.","ar":"تحتاج قاعدة البيانات إلى تحديث. اطلب من المسؤول تشغيل تهيئة قاعدة البيانات."},
