@@ -30,11 +30,11 @@ test('writer route rejects cross-site/invalid inputs and reports missing key wit
  const result=await POST(make(base));assert.equal(result.status,503);const data=await result.json();assert.equal(data.error,'NOT_CONFIGURED');assert.equal(data.text,undefined);assert.equal(data.source,undefined);
  assert.throws(()=>writingInput({...base,action:'write',prompt:''}));assert.throws(()=>writingInput({...base,contentType:'product'}));
  assert.throws(()=>writingInput({...base,action:'write',prompt:'x'.repeat(6001)}),/INPUT_TOO_LARGE/);
- const input=writingInput({...base,price:'45',image:'private',description:'commerce'});assert.deepEqual(Object.keys(input).sort(),['action','topic','prompt','contentType','language'].sort());
+ const input=writingInput({...base,price:'45',image:'private',description:'commerce'});assert.deepEqual(Object.keys(input).sort(),['action','topic','prompt','contentType','language','tone','length','humanitarian','humanitarianNote'].sort());
  }finally{if(old!==undefined)process.env.GEMINI_API_KEY=old;}
 });
 test('simple creator UI has two editable steps and copy/Markdown export with translated statuses',async()=>{
- const source=await readFile('src/app/generation/gemini-writer-panel.tsx','utf8');assert.match(source,/\/api\/ai\/write/);assert.match(source,/new Blob/);assert.match(source,/text\/markdown/);assert.match(source,/navigator.clipboard.writeText/);assert.doesNotMatch(source,/readShopList|localCopy|requestCopy|Verified Product|Saved Product|price|category/);assert.equal((source.match(/<textarea/g)||[]).length,2);
+ const source=await readFile('src/app/generation/gemini-writer-panel.tsx','utf8');assert.match(source,/\/api\/ai\/write/);assert.match(source,/new Blob/);assert.match(await readFile('src/lib/creator-workspace.ts','utf8'),/text\/markdown/);assert.match(source,/navigator.clipboard.writeText/);assert.doesNotMatch(source,/readShopList|localCopy|requestCopy|Verified Product|Saved Product|price|category/);assert.equal((source.match(/<textarea/g)||[]).length,2);
  for(const key of Object.values(writingMessages)){const entry=translations[key];assert.ok(entry.fr,key);assert.match(entry.ar,/[\u0600-\u06ff]/,key);}
  const page=await readFile('src/app/prompt-generator/prompt-form.tsx','utf8');assert.doesNotMatch(page,/<textarea|<input|goals =|targetPreset/);assert.match(page,/GeminiWriterPanel/);
 });

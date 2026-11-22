@@ -27,3 +27,5 @@ tests/creator-writing.test.ts
 src/lib/gemini.ts
 src/app/generation/copy-assistant.tsx
 tests/gemini-transport.test.ts
+src/lib/creator-workspace.ts
+tests/creator-workspace.test.ts
