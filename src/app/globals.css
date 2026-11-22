@@ -176,3 +176,10 @@ nav a[aria-current='page'] {border-radius:.35rem;text-decoration:underline;text-
 @media(prefers-reduced-motion:reduce){[data-clickable='true']{transition:none;}}
 
 .product-card-image {background-color:#e2e8f0;}
+
+/* Reference prices remain distinct from live merchant offers. */
+.store-product-offer {display:flex;flex-direction:column;gap:.35rem;min-width:0;}
+.store-offer-row {display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .5rem;min-width:0;}
+.store-live-price {display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:999px;padding:.2rem .5rem;font-size:.65rem;font-weight:650;line-height:1.4;color:var(--accent-text);background:var(--muted);text-decoration:none;}
+.store-live-price:hover {border-color:var(--accent);text-decoration:underline;}
+.store-deal-tag {align-self:flex-start;max-width:100%;overflow-wrap:anywhere;border-radius:.4rem;background:var(--muted);color:var(--secondary);font-size:.7rem;line-height:1.4;padding:.2rem .45rem;}

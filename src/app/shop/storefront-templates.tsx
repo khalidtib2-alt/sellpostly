@@ -1,4 +1,5 @@
 "use client";
+import ProductPrice from './product-price';
 import PromoVideoModal from './promo-video-modal';
 import {promoVideo} from './promo-video';
 import {stockMetadata} from './stock-photos';
@@ -40,7 +41,7 @@ export function StorefrontProducts({shop,products,slug,snapshot,onAdd,onPay,onCo
     {affiliate&&stockPhoto&&<div className="store-photo-credit"><a href={stockPhoto.pageUrl} target="_blank" rel="noopener noreferrer">{t('Photo credit')}: {stockPhoto.photographer==='Pexels contributor'?t('Pexels contributor'):stockPhoto.photographer} / {stockPhoto.provider}</a></div>}
     <p className="store-eyebrow">{categories.includes(p.category as typeof categories[number])?t(p.category as Message):p.category}{affiliate&&p.source?' · '+p.source:''}</p>
     <h3 className="line-clamp-2">{affiliate?(p.id.startsWith('sample-')?title(p):identity.confidence==='matched'?identity.coreName:title(p)):<a href={productPath(p.id,slug,snapshot)}>{title(p)}</a>}</h3>
-    {!restricted&&p.price&&<div className="store-price-slot"><p className="store-card-price">{p.price}{p.compareAtPrice&&<del>{p.compareAtPrice}</del>}</p></div>}
+    <ProductPrice product={p} mode={shop.shopMode}/>
     {affiliate?<ul className="store-highlights">{highlights.slice(0,1).map((line,i)=><li key={i}><Check size={15}/><span className="line-clamp-1">{line}</span></li>)}</ul>:<><p className="store-card-description line-clamp-1">{highlights[0]||p.description}</p>{p.stock!==undefined&&<p className="store-stock">{soldOut?t('Sold Out'):p.stock+' '+t('available')}</p>}</>}
     <div className="store-card-actions">
      {affiliate?<div className="store-primary-action">{safeUrl(p.url)&&<a className="store-buy-button" href={safeUrl(p.url)} target="_blank" rel="nofollow sponsored noopener noreferrer">{t(amazon?'Check Price on Amazon':'View Best Deal')}<ArrowUpRight size={18}/></a>}</div>:<><div className="store-personal-actions"><button type="button" disabled={soldOut} className="store-buy-button" onClick={()=>addProduct(p,1)} aria-live="polite" data-state={added===p.id?'saved':undefined}>{added===p.id?<Check size={16}/>:<ShoppingBag size={16}/>} {t(added===p.id?'Added to Cart':'Add to Cart')}</button><a className="store-detail-link" href={productPath(p.id,slug,snapshot)}>{t('View Product')}<ArrowRight size={16}/></a></div><div className="store-payment-links"><button type="button" disabled={soldOut} onClick={()=>onPay(p,1)}>{t('Payment Options')}</button>{shop.escrowEnabled!==false&&<button type="button" disabled={soldOut} onClick={()=>onPay(p,1)}>{t('Pay with USDC')}</button>}{shop.codEnabled!==false&&<button type="button" disabled={soldOut} onClick={()=>onCod(p,1)}>{t('Cash on Delivery (COD)')}</button>}</div></>}

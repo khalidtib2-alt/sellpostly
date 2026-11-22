@@ -1,4 +1,11 @@
 export const translations = {
+"Check Live Price":{"fr": "Voir le prix actuel", "ar": "تحقق من السعر الحالي"},
+"Reference Price":{"fr": "Prix indicatif", "ar": "السعر المرجعي"},
+"Prices and offers may change. Confirm the current price at the merchant.":{"fr": "Les prix et offres peuvent changer. Vérifiez le prix actuel chez le marchand.", "ar": "قد تتغير الأسعار والعروض. تحقق من السعر الحالي لدى المتجر."},
+"Original Price (Optional)":{"fr": "Prix d’origine (facultatif)", "ar": "السعر الأصلي (اختياري)"},
+"Deal / Rating Badge (Optional)":{"fr": "Offre / Note (facultatif)", "ar": "شارة العرض / التقييم (اختيارية)"},
+"Flash Deal • 4.6★ or 9.4K+ Sold":{"fr": "Offre flash • 4,6★ ou 9,4 k+ vendus", "ar": "عرض سريع • 4.6★ أو أكثر من 9.4 آلاف مبيع"},
+
 "Tone":{"fr": "Ton", "ar": "النبرة"},
 "Professional":{"fr": "Professionnel", "ar": "احترافية"},
 "Casual":{"fr": "Décontracté", "ar": "ودّية"},
