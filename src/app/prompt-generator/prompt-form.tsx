@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "../language-context";
+import GeminiWriterPanel from '../generation/gemini-writer-panel';
 import { ContentPage } from "../site-shell";
 import type { Message } from "../translations";
 import { useState, type FormEvent } from "react";
@@ -39,6 +40,7 @@ const inputClass = "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3
 
 export default function PromptForm() {
   const { t } = useLanguage();
+  const [writerKeyword,setWriterKeyword]=useState('');
   const [targetPreset, setTargetPreset] = useState("0");
   const [request, setRequest] = useState<{ goal: Goal; topic: string; selection: string; custom: string }>();
   const [status, setStatus] = useState<Message | "">("");
@@ -76,7 +78,7 @@ export default function PromptForm() {
   return <ContentPage title={t("AI Prompt Generator")} intro={t("Build a prompt for product descriptions, short videos, ad hooks, or content planning. Copy it into ChatGPT, Claude, or Gemini.")}><div className="grid gap-5">
     <form onSubmit={generate} className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50 p-5">
       <label className="font-semibold">{t("Keyword or Product/Topic")}
-        <input name="topic" className={inputClass} dir="auto" placeholder={t("Wireless headphones")} maxLength={300} required />
+        <input onChange={e=>setWriterKeyword(e.target.value)} name="topic" className={inputClass} dir="auto" placeholder={t("Wireless headphones")} maxLength={300} required />
       </label>
       <label className="font-semibold">{t("Goal")}
         <select name="goal" className={inputClass}>
@@ -102,5 +104,5 @@ export default function PromptForm() {
       <button type="button" onClick={copy} className="mt-3 rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white">{t("Copy Prompt")}</button>
     </section>}
     <p role="status" className="text-sm text-emerald-800">{status && t(status)}</p>
-  </div></ContentPage>;
+  </div><GeminiWriterPanel initialKeyword={writerKeyword}/></ContentPage>;
 }

@@ -1,4 +1,14 @@
 export const translations = {
+"The requested text model is unavailable for this Google project. Check model access.":{"fr":"Le modèle de texte demandé est indisponible pour ce projet Google. Vérifiez les accès au modèle.","ar":"نموذج النص المطلوب غير متاح لهذا المشروع في Google. تحقق من صلاحيات الوصول إلى النموذج."},
+"Gemini Writer Panel":{"fr": "Assistant de rédaction Gemini", "ar": "لوحة الكتابة باستخدام Gemini"},
+"Create an editable AI prompt and ready-to-post caption or video script without leaving this page.":{"fr": "Créez une consigne IA modifiable et une légende ou un script vidéo prêt à publier sans quitter cette page.", "ar": "أنشئ توجيهاً قابلاً للتعديل ونص منشور أو سيناريو فيديو جاهزاً للنشر دون مغادرة الصفحة."},
+"Keywords / Product Topic":{"fr": "Mots-clés / Sujet du produit", "ar": "الكلمات المفتاحية / موضوع المنتج"},
+"Or Pick a Saved Product":{"fr": "Ou choisissez un produit enregistré", "ar": "أو اختر منتجاً محفوظاً"},
+"Write from keywords":{"fr": "Rédiger à partir de mots-clés", "ar": "الكتابة انطلاقاً من كلمات مفتاحية"},
+"Generate Prompt & Content":{"fr": "Générer la consigne et le contenu", "ar": "إنشاء التوجيه والمحتوى"},
+"Editable AI Prompt":{"fr": "Consigne IA modifiable", "ar": "توجيه ذكاء اصطناعي قابل للتعديل"},
+"Use in Post Formatter":{"fr": "Utiliser dans le formateur de publications", "ar": "استخدامه في منسّق المنشورات"},
+
 "Amazon Associates Notice: Verify image usage rights or replace with your own/studio photo before publishing":{"fr": "Avis Amazon Associates : vérifiez les droits d’utilisation de l’image ou remplacez-la par votre propre photo ou une photo de studio avant publication.", "ar": "تنبيه Amazon Associates: تحقّق من حقوق استخدام الصورة أو استبدلها بصورتك الخاصة أو صورة استوديو قبل النشر."},
 "Product Image URL":{"fr": "URL de la photo du produit", "ar": "رابط صورة المنتج"},
 "Price on this page":{"fr": "Prix affiché sur cette page", "ar": "السعر المعروض في هذه الصفحة"},

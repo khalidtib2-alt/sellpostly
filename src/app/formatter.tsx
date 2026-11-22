@@ -8,6 +8,7 @@ import {studioImportKey} from '../lib/studio-handoff';
 import { useLanguage } from "./language-context";
 import type { Message } from "./translations";
 import CopyAssistant from './generation/copy-assistant';
+import GeminiWriterPanel from './generation/gemini-writer-panel';
 import type {CopyResult} from '../lib/generation-data';
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
@@ -286,7 +287,7 @@ export default function Formatter() {
         setDraft({name:String(data.get("name")||""),price:[data.get("price"),data.get("currency")].filter(Boolean).join(" ")});
       }} key={mode} onSubmit={generate} className="mt-6 grid gap-4 text-sm font-medium sm:grid-cols-2">
         {mode === "seller" ? <>
-          <label>{t("Product Name")}<input className={fieldStyle} name="name" dir="auto" placeholder={t("Wireless headphones")} required maxLength={120} /></label><div className="sm:col-span-2"><CopyAssistant getInput={()=>({title:String(new FormData(formRef.current!).get("name")||""),description:String(new FormData(formRef.current!).get("features")||""),destination:"personal"})} onGenerated={applyGeneratedCopy}/></div><label className="sm:col-span-2">{t("Generated Product Description")}<textarea name="description" maxLength={2000} rows={3} className={fieldStyle}/></label>
+          <label>{t("Product Name")}<input className={fieldStyle} name="name" dir="auto" placeholder={t("Wireless headphones")} required maxLength={120} /></label><div className="sm:col-span-2"><CopyAssistant getInput={()=>({title:String(new FormData(formRef.current!).get("name")||""),price:String(new FormData(formRef.current!).get("price")||""),description:String(new FormData(formRef.current!).get("features")||""),destination:"personal"})} onGenerated={applyGeneratedCopy}/></div><label className="sm:col-span-2">{t("Generated Product Description")}<textarea name="description" maxLength={2000} rows={3} className={fieldStyle}/></label>
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <label>{t("Price")}<input className={fieldStyle} name="price" dir="auto" placeholder="29" inputMode="decimal" maxLength={30} /></label>
             <label>{t("Currency")}<select className={fieldStyle} name="currency" value={currency} onChange={e=>setCurrency(e.target.value)}>{Array.from(new Set([currency, "USD", "CAD", "EUR", "GBP", "AUD", "MAD", "INR", "NGN", "MXN"])).map(currency => <option key={currency}>{currency}</option>)}</select></label>
@@ -300,6 +301,8 @@ export default function Formatter() {
           {error && <p role="alert" className="mt-2 text-red-700">{t(error)}</p>}
         </div>
       </form>
+      {mode==='creator'&&<GeminiWriterPanel onUse={text=>{const hook=formRef.current?.elements.namedItem('hook') as HTMLTextAreaElement|null;if(hook){hook.value=text;hook.dispatchEvent(new Event('input',{bubbles:true}));}}}/>}
+
 
       {mode==="seller"&&proActive&&draft.name.trim()&&<div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-white p-4"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">Pro</span><button type="button" disabled={sendingShop||busy} onClick={sendToShop} className="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white disabled:opacity-50">{t(sendingShop?"Sending to My Shop…":"Send to My Shop")}</button></div>}
       {shopFeedback&&<p role="status" className="mt-3 text-sm text-slate-700">{t(shopFeedback)}</p>}

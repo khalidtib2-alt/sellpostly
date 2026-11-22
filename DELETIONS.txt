@@ -1,0 +1,2 @@
+src/app/api/tools/generate-product-image/route.ts
+src/app/generation/product-image-generator.tsx

@@ -1,39 +1,25 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {POST as copyRoute} from '../src/app/api/tools/generate-copy/route';
-import {POST as imageRoute} from '../src/app/api/tools/generate-product-image/route';
-import {copyInput,localCopy} from '../src/lib/generation-data';
-import {geminiEndpoints} from '../src/lib/gemini-endpoints';
-const png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==';
-function request(kind:string,id:string,language='en'){
- return new Request('https://sellpostly.example/api/tools/'+kind,{method:'POST',headers:{'Content-Type':'application/json',origin:'https://sellpostly.example','x-real-ip':id},body:JSON.stringify({title:'Black headphones',description:'Rounded ear cups',language})});
-}
-test('both public routes send the full fixed v1beta URL, trimmed AQ./legacy key header and correct request modalities',async()=>{
- const oldKey=process.env.GEMINI_API_KEY,oldFetch=globalThis.fetch;
- try{for(const key of ['AQ.SYNTHETIC_ENDPOINT_TEST','AIzaSYNTHETIC_ENDPOINT_TEST']){
-  process.env.GEMINI_API_KEY=' \n'+key+'\t ';const urls:string[]=[];
-  globalThis.fetch=async(url,options)=>{
-   const target=String(url),parsed=new URL(target),body=JSON.parse(String(options?.body));urls.push(target);
-   assert.equal(parsed.origin,'https://generativelanguage.googleapis.com');assert.equal(parsed.search,'');
-   assert.ok(parsed.pathname.startsWith('/v1beta/models/'));assert.equal((options!.headers as Record<string,string>)['x-goog-api-key'],key);assert.equal(options!.method,'POST');assert.ok(!target.includes(key));
-   if(url===geminiEndpoints.copy){assert.equal(target,'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent');assert.equal(body.generationConfig.responseMimeType,'application/json');return Response.json({candidates:[{content:{parts:[{text:JSON.stringify(localCopy(copyInput({title:'Headphones'})))}]}}]});}
-   assert.equal(target,'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent');assert.deepEqual(body.generationConfig.responseModalities,['TEXT','IMAGE']);assert.equal(body.generationConfig.imageConfig.aspectRatio,'4:3');assert.deepEqual(Object.keys(body.contents[0].parts[0]),['text']);return Response.json({candidates:[{content:{parts:[{inlineData:{mimeType:'image/png',data:png}}]}}]});
-  };
-  const copy=await copyRoute(request('generate-copy','endpoint-copy-'+key));assert.equal(copy.status,200);assert.equal((await copy.json()).source,'gemini');
-  const image=await imageRoute(request('generate-product-image','endpoint-image-'+key));assert.equal(image.status,200);assert.equal((await image.json()).available,true);assert.deepEqual(urls,[geminiEndpoints.copy,geminiEndpoints.image]);
- }}finally{globalThis.fetch=oldFetch;if(oldKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=oldKey;}
+import {POST as canonical} from '../src/app/api/ai/generate-copy/route';
+import {POST as legacy} from '../src/app/api/tools/generate-copy/route';
+import {copyInput,localCopy,requestCopy} from '../src/lib/generation-data';
+import {readFile,access} from 'node:fs/promises';
+import {translations} from '../src/app/translations';
+const input=copyInput({title:'Headphones',price:'75 USD',category:'Audio',description:'Wireless connection',goal:'content'});
+function req(id:string,language='en'){return new Request('https://site.example/api/ai/generate-copy',{method:'POST',headers:{origin:'https://site.example','x-real-ip':id},body:JSON.stringify({...input,language})});}
+test('canonical and compatibility endpoints use full text model URL and trimmed header-only AQ./legacy keys',async()=>{
+ const old=process.env.GEMINI_API_KEY,original=globalThis.fetch;try{for(const key of ['AQ.SYNTHETIC','AIzaSYNTHETIC']){process.env.GEMINI_API_KEY='  '+key+'  ';let calls=0;globalThis.fetch=async(url,options)=>{calls++;assert.equal(String(url),'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent');assert.equal((options!.headers as any)['x-goog-api-key'],key);const body=JSON.parse(String(options!.body));assert.equal(body.generationConfig.responseMimeType,'application/json');assert.equal(body.generationConfig.responseModalities,undefined);const supplied=JSON.parse(body.contents[0].parts[0].text);assert.equal(supplied.price,'75 USD');assert.equal(supplied.category,'Audio');return Response.json({candidates:[{content:{parts:[{text:JSON.stringify({...localCopy(input),prompt:'A polished reusable text brief'})}]}}]});};for(const route of [canonical,legacy]){const response=await route(req(key+calls));assert.equal(response.status,200);assert.equal(response.headers.get('Cache-Control'),'no-store');const result=await response.json();assert.equal(result.source,'gemini');assert.equal(result.prompt,'A polished reusable text brief');}assert.equal(calls,2);}}finally{globalThis.fetch=original;if(old===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=old;}
 });
-test('image quota/billing failures return localized safe diagnostics and prompts while copy generation continues independently',async()=>{
- const oldKey=process.env.GEMINI_API_KEY,oldFetch=globalThis.fetch;process.env.GEMINI_API_KEY='AQ.NEVER_RETURN_THIS_KEY';
- try{for(const language of ['en','fr','ar'] as const){for(const kind of ['QUOTA','BILLING'] as const){let imageCalls=0;
-  globalThis.fetch=async(url)=>{if(String(url)===geminiEndpoints.image){imageCalls++;return Response.json({error:{message:(kind==='QUOTA'?'Quota exceeded':'Billing required')+' AQ.NEVER_RETURN_THIS_KEY private provider details'}},{status:kind==='QUOTA'?429:403});}assert.equal(url,geminiEndpoints.copy);return Response.json({candidates:[{content:{parts:[{text:JSON.stringify(localCopy(copyInput({title:'Headphones',language})))}]}}]});};
-  const response=await imageRoute(request('generate-product-image','error-'+language+kind,language)),data=await response.json();assert.equal(response.status,200);assert.equal(data.available,false);assert.equal(data.diagnostic.code,kind);assert.equal(data.diagnostic.status,kind==='QUOTA'?429:403);assert.ok(data.diagnostic.message);assert.ok(data.prompt);assert.equal(imageCalls,1);assert.doesNotMatch(JSON.stringify(data),/NEVER_RETURN_THIS_KEY|private provider details/);if(language==='ar'){assert.match(data.diagnostic.message,/[\u0600-\u06ff]/);assert.match(data.prompt,/[\u0600-\u06ff]/);}if(language==='fr')assert.match(data.diagnostic.message,/Google|Quota/);
-  const copy=await copyRoute(request('generate-copy','copy-after-'+language+kind,language));assert.equal((await copy.json()).source,'gemini');
- }}}finally{globalThis.fetch=oldFetch;if(oldKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=oldKey;}
+test('missing key and upstream failures return localized usable text without exposing secrets',async()=>{
+ const old=process.env.GEMINI_API_KEY,original=globalThis.fetch;try{delete process.env.GEMINI_API_KEY;globalThis.fetch=async()=>{throw Error('No upstream calls allowed');};for(const language of ['en','fr','ar']){const data=await (await canonical(req('missing-'+language,language))).json();assert.equal(data.source,'local');assert.equal(data.highlights.length,3);assert.ok(data.caption.includes('75 USD'));assert.ok(data.prompt);if(language==='ar')assert.match(data.prompt,/[\u0600-\u06ff]/);}
+ process.env.GEMINI_API_KEY='AQ.SECRET';for(const [status,message,code] of [[429,'quota private project AQ.SECRET','QUOTA'],[403,'billing required AQ.SECRET','BILLING'],[401,'secret','AUTH']] as const){globalThis.fetch=async()=>Response.json({error:{message}},{status});const data=await (await canonical(req('failure-'+code,'ar'))).json();assert.equal(data.source,'local');assert.equal(data.diagnostic.code,code);assert.match(data.diagnostic.message,/[\u0600-\u06ff]/);assert.doesNotMatch(JSON.stringify(data),/private project|AQ.SECRET/);}}finally{globalThis.fetch=original;if(old===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=old;}
 });
-test('copy quota and empty upstream authentication errors keep useful fallback data without leaking Google response text',async()=>{
- const oldKey=process.env.GEMINI_API_KEY,oldFetch=globalThis.fetch;process.env.GEMINI_API_KEY='AQ.SYNTHETIC';
- try{globalThis.fetch=async()=>Response.json({error:{message:'quota private project ID'}},{status:429});const data=await (await copyRoute(request('generate-copy','copy-safe-fallback','ar'))).json();assert.equal(data.source,'local');assert.equal(data.highlights.length,3);assert.equal(data.diagnostic.code,'QUOTA');assert.match(data.diagnostic.message,/[\u0600-\u06ff]/);assert.doesNotMatch(JSON.stringify(data),/private project ID|AQ\.SYNTHETIC/);
-  globalThis.fetch=async()=>new Response(null,{status:401});const image=await (await imageRoute(request('generate-product-image','empty-auth'))).json();assert.equal(image.diagnostic.code,'AUTH');assert.equal(image.diagnostic.status,401);assert.ok(image.prompt);
- }finally{globalThis.fetch=oldFetch;if(oldKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=oldKey;}
+test('client forwards bounded text facts to canonical route and falls back when offline',async()=>{
+ const clean=copyInput({...input,title:'  Headphones  ',image:'data:image/png;base64,PRIVATE',price:'x'.repeat(200),tone:'Friendly',goal:'script'});assert.equal(clean.price?.length,80);assert.equal((clean as any).image,undefined);assert.equal(clean.title,'Headphones');let path='';const result=await requestCopy(clean,async(url,options)=>{path=String(url);assert.equal(JSON.parse(String(options!.body)).tone,'Friendly');return Response.json(localCopy(clean));});assert.equal(path,'/api/ai/generate-copy');assert.equal(result.highlights.length,3);assert.equal((await requestCopy(clean,async()=>{throw Error('offline');})).source,'local');
+});
+test('writer stays inline, supports saved products, editable prompt and caption, and all labels are localized',async()=>{
+ const source=await readFile('src/app/generation/gemini-writer-panel.tsx','utf8');assert.match(source,/readShopList/);assert.match(source,/result.prompt/);assert.match(source,/result.caption/);assert.match(source,/navigator.clipboard.writeText/);assert.doesNotMatch(source,/location.href|window.open/);for(const key of ['Gemini Writer Panel','Keywords / Product Topic','Or Pick a Saved Product','Write from keywords','Generate Prompt & Content','Editable AI Prompt','Use in Post Formatter'] as const){assert.ok(translations[key].fr);assert.match(translations[key].ar,/[\u0600-\u06ff]/);}for(const path of ['src/app/formatter.tsx','src/app/prompt-generator/prompt-form.tsx'])assert.match(await readFile(path,'utf8'),/GeminiWriterPanel/);
+});
+test('image-generation entry points are absent and real photo editors remain',async()=>{
+ await assert.rejects(access('src/app/api/tools/generate-product-image/route.ts'));await assert.rejects(access('src/app/generation/product-image-generator.tsx'));for(const path of ['src/app/shop/shop-builder.tsx','src/app/studio/studio-workspace.tsx'])assert.doesNotMatch(await readFile(path,'utf8'),/ProductImageGenerator/);const studio=await readFile('src/app/studio/studio-workspace.tsx','utf8');assert.match(studio,/ImageStudio/);assert.match(studio,/VideoSocial/);assert.match(studio,/PromoImageStudio/);
 });
