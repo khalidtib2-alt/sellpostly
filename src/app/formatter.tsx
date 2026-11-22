@@ -281,7 +281,7 @@ export default function Formatter() {
         <button type="button" onClick={sample} className="ms-2 mt-2 rounded-lg border border-emerald-700 px-4 py-2 text-emerald-800">{t("Try Sample Product")}</button>
         <p role="status">{importStatus && (language === "en" && importStatus === "Import failed. The store may block access. Enter the details manually." ? "Stores such as Amazon may block server requests. While viewing the product, use the SellPostly Chrome Extension’s Import From Current Page button, or enter details manually." : t(importStatus))}</p>
       </div>}
-      <form ref={formRef} onChange={event=>{
+      {mode==='seller'&&<form ref={formRef} onChange={event=>{
         const data=new FormData(event.currentTarget);
         setDelivery(String(data.get("delivery")||""));
         setDraft({name:String(data.get("name")||""),price:[data.get("price"),data.get("currency")].filter(Boolean).join(" ")});
@@ -300,17 +300,17 @@ export default function Formatter() {
           <button className="rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white" type="submit">{t("Generate Posts")}</button>
           {error && <p role="alert" className="mt-2 text-red-700">{t(error)}</p>}
         </div>
-      </form>
-      {mode==='creator'&&<GeminiWriterPanel onUse={text=>{const hook=formRef.current?.elements.namedItem('hook') as HTMLTextAreaElement|null;if(hook){hook.value=text;hook.dispatchEvent(new Event('input',{bubbles:true}));}}}/>}
+      </form>}
+      {mode==='creator'&&<GeminiWriterPanel/>}
 
 
       {mode==="seller"&&proActive&&draft.name.trim()&&<div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-white p-4"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">Pro</span><button type="button" disabled={sendingShop||busy} onClick={sendToShop} className="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white disabled:opacity-50">{t(sendingShop?"Sending to My Shop…":"Send to My Shop")}</button></div>}
       {shopFeedback&&<p role="status" className="mt-3 text-sm text-slate-700">{t(shopFeedback)}</p>}
       {mode==='seller'&&<section className="my-6 flex flex-wrap items-center gap-4 rounded-xl border p-5"><label className="rounded-lg bg-emerald-700 px-4 py-3 font-semibold text-white">{t('Upload Product Photo')}<input id="upload-product-photo" className="sr-only" type="file" accept="image/png,image/jpeg,image/webp" onChange={event=>{const file=event.target.files?.[0];if(!file||file.size>5000000)return;const reader=new FileReader();reader.onload=()=>setImage(String(reader.result));reader.readAsDataURL(file);}}/></label><button type="button" className="rounded-lg border px-4 py-3 font-semibold" onClick={openStudio}>{t('Edit in Creator Studio')}</button>{image&&<img src={image} alt={draft.name} className="h-24 w-24 rounded-lg object-contain"/>}</section>}
       <p role="status" className="sr-only">{posts.length ? posts.length + " · " + t("Posts generated.") : ""}</p>
-      {posts.length > 0 && <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4"><h3 className="font-semibold">{t("AI Hashtags")}</h3><p className="mt-1 text-xs text-slate-600">{t("Keyword-based suggestions to refine with your AI prompt. No AI service is called.")}</p><p className="mt-2" dir="auto">{Array.from(new Set((mode==="seller"?draft.name:results.hook).normalize("NFKC").split(/[^\p{L}\p{N}]+/u).filter(word=>word.length>2).slice(0,6).map(word=>"#"+word))).join(" ")}</p></section>}
-      {posts.length > 0 && <h3 className="mt-6 text-xl font-bold">{t("Social Preview")} · {t("Multi-Platform Send")}</h3>}
-      {posts.length > 0 && <div className="mt-4 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} image={promo} />)}</div>}
+      {mode==='seller'&&posts.length > 0 && <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4"><h3 className="font-semibold">{t("AI Hashtags")}</h3><p className="mt-1 text-xs text-slate-600">{t("Keyword-based suggestions to refine with your AI prompt. No AI service is called.")}</p><p className="mt-2" dir="auto">{Array.from(new Set((mode==="seller"?draft.name:results.hook).normalize("NFKC").split(/[^\p{L}\p{N}]+/u).filter(word=>word.length>2).slice(0,6).map(word=>"#"+word))).join(" ")}</p></section>}
+      {mode==='seller'&&posts.length > 0 && <h3 className="mt-6 text-xl font-bold">{t("Social Preview")} · {t("Multi-Platform Send")}</h3>}
+      {mode==='seller'&&posts.length > 0 && <div className="mt-4 grid gap-4 sm:grid-cols-2">{posts.map(post => <PostCard key={language + results.version + post.platform} post={post} image={promo} />)}</div>}
     </div>
   );
 }

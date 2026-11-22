@@ -18,3 +18,9 @@ tests/gemini-generation.test.ts
 tests/gemini-endpoint-routes.test.ts
 tests/seller-workspace.test.ts
 tests/clean-import-api.test.ts
+src/lib/creator-writing.ts
+src/lib/gemini-writer.ts
+src/lib/generation-route.ts
+src/app/api/ai/write/route.ts
+src/app/prompt-generator/page.tsx
+tests/creator-writing.test.ts
