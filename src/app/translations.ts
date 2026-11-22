@@ -1,4 +1,5 @@
 export const translations = {
+"Google Model Attempts":{"fr":"Tentatives par modèle Google","ar":"محاولات نماذج Google"},
 "Content Creator":{"fr": "Créateur de contenu", "ar": "منشئ المحتوى"},
 "Keywords to prompt to finished content. Write, edit and export in one place.":{"fr": "Des mots-clés à la consigne, puis au contenu final. Rédigez, modifiez et exportez au même endroit.", "ar": "من الكلمات المفتاحية إلى التوجيه ثم المحتوى النهائي. اكتب وعدّل وصدّر في مكان واحد."},
 "Keywords / Topic":{"fr": "Mots-clés / Sujet", "ar": "الكلمات المفتاحية / الموضوع"},

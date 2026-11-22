@@ -7,9 +7,9 @@ import {POST} from '../src/app/api/ai/write/route';
 import {translations} from '../src/app/translations';
 const base={action:'prompt',topic:'Small apartment routines',contentType:'article',language:'en'};
 const response=(text:string)=>Response.json({candidates:[{finishReason:'STOP',content:{parts:[{text}]}}]});
-test('writer uses full Google endpoint, header-only trimmed key, and Flash-Lite on model unavailability',async()=>{
- const old=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='  AQ.TEST_ONLY  ';try{let calls=0;
- const result=await writeWithGemini(writingInput(base),async(url,options)=>{calls++;assert.equal((options!.headers as any)['x-goog-api-key'],'AQ.TEST_ONLY');assert.equal(String(url),`https://generativelanguage.googleapis.com/v1beta/models/${calls===1?'gemini-2.5-flash':'gemini-2.5-flash-lite'}:generateContent`);const body=JSON.parse(String(options!.body));assert.equal(body.contents[0].parts[0].text,base.topic);assert.equal(body.generationConfig.responseMimeType,undefined);return calls===1?Response.json({error:{message:'Model not found'}},{status:404}):response('A structured writing prompt');});assert.equal(result.model,'gemini-2.5-flash-lite');assert.equal(result.text,'A structured writing prompt');assert.equal(calls,2);
+test('writer uses full Google endpoint, quoted key cleaning, and model failover on model unavailability',async()=>{
+ const old=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='  \"AQ.TEST_ONLY\"  ';try{let calls=0;
+ const result=await writeWithGemini(writingInput(base),async(url,options)=>{calls++;assert.equal(new URL(String(url)).searchParams.get('key'),'AQ.TEST_ONLY');assert.equal(String(url),`https://generativelanguage.googleapis.com/v1beta/models/${calls===1?'gemini-2.5-flash':'gemini-3.8-flash'}:generateContent?key=AQ.TEST_ONLY`);const body=JSON.parse(String(options!.body));assert.equal(body.contents[0].parts[0].text,base.topic);assert.deepEqual(Object.keys(body).sort(),['contents','systemInstruction']);return calls===1?Response.json({error:{message:'Model not found'}},{status:404}):response('A structured writing prompt');});assert.equal(result.model,'gemini-3.8-flash');assert.equal(result.text,'A structured writing prompt');assert.equal(calls,2);
  }finally{if(old===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=old;}
 });
 test('edited prompt reaches Gemini unchanged for every content type and language',async()=>{

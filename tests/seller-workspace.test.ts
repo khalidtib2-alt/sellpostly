@@ -11,7 +11,7 @@ import {renameShop} from '../src/lib/shop-slug';
 import {translations} from '../src/app/translations';
 const png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==';
 test('copy diagnostics keep fallback useful and never echo provider secrets',async()=>{
- const old=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='AQ.SECRET_TEST';try{for(const [status,message,code] of [[429,'quota AQ.SECRET_TEST','QUOTA'],[403,'billing required AQ.SECRET_TEST','BILLING'],[401,'invalid key AQ.SECRET_TEST','AUTH']] as const){let calls=0;const copy=await generateCopy(copyInput({title:'Product'}),async()=>{calls++;return Response.json({error:{message}},{status});});assert.equal(copy.source,'local');assert.equal(copy.diagnostic?.code,code);assert.equal(calls,1);assert.doesNotMatch(JSON.stringify(copy),/SECRET_TEST/);}}finally{if(old===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=old;}
+ const old=process.env.GEMINI_API_KEY;process.env.GEMINI_API_KEY='AQ.SECRET_TEST';try{for(const [status,message,code] of [[429,'quota AQ.SECRET_TEST','QUOTA'],[403,'billing required AQ.SECRET_TEST','BILLING'],[401,'invalid key AQ.SECRET_TEST','AUTH']] as const){let calls=0;const copy=await generateCopy(copyInput({title:'Product'}),async()=>{calls++;return Response.json({error:{message}},{status});});assert.equal(copy.source,'local');assert.equal(copy.diagnostic?.code,code);assert.equal(calls,status===429?4:1);assert.doesNotMatch(JSON.stringify(copy),/SECRET_TEST/);}}finally{if(old===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=old;}
 });
 
 test('all four crop corners keep the opposite anchor, image bounds and preset aspect ratio',()=>{

@@ -5,17 +5,18 @@ import {writingMessages,type WritingErrorCode} from '../../lib/creator-writing';
 export default function GeminiWriterPanel(){
  const {t,language,setLanguage}=useLanguage();
  const [topic,setTopic]=useState(''),[contentType,setContentType]=useState('article'),[prompt,setPrompt]=useState(''),[content,setContent]=useState(''),[busy,setBusy]=useState<''|'prompt'|'write'>(''),[notice,setNotice]=useState<WritingErrorCode|''>(''),[copied,setCopied]=useState('');
+ const [providerError,setProviderError]=useState<{status:number;message:string;attempts?:{model:string;status:number;message:string}[]}|null>(null);
  const task=useRef(0),controller=useRef<AbortController|null>(null);
- useEffect(()=>{task.current++;controller.current?.abort();setBusy('');setPrompt('');setContent('');setNotice('');setCopied('');},[language]);
+ useEffect(()=>{task.current++;controller.current?.abort();setBusy('');setPrompt('');setContent('');setNotice('');setProviderError(null);setCopied('');},[language]);
  useEffect(()=>()=>{task.current++;controller.current?.abort();},[]);
- function reset(){task.current++;controller.current?.abort();setBusy('');setPrompt('');setContent('');setNotice('');setCopied('');}
+ function reset(){task.current++;controller.current?.abort();setBusy('');setPrompt('');setContent('');setNotice('');setProviderError(null);setCopied('');}
  async function generate(action:'prompt'|'write'){
   if(action==='prompt'&&!topic.trim()||action==='write'&&!prompt.trim())return;
   const version=++task.current;controller.current?.abort();controller.current=new AbortController();
-  setBusy(action);setNotice('');setCopied('');if(action==='prompt'){setPrompt('');setContent('');}else setContent('');
+  setBusy(action);setNotice('');setProviderError(null);setCopied('');if(action==='prompt'){setPrompt('');setContent('');}else setContent('');
   try{const response=await fetch('/api/ai/write',{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.current.signal,body:JSON.stringify({action,topic,contentType,language,...(action==='write'?{prompt}:{})})});
    const data=await response.json();if(version!==task.current)return;
-   if(!response.ok){setNotice(data.error in writingMessages?data.error:'UNAVAILABLE');return;}
+   if(!response.ok){if(data.provider==='google'&&typeof data.message==='string')setProviderError({status:response.status,message:data.message,attempts:data.attempts});else setNotice(data.error in writingMessages?data.error:'UNAVAILABLE');return;}
    if(data.source!=='gemini'||typeof data.text!=='string'||!data.text.trim()){setNotice('UNAVAILABLE');return;}
    if(action==='prompt')setPrompt(data.text);else setContent(data.text);
   }catch{if(version===task.current)setNotice('UNAVAILABLE');}finally{if(version===task.current)setBusy('');}
@@ -31,7 +32,8 @@ export default function GeminiWriterPanel(){
   </div>
   <button type="button" className={button} disabled={!!busy||!topic.trim()} aria-busy={busy==='prompt'} onClick={()=>generate('prompt')}>{t(busy==='prompt'?'Generating…':'Generate Prompt')}</button>
   <p className="text-sm text-slate-600">{t('Gemini writes from your topic and edited prompt. No template content is substituted.')}</p>
-  <p role="status" aria-live="polite" className="text-sm text-amber-900">{notice&&t(writingMessages[notice])}</p>
+  <p role="status" aria-live="polite" className="text-sm text-amber-900">{providerError?<span dir="auto">HTTP {providerError.status}: {providerError.message}</span>:notice&&t(writingMessages[notice])}</p>
+  {providerError?.attempts&&providerError.attempts.length>1&&<details className="rounded-lg border border-amber-200 p-3 text-sm"><summary className="cursor-pointer font-semibold">{t('Google Model Attempts')}</summary><ul className="mt-2 space-y-2">{providerError.attempts.map((attempt,index)=><li key={index} dir="auto"><strong>{attempt.model}</strong> — HTTP {attempt.status}: {attempt.message}</li>)}</ul></details>}
   <div className="space-y-3"><label className="block font-semibold">{t('Step 1 — Writing Prompt')}<textarea className={field} rows={9} dir="auto" value={prompt} maxLength={6000} disabled={!!busy} placeholder={t('Your editable writing prompt will appear here.')} onChange={e=>{setPrompt(e.target.value);setContent('');setCopied('');}}/></label>
    <button type="button" className="rounded-lg border border-slate-300 px-4 py-2 font-semibold disabled:opacity-50" disabled={!prompt.trim()||!!busy} onClick={()=>copy('prompt')}>{t(copied==='prompt'?'Copied!':'Copy Prompt')}</button>
   </div>

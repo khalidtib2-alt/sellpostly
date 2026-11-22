@@ -24,3 +24,6 @@ src/lib/generation-route.ts
 src/app/api/ai/write/route.ts
 src/app/prompt-generator/page.tsx
 tests/creator-writing.test.ts
+src/lib/gemini.ts
+src/app/generation/copy-assistant.tsx
+tests/gemini-transport.test.ts
