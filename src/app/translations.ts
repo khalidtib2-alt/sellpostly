@@ -1,4 +1,18 @@
 export const translations = {
+"Manage Categories":{"fr": "Gérer les catégories", "ar": "إدارة الفئات"},
+"New Category":{"fr": "Nouvelle catégorie", "ar": "فئة جديدة"},
+"Add Category":{"fr": "Ajouter la catégorie", "ar": "إضافة فئة"},
+"Empty categories remain available here and are hidden from shoppers.":{"fr": "Les catégories vides restent disponibles ici et sont masquées aux visiteurs.", "ar": "تبقى الفئات الفارغة متاحة هنا وتُخفى عن المتسوقين."},
+"This category already exists.":{"fr": "Cette catégorie existe déjà.", "ar": "هذه الفئة موجودة بالفعل."},
+"Category added.":{"fr": "Catégorie ajoutée.", "ar": "تمت إضافة الفئة."},
+"Enter a category name.":{"fr": "Saisissez un nom de catégorie.", "ar": "أدخل اسم الفئة."},
+"Category limit reached.":{"fr": "Limite de catégories atteinte.", "ar": "تم بلوغ الحد الأقصى للفئات."},
+"Export Catalog JSON":{"fr": "Exporter le catalogue JSON", "ar": "تصدير الكتالوج بصيغة JSON"},
+"Copy Catalog JSON":{"fr": "Copier le catalogue JSON", "ar": "نسخ كتالوج JSON"},
+"Download Catalog JSON":{"fr": "Télécharger le catalogue JSON", "ar": "تنزيل كتالوج JSON"},
+"Copy failed. Download the JSON file instead.":{"fr": "La copie a échoué. Téléchargez le fichier JSON.", "ar": "تعذر النسخ. نزّل ملف JSON بدلاً من ذلك."},
+"Export products and categories for your own defaults. Private digital delivery notes and download links are excluded.":{"fr": "Exportez les produits et catégories pour vos valeurs par défaut. Les notes et liens de livraison numérique privés sont exclus.", "ar": "صدّر المنتجات والفئات لاستخدامها كبيانات افتراضية. تُستثنى ملاحظات التسليم الرقمي وروابط التنزيل الخاصة."},
+
 "Check Live Price":{"fr": "Voir le prix actuel", "ar": "تحقق من السعر الحالي"},
 "Reference Price":{"fr": "Prix indicatif", "ar": "السعر المرجعي"},
 "Prices and offers may change. Confirm the current price at the merchant.":{"fr": "Les prix et offres peuvent changer. Vérifiez le prix actuel chez le marchand.", "ar": "قد تتغير الأسعار والعروض. تحقق من السعر الحالي لدى المتجر."},

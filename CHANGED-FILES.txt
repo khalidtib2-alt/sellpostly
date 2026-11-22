@@ -1,9 +1,7 @@
-src/app/globals.css
+src/app/shop/category-data.ts
+src/app/shop/category-manager.tsx
 src/app/shop/shop-data.ts
 src/app/shop/shop-builder.tsx
-src/app/shop/storefront-templates.tsx
-src/app/shop/product-price.tsx
+src/app/shop/catalog-modes.ts
 src/app/translations.ts
-src/lib/shop-handoff.ts
-tests/live-deals.test.ts
-tests/storefront-polish.test.ts
+tests/category-system.test.ts
