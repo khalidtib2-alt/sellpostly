@@ -93,7 +93,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
             if(response.ok){const settings=await response.json();setTier(settings.tier==='pro'?'pro':'free');
  const server:Shop[]=Array.isArray(settings.shops)?settings.shops.map(validateShop):[];
  for(const mode of ['affiliate','personal'] as const){if(!server.some(s=>s.storeMode!=='niche'&&s.shopMode===mode)){const catalog=settings[mode+'_catalog'];const draft=localStorage.getItem(modeCatalogKey(mode));server.push(validateShop(catalog|| (draft?JSON.parse(draft):{name:initial.name,bio:'',products:[],shopMode:mode})));}}
- const list=server.map(target=>{const draft=localStorage.getItem(shopDraftKey(target));return draft?validateShop({...JSON.parse(draft),shopId:target.shopId,customSlug:target.customSlug,storeMode:target.storeMode,shopMode:target.shopMode,escrowHoldDays:target.escrowHoldDays,mainStoreSlug:target.mainStoreSlug}):target;});
+ const list=server.map(target=>{const draft=localStorage.getItem(shopDraftKey(target))||(saved&&target.storeMode!=='niche'&&target.shopMode===initial.shopMode?saved:null);return draft?validateShop({...JSON.parse(draft),shopId:target.shopId,customSlug:target.customSlug,storeMode:target.storeMode,shopMode:target.shopMode,escrowHoldDays:target.escrowHoldDays,mainStoreSlug:target.mainStoreSlug}):target;});
  localStorage.setItem(shopListKey,JSON.stringify(list));setShops(list);
  const active=params.get('mode')?list.find(s=>s.storeMode!=='niche'&&s.shopMode===params.get('mode')):list.find(s=>shopSelection(s)===(localStorage.getItem(activeShopKey)||shopSelection(initial)));
  if(active)initial=active;else if(initial.storeMode==='niche'||!saved)initial=list.find(s=>s.storeMode!=='niche'&&s.shopMode===initial.shopMode)||list[0]||initial;
