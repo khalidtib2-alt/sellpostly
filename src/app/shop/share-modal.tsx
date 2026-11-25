@@ -1,7 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import {useLanguage} from '../language-context';
-import SocialIcon,{type SocialIconName} from './lookbook-social-icon';
+import SocialIcon,{type SocialIconName} from './social-brand-icon';
 import {socialShareLinks} from './share-links';
 export default function ShareModal({url,title,product=false,onClose}:{url:string;title:string;product?:boolean;onClose:()=>void}){
  const {t}=useLanguage(),dialog=useRef<HTMLDialogElement>(null),[copied,setCopied]=useState(false),[error,setError]=useState(false);

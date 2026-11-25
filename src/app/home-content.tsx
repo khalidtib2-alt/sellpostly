@@ -3,6 +3,8 @@
 import { useLanguage } from "./language-context";
 import LocalizedSeo from './localized-seo';
 import UserGuide from './user-guide';
+import SocialShareBar from './shop/social-share-bar';
+import {productShareUrl} from './shop/product-links';
 import HomeShowcase from './home-showcase';
 import {ArrowRight,Sparkles} from 'lucide-react';
 import Formatter from "./formatter";
@@ -19,6 +21,7 @@ export default function HomeContent() {
           ['Social Commerce Agencies','Manage separate niche catalogs and prepare channel-ready content in one workspace.']
         ] as const).map(([title,description])=><article key={title} className="rounded-2xl border bg-white p-6"><h3 className="text-lg font-bold">{t(title)}</h3><p className="mt-3 text-sm leading-relaxed text-slate-600">{t(description)}</p></article>)}</div><a className="mt-6 inline-flex rounded-xl bg-emerald-700 px-5 py-3 font-bold text-white" href="/pricing#brand-agency">{t('Explore Brand / Agency pricing')}</a></section>
         <section id="formatter" className="mx-auto max-w-6xl scroll-mt-6 px-5 py-14"><Formatter /></section>
+        <div className="mx-auto max-w-6xl px-5 pb-8"><SocialShareBar url={productShareUrl('/')} title="SellPostly" getText={()=>document.querySelector<HTMLTextAreaElement>('#formatter textarea[data-share-post]')?.value||''}/></div>
         <UserGuide />
       </main>
   );

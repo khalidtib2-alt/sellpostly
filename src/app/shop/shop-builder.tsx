@@ -1,10 +1,9 @@
 "use client";
+import SocialShareBar from './social-share-bar';
 import ShopLogo from './shop-logo';
 import ShopLogoEditor from './shop-logo-editor';
 import {saveShopDraft,publishShopDraft} from '../../lib/shop-publishing';
-import LookbookSettings from './lookbook-settings';
 import PublishControls,{type PublishState} from './publish-controls';
-import {lookbookPath} from './lookbook-data';
 import CategoryManager from './category-manager';
 import {activeCategory,addCustomCategory,categoryKey,categoryOptions,cleanCategory} from './category-data';
 import ProductPrice from './product-price';
@@ -244,6 +243,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
 {!shared&&shop.products.some(p=>isAmazonDestination(p.url))&&<aside role="status" className="mb-5 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm">{t(amazonImageNotice)}</aside>}
 {!loaded&&<p role="status">{t("Loading storefront…")}</p>}
     {(shared||preview)&&loaded&&shop.shopMode==='affiliate'&&<aside className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5" aria-label={t('Affiliate Disclosure')}><p className="mb-2 text-sm font-bold">{t('Affiliate Disclosure')}</p><p className="text-sm leading-relaxed">{(()=>{const value=shop.affiliateDisclosure||disclosurePresets[0].text;const preset=disclosurePresets.find(p=>[p.text,translations[p.text].fr,translations[p.text].es,translations[p.text].ar].some(candidate=>candidate===value));return preset?t(preset.text):value;})()}</p></aside>}
+    {(shared||preview)&&loaded&&<SocialShareBar heading="Share Store" title={shop.name} image={shop.logo} url={publicSlug?productShareUrl(storePath(publicSlug,shop.shopMode)):snapshot?productShareUrl('/shop?'+new URLSearchParams({s:snapshot})):publishedSlug?productShareUrl(storePath(publishedSlug,shop.shopMode)):''}/>}
     {(shared||preview)&&loaded&&<><StorefrontHero shop={shop} products={matches} filtered={activeFilter!=='All'||genderFilter!=='all'||!!search} verified={verifiedStore}/><MainStoreLink shop={shop}/><StorePolicy shop={shop}/></>}
     {workspace==='products'&&<label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>}
     {!shared&&<nav className="mb-6 flex flex-wrap gap-3 font-semibold" aria-label={t('Seller Workspace')}><a className="rounded-lg border px-4 py-2" href="/shop">{t('Products & Preview')}</a><a className="rounded-lg border px-4 py-2" href="/settings">{t('Store & Payment Settings →')}</a><a className="rounded-lg border px-4 py-2" href="/studio">{t('Creator Studio')}</a></nav>}{!shared&&workspace==='settings'&&<section className="mb-6 rounded-xl border bg-white p-5"><h2 className="text-2xl font-bold">{t('Seller Settings')}</h2><p className="mt-3">{t(tier==='pro'?'Pro Plan':'Free Plan')}</p><a className="mt-3 inline-block underline" href="/shop?upgrade=pro">{t('Activate Pro License')}</a></section>}
@@ -318,7 +318,6 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     
     {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>}
     <div hidden={shop.storeMode==='niche'} style={shop.storeMode==='niche'?{display:'none'}:undefined} className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{publicCategoryOptions.map(({name:c,count})=><button type="button" className={activeFilter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={activeFilter===c}>{label(c)}{count>0||!shopperView?" ("+count+")":""}</button>)}</div>
-    {loaded&&<a className="lookbook-filter-pill mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-700 px-5 py-3 font-bold text-white shadow-md" href={lookbookPath(publicSlug,shop.shopMode,snapshot)}><span aria-hidden="true">{'\u2728'}</span>{t('Shop the Look')}</a>}
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex","kids"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":value==="kids"?"Kids":"Unisex")}</button>)}
     </div>
@@ -349,7 +348,6 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     {shareTarget&&<ShareModal {...shareTarget} onClose={()=>setShareTarget(null)}/>}
     {shop.shopMode==="personal"&&checkout&&<CryptoCheckout storeSlug={publicSlug} orderItems={checkout.items||[{id:checkout.product.id,quantity:1}]} product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
     
-{!shared&&loaded&&workspace==='products'&&<LookbookSettings shop={shop} onChange={setShop}/>}
 {shared&&<BuyerStoreFooter storeSlug={publicSlug} allowDisputes={shop.shopMode==='personal'}/>}
   </>}{!shared&&loaded&&workspace==='products'&&<PublishControls state={syncState} busy={publishing} onDraft={saveDraft} onPublish={()=>void publishLive()}/>}<p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p></main>;
 }

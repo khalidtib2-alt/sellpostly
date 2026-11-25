@@ -121,7 +121,7 @@ function PostCard({ post, image }: { post: Post; image: Blob | null }) {
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4">
       <h3 className="font-bold">{post.platform}</h3>
-      <textarea aria-label={post.platform} dir="auto" className="my-3 min-h-48 w-full rounded-lg border border-slate-300 p-3 text-sm text-slate-700" value={text} onChange={event=>setText(event.target.value)} /><button type="button" className="mb-3 text-sm text-emerald-800 underline" onClick={()=>setText(post.text)}>{t("Reset")}</button>
+      <textarea data-share-post={post.platform} aria-label={post.platform} dir="auto" className="my-3 min-h-48 w-full rounded-lg border border-slate-300 p-3 text-sm text-slate-700" value={text} onChange={event=>setText(event.target.value)} /><button type="button" className="mb-3 text-sm text-emerald-800 underline" onClick={()=>setText(post.text)}>{t("Reset")}</button>
       <div className="flex flex-wrap gap-3 text-sm font-semibold">
         <button type="button" onClick={copy} className="rounded-md bg-emerald-50 px-3 py-2 text-emerald-800">{t("Copy Text")}</button>
         <button type="button" onClick={()=>send()} className="rounded-md border px-3 py-2">{t("Send Text")}</button>

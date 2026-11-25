@@ -4,11 +4,6 @@ export const translations = {
     "es": "Tienda cuyo logotipo quieres editar",
     "ar": "المتجر المراد تعديل شعاره"
   },
-  "Explore today's catalog outfit in 360°. Select a garment to view its product details.": {
-    "fr": "Explorez la tenue du jour à 360°. Sélectionnez un vêtement pour consulter sa fiche produit.",
-    "es": "Explora el conjunto del día en 360°. Selecciona una prenda para ver sus detalles.",
-    "ar": "استكشف إطلالة اليوم من الكتالوج بزاوية 360°. اختر قطعة للاطلاع على تفاصيلها."
-  },
   "Added to cart": {
     "fr": "Ajouté au panier",
     "es": "Añadido al carrito",
@@ -6629,11 +6624,6 @@ export const translations = {
     "es": "Entrega un título SEO, una metadescripción, palabras clave, preguntas frecuentes, un texto social y hashtags relevantes. Utiliza solo los hechos proporcionados. No inventes especificaciones, reseñas, descuentos ni promesas de entrega. Indica lo que debe confirmar el vendedor.",
     "ar": "قدّم عنوان منتج للبحث ووصفًا تعريفيًا وكلمات بحث وأسئلة شائعة ونصًا اجتماعيًا ووسومًا مناسبة. استخدم الحقائق المقدمة فقط. لا تختلق مواصفات أو مراجعات أو خصومات أو وعود توصيل. ميّز المعلومات التي تحتاج تأكيد البائع."
   },
-  "Shop the Look": {
-    "fr": "Composez votre look",
-    "es": "Compra el look",
-    "ar": "تسوّق الإطلالة"
-  },
   "Share This Look": {
     "fr": "Partager ce look",
     "es": "Compartir este look",
@@ -6649,36 +6639,6 @@ export const translations = {
     "es": "Crear tarjeta de historia 9:16",
     "ar": "إنشاء بطاقة قصة 9:16"
   },
-  "Social Story Preview": {
-    "fr": "Aperçu de la story",
-    "es": "Vista previa de historia social",
-    "ar": "معاينة القصة الاجتماعية"
-  },
-  "Download Story PNG": {
-    "fr": "Télécharger la story PNG",
-    "es": "Descargar historia PNG",
-    "ar": "تنزيل القصة بصيغة PNG"
-  },
-  "Editorial outfit preview": {
-    "fr": "Aperçu de la tenue éditoriale",
-    "es": "Vista previa del conjunto editorial",
-    "ar": "معاينة الإطلالة التحريرية"
-  },
-  "Explore an editorial outfit and the latest matching finds. Pins identify curated picks; illustrations do not show the exact products.": {
-    "fr": "Explorez une tenue éditoriale et les dernières pièces assorties. Les repères désignent des suggestions sélectionnées ; les illustrations ne montrent pas les produits exacts.",
-    "es": "Explora un conjunto editorial y los últimos productos relacionados. Los puntos señalan una selección; las ilustraciones no muestran los productos exactos.",
-    "ar": "استكشف إطلالة تحريرية وأحدث القطع المناسبة. تشير العلامات إلى اختيارات منسّقة؛ ولا تعرض الرسوم المنتجات الفعلية نفسها."
-  },
-  "Custom outfit photo. Product matches are curated suggestions.": {
-    "fr": "Photo de tenue personnalisée. Les produits associés sont des suggestions sélectionnées.",
-    "es": "Foto de conjunto personalizada. Los productos relacionados son sugerencias seleccionadas.",
-    "ar": "صورة إطلالة مخصصة. المنتجات المرتبطة اقتراحات منسّقة."
-  },
-  "Try Your Outfit Photo": {
-    "fr": "Essayer votre photo de tenue",
-    "es": "Probar tu foto de conjunto",
-    "ar": "تجربة صورة إطلالتك"
-  },
   "Your preview photo stays in this browser and is included only in your downloaded story card.": {
     "fr": "Votre photo d’aperçu reste dans ce navigateur et figure uniquement dans votre story téléchargée.",
     "es": "Tu foto de prueba permanece en este navegador y solo se incluye en la historia que descargues.",
@@ -6688,21 +6648,6 @@ export const translations = {
     "fr": "Aucun produit dans cette collection pour le moment. Essayez l’autre public.",
     "es": "Todavía no hay productos en esta colección. Prueba el otro público.",
     "ar": "لا توجد منتجات في هذه المجموعة بعد. جرّب الجمهور الآخر."
-  },
-  "Could not create the story card. Try a local outfit photo.": {
-    "fr": "Impossible de créer la story. Essayez une photo locale de votre tenue.",
-    "es": "No se ha podido crear la historia. Prueba una foto local de tu conjunto.",
-    "ar": "تعذّر إنشاء بطاقة القصة. جرّب صورة إطلالة من جهازك."
-  },
-  "Lookbook Outfit Photos": {
-    "fr": "Photos des tenues du lookbook",
-    "es": "Fotos de conjuntos del lookbook",
-    "ar": "صور إطلالات دليل الأزياء"
-  },
-  "Upload your own licensed outfit photo for each audience. Publish your shop to update the public lookbook.": {
-    "fr": "Importez une photo de tenue autorisée pour chaque public. Publiez la boutique pour mettre à jour le lookbook public.",
-    "es": "Sube una foto de conjunto con permiso de uso para cada público. Publica la tienda para actualizar el lookbook público.",
-    "ar": "ارفع صورة إطلالة تملك حق استخدامها لكل جمهور. انشر المتجر لتحديث دليل الإطلالات العام."
   },
   "Choose a PNG, JPEG or WebP image under 5 MB.": {
     "fr": "Choisissez une image PNG, JPEG ou WebP de moins de 5 Mo.",
@@ -6879,125 +6824,10 @@ export const translations = {
     "es": "Vista ilustrativa: precios, valoraciones y ofertas de ejemplo.",
     "ar": "معاينة توضيحية: الأسعار والتقييمات والعروض أمثلة تجريبية."
   },
-  "Editorial fashion inspiration": {
-    "fr": "Inspiration mode éditoriale",
-    "es": "Inspiración de moda editorial",
-    "ar": "إلهام من تصوير الأزياء التحريري"
-  },
-  "Discover an editorial look and the latest curated picks. Products are styling suggestions, not items worn or endorsed by the model.": {
-    "fr": "Découvrez un look éditorial et nos dernières sélections. Les produits sont des suggestions de style ; ils ne sont ni portés ni recommandés par le modèle.",
-    "es": "Descubre un look editorial y las últimas selecciones. Los productos son sugerencias de estilo; la modelo o el modelo no los lleva ni los recomienda.",
-    "ar": "اكتشف إطلالة تحريرية وأحدث الاختيارات. المنتجات اقتراحات للتنسيق، وليست بالضرورة ما يرتديه العارض أو يوصي به."
-  },
-  "Style inspiration; product suggestions only.": {
-    "fr": "Inspiration de style ; produits suggérés uniquement.",
-    "es": "Inspiración de estilo; solo sugerencias de productos.",
-    "ar": "إلهام للتنسيق؛ المنتجات اقتراحات فقط."
-  },
   "Look link copied. Paste it into your post or bio.": {
     "fr": "Lien du look copié. Collez-le dans votre publication ou votre bio.",
     "es": "Enlace del look copiado. Pégalo en tu publicación o biografía.",
     "ar": "نُسخ رابط الإطلالة. الصقه في منشورك أو نبذتك."
-  },
-  "Curated picks": {
-    "fr": "Notre sélection",
-    "es": "Selección cuidada",
-    "ar": "اختيارات منسّقة"
-  },
-  "9:16 Social Story Preview": {
-    "fr": "Aperçu de story sociale 9:16",
-    "es": "Vista previa de historia social 9:16",
-    "ar": "معاينة قصة اجتماعية 9:16"
-  },
-  "Upper Body / Outerwear": {
-    "fr": "Haut / Veste et manteau",
-    "es": "Parte superior / Abrigos",
-    "ar": "الجزء العلوي / المعاطف"
-  },
-  "Lower Body / Bottoms": {
-    "fr": "Bas / Pantalon et jupe",
-    "es": "Parte inferior / Pantalones",
-    "ar": "الجزء السفلي / البناطيل"
-  },
-  "Accessories / Bag": {
-    "fr": "Accessoires / Sac",
-    "es": "Accesorios / Bolso",
-    "ar": "الإكسسوارات / الحقيبة"
-  },
-  "Footwear": {
-    "fr": "Chaussures",
-    "es": "Calzado",
-    "ar": "الأحذية"
-  },
-  "Daily curated look": {
-    "fr": "La sélection du jour",
-    "es": "El look del día",
-    "ar": "إطلالة اليوم المختارة"
-  },
-  "Rotates daily at midnight UTC": {
-    "fr": "Renouvelée chaque jour à minuit UTC",
-    "es": "Se renueva cada día a medianoche UTC",
-    "ar": "تتجدد يوميًا عند منتصف الليل بالتوقيت العالمي"
-  },
-  "Shuffle New Look": {
-    "fr": "Composer un autre look",
-    "es": "Crear otro look",
-    "ar": "اختيار إطلالة أخرى"
-  },
-  "Tap a glowing garment dot or a product card to explore the look.": {
-    "fr": "Touchez un point lumineux sur la tenue ou une fiche produit pour explorer le look.",
-    "es": "Toca un punto luminoso del conjunto o una tarjeta de producto para explorar el look.",
-    "ar": "اضغط على نقطة مضيئة على الملابس أو بطاقة منتج لاستكشاف الإطلالة."
-  },
-  "AI-created editorial styling inspiration. Models do not wear or endorse these products.": {
-    "fr": "Visuel éditorial créé par IA pour inspirer votre style. Les modèles ne portent ni ne recommandent ces produits.",
-    "es": "Inspiración editorial creada con IA. Los modelos no llevan ni recomiendan estos productos.",
-    "ar": "صورة تحريرية مولدة بالذكاء الاصطناعي للإلهام في تنسيق الأزياء. العارضون لا يرتدون هذه المنتجات ولا يروجون لها."
-  },
-  "360° outfit turntable": {
-    "fr": "Tenue interactive à 360°",
-    "es": "Conjunto interactivo de 360°",
-    "ar": "عرض تفاعلي للإطلالة بزاوية 360°"
-  },
-  "Drag or swipe to rotate 360° • Tap any garment on the model to shop": {
-    "fr": "Faites glisser pour tourner à 360° • Touchez un vêtement pour le découvrir",
-    "es": "Arrastra o desliza para girar 360° • Toca una prenda para comprar",
-    "ar": "اسحب للتدوير بزاوية 360° • اضغط على أي قطعة على المجسّم للتسوق"
-  },
-  "Stylized preview from catalog photos. Garment shape and unseen back details are approximate.": {
-    "fr": "Aperçu stylisé à partir des photos du catalogue. La coupe et les détails du dos non visibles sont approximatifs.",
-    "es": "Vista estilizada a partir de las fotos del catálogo. La forma y los detalles traseros no visibles son aproximados.",
-    "ar": "معاينة مبسّطة من صور الكتالوج. شكل القطع وتفاصيلها الخلفية غير الظاهرة تقريبية."
-  },
-  "Rotate left": {
-    "fr": "Tourner à gauche",
-    "es": "Girar a la izquierda",
-    "ar": "تدوير لليسار"
-  },
-  "Rotate right": {
-    "fr": "Tourner à droite",
-    "es": "Girar a la derecha",
-    "ar": "تدوير لليمين"
-  },
-  "Front": {
-    "fr": "Face",
-    "es": "Frente",
-    "ar": "الأمام"
-  },
-  "Side": {
-    "fr": "Profil",
-    "es": "Perfil",
-    "ar": "الجانب"
-  },
-  "Back": {
-    "fr": "Dos",
-    "es": "Espalda",
-    "ar": "الخلف"
-  },
-  "Custom outfit photo reference": {
-    "fr": "Photo de tenue personnalisée en référence",
-    "es": "Foto de referencia del conjunto",
-    "ar": "صورة مرجعية مخصصة للإطلالة"
   },
   "Shop Logo": {
     "fr": "Logo de la boutique",
@@ -7024,11 +6854,6 @@ export const translations = {
     "es": "Introduce una URL válida para la imagen del logotipo.",
     "ar": "أدخل رابطًا صالحًا لصورة الشعار."
   },
-  "PNG, JPG or WebP. Up to 5 MB. Your logo appears on your store and lookbook.": {
-    "fr": "PNG, JPG ou WebP. Jusqu’à 5 Mo. Votre logo s’affiche sur votre boutique et votre lookbook.",
-    "es": "PNG, JPG o WebP. Hasta 5 MB. Tu logotipo aparece en tu tienda y en el lookbook.",
-    "ar": "PNG أو JPG أو WebP بحجم يصل إلى 5 ميغابايت. يظهر شعارك في المتجر ودليل الإطلالات."
-  },
   "Shop logo saved.": {
     "fr": "Logo de la boutique enregistré.",
     "es": "Logotipo de la tienda guardado.",
@@ -7039,50 +6864,60 @@ export const translations = {
     "es": "Cargando…",
     "ar": "جارٍ التحميل…"
   },
-  "3/4 Left": {
-    "fr": "Trois-quarts gauche",
-    "es": "Tres cuartos izquierdo",
-    "ar": "ثلاثة أرباع من اليسار"
+  "Share this page": {
+    "fr": "Partager cette page",
+    "es": "Compartir esta página",
+    "ar": "مشاركة هذه الصفحة"
   },
-  "3/4 Right": {
-    "fr": "Trois-quarts droit",
-    "es": "Tres cuartos derecho",
-    "ar": "ثلاثة أرباع من اليمين"
+  "Instagram and TikTok: copy the link or caption, then paste it into your post or bio.": {
+    "fr": "Instagram et TikTok : copiez le lien ou le texte, puis collez-le dans votre publication ou votre bio.",
+    "es": "Instagram y TikTok: copia el enlace o el texto y pégalo en tu publicación o biografía.",
+    "ar": "إنستغرام وتيك توك: انسخ الرابط أو النص ثم ألصقه في منشورك أو نبذتك."
   },
-  "Model angle": {
-    "fr": "Angle du modèle",
-    "es": "Ángulo del modelo",
-    "ar": "زاوية العارض"
+  "You save": {
+    "fr": "Vous économisez",
+    "es": "Ahorras",
+    "ar": "توفر"
   },
-  "Generated model angles and garment overlays are illustrative, not a fit or back-detail guarantee.": {
-    "fr": "Les vues générées et les superpositions de vêtements sont illustratives. Elles ne garantissent ni la coupe ni les détails du dos.",
-    "es": "Los ángulos generados y las prendas superpuestas son ilustrativos. No garantizan el ajuste ni los detalles traseros.",
-    "ar": "زوايا العارض المولدة وطبقات الملابس توضيحية، ولا تضمن المقاس أو تفاصيل الجهة الخلفية."
+  "Checkout details": {
+    "fr": "Informations de paiement",
+    "es": "Información de pago",
+    "ar": "تفاصيل الدفع"
   },
-  "Wear on Model": {
-    "fr": "Essayer sur le modèle",
-    "es": "Probar en el modelo",
-    "ar": "تجربة على العارض"
+  "Partner merchant checkout": {
+    "fr": "Paiement chez le marchand partenaire",
+    "es": "Pago en la tienda asociada",
+    "ar": "الدفع لدى المتجر الشريك"
   },
-  "Drag to dress": {
-    "fr": "Glisser pour habiller",
-    "es": "Arrastra para vestir",
-    "ar": "اسحب لتنسيق الإطلالة"
+  "Confirm the current price, delivery and return policy on the merchant website.": {
+    "fr": "Vérifiez le prix actuel, la livraison et les conditions de retour sur le site du marchand.",
+    "es": "Confirma el precio actual, el envío y la política de devolución en la web de la tienda.",
+    "ar": "تحقق من السعر الحالي والتوصيل وسياسة الإرجاع على موقع المتجر."
   },
-  "Choose a wearable garment from this collection.": {
-    "fr": "Choisissez un vêtement ou un accessoire portable de cette collection.",
-    "es": "Elige una prenda o un accesorio de esta colección.",
-    "ar": "اختر قطعة ملابس أو إكسسوارًا من هذه المجموعة."
+  "Available payment methods": {
+    "fr": "Moyens de paiement disponibles",
+    "es": "Métodos de pago disponibles",
+    "ar": "طرق الدفع المتاحة"
   },
-  "Outfit updated.": {
-    "fr": "Tenue mise à jour.",
-    "es": "Conjunto actualizado.",
-    "ar": "تم تحديث الإطلالة."
+  "USDC escrow is available when selected at checkout.": {
+    "fr": "La protection par séquestre USDC est disponible si vous la choisissez au paiement.",
+    "es": "La protección de depósito USDC está disponible si la eliges al pagar.",
+    "ar": "تتوفر حماية الضمان بعملة USDC عند اختيارها أثناء الدفع."
   },
-  "Drop the item on its matching garment zone.": {
-    "fr": "Déposez l’article sur la zone de vêtement correspondante.",
-    "es": "Suelta el artículo en la zona de prenda correspondiente.",
-    "ar": "أفلت القطعة في منطقة الملابس المطابقة لها."
+  "The seller has not configured payment methods yet.": {
+    "fr": "Le vendeur n’a pas encore configuré ses moyens de paiement.",
+    "es": "El vendedor aún no ha configurado los métodos de pago.",
+    "ar": "لم يُعدّ البائع طرق الدفع بعد."
+  },
+  "More From This Store": {
+    "fr": "À découvrir dans cette boutique",
+    "es": "Más de esta tienda",
+    "ar": "المزيد من هذا المتجر"
+  },
+  "PNG, JPG or WebP. Up to 5 MB. Your logo appears on your storefront.": {
+    "fr": "PNG, JPG ou WebP. Jusqu’à 5 Mo. Votre logo apparaît sur votre boutique.",
+    "es": "PNG, JPG o WebP. Hasta 5 MB. Tu logotipo aparece en tu tienda.",
+    "ar": "PNG أو JPG أو WebP بحجم يصل إلى 5 ميغابايت. يظهر شعارك في واجهة متجرك."
   }
 } as const;
 export type Message = keyof typeof translations;
