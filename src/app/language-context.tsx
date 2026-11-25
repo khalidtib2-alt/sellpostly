@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { translations, type Message } from "./translations";
 
-export type Language = "en" | "fr" | "ar";
+export type Language = "en" | "fr" | "es" | "ar";
 const storageKey = "sellpostly-language";
 const LanguageContext = createContext<{
   language: Language;
@@ -17,7 +17,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(storageKey);
-      if (saved === "en" || saved === "fr" || saved === "ar") setLanguage(saved);
+      if (saved === "en" || saved === "fr" || saved === "es" || saved === "ar") setLanguage(saved as Language);
     } catch {
       // The switcher still works when storage is unavailable.
     }
@@ -38,7 +38,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         // Keep the selection in memory for this session.
       }
     },
-    t: (message: Message) => language === "en" ? message : translations[message][language],
+    t: (message: Message) => language === "en" ? message : (translations[message][language as keyof typeof translations[Message]] || message),
   }), [language]);
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

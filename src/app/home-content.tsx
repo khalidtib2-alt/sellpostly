@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useLanguage } from "./language-context";
 import LocalizedSeo from './localized-seo';
@@ -28,5 +28,7 @@ export default function HomeContent() {
       </main>
   );
 }
+
+
 
 
