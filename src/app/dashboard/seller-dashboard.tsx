@@ -1,5 +1,7 @@
 'use client';
-import {shopHeaders} from '../shop/multi-shop-data';
+import DashboardLogo from './dashboard-logo';
+import type {Shop} from '../shop/shop-data';
+import {shopHeaders,shopSelection} from '../shop/multi-shop-data';
 import WhatsAppQuickReplies from './whatsapp-quick-replies';
 import NotificationSettings from './notification-settings';
 import { useEffect,useRef,useState } from 'react';
@@ -12,7 +14,7 @@ const states={fulfilled:'Shipped',pending:'Pending',held:'Held',released:'Releas
 export default function SellerDashboard(){
  const {t,language}=useLanguage();
  const [data,setData]=useState<Dashboard|null>(null),[loading,setLoading]=useState(true),[message,setMessage]=useState<Message|''>(''),[filter,setFilter]=useState('all'),[selected,setSelected]=useState<Order|null>(null),[saving,setSaving]=useState(false);
- const [storeOptions,setStoreOptions]=useState<{shopId:string;name:string;shopMode:string}[]>([]),[activeStore,setActiveStore]=useState('');
+ const [storeOptions,setStoreOptions]=useState<Shop[]>([]),[activeStore,setActiveStore]=useState(''),[logoSelection,setLogoSelection]=useState('');
  const [carrier,setCarrier]=useState('');
  const [tracking,setTracking]=useState(''),[notes,setNotes]=useState(''),[bucket,setBucket]=useState(''),[amount,setAmount]=useState(''),[wallet,setWallet]=useState('');
  const fulfillment=useRef<HTMLDialogElement>(null),redeem=useRef<HTMLDialogElement>(null);
@@ -27,14 +29,16 @@ export default function SellerDashboard(){
  function error(error:unknown){const code=(error as Error).message;setMessage(code==='PRO_REQUIRED'?'Your Pro session expired. Activate your license again.':code==='MINIMUM_PAYOUT'?'Minimum payout is 10.00 USDC / USDT.':code==='INVALID_WALLET'?'Enter a valid address for the selected network.':code==='PAYOUT_NOT_AVAILABLE'?'Insufficient released balance. Pending payouts are already reserved.':code==='ORDER_NOT_FOUND_OR_NOT_ELIGIBLE'?'This order is not eligible for fulfillment.':'Could not load or save dashboard data. Check your connection and database setup.');}
  async function refresh(){setLoading(true);try{setData(await request('/api/seller/dashboard'+(activeStore?'?shop_id='+encodeURIComponent(activeStore):'')));}catch(e){error(e);}finally{setLoading(false);}}
  useEffect(()=>{refresh();},[activeStore]);
- useEffect(()=>{void request('/api/shops').then(value=>setStoreOptions((value.shops||[]).filter((s:any)=>s.shopMode==='personal'&&s.shopId))).catch(()=>{});},[]);
+ useEffect(()=>{void request('/api/shops').then(value=>setStoreOptions((value.shops||[]).filter((s:any)=>s.shopId))).catch(()=>{});},[]);
  const balances=data?.balances||[];
  const cards=[['Gross Sales','gross_sales'],['5% Commission','total_commission'],['Pending Escrow (3–15d)','pending_escrow'],['Available Balance','available_balance'],['Redeemed','total_redeemed']] as const;
  const orders=(data?.orders||[]).filter(o=>filter==='all'||(filter==='failed'?['refunded','cancelled','failed'].includes(o.status):o.status===filter));
  const date=(value:string)=>new Intl.DateTimeFormat(language,{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));
  return <main className="mx-auto max-w-7xl px-5 py-10">
   <div className="mb-8 flex flex-wrap items-center justify-between gap-4"><div><p className="text-sm font-semibold text-emerald-800">SellPostly Pro</p><h1 className="mt-2 text-3xl font-black">{t('Seller Dashboard')}</h1><p className="mt-2 text-slate-600">{data?.shop?.name||t('Your store overview')}</p></div><button className={button} disabled={loading||saving} onClick={refresh}>{t('Refresh')}</button></div>
-  <label className="mb-5 block">{t('Active Shop')}<select value={activeStore} className={field} onChange={e=>setActiveStore(e.target.value)}><option value="">{t('Primary Personal Store')}</option>{storeOptions.map(s=><option key={s.shopId} value={s.shopId}>{s.name||t('My Shop')}</option>)}</select></label>
+  <label className="mb-5 block">{t('Active Shop')}<select value={activeStore} className={field} onChange={e=>setActiveStore(e.target.value)}><option value="">{t('Primary Personal Store')}</option>{storeOptions.filter(s=>s.shopMode==='personal').map(s=><option key={s.shopId} value={s.shopId}>{s.name||t('My Shop')}</option>)}</select></label>
+  {storeOptions.length>0&&(()=>{const shop=logoSelection?storeOptions.find(shop=>shopSelection(shop)===logoSelection):storeOptions.find(shop=>shop.shopMode==='personal'&&(activeStore?shop.shopId===activeStore:shop.storeMode!=='niche'))||storeOptions[0];return shop?<section className="mb-6"><label className="mb-3 block font-semibold">{t('Logo settings store')}<select className={field} value={shopSelection(shop)} onChange={e=>setLogoSelection(e.target.value)}>{storeOptions.map(value=><option key={shopSelection(value)} value={shopSelection(value)}>{value.name} · {t(value.shopMode==='affiliate'?'Affiliate Deals Shop':'Personal Seller Shop')}</option>)}</select></label><DashboardLogo key={shopSelection(shop)} shop={shop} onSaved={logo=>setStoreOptions(current=>current.map(value=>shopSelection(value)===shopSelection(shop)?{...value,logo}:value))}/></section>:null;})()}
+
   {message&&<p role="status" className="mb-5 rounded-xl border bg-slate-50 p-4">{t(message)}</p>}
   {loading&&<p role="status" className="mb-5">{t('Loading dashboard…')}</p>}
   {!loading&&data&&!data.shop&&<p className="mb-6 rounded-xl border p-5">{t('Publish your shop first to start receiving orders.')} <a href="/shop" className="font-semibold underline">{t('My Shop')}</a></p>}

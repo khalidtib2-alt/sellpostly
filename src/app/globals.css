@@ -347,3 +347,42 @@ nav a[aria-current='page'] {border-radius:.35rem;text-decoration:underline;text-
 @media(prefers-reduced-motion:reduce){.saas-primary,.lookbook-pick,.lookbook-filter-pill{transition:none;}.saas-primary:hover,.lookbook-pick[data-active=true],.lookbook-filter-pill:hover{translate:none;}.lookbook-pin[data-active=true]{scale:none;}.showcase-spinner{animation:none;}}
 
 .saas-language button:focus-visible,.showcase-tabs button:focus-visible{outline:2px solid #4f46e5;outline-offset:2px;}
+
+/* True multi-face geometry. Ancestors of the facets must not flatten their 3D children. */
+.lookbook-turntable{border:1px solid #ffffff24;border-radius:24px;background:#171b24;color:#f8fafc;box-shadow:0 22px 60px #0f172a25;}
+.lookbook-turntable-viewport{position:relative;height:530px;perspective:1000px;perspective-origin:50% 42%;touch-action:pan-y;cursor:grab;outline:none;border-radius:24px;}
+.lookbook-turntable-viewport:active{cursor:grabbing;}
+.lookbook-turntable-viewport:focus-visible{outline:3px solid #818cf8;outline-offset:4px;}
+.lookbook-turntable-spotlight{position:absolute;inset:0;border-radius:24px;background:radial-gradient(ellipse at 50% 20%,#e2e8f022,transparent 65%);pointer-events:none;}
+.lookbook-avatar-world{position:absolute;left:50%;top:50%;margin-left:-120px;margin-top:-230px;width:240px;height:460px;transform-style:preserve-3d;transform:rotateY(var(--turntable-angle,0deg));direction:ltr;}
+.lookbook-avatar-part{position:absolute;left:120px;top:0;width:0;height:0;display:block;border:0;padding:0;margin:0;background:transparent;transform-style:preserve-3d;transform-origin:0 0;overflow:visible;}
+.lookbook-avatar-facet{display:block;position:absolute;left:0;top:0;transform-origin:0 0;backface-visibility:hidden;background-repeat:no-repeat;background-blend-mode:multiply;pointer-events:auto;}
+.lookbook-avatar-garment{cursor:pointer;}
+.lookbook-avatar-garment[data-active=true] .lookbook-avatar-facet,.lookbook-avatar-garment:focus-visible .lookbook-avatar-facet{box-shadow:inset 0 0 0 1px #a5b4fc;}
+.lookbook-turntable-pedestal{position:absolute;bottom:14px;left:18%;width:64%;height:28px;border-radius:50%;background:radial-gradient(ellipse,#0a0d13 30%,#64748b66 60%,transparent 72%);pointer-events:none;}
+.lookbook-rotation-controls{position:relative;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:8px 12px;}
+.lookbook-rotation-controls button{min-height:42px;border:1px solid #ffffff3d;border-radius:10px;padding:8px 12px;color:#fff;background:#293244;font-size:12px;font-weight:700;cursor:pointer;}
+.lookbook-rotation-controls button:hover{background:#43506a;}.lookbook-rotation-controls button:active{transform:scale(.96);}.lookbook-rotation-controls button:focus-visible{outline:3px solid #a5b4fc;outline-offset:3px;}
+.lookbook-rotation-controls output{min-width:76px;text-align:center;font-size:11px;direction:ltr;}
+.lookbook-avatar-note{padding:8px 20px 20px;font-size:11px;line-height:1.6;color:#cbd5e1;text-align:center;}
+.lookbook-custom-reference{margin-top:18px;border:1px solid var(--border,#cbd5e1);border-radius:14px;padding:14px;font-size:13px;}.lookbook-custom-reference summary{cursor:pointer;font-weight:700;}
+.lookbook-brand{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.shop-logo{width:64px;height:64px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border-radius:16px;background:#fff;color:#3730a3;border:1px solid #cbd5e1;font-size:22px;font-weight:850;}
+.shop-logo img{width:100%;height:100%;object-fit:contain;padding:5px;}
+.shop-logo-editor{padding:16px;border:1px solid #cbd5e1;border-radius:16px;background:#fff;color:#0f172a;}.shop-logo-editor legend{font-weight:800;padding:0 6px;}
+.shop-logo-editor-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.shop-logo-upload{display:inline-flex;cursor:pointer;align-items:center;border-radius:10px;padding:10px 14px;background:#4f46e5;color:#fff;font-weight:700;font-size:13px;}.shop-logo-upload:hover{background:#4338ca;}.shop-logo-upload:focus-within{outline:3px solid #a5b4fc;outline-offset:3px;}
+.shop-logo-editor:disabled{opacity:.6;}
+.lookbook-socials button[data-brand],.social-brand[data-brand]{border:1px solid transparent;color:#fff;cursor:pointer;box-shadow:0 2px 6px #0f172a16;transition:transform .15s,box-shadow .15s;}
+.lookbook-socials button[data-brand]:hover,.social-brand[data-brand]:hover{transform:translateY(-2px);box-shadow:0 5px 12px #0f172a30;}.lookbook-socials button[data-brand]:active,.social-brand[data-brand]:active{transform:scale(.96);}
+.lookbook-socials button[data-brand=whatsapp],.social-brand[data-brand=whatsapp]{background:#25d366;color:#fff;}
+.lookbook-socials button[data-brand=facebook],.social-brand[data-brand=facebook]{background:#1877f2;}
+.lookbook-socials button[data-brand=x],.social-brand[data-brand=x]{background:#000;border-color:#fff;color:#fff;}
+.lookbook-socials button[data-brand=pinterest],.social-brand[data-brand=pinterest]{background:#e60023;}
+.lookbook-socials button[data-brand=instagram],.social-brand[data-brand=instagram]{background:#e4405f;background:linear-gradient(135deg,#833ab4,#e4405f 55%,#fcb045);}
+.lookbook-socials button[data-brand=tiktok],.social-brand[data-brand=tiktok]{background:#000;border-color:#25f4ee;}.lookbook-socials button[data-brand=tiktok] svg,.social-brand[data-brand=tiktok] svg{filter:drop-shadow(1px 0 #fe2c55) drop-shadow(-1px 0 #25f4ee);}
+.lookbook-socials button[data-brand=telegram],.social-brand[data-brand=telegram]{background:#26a5e4;color:#fff;}
+.lookbook-socials button[data-brand=copy],.social-brand[data-brand=copy]{background:#4f46e5;}.social-brand[data-brand=linkedin]{background:#0a66c2;}.social-brand[data-brand=email]{background:#475569;}
+.lookbook-socials{flex-wrap:wrap;}.lookbook-socials button[data-brand]:focus-visible,.social-brand[data-brand]:focus-visible{outline:3px solid #818cf8;outline-offset:3px;}
+@media(max-width:420px){.lookbook-turntable-viewport{height:500px;}.lookbook-avatar-world{scale:.94;}.lookbook-rotation-controls button{padding:8px;font-size:11px;}}
+@media(prefers-reduced-motion:reduce){.lookbook-avatar-world,.lookbook-rotation-controls button,.lookbook-socials button[data-brand],.social-brand[data-brand]{transition:none;}}

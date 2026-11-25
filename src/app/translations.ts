@@ -1,4 +1,10 @@
 export const translations = {
+  "Logo settings store": {"fr":"Boutique dont vous modifiez le logo","es":"Tienda cuyo logotipo quieres editar","ar":"المتجر المراد تعديل شعاره"},
+  "Explore today's catalog outfit in 360°. Select a garment to view its product details.": {
+    "fr": "Explorez la tenue du jour à 360°. Sélectionnez un vêtement pour consulter sa fiche produit.",
+    "es": "Explora el conjunto del día en 360°. Selecciona una prenda para ver sus detalles.",
+    "ar": "استكشف إطلالة اليوم من الكتالوج بزاوية 360°. اختر قطعة للاطلاع على تفاصيلها."
+  },
   "Added to cart": {
     "fr": "Ajouté au panier",
     "es": "Añadido al carrito",
@@ -6943,6 +6949,91 @@ export const translations = {
     "fr": "Visuel éditorial créé par IA pour inspirer votre style. Les modèles ne portent ni ne recommandent ces produits.",
     "es": "Inspiración editorial creada con IA. Los modelos no llevan ni recomiendan estos productos.",
     "ar": "صورة تحريرية مولدة بالذكاء الاصطناعي للإلهام في تنسيق الأزياء. العارضون لا يرتدون هذه المنتجات ولا يروجون لها."
+  },
+  "360° outfit turntable": {
+    "fr": "Tenue interactive à 360°",
+    "es": "Conjunto interactivo de 360°",
+    "ar": "عرض تفاعلي للإطلالة بزاوية 360°"
+  },
+  "Drag or swipe to rotate 360° • Tap any garment on the model to shop": {
+    "fr": "Faites glisser pour tourner à 360° • Touchez un vêtement pour le découvrir",
+    "es": "Arrastra o desliza para girar 360° • Toca una prenda para comprar",
+    "ar": "اسحب للتدوير بزاوية 360° • اضغط على أي قطعة على المجسّم للتسوق"
+  },
+  "Stylized preview from catalog photos. Garment shape and unseen back details are approximate.": {
+    "fr": "Aperçu stylisé à partir des photos du catalogue. La coupe et les détails du dos non visibles sont approximatifs.",
+    "es": "Vista estilizada a partir de las fotos del catálogo. La forma y los detalles traseros no visibles son aproximados.",
+    "ar": "معاينة مبسّطة من صور الكتالوج. شكل القطع وتفاصيلها الخلفية غير الظاهرة تقريبية."
+  },
+  "Rotate left": {
+    "fr": "Tourner à gauche",
+    "es": "Girar a la izquierda",
+    "ar": "تدوير لليسار"
+  },
+  "Rotate right": {
+    "fr": "Tourner à droite",
+    "es": "Girar a la derecha",
+    "ar": "تدوير لليمين"
+  },
+  "Front": {
+    "fr": "Face",
+    "es": "Frente",
+    "ar": "الأمام"
+  },
+  "Side": {
+    "fr": "Profil",
+    "es": "Perfil",
+    "ar": "الجانب"
+  },
+  "Back": {
+    "fr": "Dos",
+    "es": "Espalda",
+    "ar": "الخلف"
+  },
+  "Custom outfit photo reference": {
+    "fr": "Photo de tenue personnalisée en référence",
+    "es": "Foto de referencia del conjunto",
+    "ar": "صورة مرجعية مخصصة للإطلالة"
+  },
+  "Shop Logo": {
+    "fr": "Logo de la boutique",
+    "es": "Logotipo de la tienda",
+    "ar": "شعار المتجر"
+  },
+  "Upload Logo": {
+    "fr": "Importer un logo",
+    "es": "Subir logotipo",
+    "ar": "رفع شعار"
+  },
+  "Save Logo": {
+    "fr": "Enregistrer le logo",
+    "es": "Guardar logotipo",
+    "ar": "حفظ الشعار"
+  },
+  "Logo Image URL": {
+    "fr": "URL de l’image du logo",
+    "es": "URL de la imagen del logotipo",
+    "ar": "رابط صورة الشعار"
+  },
+  "Enter a valid logo image URL.": {
+    "fr": "Saisissez une URL d’image valide pour le logo.",
+    "es": "Introduce una URL válida para la imagen del logotipo.",
+    "ar": "أدخل رابطًا صالحًا لصورة الشعار."
+  },
+  "PNG, JPG or WebP. Up to 5 MB. Your logo appears on your store and lookbook.": {
+    "fr": "PNG, JPG ou WebP. Jusqu’à 5 Mo. Votre logo s’affiche sur votre boutique et votre lookbook.",
+    "es": "PNG, JPG o WebP. Hasta 5 MB. Tu logotipo aparece en tu tienda y en el lookbook.",
+    "ar": "PNG أو JPG أو WebP بحجم يصل إلى 5 ميغابايت. يظهر شعارك في المتجر ودليل الإطلالات."
+  },
+  "Shop logo saved.": {
+    "fr": "Logo de la boutique enregistré.",
+    "es": "Logotipo de la tienda guardado.",
+    "ar": "تم حفظ شعار المتجر."
+  },
+  "Loading...": {
+    "fr": "Chargement…",
+    "es": "Cargando…",
+    "ar": "جارٍ التحميل…"
   }
 } as const;
 export type Message = keyof typeof translations;

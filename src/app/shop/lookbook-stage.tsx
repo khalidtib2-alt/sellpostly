@@ -1,15 +1,24 @@
 'use client';
-import {useEffect,useRef,type ReactNode,type PointerEvent} from 'react';
-export default function LookbookStage({children}:{children:ReactNode}){
- const ref=useRef<HTMLDivElement>(null),frame=useRef(0);
- useEffect(()=>()=>{if(frame.current)cancelAnimationFrame(frame.current);},[]);
- function reset(){if(frame.current)cancelAnimationFrame(frame.current);const node=ref.current;if(node){node.style.setProperty('--look-rx','0deg');node.style.setProperty('--look-ry','0deg');node.style.setProperty('--look-light-x','50%');node.style.setProperty('--look-light-y','35%');}}
- function tilt(event:PointerEvent<HTMLDivElement>){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){reset();return;}
-  if(event.pointerType==='touch'&&!event.buttons)return;
-  const node=ref.current;if(!node)return;const rect=node.getBoundingClientRect();if(!rect.width||!rect.height)return;
-  const x=Math.max(-1,Math.min(1,2*(event.clientX-rect.left)/rect.width-1)),y=Math.max(-1,Math.min(1,2*(event.clientY-rect.top)/rect.height-1));
-  cancelAnimationFrame(frame.current);frame.current=requestAnimationFrame(()=>{node.style.setProperty('--look-rx',(-y*4).toFixed(2)+'deg');node.style.setProperty('--look-ry',(x*5).toFixed(2)+'deg');node.style.setProperty('--look-light-x',(50+x*25)+'%');node.style.setProperty('--look-light-y',(40+y*20)+'%');});
- }
- return <div ref={ref} className="lookbook-stage" onPointerMove={tilt} onPointerLeave={reset} onPointerUp={reset} onPointerCancel={reset} onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget as Node))reset();}}><div className="lookbook-stage-floor" aria-hidden="true"/><div className="lookbook-stage-depth">{children}<div className="lookbook-stage-light" aria-hidden="true"/></div></div>;
+import {useRef,useState,useMemo,useCallback,type PointerEvent} from 'react';
+import {lookbookRotationStep} from './lookbook-data';
+import {wearableOutfit} from '../../lib/daily-look';
+import {turntableAngle,type OutfitPiece} from '../../lib/mannequin-data';
+import {useLanguage} from '../language-context';
+import LookbookMannequin from './lookbook-mannequin';
+export default function LookbookStage({outfit,gender,active,onSelect,onAngleChange}:{outfit:OutfitPiece[];gender:'women'|'men';active:string;onSelect:(id:string)=>void;onAngleChange?:(angle:number)=>void}){
+ const {t}=useLanguage(),[angle,setAngle]=useState(0),drag=useRef<{id:number;x:number;start:number;moved:boolean}|null>(null),suppress=useRef(false),current=useRef(0);
+ const pieces=useMemo(()=>wearableOutfit(outfit),[outfit]);
+ const select=useCallback((id:string)=>{if(!suppress.current)onSelect(id);},[onSelect]);
+ function rotate(value:number){current.current=value;setAngle(value);onAngleChange?.(turntableAngle(value));}
+ function start(e:PointerEvent<HTMLDivElement>){if(e.button!==0||drag.current)return;suppress.current=false;drag.current={id:e.pointerId,x:e.clientX,start:current.current,moved:false};}
+ function move(e:PointerEvent<HTMLDivElement>){const d=drag.current;if(!d||d.id!==e.pointerId)return;const delta=e.clientX-d.x;if(Math.abs(delta)>5){d.moved=true;suppress.current=true;try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}rotate(d.start+delta*.65);}}
+ function stop(e:PointerEvent<HTMLDivElement>){if(drag.current?.id!==e.pointerId)return;try{if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);}catch{}drag.current=null;}
+ const degrees=turntableAngle(angle),view=degrees<45||degrees>=315?'Front':degrees<135?'Side':degrees<225?'Back':'Side';
+ return <section className="lookbook-turntable" aria-label={t('360° outfit turntable')}>
+  <div className="lookbook-turntable-viewport" style={{'--turntable-angle':angle+'deg'} as React.CSSProperties} onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerCancel={stop} onPointerLeave={e=>{if(drag.current&&!e.currentTarget.hasPointerCapture?.(e.pointerId))drag.current=null;}} onLostPointerCapture={()=>{drag.current=null;}} onClickCapture={e=>{if(suppress.current){e.preventDefault();e.stopPropagation();suppress.current=false;}}} onKeyDown={e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();rotate(current.current+(e.key==='ArrowRight'?lookbookRotationStep:-lookbookRotationStep));}else if(e.key==='Home'){e.preventDefault();rotate(0);}}} tabIndex={0} aria-label={t('Drag or swipe to rotate 360° • Tap any garment on the model to shop')}>
+   <div className="lookbook-turntable-spotlight" aria-hidden="true"/><LookbookMannequin outfit={pieces} gender={gender} active={active} onSelect={select}/><div className="lookbook-turntable-pedestal" aria-hidden="true"/>
+  </div>
+  <div className="lookbook-rotation-controls"><button type="button" onClick={()=>{suppress.current=false;rotate(current.current-lookbookRotationStep);}} aria-label={t('Rotate left')}>← {t('Rotate left')}</button><output aria-live="polite">{t(view)} · {Math.round(degrees)}°</output><button type="button" onClick={()=>{suppress.current=false;rotate(current.current+lookbookRotationStep);}} aria-label={t('Rotate right')}>{t('Rotate right')} →</button><button type="button" onClick={()=>{suppress.current=false;rotate(0);}}>{t('Reset')}</button></div>
+  <p className="lookbook-avatar-note">{t('Stylized preview from catalog photos. Garment shape and unseen back details are approximate.')}</p>
+ </section>;
 }

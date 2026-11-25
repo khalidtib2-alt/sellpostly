@@ -11,8 +11,10 @@ export function garmentZone(product:Product):OutfitZone|undefined{
  if(/sneaker|trainer|footwear|shoe|boot|sandal|chaussure|basket|botte|zapato|zapatilla|bota|حذاء|أحذية|صندل/.test(text))return 'footwear';
  if(/crossbody|bag\b|backpack|handbag|purse|watch|belt|scarf|sunglass|accessor|sac\b|montre|bolso|mochila|reloj|حقيبة|ساعة|حزام|إكسسوار/.test(text))return 'accessory';
  if(/trouser|jeans|pants|bottom|skirt|shorts|pantalon|jupe|falda|بنطال|سروال|تنورة/.test(text))return 'lower';
- if(/coat|jacket|outerwear|knit|sweater|shirt|blouse|hoodie|top\b|dress|manteau|veste|pull\b|robe|abrigo|chaqueta|camisa|vestido|معطف|سترة|قميص|كنزة|فستان/.test(text))return 'upper';
+ if(/coat|jacket|windbreaker|parka|cardigan|outerwear|knit|sweater|shirt|blouse|hoodie|top\b|dress|manteau|veste|blouson|pull\b|robe|abrigo|chaqueta|camisa|vestido|معطف|سترة|جاكيت|قميص|كنزة|فستان/.test(text))return 'upper';
 }
+/** Non-wearable suggestions remain cards; never paint an appliance onto a garment. */
+export function wearableOutfit<T extends {zone:OutfitZone;product:Product}>(outfit:T[]){return outfit.filter(item=>garmentZone(item.product)===item.zone);}
 function hash(value:string){let h=2166136261;for(const char of value)h=Math.imul(h^char.charCodeAt(0),16777619);return h>>>0;}
 /** Stable across catalog ordering, locale and time zone; only the published catalog is passed in. */
 export function dailyOutfit(products:Product[],gender:'women'|'men',day:string,shuffle=0,identity='',mode?:'affiliate'|'personal'){
