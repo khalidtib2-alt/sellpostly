@@ -264,7 +264,7 @@ export default function Formatter() {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-8">
       <h2 className="text-3xl font-bold tracking-tight">{t("Post Formatter")}</h2><Suspense fallback={null}><FormatterTabSync onPrompt={()=>setMode("prompt")}/></Suspense>
-      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><a href="/?tab=prompt#formatter" className="font-semibold text-emerald-800 underline">{t("Prompt Generator")}</a><span>{t("AI Hashtags")}</span><span>· {t("Social Preview")}</span><span>· {t("Multi-Platform Send")}</span></div>
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><a href="/?tab=prompt#formatter" className="font-semibold text-emerald-800 underline">{t("Prompt & SEO Generator")}</a><span>{t("AI Hashtags")}</span><span>· {t("Social Preview")}</span><span>· {t("Multi-Platform Send")}</span></div>
       <div role="group" aria-label={t("Formatter mode")} className="mt-5 inline-flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-white p-1">
         {(["seller", "creator", "prompt"] as const).map(option => (
           <button key={option} type="button" aria-pressed={mode === option} onClick={() => {
@@ -273,7 +273,7 @@ export default function Formatter() {
             setError("");
             setResults(previous => ({ data: null, hook: "", version: previous.version + 1 }));
           }} className={"rounded-md px-4 py-2 text-sm font-semibold " + (mode === option ? "bg-emerald-700 text-white" : "text-slate-700")}>
-            {option === "seller" ? t("Seller Mode") : option === "prompt" ? t("Prompt Generator") : t("Creator Mode")}
+            {option === "seller" ? t("Seller Mode") : option === "prompt" ? t("Prompt & SEO Generator") : t("Creator Mode")}
           </button>
         ))}
       </div>

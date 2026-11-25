@@ -3161,8 +3161,8 @@ export const translations = {
   },
   "Affiliate Storefront": {
     "fr": "Boutique affiliée",
-    "ar": "متجر التسويق بالعمولة",
-    "es": "Tienda de afiliados"
+    "es": "Tienda de afiliados",
+    "ar": "متجر التسويق بالعمولة"
   },
   "Personal Seller Store": {
     "fr": "Boutique de vente directe",
@@ -6733,6 +6733,166 @@ export const translations = {
     "fr": "Découvrir l’offre Marque / Agence",
     "es": "Ver el plan para marcas y agencias",
     "ar": "استكشف أسعار خطة العلامات والوكالات"
+  },
+  "Free": {
+    "fr": "Gratuit",
+    "es": "Gratis",
+    "ar": "مجاني"
+  },
+  "Open navigation": {
+    "fr": "Ouvrir la navigation",
+    "es": "Abrir navegación",
+    "ar": "فتح قائمة التنقل"
+  },
+  "Explore SellPostly": {
+    "fr": "Découvrir SellPostly",
+    "es": "Explorar SellPostly",
+    "ar": "استكشف SellPostly"
+  },
+  "Support & Legal": {
+    "fr": "Assistance et mentions légales",
+    "es": "Soporte y asuntos legales",
+    "ar": "الدعم والمعلومات القانونية"
+  },
+  "All rights reserved.": {
+    "fr": "Tous droits réservés.",
+    "es": "Todos los derechos reservados.",
+    "ar": "جميع الحقوق محفوظة."
+  },
+  "No-Code Affiliate Storefronts + Social Post Studio": {
+    "fr": "Boutiques affiliées sans code + studio de publications sociales",
+    "es": "Tiendas de afiliados sin código + estudio de publicaciones sociales",
+    "ar": "متاجر عمولة دون برمجة + استوديو منشورات اجتماعية"
+  },
+  "Launch Your Curated Affiliate Storefront & Turn Any Product Link Into Ready-to-Post Ads in 10 Seconds": {
+    "fr": "Lancez votre boutique affiliée et transformez vos liens produits en annonces prêtes à publier en 10 secondes",
+    "es": "Lanza tu tienda de afiliados y convierte cualquier enlace de producto en anuncios listos para publicar en 10 segundos",
+    "ar": "أطلق متجرك المختار للتسويق بالعمولة وحوّل أي رابط منتج إلى إعلانات جاهزة للنشر خلال 10 ثوانٍ"
+  },
+  "Temu, AliExpress, Amazon, and Shopify affiliate no-code storefront": {
+    "fr": "Votre boutique affiliée sans code pour Temu, AliExpress, Amazon et Shopify",
+    "es": "Tu tienda de afiliados sin código para Temu, AliExpress, Amazon y Shopify",
+    "ar": "متجر عمولة دون برمجة لمنتجات Temu وAliExpress وAmazon وShopify"
+  },
+  "Create My Free Shop": {
+    "fr": "Créer ma boutique gratuite",
+    "es": "Crear mi tienda gratis",
+    "ar": "إنشاء متجري المجاني"
+  },
+  "Try Post Formatter Free": {
+    "fr": "Essayer le formateur de publications gratuitement",
+    "es": "Probar el formateador gratis",
+    "ar": "جرّب منسّق المنشورات مجانًا"
+  },
+  "Prompt & SEO Generator": {
+    "fr": "Générateur de prompts et SEO",
+    "es": "Generador de instrucciones y SEO",
+    "ar": "مولّد التوجيهات وتحسين البحث"
+  },
+  "See SellPostly in action": {
+    "fr": "Découvrez SellPostly en action",
+    "es": "Descubre SellPostly en acción",
+    "ar": "شاهد SellPostly عمليًا"
+  },
+  "Interactive preview": {
+    "fr": "Aperçu interactif",
+    "es": "Vista previa interactiva",
+    "ar": "معاينة تفاعلية"
+  },
+  "Caption": {
+    "fr": "Légende",
+    "es": "Texto de publicación",
+    "ar": "نص المنشور"
+  },
+  "Everyday Crossbody Bag": {
+    "fr": "Sac bandoulière du quotidien",
+    "es": "Bolso cruzado para cada día",
+    "ar": "حقيبة كتف للاستخدام اليومي"
+  },
+  "Lightweight essentials, thoughtfully curated. Explore the details and check the current offer.": {
+    "fr": "Des essentiels légers, sélectionnés avec soin. Découvrez les détails et consultez l’offre actuelle.",
+    "es": "Básicos ligeros, elegidos con cuidado. Explora los detalles y consulta la oferta actual.",
+    "ar": "أساسيات خفيفة مختارة بعناية. استكشف التفاصيل وراجع العرض الحالي."
+  },
+  "Copy your caption and open your preferred platform.": {
+    "fr": "Copiez votre légende et ouvrez la plateforme de votre choix.",
+    "es": "Copia tu texto y abre la plataforma que prefieras.",
+    "ar": "انسخ نص المنشور وافتح منصتك المفضلة."
+  },
+  "Try the tabs, edit the copy, or paste a product link.": {
+    "fr": "Essayez les onglets, modifiez le texte ou collez un lien produit.",
+    "es": "Prueba las pestañas, edita el texto o pega un enlace de producto.",
+    "ar": "جرّب التبويبات أو عدّل النص أو الصق رابط منتج."
+  },
+  "Could not import or copy. Try the full formatter below.": {
+    "fr": "Importation ou copie impossible. Essayez le formateur complet ci-dessous.",
+    "es": "No se ha podido importar o copiar. Prueba el formateador completo de abajo.",
+    "ar": "تعذّر الاستيراد أو النسخ. جرّب المنسّق الكامل أدناه."
+  },
+  "Travel bag": {
+    "fr": "Sac de voyage",
+    "es": "Bolsa de viaje",
+    "ar": "حقيبة سفر"
+  },
+  "Everyday sneakers": {
+    "fr": "Baskets du quotidien",
+    "es": "Zapatillas para cada día",
+    "ar": "حذاء رياضي يومي"
+  },
+  "Skincare essentials": {
+    "fr": "Essentiels soin de la peau",
+    "es": "Básicos de cuidado de la piel",
+    "ar": "أساسيات العناية بالبشرة"
+  },
+  "69% OFF": {
+    "fr": "−69 %",
+    "es": "69 % de descuento",
+    "ar": "خصم 69٪"
+  },
+  "Sample rating": {
+    "fr": "Note de démonstration",
+    "es": "Valoración de ejemplo",
+    "ar": "تقييم تجريبي"
+  },
+  "Open shop builder": {
+    "fr": "Ouvrir l’éditeur de boutique",
+    "es": "Abrir el editor de tienda",
+    "ar": "فتح محرّر المتجر"
+  },
+  "Illustrative preview — sample prices, ratings and offers.": {
+    "fr": "Aperçu illustratif : prix, notes et offres de démonstration.",
+    "es": "Vista ilustrativa: precios, valoraciones y ofertas de ejemplo.",
+    "ar": "معاينة توضيحية: الأسعار والتقييمات والعروض أمثلة تجريبية."
+  },
+  "Editorial fashion inspiration": {
+    "fr": "Inspiration mode éditoriale",
+    "es": "Inspiración de moda editorial",
+    "ar": "إلهام من تصوير الأزياء التحريري"
+  },
+  "Discover an editorial look and the latest curated picks. Products are styling suggestions, not items worn or endorsed by the model.": {
+    "fr": "Découvrez un look éditorial et nos dernières sélections. Les produits sont des suggestions de style ; ils ne sont ni portés ni recommandés par le modèle.",
+    "es": "Descubre un look editorial y las últimas selecciones. Los productos son sugerencias de estilo; la modelo o el modelo no los lleva ni los recomienda.",
+    "ar": "اكتشف إطلالة تحريرية وأحدث الاختيارات. المنتجات اقتراحات للتنسيق، وليست بالضرورة ما يرتديه العارض أو يوصي به."
+  },
+  "Style inspiration; product suggestions only.": {
+    "fr": "Inspiration de style ; produits suggérés uniquement.",
+    "es": "Inspiración de estilo; solo sugerencias de productos.",
+    "ar": "إلهام للتنسيق؛ المنتجات اقتراحات فقط."
+  },
+  "Look link copied. Paste it into your post or bio.": {
+    "fr": "Lien du look copié. Collez-le dans votre publication ou votre bio.",
+    "es": "Enlace del look copiado. Pégalo en tu publicación o biografía.",
+    "ar": "نُسخ رابط الإطلالة. الصقه في منشورك أو نبذتك."
+  },
+  "Curated picks": {
+    "fr": "Notre sélection",
+    "es": "Selección cuidada",
+    "ar": "اختيارات منسّقة"
+  },
+  "9:16 Social Story Preview": {
+    "fr": "Aperçu de story sociale 9:16",
+    "es": "Vista previa de historia social 9:16",
+    "ar": "معاينة قصة اجتماعية 9:16"
   }
 } as const;
 export type Message = keyof typeof translations;

@@ -319,7 +319,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     
     {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>}
     <div hidden={shop.storeMode==='niche'} style={shop.storeMode==='niche'?{display:'none'}:undefined} className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{publicCategoryOptions.map(({name:c,count})=><button type="button" className={activeFilter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={activeFilter===c}>{label(c)}{count>0||!shopperView?" ("+count+")":""}</button>)}</div>
-    {loaded&&<a className="mb-4 inline-flex rounded-full border border-emerald-700 px-4 py-2 font-bold text-emerald-800" href={lookbookPath(publicSlug,shop.shopMode,snapshot)}>{t('Shop the Look')}</a>}
+    {loaded&&<a className="lookbook-filter-pill mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-700 px-5 py-3 font-bold text-white shadow-md" href={lookbookPath(publicSlug,shop.shopMode,snapshot)}><span aria-hidden="true">{'\u2728'}</span>{t('Shop the Look')}</a>}
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex","kids"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":value==="kids"?"Kids":"Unisex")}</button>)}
     </div>

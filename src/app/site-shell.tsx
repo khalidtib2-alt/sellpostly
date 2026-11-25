@@ -1,46 +1,24 @@
 "use client";
-
-import { useLanguage } from "./language-context";
-import PlatformNotice from './platform-notice';
-import BrandLogo from "./brand-logo";
-import ThemePicker from "./theme-picker";
-import Link from "next/link";
-import {usePathname} from "next/navigation";
-function currentLink(path:string,href:string){const route=href.split("#")[0];return path===route||(route!=="/"&&path.startsWith(route+"/"))?"page" as const:undefined;}
-
-const links = [
- ["/pricing","Pricing"],
- ["/studio","Creator Studio"], ["/settings","Seller Settings"],
- ["/how-it-works","How SellPostly Works"],
- ["/shop","My Shop"],
-  ["/?tab=prompt#formatter", "Prompt Generator"], ["/guides", "Seller Guides"], ["/about", "About"], ["/contact", "Contact"],
-  ["/privacy-policy", "Privacy Policy"], ["/terms", "Terms"],
-] as const;
-
-export function Header() {
-  const { language, setLanguage, t } = useLanguage();
-  const pathname=usePathname();
-  return <header className="border-b border-slate-200"><nav aria-label={t("Main navigation")} className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
-    <Link aria-current={currentLink(pathname,"/")} href="/" className="text-xl font-black tracking-tight"><BrandLogo /></Link>
-    <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-slate-700">
-      <Link aria-current={currentLink(pathname,"/studio")} href="/studio">{t("Creator Studio")}</Link><Link aria-current={currentLink(pathname,"/pricing")} href="/pricing">{t("Pricing")}</Link><Link href="/settings">{t("Seller Settings")}</Link><Link aria-current={currentLink(pathname,"/shop")} href="/shop">{t("My Shop")}</Link><Link aria-current={currentLink(pathname,"/#formatter")} href="/#formatter">{t("Post Formatter")}</Link><Link aria-current={currentLink(pathname,"/prompt-generator")} href="/?tab=prompt#formatter">{t("Prompt Generator")}</Link><Link aria-current={currentLink(pathname,"/guides")} href="/guides">{t("Seller Guides")}</Link><Link aria-current={currentLink(pathname,"/extension")} href="/extension">{t("Chrome Extension")}</Link><Link aria-current={currentLink(pathname,"/how-it-works")} href="/how-it-works">{t("How SellPostly Works")}</Link><Link aria-current={currentLink(pathname,"/about")} href="/about">{t("About")}</Link><Link aria-current={currentLink(pathname,"/contact")} href="/contact">{t("Contact")}</Link>
-    </div>
-    <div role="group" aria-label={t("Language")} className="inline-flex rounded-full bg-slate-100 p-1 text-sm font-bold">
-      {([["en","EN"],["fr","FR"],["es","ES"],["ar","AR"]] as const).map(([code, label]) => (
-        <button key={code} type="button" lang={code} aria-pressed={language === code} onClick={() => setLanguage(code)}
-          className={"rounded-full px-3 py-1 " + (language === code ? "bg-emerald-700 text-white" : "text-slate-800")}>{label}</button>
-      ))}
-    </div>
-    <ThemePicker />
-  </nav></header>;
-}
-
-export function Footer() {
-  const { t } = useLanguage();const pathname=usePathname();
-  return <footer className="border-t border-slate-200"><nav aria-label={t("Footer navigation")} className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-3 px-5 py-8 text-sm font-semibold text-slate-700">
-    <Link aria-current={currentLink(pathname,"/")} href="/">SellPostly</Link>{links.map(([href, label]) => <Link key={href} aria-current={currentLink(pathname,href)} href={href}>{t(label)}</Link>)}
-  </nav><PlatformNotice/></footer>;
-}
+import {useLanguage} from './language-context';
+import {platformNotice} from './platform-notice';
+import BrandLogo from './brand-logo';
+import Link from 'next/link';
+import {usePathname} from 'next/navigation';
+import {ArrowRight,Menu} from 'lucide-react';
+function currentLink(path:string,href:string){const route=href.split('#')[0];return path===route||(route!=='/'&&path.startsWith(route+'/'))?'page' as const:undefined;}
+const primaryLinks=[['/#formatter','Post Formatter'],['/shop','My Shop'],['/pricing','Pricing']] as const;
+function LanguagePill(){const {language,setLanguage,t}=useLanguage();return <div className="saas-language" role="group" aria-label={t('Language')}>{(['en','fr','es','ar'] as const).map(code=><button key={code} type="button" lang={code} aria-pressed={language===code} onClick={()=>setLanguage(code)}>{code.toUpperCase()}</button>)}</div>;}
+export function Header(){const {t}=useLanguage(),pathname=usePathname();return <header className="saas-header"><nav className="saas-header-row" aria-label={t('Main navigation')}>
+ <Link href="/" aria-label="SellPostly" className="saas-brand"><BrandLogo/></Link>
+ <div className="saas-primary-nav">{primaryLinks.map(([href,label])=><Link key={href} href={href} aria-current={currentLink(pathname,href)}>{t(label)}</Link>)}</div>
+ <div className="saas-header-actions"><LanguagePill/><Link className="saas-extension-link" href="/extension">{t('Chrome Extension')}</Link><Link className="saas-primary saas-start" href="/shop" aria-label={t('Start Free')}><span className="saas-start-full">{t('Start Free')}</span><span className="saas-start-short">{t('Free')}</span><ArrowRight size={16} aria-hidden="true" className="rtl:rotate-180"/></Link>
+ <details className="saas-mobile-menu"><summary aria-label={t('Open navigation')}><Menu size={21}/></summary><div>{primaryLinks.map(([href,label])=><Link key={href} href={href} aria-current={currentLink(pathname,href)} onClick={e=>e.currentTarget.closest('details')?.removeAttribute('open')}>{t(label)}</Link>)}<Link href="/extension">{t('Chrome Extension')}</Link></div></details></div>
+ </nav></header>;}
+export function Footer(){const {t}=useLanguage();return <footer className="saas-footer"><div className="saas-footer-grid">
+ <div><Link href="/" className="saas-brand" aria-label="SellPostly"><BrandLogo/></Link><p className="saas-footer-tagline">{t('No-Code Affiliate Storefronts + Social Post Studio')}</p></div>
+ <nav aria-label={t('Explore SellPostly')}><Link href="/how-it-works">{t('How SellPostly Works')}</Link><Link href="/about">{t('About')}</Link></nav>
+ <nav aria-label={t('Support & Legal')}><Link href="/contact">{t('Contact')}</Link><Link href="/privacy-policy">{t('Privacy Policy')}</Link><Link href="/terms">{t('Terms')}</Link></nav>
+ </div><div className="saas-footer-bottom"><p>© {new Date().getUTCFullYear()} SellPostly. {t('All rights reserved.')}</p><p className="saas-footer-legal">{t(platformNotice)}</p></div></footer>;}
 
 export function ContentPage({ title, intro, children }: { title: string; intro: string; children: React.ReactNode }) {
   return <main className="mx-auto max-w-3xl px-5 py-14 sm:py-20">
