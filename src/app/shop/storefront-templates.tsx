@@ -1,4 +1,5 @@
 "use client";
+import {featuredProduct} from '../../lib/storefront-selection';
 import ProductPrice from './product-price';
 import PromoVideoModal from './promo-video-modal';
 import {promoVideo} from './promo-video';
@@ -16,8 +17,8 @@ import {productPath} from './product-links';
 import ProductGallery from './product-gallery';
 import {escrowReady,holdDays} from './escrow-config';
 
-export function StorefrontHero({shop,verified=false}:{shop:Shop;verified?:boolean}){
- const {t}=useLanguage(),affiliate=shop.shopMode==='affiliate',photo=safeImage(shop.heroImage||'')||shop.products.find(p=>p.image)?.image;
+export function StorefrontHero({shop,verified=false,products=shop.products,filtered=false}:{shop:Shop;verified?:boolean;products?:Product[];filtered?:boolean}){
+ const {t}=useLanguage(),affiliate=shop.shopMode==='affiliate',photo=filtered?featuredProduct(products)?.image:safeImage(shop.heroImage||'')||featuredProduct(products)?.image;
  return <section className={affiliate?'curator-hero':'boutique-hero'} data-template={affiliate?'editorial':'boutique'}>
   <div className="store-hero-copy">{shop.storeMode==='niche'&&<span className="mb-4 inline-flex rounded-full border px-4 py-2 text-sm font-bold" aria-label={t('Niche Collection')}>{shop.nicheName}</span>}<p className="store-eyebrow">{affiliate?<Layers size={15}/>:<ShoppingBag size={15}/>} {t(affiliate?'The Curated Edit':'The Signature Collection')}</p><h2>{shop.heroTitle||(shop.storeMode==='niche'?shop.nicheName:undefined)||t(affiliate?'Top Curated Picks & Fresh Finds':'Everyday pieces. Exceptionally yours.')}</h2><p className="store-hero-description">{shop.heroSubtitle||shop.bio||t(affiliate?'A considered collection of useful finds. Explore the details, compare the value, and shop directly with the original store.':'Discover the collection, find your next favorite, and order directly from our boutique.')}</p><a href="#store-collection" className="store-primary-link">{t(affiliate?'Explore the edit':'Shop the collection')}<ArrowRight size={17}/></a><p className="store-hero-fine">{affiliate?t('Prices and availability are set by each external store.'):t('Your collection. Your way to pay.')}</p></div>
   <div className="store-hero-art">{photo?<img src={photo} alt={shop.name} className={shop.heroImage?'custom-hero-photo':''}/>:<div className="store-monogram" aria-hidden="true">{(shop.name||'SP').slice(0,2).toUpperCase()}</div>}<span className="store-hero-stamp">{affiliate?t('Selected with care'):shop.name||t('My Shop')}</span></div>
@@ -35,7 +36,7 @@ export function StorefrontProducts({shop,products,slug,snapshot,onAdd,onPay,onCo
   return <article id={'product-'+p.id} key={p.id} className={affiliate?'editorial-product'+(stockPhoto?' has-representative-photo':''):'boutique-product'}>
    <div className="store-card-visual aspect-[4/3] max-h-56 w-full"><span className="store-card-number">{String(index+1).padStart(2,'0')} / {t(affiliate?'THE EDIT':'COLLECTION')}</span>
     {affiliate?<div className="store-photo-frame h-full w-full">{p.image&&<img className="h-full w-full object-contain object-center" src={p.image} alt={title(p)} loading="lazy"/>}</div>:<a href={productPath(p.id,slug,snapshot)} className="store-photo-frame h-full w-full" aria-label={title(p)}>{p.image&&<img className="h-full w-full object-contain object-center" src={p.image} alt={title(p)} loading="lazy"/>}</a>}
-    {p.aiGeneratedImage&&<span className="studio-cover-caption">{t('Representative AI image — not the exact branded product.')}</span>}{affiliate&&stockPhoto&&!p.aiGeneratedImage&&<span className="studio-cover-caption">{t('Representative style photo')}</span>}{discount&&<span className="store-deal-badge">-{discount}%</span>}{!restricted&&p.badge&&p.badge!=='none'&&<span className="store-feature-badge">{t(p.badge==='hot'?'Hot':p.badge==='sale'?'Sale':p.badge==='limited'?'Limited':'New')}</span>}{!affiliate&&<button className="store-quick-view" type="button" onClick={()=>setQuick(p)}><Eye size={16}/>{t('Quick View')}</button>}
+    {p.aiGeneratedImage&&<span className="studio-cover-caption">{t('Representative AI image — not the exact branded product.')}</span>}{discount&&<span className="store-deal-badge">-{discount}%</span>}{!restricted&&p.badge&&p.badge!=='none'&&<span className="store-feature-badge">{t(p.badge==='hot'?'Hot':p.badge==='sale'?'Sale':p.badge==='limited'?'Limited':'New')}</span>}{!affiliate&&<button className="store-quick-view" type="button" onClick={()=>setQuick(p)}><Eye size={16}/>{t('Quick View')}</button>}
    </div>
    <div className="store-card-body p-4">
     {affiliate&&stockPhoto&&<div className="store-photo-credit"><a href={stockPhoto.pageUrl} target="_blank" rel="noopener noreferrer">{t('Photo credit')}: {stockPhoto.photographer==='Pexels contributor'?t('Pexels contributor'):stockPhoto.photographer} / {stockPhoto.provider}</a></div>}

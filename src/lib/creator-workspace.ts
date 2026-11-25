@@ -8,7 +8,7 @@ export const freshWorkspace=(language:CreatorWorkspace['language']='en'):Creator
 export function normalizeWorkspace(raw:unknown):CreatorWorkspace{
  const v=raw&&typeof raw==='object'?raw as Record<string,unknown>:{};
  const text=(key:string,max:number)=>typeof v[key]==='string'?(v[key] as string).slice(0,max):'';
- return {topic:text('topic',300),contentType:['article','social','video','newsletter'].includes(String(v.contentType))?v.contentType as CreatorWorkspace['contentType']:'article',language:v.language==='fr'||v.language==='ar'?v.language:'en',tone:tones.includes(v.tone as any)?v.tone as CreatorWorkspace['tone']:'professional',length:lengths.includes(v.length as any)?v.length as CreatorWorkspace['length']:'medium',humanitarian:v.humanitarian===true,humanitarianNote:text('humanitarianNote',300),prompt:text('prompt',6000),content:text('content',100000)};
+ return {topic:text('topic',300),contentType:['article','social','video','newsletter'].includes(String(v.contentType))?v.contentType as CreatorWorkspace['contentType']:'article',language:v.language==='fr'||v.language==='es'||v.language==='ar'?v.language:'en',tone:tones.includes(v.tone as any)?v.tone as CreatorWorkspace['tone']:'professional',length:lengths.includes(v.length as any)?v.length as CreatorWorkspace['length']:'medium',humanitarian:v.humanitarian===true,humanitarianNote:text('humanitarianNote',300),prompt:text('prompt',6000),content:text('content',100000)};
 }
 export function normalizeDrafts(raw:unknown):CreatorDraft[]{
  if(!Array.isArray(raw))return [];

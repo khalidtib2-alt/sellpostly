@@ -5,7 +5,7 @@ export class WritingError extends Error{constructor(public code:WritingErrorCode
 
 export async function writeWithGemini(input:WritingInput,request:typeof fetch=fetch){
  const key=cleanGeminiKey();if(!key)throw new WritingError('NOT_CONFIGURED',503);
- const language={en:'English',fr:'French',ar:'Arabic'}[input.language];
+ const language={en:'English',fr:'French',es:'Spanish',ar:'Arabic'}[input.language];
  const system=`You are a professional writer. Write entirely in ${language}. Content type: ${input.contentType}. ${input.action==='prompt'?'Create a structured, reusable writing prompt from the topic: audience, purpose, angle, outline, tone, fact-checking requirements and output format. Return only the prompt, not the finished content.':'Follow the supplied edited writing prompt and return the complete finished content, not an outline or an explanation of your process. Use readable Markdown headings and paragraphs where appropriate.'} Do not invent research, statistics, citations, quotes or personal experience. No commerce fields, product metadata or store templates unless explicitly requested by the topic. Do not include implementation notes. ${writingControls(input)}`;
  try{
    const {data,model}=await geminiContent({systemInstruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:input.action==='prompt'?input.topic:input.prompt}]}]},request);

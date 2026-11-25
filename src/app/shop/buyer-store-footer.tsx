@@ -3,7 +3,7 @@ import PlatformNotice from '../platform-notice';
 import { useRef,useState } from 'react';
 import { useLanguage } from '../language-context';
 import type { Message } from '../translations';
-export default function BuyerStoreFooter({storeSlug}:{storeSlug?:string}){
+export default function BuyerStoreFooter({storeSlug,allowDisputes=true}:{storeSlug?:string;allowDisputes?:boolean}){
  const {t}=useLanguage();
  const dialog=useRef<HTMLDialogElement>(null);
  const [orderId,setOrderId]=useState(''),[contact,setContact]=useState(''),[reason,setReason]=useState(''),[busy,setBusy]=useState(false),[sent,setSent]=useState(false),[message,setMessage]=useState<Message|''>('');
@@ -17,6 +17,7 @@ export default function BuyerStoreFooter({storeSlug}:{storeSlug?:string}){
    setSent(true);setMessage('Your dispute has been sent to the Admin for review. Keep your order ID for follow-up.');
   }catch{setMessage('Could not submit the dispute. Check your connection and try again.');}finally{setBusy(false);}
  }
+ if(!allowDisputes)return <footer className="mt-12 border-t border-slate-200 pt-6 text-center"><PlatformNotice/><p className="my-4 text-sm text-slate-600">{t('Purchases, payments, delivery and returns are handled by the partner merchant.')}</p><p className="text-xs text-slate-600">{t('Powered by SellPostly')}</p></footer>;
  return <footer className="mt-12 border-t border-slate-200 pt-6 text-center">
   <PlatformNotice/><p className="text-xs font-medium text-slate-600">{t('Powered by SellPostly')}</p>
   <button type="button" onClick={()=>{setMessage('');setSent(false);dialog.current?.showModal();}} className="mt-3 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold">{t('Dispute Order / Report Store')}</button>

@@ -182,7 +182,7 @@ ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_provider_check CHECK (pro
 CREATE TABLE IF NOT EXISTS pro_upgrade_requests (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  email text NOT NULL CHECK (length(email) BETWEEN 3 AND 254),
- plan text NOT NULL CHECK (plan IN ('monthly','lifetime')),
+ plan text NOT NULL CHECK (plan IN ('monthly','lifetime','b2b')),
  amount_usd numeric(12,2) NOT NULL CHECK (amount_usd>0),
  coin text NOT NULL CHECK (coin IN ('USDC','USDT')),
  network text NOT NULL DEFAULT 'Polygon' CHECK (network='Polygon'),
@@ -196,11 +196,15 @@ CREATE TABLE IF NOT EXISTS pro_upgrade_requests (
 );
 
 -- statement-breakpoint
+ALTER TABLE pro_upgrade_requests DROP CONSTRAINT IF EXISTS pro_upgrade_requests_plan_check;
+-- statement-breakpoint
+ALTER TABLE pro_upgrade_requests ADD CONSTRAINT pro_upgrade_requests_plan_check CHECK (plan IN ('monthly','lifetime','b2b'));
+-- statement-breakpoint
 ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS email text;
 -- statement-breakpoint
-ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS language text NOT NULL DEFAULT 'en' CHECK (language IN ('en','fr','ar'));
+ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS language text NOT NULL DEFAULT 'en' CHECK (language IN ('en','fr','es','ar'));
 -- statement-breakpoint
-ALTER TABLE pro_upgrade_requests ADD COLUMN IF NOT EXISTS language text NOT NULL DEFAULT 'en' CHECK (language IN ('en','fr','ar'));
+ALTER TABLE pro_upgrade_requests ADD COLUMN IF NOT EXISTS language text NOT NULL DEFAULT 'en' CHECK (language IN ('en','fr','es','ar'));
 -- statement-breakpoint
 CREATE TABLE IF NOT EXISTS transactional_email_deliveries(event_key text PRIMARY KEY,sent_at timestamptz NOT NULL DEFAULT now());
 -- statement-breakpoint
@@ -215,7 +219,7 @@ BEGIN
  IF upgrade.status='approved' THEN RETURN upgrade.issued_license_key; END IF;
  IF upgrade.status<>'pending' THEN RAISE EXCEPTION 'Upgrade request is not pending'; END IF;
  IF license_key !~ '^SP-PRO-[A-F0-9]{64}$' OR owner_hash !~ '^[a-f0-9]{64}$' THEN RAISE EXCEPTION 'Invalid license'; END IF;
- INSERT INTO subscriptions(owner_key,provider,status,expires_at,email,language) VALUES(owner_hash,'crypto','active',CASE WHEN upgrade.plan='monthly' THEN now()+interval '30 days' ELSE NULL END,upgrade.email,upgrade.language);
+ INSERT INTO subscriptions(owner_key,provider,status,expires_at,email,language) VALUES(owner_hash,'crypto','active',CASE WHEN upgrade.plan IN ('monthly','b2b') THEN now()+interval '30 days' ELSE NULL END,upgrade.email,upgrade.language);
  UPDATE pro_upgrade_requests SET status='approved',issued_license_key=license_key,approved_at=now() WHERE id=request_id;
  RETURN license_key;
 END $$;
@@ -416,3 +420,12 @@ BEGIN
  END IF;
  RETURN NEW;
 END $$;
+
+-- statement-breakpoint
+ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS subscriptions_language_check;
+-- statement-breakpoint
+ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_language_check CHECK (language IN ('en','fr','es','ar'));
+-- statement-breakpoint
+ALTER TABLE pro_upgrade_requests DROP CONSTRAINT IF EXISTS pro_upgrade_requests_language_check;
+-- statement-breakpoint
+ALTER TABLE pro_upgrade_requests ADD CONSTRAINT pro_upgrade_requests_language_check CHECK (language IN ('en','fr','es','ar'));

@@ -1,4 +1,5 @@
 import 'server-only';
+import {b2bPlanPrice} from './b2b-plan';
 import {locale} from './locale';
 import { createHash,randomBytes } from 'node:crypto';
 import { db } from './db';
@@ -8,13 +9,14 @@ import type { Query } from './order-service';
 const run:Query=async(sql,args)=>await db().query(sql,args);
 export const digest=(value:string)=>createHash('sha256').update(value).digest('hex');
 export function upgradePrice(plan:string){
+ if(plan==='b2b')return b2bPlanPrice(process.env.NEXT_PUBLIC_B2B_PLAN_PRICE);
  const configured=plan==='monthly'?(process.env.NEXT_PUBLIC_PRO_PRICE_USD||'15'):process.env.NEXT_PUBLIC_PRO_LIFETIME_PRICE_USD;
  if(!configured||!/^\d{1,6}(\.\d{1,2})?$/.test(configured)||Number(configured)<=0)throw new ApiError('PLAN_UNAVAILABLE',503);
  return configured;
 }
 export function upgradeInput(value:unknown){
  const raw=object(value),email=text(raw.email,254).toLowerCase(),plan=raw.plan??'monthly';
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!['monthly','lifetime'].includes(String(plan))||!['USDC','USDT'].includes(String(raw.coin))||(raw.network!==undefined&&raw.network!=='Polygon'))throw new ApiError('INVALID_INPUT');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!['monthly','lifetime','b2b'].includes(String(plan))||!['USDC','USDT'].includes(String(raw.coin))||(raw.network!==undefined&&raw.network!=='Polygon'))throw new ApiError('INVALID_INPUT');
  return {email,plan:String(plan),coin:String(raw.coin),tx:txId(raw.tx_id,'Polygon'),amount:upgradePrice(String(plan))};
 }
 export async function requestUpgrade(value:unknown,query:Query=run){

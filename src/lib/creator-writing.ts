@@ -1,12 +1,12 @@
 export const contentTypes=['article','social','video','newsletter'] as const;
 export const writingTones=['professional','casual','persuasive','seo','empathetic'] as const;
 export const writingLengths=['short','medium','long'] as const;
-export type WritingInput={action:'prompt'|'write';topic:string;prompt:string;contentType:typeof contentTypes[number];language:'en'|'fr'|'ar';tone?:typeof writingTones[number];length?:typeof writingLengths[number];humanitarian?:boolean;humanitarianNote?:string};
+export type WritingInput={action:'prompt'|'write';topic:string;prompt:string;contentType:typeof contentTypes[number];language:'en'|'fr'|'es'|'ar';tone?:typeof writingTones[number];length?:typeof writingLengths[number];humanitarian?:boolean;humanitarianNote?:string};
 export function writingInput(raw:unknown):WritingInput{
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('INVALID_INPUT');
  const v=raw as Record<string,unknown>,text=(key:string,max:number)=>{const value=typeof v[key]==='string'?(v[key] as string).trim():'';if(value.length>max)throw Error('INPUT_TOO_LARGE');return value;};
  if(v.action!=='prompt'&&v.action!=='write')throw Error('INVALID_INPUT');
- if(!contentTypes.includes(v.contentType as any)||!['en','fr','ar'].includes(String(v.language)))throw Error('INVALID_INPUT');
+ if(!contentTypes.includes(v.contentType as any)||!['en','fr','es','ar'].includes(String(v.language)))throw Error('INVALID_INPUT');
  if(v.tone!==undefined&&!writingTones.includes(v.tone as any)||v.length!==undefined&&!writingLengths.includes(v.length as any)||v.humanitarian!==undefined&&typeof v.humanitarian!=='boolean')throw Error('INVALID_INPUT');
  const topic=text('topic',300),prompt=text('prompt',6000);
  if(v.action==='prompt'&&!topic||v.action==='write'&&!prompt)throw Error('INVALID_INPUT');

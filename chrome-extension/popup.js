@@ -1,414 +1,725 @@
 ﻿"use strict";
 
 const messages = {
-"Amazon Associates Notice: Verify image usage rights or replace with your own/studio photo before publishing":{"fr": "Avis Amazon Associates : vérifiez les droits d’utilisation de l’image ou remplacez-la par votre propre photo ou une photo de studio avant publication.", "ar": "تنبيه Amazon Associates: تحقّق من حقوق استخدام الصورة أو استبدلها بصورتك الخاصة أو صورة استوديو قبل النشر."},
-"Product Image URL":{"fr": "URL de la photo du produit", "ar": "رابط صورة المنتج"},
-"Price on this page":{"fr": "Prix affiché sur cette page", "ar": "السعر المعروض في هذه الصفحة"},
-
-"Import failed. Open a product page and try again.":{"fr":"Importation impossible. Ouvrez une fiche produit et réessayez.","ar":"تعذّر الاستيراد. افتح صفحة المنتج وحاول مجدداً."},
-"Active Shop":{"fr":"Boutique active","ar":"المتجر النشط"},
-"Primary Personal Store":{"fr":"Boutique personnelle principale","ar":"المتجر الشخصي الأساسي"},
-"Primary Affiliate Deals Shop":{"fr":"Boutique affiliée principale","ar":"متجر العروض بالعمولة الأساسي"},
-"+ New Niche Shop":{"fr":"+ Nouvelle boutique spécialisée","ar":"+ متجر متخصص جديد"},
-"Create Niche Shop":{"fr":"Créer une boutique spécialisée","ar":"إنشاء متجر متخصص"},
-"Creating shop…":{"fr":"Création de la boutique…","ar":"جارٍ إنشاء المتجر…"},
-"Custom URL Slug":{"fr":"Identifiant URL personnalisé","ar":"معرّف الرابط المخصص"},
-"Niche Name":{"fr":"Nom de la spécialité","ar":"اسم التخصص"},
-"Niche Collection":{"fr":"Collection spécialisée","ar":"تشكيلة متخصصة"},
-"Pro includes up to 10 niche shops across both store types.":{"fr":"Pro inclut jusqu’à 10 boutiques spécialisées, tous types confondus.","ar":"تتيح Pro إنشاء ما يصل إلى 10 متاجر متخصصة عبر كلا النوعين."},
-"Free includes one primary personal store and one primary affiliate shop. Upgrade to Pro for niche shops.":{"fr":"L’offre gratuite inclut une boutique personnelle principale et une boutique affiliée principale. Passez à Pro pour les boutiques spécialisées.","ar":"تشمل الخطة المجانية متجرًا شخصيًا أساسيًا ومتجرًا أساسيًا للعروض بالعمولة. اختر Pro لإضافة متاجر متخصصة."},
-"A niche shop has its own catalog, settings and permanent public URL. Broad category tabs are hidden.":{"fr":"Chaque boutique spécialisée possède son catalogue, ses réglages et son URL permanente. Les catégories générales sont masquées.","ar":"لكل متجر متخصص كتالوجه وإعداداته ورابطه العام الدائم. تُخفى تبويبات الفئات العامة."},
-"This URL slug is already taken.":{"fr":"Cet identifiant URL est déjà utilisé.","ar":"معرّف الرابط هذا مستخدم بالفعل."},
-"The 10 niche shop limit has been reached.":{"fr":"La limite de 10 boutiques spécialisées est atteinte.","ar":"تم بلوغ الحد الأقصى البالغ 10 متاجر متخصصة."},
-"Could not create the shop. Check your Pro license and try again.":{"fr":"Création impossible. Vérifiez votre licence Pro et réessayez.","ar":"تعذر إنشاء المتجر. تحقق من ترخيص Pro وحاول مجددًا."},
-"Free Primary Stores":{"fr":"Boutiques principales gratuites","ar":"المتاجر الأساسية المجانية"},
-"Start Free Primary Stores":{"fr":"Créer mes boutiques gratuites","ar":"ابدأ متاجرك الأساسية مجانًا"},
-"Exact Target Shop":{"fr":"Boutique de destination précise","ar":"المتجر المستهدف بالتحديد"},
-"Primary store (selected type)":{"fr":"Boutique principale (type sélectionné)","ar":"المتجر الأساسي (النوع المحدد)"},
-"Sync My Shops":{"fr":"Synchroniser mes boutiques","ar":"مزامنة متاجري"},
-"Niche collection: category is assigned automatically.":{"fr":"Collection spécialisée : catégorie attribuée automatiquement.","ar":"تشكيلة متخصصة: تُعيّن الفئة تلقائيًا."},
-"Shops synced. Choose your import destination.":{"fr":"Boutiques synchronisées. Choisissez la destination de l’import.","ar":"تمت مزامنة المتاجر. اختر وجهة الاستيراد."},
-"Sign in to My Shop on the website, then sync again.":{"fr":"Connectez-vous à Ma boutique sur le site, puis relancez la synchronisation.","ar":"سجّل الدخول إلى متجري على الموقع ثم أعد المزامنة."},
-"Representative style photo":{"fr":"Photo de style représentative","ar":"صورة توضيحية للأسلوب"},
-"Next Similar Photo":{"fr":"Photo similaire suivante","ar":"الصورة المشابهة التالية"},
-"Finding photos…":{"fr":"Recherche de photos…","ar":"جارٍ البحث عن صور…"},
-"Generic photo search":{"fr":"Recherche de photo générique","ar":"بحث عن صورة عامة"},
-"Representative photos show a style, not the exact branded product. Upload your own photo for an exact match.":{"fr":"Ces photos illustrent un style, pas le produit de marque exact. Importez votre propre photo pour une correspondance exacte.","ar":"تُظهر هذه الصور أسلوبًا مشابهًا، وليس المنتج الأصلي بعلامته التجارية. ارفع صورتك لعرض المنتج نفسه."},
-"Could not select this photo. Try another photo or upload your own.":{"fr":"Impossible de sélectionner cette photo. Essayez une autre photo ou importez la vôtre.","ar":"تعذّر اختيار هذه الصورة. جرّب صورة أخرى أو ارفع صورتك."},
-"Use this photo":{"fr":"Utiliser cette photo","ar":"استخدم هذه الصورة"},
-"Photo credit":{"fr":"Crédit photo","ar":"مصدر الصورة"},
-"Photo license":{"fr":"Licence photo","ar":"ترخيص الصورة"},
-"Amazon image blocked. My Shop will match a representative photo automatically.":{"fr":"Image Amazon bloquée. Ma boutique sélectionnera automatiquement une photo représentative.","ar":"تم حظر صورة أمازون. سيختار متجري صورة توضيحية مناسبة تلقائيًا."},
-"Amazon listing images cannot be hotlinked directly-upload your own review photo, use a brand press-kit image, or keep a representative style photo.":{"fr":"Les images Amazon ne peuvent pas être utilisées par lien direct. Importez votre photo, une image de presse autorisée ou conservez une photo représentative.","ar":"لا يمكن ربط صور منتجات أمازون مباشرة. ارفع صورتك أو صورة صحفية مرخّصة، أو احتفظ بصورة توضيحية مشابهة."},
-"men running shoes":{"fr":"Chaussures de course pour hommes","ar":"أحذية جري رجالية"},
-"women shoes":{"fr":"Chaussures pour femmes","ar":"أحذية نسائية"},
-"kids sneakers":{"fr":"Baskets pour enfants","ar":"أحذية رياضية للأطفال"},
-"wireless headphones":{"fr":"Casque sans fil","ar":"سماعات لاسلكية"},
-"wireless noise cancelling headphones":{"fr":"Casque sans fil à réduction de bruit","ar":"سماعات لاسلكية بعزل الضوضاء"},
-"smartwatch":{"fr":"Montre connectée","ar":"ساعة ذكية"},
-"coffee kitchen":{"fr":"Café et cuisine","ar":"القهوة والمطبخ"},
-"fitness equipment":{"fr":"Équipement de fitness","ar":"معدات اللياقة"},
-"skincare beauty":{"fr":"Beauté et soins de la peau","ar":"الجمال والعناية بالبشرة"},
-"office technology":{"fr":"Équipement de bureau","ar":"تقنيات المكتب"},
-"travel bag":{"fr":"Sac de voyage","ar":"حقيبة سفر"},
-"Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.":{"fr":"Les images des fiches Amazon ne peuvent pas être utilisées par lien direct : importez votre propre photo de test, utilisez une image du dossier de presse de la marque ou conservez cette illustration de studio.","ar":"لا يمكن ربط صور إعلانات أمازون مباشرةً — ارفع صورة مراجعة التقطتها بنفسك، أو استخدم صورة من الملف الإعلامي للعلامة التجارية، أو احتفظ بهذا الرسم التوضيحي."},
-"Stock (Optional)":{"fr":"Stock (facultatif)","ar":"المخزون (اختياري)"},
-"Affiliate Deals Shop":{"fr":"Boutique de bonnes affaires affiliées","ar":"متجر العروض بالعمولة"},
-"Personal Seller Shop":{"fr":"Boutique personnelle du vendeur","ar":"متجر البائع الشخصي"},
-"Destination Store":{"fr":"Boutique de destination","ar":"المتجر المستهدف"},
-"Affiliate tags are kept for deals. Personal products use your seller checkout.":{"fr":"Les liens affiliés conservent leurs paramètres. Les produits personnels utilisent votre paiement vendeur.","ar":"تُحفظ وسوم روابط العمولة للعروض. تستخدم المنتجات الشخصية طرق الدفع الخاصة بمتجرك."},
+  "Amazon Associates Notice: Verify image usage rights or replace with your own/studio photo before publishing": {
+    "fr": "Avis Amazon Associates : vérifiez les droits d’utilisation de l’image ou remplacez-la par votre propre photo ou une photo de studio avant publication.",
+    "ar": "تنبيه Amazon Associates: تحقّق من حقوق استخدام الصورة أو استبدلها بصورتك الخاصة أو صورة استوديو قبل النشر.",
+    "es": "Aviso de Amazon Afiliados: comprueba los derechos de uso de la imagen o sustitúyela por una foto propia o de estudio antes de publicar"
+  },
+  "Product Image URL": {
+    "fr": "URL de la photo du produit",
+    "ar": "رابط صورة المنتج",
+    "es": "URL de la imagen del producto"
+  },
+  "Price on this page": {
+    "fr": "Prix affiché sur cette page",
+    "ar": "السعر المعروض في هذه الصفحة",
+    "es": "Precio en esta página"
+  },
+  "Import failed. Open a product page and try again.": {
+    "fr": "Importation impossible. Ouvrez une fiche produit et réessayez.",
+    "ar": "تعذّر الاستيراد. افتح صفحة المنتج وحاول مجدداً.",
+    "es": "No se ha podido importar. Abre una página de producto e inténtalo de nuevo."
+  },
+  "Active Shop": {
+    "fr": "Boutique active",
+    "ar": "المتجر النشط",
+    "es": "Tienda activa"
+  },
+  "Primary Personal Store": {
+    "fr": "Boutique personnelle principale",
+    "ar": "المتجر الشخصي الأساسي",
+    "es": "Tienda personal principal"
+  },
+  "Primary Affiliate Deals Shop": {
+    "fr": "Boutique affiliée principale",
+    "ar": "متجر العروض بالعمولة الأساسي",
+    "es": "Tienda principal de ofertas de afiliados"
+  },
+  "+ New Niche Shop": {
+    "fr": "+ Nouvelle boutique spécialisée",
+    "ar": "+ متجر متخصص جديد",
+    "es": "+ Nueva tienda de nicho"
+  },
+  "Create Niche Shop": {
+    "fr": "Créer une boutique spécialisée",
+    "ar": "إنشاء متجر متخصص",
+    "es": "Crear tienda de nicho"
+  },
+  "Creating shop…": {
+    "fr": "Création de la boutique…",
+    "ar": "جارٍ إنشاء المتجر…",
+    "es": "Creando tienda…"
+  },
+  "Custom URL Slug": {
+    "fr": "Identifiant URL personnalisé",
+    "ar": "معرّف الرابط المخصص",
+    "es": "Identificador de URL personalizado"
+  },
+  "Niche Name": {
+    "fr": "Nom de la spécialité",
+    "ar": "اسم التخصص",
+    "es": "Nombre del nicho"
+  },
+  "Niche Collection": {
+    "fr": "Collection spécialisée",
+    "ar": "تشكيلة متخصصة",
+    "es": "Colección de nicho"
+  },
+  "Pro includes up to 10 niche shops across both store types.": {
+    "fr": "Pro inclut jusqu’à 10 boutiques spécialisées, tous types confondus.",
+    "ar": "تتيح Pro إنشاء ما يصل إلى 10 متاجر متخصصة عبر كلا النوعين.",
+    "es": "Pro incluye hasta 10 tiendas de nicho entre ambos tipos."
+  },
+  "Free includes one primary personal store and one primary affiliate shop. Upgrade to Pro for niche shops.": {
+    "fr": "L’offre gratuite inclut une boutique personnelle principale et une boutique affiliée principale. Passez à Pro pour les boutiques spécialisées.",
+    "ar": "تشمل الخطة المجانية متجرًا شخصيًا أساسيًا ومتجرًا أساسيًا للعروض بالعمولة. اختر Pro لإضافة متاجر متخصصة.",
+    "es": "Free incluye una tienda personal principal y una de afiliados. Pasa a Pro para crear tiendas de nicho."
+  },
+  "A niche shop has its own catalog, settings and permanent public URL. Broad category tabs are hidden.": {
+    "fr": "Chaque boutique spécialisée possède son catalogue, ses réglages et son URL permanente. Les catégories générales sont masquées.",
+    "ar": "لكل متجر متخصص كتالوجه وإعداداته ورابطه العام الدائم. تُخفى تبويبات الفئات العامة.",
+    "es": "Cada tienda de nicho tiene su propio catálogo, configuración y URL pública permanente. Se ocultan las pestañas de categorías generales."
+  },
+  "This URL slug is already taken.": {
+    "fr": "Cet identifiant URL est déjà utilisé.",
+    "ar": "معرّف الرابط هذا مستخدم بالفعل.",
+    "es": "Este identificador de URL ya está en uso."
+  },
+  "The 10 niche shop limit has been reached.": {
+    "fr": "La limite de 10 boutiques spécialisées est atteinte.",
+    "ar": "تم بلوغ الحد الأقصى البالغ 10 متاجر متخصصة.",
+    "es": "Se ha alcanzado el límite de 10 tiendas de nicho."
+  },
+  "Could not create the shop. Check your Pro license and try again.": {
+    "fr": "Création impossible. Vérifiez votre licence Pro et réessayez.",
+    "ar": "تعذر إنشاء المتجر. تحقق من ترخيص Pro وحاول مجددًا.",
+    "es": "No se ha podido crear la tienda. Comprueba tu licencia Pro e inténtalo de nuevo."
+  },
+  "Free Primary Stores": {
+    "fr": "Boutiques principales gratuites",
+    "ar": "المتاجر الأساسية المجانية",
+    "es": "Tiendas principales Free"
+  },
+  "Start Free Primary Stores": {
+    "fr": "Créer mes boutiques gratuites",
+    "ar": "ابدأ متاجرك الأساسية مجانًا",
+    "es": "Crear tiendas principales gratis"
+  },
+  "Exact Target Shop": {
+    "fr": "Boutique de destination précise",
+    "ar": "المتجر المستهدف بالتحديد",
+    "es": "Tienda de destino exacta"
+  },
+  "Primary store (selected type)": {
+    "fr": "Boutique principale (type sélectionné)",
+    "ar": "المتجر الأساسي (النوع المحدد)",
+    "es": "Tienda principal (tipo seleccionado)"
+  },
+  "Sync My Shops": {
+    "fr": "Synchroniser mes boutiques",
+    "ar": "مزامنة متاجري",
+    "es": "Sincronizar mis tiendas"
+  },
+  "Niche collection: category is assigned automatically.": {
+    "fr": "Collection spécialisée : catégorie attribuée automatiquement.",
+    "ar": "تشكيلة متخصصة: تُعيّن الفئة تلقائيًا.",
+    "es": "Colección de nicho: la categoría se asigna automáticamente."
+  },
+  "Shops synced. Choose your import destination.": {
+    "fr": "Boutiques synchronisées. Choisissez la destination de l’import.",
+    "ar": "تمت مزامنة المتاجر. اختر وجهة الاستيراد.",
+    "es": "Tiendas sincronizadas. Elige el destino de la importación."
+  },
+  "Sign in to My Shop on the website, then sync again.": {
+    "fr": "Connectez-vous à Ma boutique sur le site, puis relancez la synchronisation.",
+    "ar": "سجّل الدخول إلى متجري على الموقع ثم أعد المزامنة.",
+    "es": "Inicia sesión en Mi tienda en el sitio web y vuelve a sincronizar."
+  },
+  "Representative style photo": {
+    "fr": "Photo de style représentative",
+    "ar": "صورة توضيحية للأسلوب",
+    "es": "Foto de estilo representativa"
+  },
+  "Next Similar Photo": {
+    "fr": "Photo similaire suivante",
+    "ar": "الصورة المشابهة التالية",
+    "es": "Siguiente foto similar"
+  },
+  "Finding photos…": {
+    "fr": "Recherche de photos…",
+    "ar": "جارٍ البحث عن صور…",
+    "es": "Buscando fotos…"
+  },
+  "Generic photo search": {
+    "fr": "Recherche de photo générique",
+    "ar": "بحث عن صورة عامة",
+    "es": "Búsqueda de fotos genéricas"
+  },
+  "Representative photos show a style, not the exact branded product. Upload your own photo for an exact match.": {
+    "fr": "Ces photos illustrent un style, pas le produit de marque exact. Importez votre propre photo pour une correspondance exacte.",
+    "ar": "تُظهر هذه الصور أسلوبًا مشابهًا، وليس المنتج الأصلي بعلامته التجارية. ارفع صورتك لعرض المنتج نفسه.",
+    "es": "Las fotos representativas muestran un estilo, no el producto de marca exacto. Sube tu foto para una coincidencia exacta."
+  },
+  "Could not select this photo. Try another photo or upload your own.": {
+    "fr": "Impossible de sélectionner cette photo. Essayez une autre photo ou importez la vôtre.",
+    "ar": "تعذّر اختيار هذه الصورة. جرّب صورة أخرى أو ارفع صورتك.",
+    "es": "No se ha podido seleccionar esta foto. Prueba otra o sube la tuya."
+  },
+  "Use this photo": {
+    "fr": "Utiliser cette photo",
+    "ar": "استخدم هذه الصورة",
+    "es": "Usar esta foto"
+  },
+  "Photo credit": {
+    "fr": "Crédit photo",
+    "ar": "مصدر الصورة",
+    "es": "Crédito de foto"
+  },
+  "Photo license": {
+    "fr": "Licence photo",
+    "ar": "ترخيص الصورة",
+    "es": "Licencia de foto"
+  },
+  "Amazon image blocked. My Shop will match a representative photo automatically.": {
+    "fr": "Image Amazon bloquée. Ma boutique sélectionnera automatiquement une photo représentative.",
+    "ar": "تم حظر صورة أمازون. سيختار متجري صورة توضيحية مناسبة تلقائيًا.",
+    "es": "Imagen de Amazon bloqueada. Mi tienda buscará una foto representativa automáticamente."
+  },
+  "Amazon listing images cannot be hotlinked directly-upload your own review photo, use a brand press-kit image, or keep a representative style photo.": {
+    "fr": "Les images Amazon ne peuvent pas être utilisées par lien direct. Importez votre photo, une image de presse autorisée ou conservez une photo représentative.",
+    "ar": "لا يمكن ربط صور منتجات أمازون مباشرة. ارفع صورتك أو صورة صحفية مرخّصة، أو احتفظ بصورة توضيحية مشابهة.",
+    "es": "No se pueden enlazar imágenes de anuncios de Amazon directamente. Sube tu foto de reseña, utiliza una del kit de prensa o conserva una foto representativa."
+  },
+  "men running shoes": {
+    "fr": "Chaussures de course pour hommes",
+    "ar": "أحذية جري رجالية",
+    "es": "zapatillas de correr para hombre"
+  },
+  "women shoes": {
+    "fr": "Chaussures pour femmes",
+    "ar": "أحذية نسائية",
+    "es": "zapatos de mujer"
+  },
+  "kids sneakers": {
+    "fr": "Baskets pour enfants",
+    "ar": "أحذية رياضية للأطفال",
+    "es": "zapatillas infantiles"
+  },
+  "wireless headphones": {
+    "fr": "Casque sans fil",
+    "ar": "سماعات لاسلكية",
+    "es": "auriculares inalámbricos"
+  },
+  "wireless noise cancelling headphones": {
+    "fr": "Casque sans fil à réduction de bruit",
+    "ar": "سماعات لاسلكية بعزل الضوضاء",
+    "es": "auriculares inalámbricos con cancelación de ruido"
+  },
+  "smartwatch": {
+    "fr": "Montre connectée",
+    "ar": "ساعة ذكية",
+    "es": "reloj inteligente"
+  },
+  "coffee kitchen": {
+    "fr": "Café et cuisine",
+    "ar": "القهوة والمطبخ",
+    "es": "café y cocina"
+  },
+  "fitness equipment": {
+    "fr": "Équipement de fitness",
+    "ar": "معدات اللياقة",
+    "es": "equipo de fitness"
+  },
+  "skincare beauty": {
+    "fr": "Beauté et soins de la peau",
+    "ar": "الجمال والعناية بالبشرة",
+    "es": "belleza y cuidado de la piel"
+  },
+  "office technology": {
+    "fr": "Équipement de bureau",
+    "ar": "تقنيات المكتب",
+    "es": "tecnología de oficina"
+  },
+  "travel bag": {
+    "fr": "Sac de voyage",
+    "ar": "حقيبة سفر",
+    "es": "bolsa de viaje"
+  },
+  "Amazon listing images cannot be hotlinked directly—upload your own review photo, use a brand press-kit image, or keep this studio illustration.": {
+    "fr": "Les images des fiches Amazon ne peuvent pas être utilisées par lien direct : importez votre propre photo de test, utilisez une image du dossier de presse de la marque ou conservez cette illustration de studio.",
+    "ar": "لا يمكن ربط صور إعلانات أمازون مباشرةً — ارفع صورة مراجعة التقطتها بنفسك، أو استخدم صورة من الملف الإعلامي للعلامة التجارية، أو احتفظ بهذا الرسم التوضيحي.",
+    "es": "No se pueden enlazar directamente imágenes de anuncios de Amazon. Sube tu propia foto de reseña, utiliza una imagen del kit de prensa de la marca o conserva esta ilustración de estudio."
+  },
+  "Stock (Optional)": {
+    "fr": "Stock (facultatif)",
+    "ar": "المخزون (اختياري)",
+    "es": "Existencias (opcional)"
+  },
+  "Affiliate Deals Shop": {
+    "fr": "Boutique de bonnes affaires affiliées",
+    "ar": "متجر العروض بالعمولة",
+    "es": "Tienda de ofertas de afiliados"
+  },
+  "Personal Seller Shop": {
+    "fr": "Boutique personnelle du vendeur",
+    "ar": "متجر البائع الشخصي",
+    "es": "Tienda personal del vendedor"
+  },
+  "Destination Store": {
+    "fr": "Boutique de destination",
+    "ar": "المتجر المستهدف",
+    "es": "Tienda de destino"
+  },
+  "Affiliate tags are kept for deals. Personal products use your seller checkout.": {
+    "fr": "Les liens affiliés conservent leurs paramètres. Les produits personnels utilisent votre paiement vendeur.",
+    "ar": "تُحفظ وسوم روابط العمولة للعروض. تستخدم المنتجات الشخصية طرق الدفع الخاصة بمتجرك.",
+    "es": "Las ofertas conservan las etiquetas de afiliado. Los productos personales utilizan el pago del vendedor."
+  },
   "Could not load or save email preferences.": {
     "fr": "Impossible de charger ou d’enregistrer les préférences e-mail.",
-    "ar": "تعذّر تحميل تفضيلات البريد أو حفظها."
+    "ar": "تعذّر تحميل تفضيلات البريد أو حفظها.",
+    "es": "No se han podido cargar o guardar las preferencias de correo."
   },
   "Email preferences saved.": {
     "fr": "Préférences e-mail enregistrées.",
-    "ar": "تم حفظ تفضيلات البريد."
+    "ar": "تم حفظ تفضيلات البريد.",
+    "es": "Preferencias de correo guardadas."
   },
   "Save Email Preferences": {
     "fr": "Enregistrer les préférences e-mail",
-    "ar": "حفظ تفضيلات البريد"
+    "ar": "حفظ تفضيلات البريد",
+    "es": "Guardar preferencias de correo"
   },
   "Payout updates use this private email and your current language. Leave blank to disable seller emails.": {
     "fr": "Les mises à jour des retraits utilisent cet e-mail privé et votre langue actuelle. Laissez vide pour désactiver les e-mails vendeur.",
-    "ar": "تُرسل تحديثات السحب إلى هذا البريد الخاص بلغتك الحالية. اتركه فارغاً لتعطيل رسائل البائع."
+    "ar": "تُرسل تحديثات السحب إلى هذا البريد الخاص بلغتك الحالية. اتركه فارغاً لتعطيل رسائل البائع.",
+    "es": "Las actualizaciones de retiros utilizan este correo privado y tu idioma actual. Déjalo vacío para desactivar los correos al vendedor."
   },
   "Seller Notification Email": {
     "fr": "E-mail de notification du vendeur",
-    "ar": "البريد الإلكتروني لإشعارات البائع"
+    "ar": "البريد الإلكتروني لإشعارات البائع",
+    "es": "Correo de notificaciones del vendedor"
   },
   "WhatsApp Phone (Optional)": {
     "fr": "Téléphone WhatsApp (facultatif)",
-    "ar": "رقم واتساب (اختياري)"
+    "ar": "رقم واتساب (اختياري)",
+    "es": "Teléfono de WhatsApp (opcional)"
   },
   "A buyer international phone number is needed for WhatsApp replies.": {
     "fr": "Un numéro de téléphone international de l’acheteur est nécessaire pour les réponses WhatsApp.",
-    "ar": "يلزم رقم هاتف المشتري بالصيغة الدولية للرد عبر واتساب."
+    "ar": "يلزم رقم هاتف المشتري بالصيغة الدولية للرد عبر واتساب.",
+    "es": "Se necesita un teléfono internacional del comprador para responder por WhatsApp."
   },
   "Delivery Follow-Up": {
     "fr": "Suivi de la livraison",
-    "ar": "متابعة التسليم"
+    "ar": "متابعة التسليم",
+    "es": "Seguimiento de entrega"
   },
   "Digital Key / Tracking Delivered": {
     "fr": "Clé numérique / suivi envoyé",
-    "ar": "تم إرسال المفتاح الرقمي أو التتبع"
+    "ar": "تم إرسال المفتاح الرقمي أو التتبع",
+    "es": "Clave digital o seguimiento entregado"
   },
   "Order Confirmed": {
     "fr": "Commande confirmée",
-    "ar": "تم تأكيد الطلب"
+    "ar": "تم تأكيد الطلب",
+    "es": "Pedido confirmado"
   },
   "WhatsApp Quick Replies": {
     "fr": "Réponses rapides WhatsApp",
-    "ar": "ردود واتساب السريعة"
+    "ar": "ردود واتساب السريعة",
+    "es": "Respuestas rápidas de WhatsApp"
   },
   "Gender / Target Audience": {
     "fr": "Genre / public cible",
-    "ar": "الجنس أو الجمهور المستهدف"
+    "ar": "الجنس أو الجمهور المستهدف",
+    "es": "Género o público objetivo"
   },
   "Sport": {
     "fr": "Sport",
-    "ar": "رياضة"
+    "ar": "رياضة",
+    "es": "Deporte"
   },
   "Art": {
     "fr": "Art",
-    "ar": "فن"
+    "ar": "فن",
+    "es": "Arte"
   },
   "Digital Product": {
     "fr": "Produit numérique",
-    "ar": "منتج رقمي"
+    "ar": "منتج رقمي",
+    "es": "Producto digital"
   },
   "Kids": {
     "fr": "Enfants",
-    "ar": "الأطفال"
+    "ar": "الأطفال",
+    "es": "Niños"
   },
   "Send to My Shop (Pro)": {
     "fr": "Envoyer vers ma boutique (Pro)",
-    "ar": "إرسال إلى متجري (Pro)"
+    "ar": "إرسال إلى متجري (Pro)",
+    "es": "Enviar a Mi tienda (Pro)"
   },
   "Sending to My Shop…": {
     "fr": "Envoi vers ma boutique…",
-    "ar": "جارٍ الإرسال إلى متجري…"
+    "ar": "جارٍ الإرسال إلى متجري…",
+    "es": "Enviando a Mi tienda…"
   },
   "Enter a product name or import the current page first.": {
     "fr": "Saisissez un nom de produit ou importez d’abord la page actuelle.",
-    "ar": "أدخل اسم المنتج أو استورد الصفحة الحالية أولًا."
+    "ar": "أدخل اسم المنتج أو استورد الصفحة الحالية أولًا.",
+    "es": "Introduce un nombre de producto o importa primero la página actual."
   },
   "Opening My Shop. Activate Pro on the website if requested.": {
     "fr": "Ouverture de Ma boutique. Activez Pro sur le site si nécessaire.",
-    "ar": "جارٍ فتح متجري. فعّل Pro على الموقع إذا طُلب ذلك."
+    "ar": "جارٍ فتح متجري. فعّل Pro على الموقع إذا طُلب ذلك.",
+    "es": "Abriendo Mi tienda. Activa Pro en el sitio web si se solicita."
   },
   "Could not open My Shop. Reload the extension and try again.": {
     "fr": "Impossible d’ouvrir Ma boutique. Rechargez l’extension et réessayez.",
-    "ar": "تعذر فتح متجري. أعد تحميل الإضافة وحاول مجددًا."
+    "ar": "تعذر فتح متجري. أعد تحميل الإضافة وحاول مجددًا.",
+    "es": "No se ha podido abrir Mi tienda. Recarga la extensión e inténtalo de nuevo."
   },
   "Promo image copied! Press Ctrl+V in Facebook, then click Copy Text for your caption": {
     "fr": "Image promotionnelle copiée ! Collez-la dans Facebook avec Ctrl+V, puis cliquez sur Copier le texte pour la légende.",
-    "ar": "تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق."
+    "ar": "تم نسخ الصورة الترويجية! اضغط Ctrl+V في فيسبوك، ثم اضغط نسخ النص للحصول على التعليق.",
+    "es": "Imagen promocional copiada. Pulsa Ctrl+V en Facebook y después Copiar texto para añadir la descripción"
   },
   "Shop Category": {
     "fr": "Catégorie de boutique",
-    "ar": "فئة المتجر"
+    "ar": "فئة المتجر",
+    "es": "Categoría de tienda"
   },
   "Gender / Audience": {
     "fr": "Genre / Public",
-    "ar": "الجنس أو الجمهور"
+    "ar": "الجنس أو الجمهور",
+    "es": "Género o público"
   },
   "All / Unisex": {
     "fr": "Tous / Mixte",
-    "ar": "الكل / للجنسين"
+    "ar": "الكل / للجنسين",
+    "es": "Todos / unisex"
   },
   "Men": {
     "fr": "Hommes",
-    "ar": "الرجال"
+    "ar": "الرجال",
+    "es": "Hombres"
   },
   "Women": {
     "fr": "Femmes",
-    "ar": "النساء"
+    "ar": "النساء",
+    "es": "Mujeres"
   },
   "Unisex": {
     "fr": "Mixte",
-    "ar": "للجميع"
+    "ar": "للجميع",
+    "es": "Unisex"
   },
   "Edit Product": {
     "fr": "Modifier le produit",
-    "ar": "تعديل المنتج"
+    "ar": "تعديل المنتج",
+    "es": "Editar producto"
   },
   "Category": {
     "fr": "Catégorie",
-    "ar": "الفئة"
+    "ar": "الفئة",
+    "es": "Categoría"
   },
   "Tech & Gadgets": {
     "fr": "Tech et gadgets",
-    "ar": "التقنية والأجهزة"
+    "ar": "التقنية والأجهزة",
+    "es": "Tecnología y dispositivos"
   },
   "Fashion": {
     "fr": "Mode",
-    "ar": "الأزياء"
+    "ar": "الأزياء",
+    "es": "Moda"
   },
   "Home & Kitchen": {
     "fr": "Maison et cuisine",
-    "ar": "المنزل والمطبخ"
+    "ar": "المنزل والمطبخ",
+    "es": "Hogar y cocina"
   },
   "Beauty": {
     "fr": "Beauté",
-    "ar": "الجمال"
+    "ar": "الجمال",
+    "es": "Belleza"
   },
   "Fitness": {
     "fr": "Fitness",
-    "ar": "اللياقة البدنية"
+    "ar": "اللياقة البدنية",
+    "es": "Fitness"
   },
   "Top Deals": {
     "fr": "Meilleures offres",
-    "ar": "أفضل العروض"
+    "ar": "أفضل العروض",
+    "es": "Mejores ofertas"
   },
   "Other": {
     "fr": "Autre",
-    "ar": "أخرى"
+    "ar": "أخرى",
+    "es": "Otro"
   },
-  "Open in Studio First": {"fr":"Ouvrir d’abord dans le studio","ar":"فتح في الاستوديو أولاً"},
+  "Open in Studio First": {
+    "fr": "Ouvrir d’abord dans le studio",
+    "ar": "فتح في الاستوديو أولاً",
+    "es": "Abrir primero en el estudio"
+  },
   "Website": {
     "fr": "Site web",
-    "ar": "Ø§Ù„Ù…ÙˆÙ‚Ø¹"
+    "ar": "Ø§Ù„Ù…ÙˆÙ‚Ø¹",
+    "es": "Sitio web"
   },
   "Prompt Generator": {
     "fr": "GÃ©nÃ©rateur de prompts",
-    "ar": "Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª"
+    "ar": "Ù…ÙˆÙ„Ù‘Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…Ø§Øª",
+    "es": "Generador de instrucciones"
   },
   "Seller Guides": {
     "fr": "Guides pour les vendeurs",
-    "ar": "Ø£Ø¯Ù„Ø© Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"
+    "ar": "Ø£Ø¯Ù„Ø© Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†",
+    "es": "Guías para vendedores"
   },
   "Text & Image copied! Paste (Ctrl+V) directly into your post or chat.": {
     "fr": "Texte et image copiÃ©s ! Collez-les (Ctrl+V) dans votre publication ou conversation.",
-    "ar": "ØªÙ… Ù†Ø³Ø® Ø§Ù„Ù†Øµ ÙˆØ§Ù„ØµÙˆØ±Ø©! Ø§Ù„ØµÙ‚ (Ctrl+V) ÙÙŠ Ø§Ù„Ù…Ù†Ø´ÙˆØ± Ø£Ùˆ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø©."
+    "ar": "ØªÙ… Ù†Ø³Ø® Ø§Ù„Ù†Øµ ÙˆØ§Ù„ØµÙˆØ±Ø©! Ø§Ù„ØµÙ‚ (Ctrl+V) ÙÙŠ Ø§Ù„Ù…Ù†Ø´ÙˆØ± Ø£Ùˆ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø©.",
+    "es": "Texto e imagen copiados. Pégalos con Ctrl+V directamente en tu publicación o chat."
   },
   "Upload or import a product photo first.": {
     "fr": "Importez dâ€™abord une photo produit.",
-    "ar": "Ø§Ø±ÙØ¹ Ø£Ùˆ Ø§Ø³ØªÙˆØ±Ø¯ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ù‹Ø§."
+    "ar": "Ø§Ø±ÙØ¹ Ø£Ùˆ Ø§Ø³ØªÙˆØ±Ø¯ ØµÙˆØ±Ø© Ø§Ù„Ù…Ù†ØªØ¬ Ø£ÙˆÙ„Ù‹Ø§.",
+    "es": "Sube o importa primero una foto del producto."
   },
   "Please paste a specific product page URL (not a store homepage), or use the SellPostly Chrome Extension on the product page.": {
     "fr": "Collez lâ€™URL dâ€™une fiche produit prÃ©cise, ou utilisez lâ€™extension Chrome SellPostly sur cette fiche.",
-    "ar": "Ø§Ù„ØµÙ‚ Ø±Ø§Ø¨Ø· ØµÙØ­Ø© Ù…Ù†ØªØ¬ Ù…Ø­Ø¯Ø¯ Ø¨Ø¯Ù„ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ù…ØªØ¬Ø±ØŒ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ù… Ø¥Ø¶Ø§ÙØ© SellPostly Ø¹Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ù…Ù†ØªØ¬."
+    "ar": "Ø§Ù„ØµÙ‚ Ø±Ø§Ø¨Ø· ØµÙØ­Ø© Ù…Ù†ØªØ¬ Ù…Ø­Ø¯Ø¯ Ø¨Ø¯Ù„ Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ù…ØªØ¬Ø±ØŒ Ø£Ùˆ Ø§Ø³ØªØ®Ø¯Ù… Ø¥Ø¶Ø§ÙØ© SellPostly Ø¹Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ù…Ù†ØªØ¬.",
+    "es": "Pega la URL de un producto concreto, no la página de inicio, o utiliza la extensión de SellPostly en la página del producto."
   },
   "Image copied! Press Ctrl+V in chat to attach the photo.": {
     "fr": "Image copiÃ©e ! Appuyez sur Ctrl+V dans la conversation pour joindre la photo.",
-    "ar": "ØªÙ… Ù†Ø³Ø® Ø§Ù„ØµÙˆØ±Ø©! Ø§Ø¶ØºØ· Ctrl+V ÙÙŠ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø© Ù„Ø¥Ø±ÙØ§Ù‚Ù‡Ø§."
+    "ar": "ØªÙ… Ù†Ø³Ø® Ø§Ù„ØµÙˆØ±Ø©! Ø§Ø¶ØºØ· Ctrl+V ÙÙŠ Ø§Ù„Ù…Ø­Ø§Ø¯Ø«Ø© Ù„Ø¥Ø±ÙØ§Ù‚Ù‡Ø§.",
+    "es": "Imagen copiada. Pulsa Ctrl+V en el chat para adjuntar la foto."
   },
   "Send Text": {
     "fr": "Envoyer le texte",
-    "ar": "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ù†Øµ"
+    "ar": "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ù†Øµ",
+    "es": "Enviar texto"
   },
   "Send Image + Text": {
     "fr": "Envoyer lâ€™image et le texte",
-    "ar": "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØµÙˆØ±Ø© ÙˆØ§Ù„Ù†Øµ"
+    "ar": "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„ØµÙˆØ±Ø© ÙˆØ§Ù„Ù†Øµ",
+    "es": "Enviar imagen y texto"
   },
   "Image downloaded. Attach it and paste the caption.": {
     "fr": "Image tÃ©lÃ©chargÃ©e. Joignez-la et collez la lÃ©gende.",
-    "ar": "ØªÙ… ØªÙ†Ø²ÙŠÙ„ Ø§Ù„ØµÙˆØ±Ø©. Ø£Ø±ÙÙ‚Ù‡Ø§ ÙˆØ§Ù„ØµÙ‚ Ø§Ù„Ù†Øµ."
+    "ar": "ØªÙ… ØªÙ†Ø²ÙŠÙ„ Ø§Ù„ØµÙˆØ±Ø©. Ø£Ø±ÙÙ‚Ù‡Ø§ ÙˆØ§Ù„ØµÙ‚ Ø§Ù„Ù†Øµ.",
+    "es": "Imagen descargada. Adjúntala y pega el texto."
   },
   "Sharing failed. Copy the text or download the image.": {
     "fr": "Ã‰chec du partage. Copiez le texte ou tÃ©lÃ©chargez lâ€™image.",
-    "ar": "ØªØ¹Ø°Ù‘Ø±Øª Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©. Ø§Ù†Ø³Ø® Ø§Ù„Ù†Øµ Ø£Ùˆ Ù†Ø²Ù‘Ù„ Ø§Ù„ØµÙˆØ±Ø©."
+    "ar": "ØªØ¹Ø°Ù‘Ø±Øª Ø§Ù„Ù…Ø´Ø§Ø±ÙƒØ©. Ø§Ù†Ø³Ø® Ø§Ù„Ù†Øµ Ø£Ùˆ Ù†Ø²Ù‘Ù„ Ø§Ù„ØµÙˆØ±Ø©.",
+    "es": "No se ha podido compartir. Copia el texto o descarga la imagen."
   },
   "Delivery": {
     "fr": "Livraison",
-    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„"
+    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„",
+    "es": "Entrega"
   },
   "Reply *ORDER* now to claim yours!": {
     "fr": "RÃ©pondez *COMMANDER* pour passer commande !",
-    "ar": "Ø£Ø±Ø³Ù„ *Ø·Ù„Ø¨* Ø§Ù„Ø¢Ù† Ù„Ø·Ù„Ø¨ Ù…Ù†ØªØ¬Ùƒ!"
+    "ar": "Ø£Ø±Ø³Ù„ *Ø·Ù„Ø¨* Ø§Ù„Ø¢Ù† Ù„Ø·Ù„Ø¨ Ù…Ù†ØªØ¬Ùƒ!",
+    "es": "Responde *PEDIDO* ahora para pedir el tuyo."
   },
   "Import From Current Page": {
     "fr": "Importer depuis cette page",
-    "ar": "Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ù…Ù† Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©"
+    "ar": "Ø§Ø³ØªÙŠØ±Ø§Ø¯ Ù…Ù† Ø§Ù„ØµÙØ­Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©",
+    "es": "Importar desde la página actual"
   },
   "Page imported. Review the details.": {
     "fr": "Page importÃ©e. VÃ©rifiez les dÃ©tails.",
-    "ar": "ØªÙ… Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯. Ø±Ø§Ø¬Ø¹ Ø§Ù„ØªÙØ§ØµÙŠÙ„."
+    "ar": "ØªÙ… Ø§Ù„Ø§Ø³ØªÙŠØ±Ø§Ø¯. Ø±Ø§Ø¬Ø¹ Ø§Ù„ØªÙØ§ØµÙŠÙ„.",
+    "es": "Página importada. Revisa los datos."
   },
   "Could not read this page. Open a product page and try again.": {
     "fr": "Lecture impossible. Ouvrez une page produit et rÃ©essayez.",
-    "ar": "ØªØ¹Ø°Ù‘Ø±Øª Ù‚Ø±Ø§Ø¡Ø© Ø§Ù„ØµÙØ­Ø©. Ø§ÙØªØ­ ØµÙØ­Ø© Ù…Ù†ØªØ¬ ÙˆØ­Ø§ÙˆÙ„ Ù…Ø¬Ø¯Ø¯Ù‹Ø§."
+    "ar": "ØªØ¹Ø°Ù‘Ø±Øª Ù‚Ø±Ø§Ø¡Ø© Ø§Ù„ØµÙØ­Ø©. Ø§ÙØªØ­ ØµÙØ­Ø© Ù…Ù†ØªØ¬ ÙˆØ­Ø§ÙˆÙ„ Ù…Ø¬Ø¯Ø¯Ù‹Ø§.",
+    "es": "No se ha podido leer esta página. Abre una página de producto e inténtalo de nuevo."
   },
   "Formatting mode": {
     "fr": "Mode de mise en forme",
-    "ar": "ÙˆØ¶Ø¹ Ø§Ù„ØªÙ†Ø³ÙŠÙ‚"
+    "ar": "ÙˆØ¶Ø¹ Ø§Ù„ØªÙ†Ø³ÙŠÙ‚",
+    "es": "Modo de formato"
   },
   "Seller Mode": {
     "fr": "Mode Vendeur",
-    "ar": "ÙˆØ¶Ø¹ Ø§Ù„Ø¨Ø§Ø¦Ø¹"
+    "ar": "ÙˆØ¶Ø¹ Ø§Ù„Ø¨Ø§Ø¦Ø¹",
+    "es": "Modo vendedor"
   },
   "Creator Mode": {
     "fr": "Mode CrÃ©ateur",
-    "ar": "ÙˆØ¶Ø¹ ØµØ§Ù†Ø¹ Ø§Ù„Ù…Ø­ØªÙˆÙ‰"
+    "ar": "ÙˆØ¶Ø¹ ØµØ§Ù†Ø¹ Ø§Ù„Ù…Ø­ØªÙˆÙ‰",
+    "es": "Modo creador"
   },
   "Product Name": {
     "fr": "Nom du produit",
-    "ar": "Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬"
+    "ar": "Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬",
+    "es": "Nombre del producto"
   },
   "Price": {
     "fr": "Prix",
-    "ar": "Ø§Ù„Ø³Ø¹Ø±"
+    "ar": "Ø§Ù„Ø³Ø¹Ø±",
+    "es": "Precio"
   },
   "$29": {
     "fr": "29 â‚¬",
-    "ar": "29 Ø¯Ø±Ù‡Ù…Ù‹Ø§"
+    "ar": "29 Ø¯Ø±Ù‡Ù…Ù‹Ø§",
+    "es": "$29"
   },
   "Delivery / Location": {
     "fr": "Livraison / lieu de retrait",
-    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„ Ø£Ùˆ Ù…ÙˆÙ‚Ø¹ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…"
+    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„ Ø£Ùˆ Ù…ÙˆÙ‚Ø¹ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…",
+    "es": "Entrega o ubicación"
   },
   "Key Features": {
     "fr": "CaractÃ©ristiques principales",
-    "ar": "Ø£Ù‡Ù… Ø§Ù„Ù…ÙŠØ²Ø§Øª"
+    "ar": "Ø£Ù‡Ù… Ø§Ù„Ù…ÙŠØ²Ø§Øª",
+    "es": "Características principales"
   },
   "One feature per line": {
     "fr": "Une caractÃ©ristique par ligne",
-    "ar": "Ù…ÙŠØ²Ø© ÙˆØ§Ø­Ø¯Ø© ÙÙŠ ÙƒÙ„ Ø³Ø·Ø±"
+    "ar": "Ù…ÙŠØ²Ø© ÙˆØ§Ø­Ø¯Ø© ÙÙŠ ÙƒÙ„ Ø³Ø·Ø±",
+    "es": "Una característica por línea"
   },
   "Format Posts": {
     "fr": "Formater les publications",
-    "ar": "Ù†Ø³Ù‘Ù‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª"
+    "ar": "Ù†Ø³Ù‘Ù‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª",
+    "es": "Dar formato a publicaciones"
   },
   "Quick Post": {
     "fr": "Texte de dÃ©part",
-    "ar": "Ù†Øµ Ø§Ù„Ù…Ù†Ø´ÙˆØ±"
+    "ar": "Ù†Øµ Ø§Ù„Ù…Ù†Ø´ÙˆØ±",
+    "es": "Publicación rápida"
   },
   "Paste your post or hook": {
     "fr": "Collez votre texte ou votre accroche",
-    "ar": "Ø§Ù„ØµÙ‚ Ù…Ù†Ø´ÙˆØ±Ùƒ Ø£Ùˆ Ø¹Ø¨Ø§Ø±ØªÙƒ Ø§Ù„Ø§ÙØªØªØ§Ø­ÙŠØ©"
+    "ar": "Ø§Ù„ØµÙ‚ Ù…Ù†Ø´ÙˆØ±Ùƒ Ø£Ùˆ Ø¹Ø¨Ø§Ø±ØªÙƒ Ø§Ù„Ø§ÙØªØªØ§Ø­ÙŠØ©",
+    "es": "Pega tu publicación o gancho"
   },
   "Formatted posts": {
     "fr": "Publications mises en forme",
-    "ar": "Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª Ø§Ù„Ù…Ù†Ø³Ù‘Ù‚Ø©"
+    "ar": "Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª Ø§Ù„Ù…Ù†Ø³Ù‘Ù‚Ø©",
+    "es": "Publicaciones con formato"
   },
   "Platforms": {
     "fr": "Plateformes",
-    "ar": "Ø§Ù„Ù…Ù†ØµØ§Øª"
+    "ar": "Ø§Ù„Ù…Ù†ØµØ§Øª",
+    "es": "Plataformas"
   },
   "Web Formatter": {
     "fr": "Outil web de mise en forme",
-    "ar": "Ù…Ù†Ø³Ù‘Ù‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª Ø¹Ù„Ù‰ Ø§Ù„ÙˆÙŠØ¨"
+    "ar": "Ù…Ù†Ø³Ù‘Ù‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª Ø¹Ù„Ù‰ Ø§Ù„ÙˆÙŠØ¨",
+    "es": "Formateador web"
   },
   "Seller Resources": {
     "fr": "Ressources pour les vendeurs",
-    "ar": "Ù…ÙˆØ§Ø±Ø¯ Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†"
+    "ar": "Ù…ÙˆØ§Ø±Ø¯ Ø§Ù„Ø¨Ø§Ø¦Ø¹ÙŠÙ†",
+    "es": "Recursos para vendedores"
   },
   "Language": {
     "fr": "Langue",
-    "ar": "Ø§Ù„Ù„ØºØ©"
+    "ar": "Ø§Ù„Ù„ØºØ©",
+    "es": "Idioma"
   },
   "Delivery / pickup": {
     "fr": "Livraison / retrait",
-    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„ Ø£Ùˆ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…"
+    "ar": "Ø§Ù„ØªÙˆØµÙŠÙ„ Ø£Ùˆ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…",
+    "es": "Entrega o recogida"
   },
   "Message to order.": {
     "fr": "Envoyez un message pour commander.",
-    "ar": "Ø±Ø§Ø³Ù„Ù†Ø§ Ù„Ù„Ø·Ù„Ø¨."
+    "ar": "Ø±Ø§Ø³Ù„Ù†Ø§ Ù„Ù„Ø·Ù„Ø¨.",
+    "es": "Envía un mensaje para pedirlo."
   },
   "Meet": {
     "fr": "DÃ©couvrez",
-    "ar": "ØªØ¹Ø±Ù‘Ù Ø¹Ù„Ù‰"
+    "ar": "ØªØ¹Ø±Ù‘Ù Ø¹Ù„Ù‰",
+    "es": "Descubre"
   },
   "Product": {
     "fr": "Produit",
-    "ar": "Ø§Ù„Ù…Ù†ØªØ¬"
+    "ar": "Ø§Ù„Ù…Ù†ØªØ¬",
+    "es": "Producto"
   },
   "Features": {
     "fr": "CaractÃ©ristiques",
-    "ar": "Ø§Ù„Ù…ÙŠØ²Ø§Øª"
+    "ar": "Ø§Ù„Ù…ÙŠØ²Ø§Øª",
+    "es": "Características"
   },
   "#ProductFinds #ShopNow": {
     "fr": "#BellesTrouvailles #AcheterEnLigne",
-    "ar": "#Ù…Ù†ØªØ¬Ø§Øª_Ù…Ø®ØªØ§Ø±Ø© #ØªØ³ÙˆÙ‚_Ø§Ù„Ø¢Ù†"
+    "ar": "#Ù…Ù†ØªØ¬Ø§Øª_Ù…Ø®ØªØ§Ø±Ø© #ØªØ³ÙˆÙ‚_Ø§Ù„Ø¢Ù†",
+    "es": "#ProductosDescubiertos #CompraAhora"
   },
   "What has worked for you?": {
     "fr": "Quâ€™est-ce qui a fonctionnÃ© pour vous ?",
-    "ar": "Ù…Ø§ Ø§Ù„Ø°ÙŠ Ù†Ø¬Ø­ Ù…Ø¹ÙƒÙ…ØŸ"
+    "ar": "Ù…Ø§ Ø§Ù„Ø°ÙŠ Ù†Ø¬Ø­ Ù…Ø¹ÙƒÙ…ØŸ",
+    "es": "¿Qué te ha funcionado?"
   },
   "Your take?": {
     "fr": "Votre avis ?",
-    "ar": "Ù…Ø§ Ø±Ø£ÙŠÙƒÙ…ØŸ"
+    "ar": "Ù…Ø§ Ø±Ø£ÙŠÙƒÙ…ØŸ",
+    "es": "¿Qué opinas?"
   },
   "Share your experience below.": {
     "fr": "Partagez votre expÃ©rience en commentaire.",
-    "ar": "Ø´Ø§Ø±ÙƒÙˆÙ†Ø§ ØªØ¬Ø§Ø±Ø¨ÙƒÙ… ÙÙŠ Ø§Ù„ØªØ¹Ù„ÙŠÙ‚Ø§Øª."
+    "ar": "Ø´Ø§Ø±ÙƒÙˆÙ†Ø§ ØªØ¬Ø§Ø±Ø¨ÙƒÙ… ÙÙŠ Ø§Ù„ØªØ¹Ù„ÙŠÙ‚Ø§Øª.",
+    "es": "Comparte tu experiencia abajo."
   },
   "formatted post": {
     "fr": "publication mise en forme",
-    "ar": "Ù…Ù†Ø´ÙˆØ± Ù…Ù†Ø³Ù‘Ù‚"
+    "ar": "Ù…Ù†Ø´ÙˆØ± Ù…Ù†Ø³Ù‘Ù‚",
+    "es": "publicación con formato"
   },
   "Copy": {
     "fr": "Copier",
-    "ar": "Ù†Ø³Ø®"
+    "ar": "Ù†Ø³Ø®",
+    "es": "Copiar"
   },
   "Copied!": {
     "fr": "CopiÃ© !",
-    "ar": "ØªÙ… Ø§Ù„Ù†Ø³Ø®!"
+    "ar": "ØªÙ… Ø§Ù„Ù†Ø³Ø®!",
+    "es": "Copiado"
   },
   "Text selected. Press Ctrl+C or Command+C to copy.": {
     "fr": "Texte sÃ©lectionnÃ©. Appuyez sur Ctrl+C ou Cmd+C pour le copier.",
-    "ar": "ØªÙ… ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ù†Øµ. Ø§Ø¶ØºØ· Ctrl+C Ø£Ùˆ Cmd+C Ù„Ù†Ø³Ø®Ù‡."
+    "ar": "ØªÙ… ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ù†Øµ. Ø§Ø¶ØºØ· Ctrl+C Ø£Ùˆ Cmd+C Ù„Ù†Ø³Ø®Ù‡.",
+    "es": "Texto seleccionado. Pulsa Ctrl+C o Command+C para copiar."
   },
   "Posts formatted.": {
     "fr": "Publications mises en forme.",
-    "ar": "ØªÙ… ØªÙ†Ø³ÙŠÙ‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª."
+    "ar": "ØªÙ… ØªÙ†Ø³ÙŠÙ‚ Ø§Ù„Ù…Ù†Ø´ÙˆØ±Ø§Øª.",
+    "es": "Publicaciones preparadas."
   },
   "Enter a product name.": {
     "fr": "Saisissez un nom de produit.",
-    "ar": "Ø£Ø¯Ø®Ù„ Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬."
+    "ar": "Ø£Ø¯Ø®Ù„ Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬.",
+    "es": "Introduce un nombre de producto."
   },
   "Enter a post.": {
     "fr": "Saisissez un texte.",
-    "ar": "Ø£Ø¯Ø®Ù„ Ù†Øµ Ø§Ù„Ù…Ù†Ø´ÙˆØ±."
+    "ar": "Ø£Ø¯Ø®Ù„ Ù†Øµ Ø§Ù„Ù…Ù†Ø´ÙˆØ±.",
+    "es": "Introduce una publicación."
   },
   "Wireless headphones": {
     "fr": "Casque sans fil",
-    "ar": "Ø³Ù…Ø§Ø¹Ø§Øª Ù„Ø§Ø³Ù„ÙƒÙŠØ©"
+    "ar": "Ø³Ù…Ø§Ø¹Ø§Øª Ù„Ø§Ø³Ù„ÙƒÙŠØ©",
+    "es": "Auriculares inalámbricos"
   },
   "Local pickup or shipping": {
     "fr": "Retrait sur place ou livraison",
-    "ar": "Ø§Ø³ØªÙ„Ø§Ù… Ù…Ø­Ù„ÙŠ Ø£Ùˆ ØªÙˆØµÙŠÙ„"
+    "ar": "Ø§Ø³ØªÙ„Ø§Ù… Ù…Ø­Ù„ÙŠ Ø£Ùˆ ØªÙˆØµÙŠÙ„",
+    "es": "Recogida local o envío"
   }
 };
 const languageKey = "sellpostly-language";
@@ -578,7 +889,7 @@ try {
 } catch {
   // The switcher can still be used for this session.
 }
-applyLanguage(savedLanguage === "fr" || savedLanguage === "ar" ? savedLanguage : "en");
+applyLanguage(savedLanguage === "fr" || savedLanguage === "es" || savedLanguage === "ar" ? savedLanguage : "en");
 for (const button of document.querySelectorAll("[data-language]")) {
   button.addEventListener("click", () => {
     const next = button.dataset.language;

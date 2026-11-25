@@ -1,3 +1,4 @@
+import {marketplaceSource} from './product-url-fallback';
 import {persistShop,targetPendingShop} from '../app/shop/multi-shop-data';
 import {unbrandedQuery} from '../app/shop/unbranded-query';
 import {modeCatalogKey,switchCatalog} from '../app/shop/catalog-modes';
@@ -8,7 +9,7 @@ type StorageLike=Pick<Storage,'getItem'|'setItem'|'removeItem'>;
 export type PendingShopItem={compareAtPrice?:string;dealTag?:string;keyHighlights?:string[];promoCaption?:string;aiGeneratedImage?:boolean;aiImagePrompt?:string;targetShopId?:string;amazonImageBlocked?:boolean;unbrandedQuery?:string;destination?:ShopMode;stock?:number;id:string;title:string;price:string;image:string;description:string;url:string;category:string;gender:'unisex'|'men'|'women'|'kids';source:string};
 const text=(value:unknown,max:number)=>typeof value==='string'?value.trim().slice(0,max):'';
 export function sourceForUrl(value:string){
- try{const host=new URL(value).hostname;
+ try{const detected=marketplaceSource(value);if(detected!=='Other')return detected;const host=new URL(value).hostname;
  if(/(^|\.)amazon\./i.test(host))return 'Amazon';
  if(/(^|\.)aliexpress\./i.test(host))return 'AliExpress';
  if(/(^|\.)myshopify\.com$/i.test(host))return 'Shopify';
@@ -25,7 +26,7 @@ export function normalizePending(value:unknown,createId=()=>crypto.randomUUID())
  return {keyHighlights:Array.isArray(raw.keyHighlights)?raw.keyHighlights.filter((v):v is string=>typeof v==='string').slice(0,3).map(v=>v.slice(0,240)):undefined,promoCaption:text(raw.promoCaption,2000),aiGeneratedImage:raw.aiGeneratedImage===true,aiImagePrompt:text(raw.aiImagePrompt,2000),targetShopId:typeof raw.targetShopId==='string'&&/^[0-9a-f-]{36}$/i.test(raw.targetShopId)?raw.targetShopId:undefined,amazonImageBlocked:false,unbrandedQuery:unbrandedQuery(title,text(raw.category,80),normalizeGender(raw.gender)),destination:raw.destination==='affiliate'||raw.destination==='personal'?raw.destination:undefined,stock:typeof raw.stock==='number'&&Number.isInteger(raw.stock)&&raw.stock>=0?Math.min(raw.stock,1000000):undefined,id:text(raw.id,100)||createId(),title,price:text(raw.price,50),compareAtPrice:typeof raw.compareAtPrice==='string'?text(raw.compareAtPrice,50):undefined,dealTag:typeof raw.dealTag==='string'?text(raw.dealTag,80):undefined,description:text(raw.description??raw.features,4000),image:safeImage(image),url,category:text(raw.category,80)||'Top Deals',gender:normalizeGender(raw.gender),source:text(raw.source,50)||sourceForUrl(url)};
 }
 export function pendingProduct(item:PendingShopItem):Product{
- return {keyHighlights:item.keyHighlights,promoCaption:item.promoCaption,aiGeneratedImage:item.aiGeneratedImage,aiImagePrompt:item.aiImagePrompt,amazonImageBlocked:item.amazonImageBlocked,unbrandedQuery:item.unbrandedQuery,stock:item.stock,catalogMode:item.destination,id:item.id,name:item.title,price:item.price,...(item.compareAtPrice!==undefined?{compareAtPrice:item.compareAtPrice}:{}),...(item.dealTag!==undefined?{dealTag:item.dealTag}:{}),image:item.image,description:item.description,url:item.url,category:item.category,gender:item.gender,source:item.source};
+ return {createdAt:new Date().toISOString(),keyHighlights:item.keyHighlights,promoCaption:item.promoCaption,aiGeneratedImage:item.aiGeneratedImage,aiImagePrompt:item.aiImagePrompt,amazonImageBlocked:item.amazonImageBlocked,unbrandedQuery:item.unbrandedQuery,stock:item.stock,catalogMode:item.destination,id:item.id,name:item.title,price:item.price,...(item.compareAtPrice!==undefined?{compareAtPrice:item.compareAtPrice}:{}),...(item.dealTag!==undefined?{dealTag:item.dealTag}:{}),image:item.image,description:item.description,url:item.url,category:item.category,gender:item.gender,source:item.source};
 }
 export function consumePending(shop:Shop,storage:StorageLike){
  const saved=storage.getItem(pendingShopKey);

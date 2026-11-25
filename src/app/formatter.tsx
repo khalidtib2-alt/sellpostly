@@ -8,12 +8,14 @@ import {studioImportKey} from '../lib/studio-handoff';
 import { useLanguage } from "./language-context";
 import type { Message } from "./translations";
 import CopyAssistant from './generation/copy-assistant';
+import FormatterTabSync from './generation/formatter-tab-sync';
+import SeoPromptForm from './generation/seo-prompt-form';
 import GeminiWriterPanel from './generation/gemini-writer-panel';
 import type {CopyResult} from '../lib/generation-data';
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, Suspense, type FormEvent } from "react";
 
 type Post = { platform: string; text: string; url?: string };
-type Mode = "seller" | "creator";
+type Mode = "seller" | "creator" | "prompt";
 
 function sellerPosts(data: FormData, t: (message: Message) => string): Post[] {
   const read = (key: string) => String(data.get(key) ?? "").trim();
@@ -228,15 +230,15 @@ export default function Formatter() {
       const code=/^[A-Z]{3}$/.test(product.currency)?product.currency:"USD";
       setCurrency(code);setImage(product.image||"");
       setDraft({name:product.name,price:[product.price,code].filter(Boolean).join(" ")});
-      setImportStatus("Product imported. Review the details before publishing.");
+      setImportStatus(product.fallback?"The store blocked scraping. A title was recovered from the link. Confirm price, image and details before publishing.":"Product imported. Review the details before publishing.");
     } catch {setImportStatus("Import failed. The store may block access. Enter the details manually.");}
     finally {setBusy(false);}
   }
 
 
   function sample() {
-    const names={en:"Everyday Travel Backpack",fr:"Sac à dos de voyage",ar:"حقيبة ظهر للسفر"};
-    const features={en:"Padded laptop compartment\nWater-resistant fabric\nLightweight everyday design",fr:"Compartiment ordinateur rembourré\nTissu déperlant\nConception légère",ar:"حجرة مبطنة للحاسوب\nنسيج مقاوم لرذاذ الماء\nتصميم خفيف للاستخدام اليومي"};
+    const names={es:"Mochila de viaje para todos los días",en:"Everyday Travel Backpack",fr:"Sac à dos de voyage",ar:"حقيبة ظهر للسفر"};
+    const features={es:"Compartimento acolchado para portátil\nTejido resistente al agua\nDiseño ligero para uso diario",en:"Padded laptop compartment\nWater-resistant fabric\nLightweight everyday design",fr:"Compartiment ordinateur rembourré\nTissu déperlant\nConception légère",ar:"حجرة مبطنة للحاسوب\nنسيج مقاوم لرذاذ الماء\nتصميم خفيف للاستخدام اليومي"};
     const form=formRef.current;if(!form)return;
     for(const [key,value] of Object.entries({name:names[language],price:"49",features:features[language]})) (form.elements.namedItem(key) as HTMLInputElement).value=value;
     setCurrency("USD");setDraft({name:names[language],price:"49 USD"});
@@ -261,17 +263,17 @@ export default function Formatter() {
   }
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-8">
-      <h2 className="text-3xl font-bold tracking-tight">{t("Post Formatter")}</h2>
-      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><a href="/prompt-generator" className="font-semibold text-emerald-800 underline">{t("Prompt Generator")}</a><span>{t("AI Hashtags")}</span><span>· {t("Social Preview")}</span><span>· {t("Multi-Platform Send")}</span></div>
+      <h2 className="text-3xl font-bold tracking-tight">{t("Post Formatter")}</h2><Suspense fallback={null}><FormatterTabSync onPrompt={()=>setMode("prompt")}/></Suspense>
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm"><a href="/?tab=prompt#formatter" className="font-semibold text-emerald-800 underline">{t("Prompt Generator")}</a><span>{t("AI Hashtags")}</span><span>· {t("Social Preview")}</span><span>· {t("Multi-Platform Send")}</span></div>
       <div role="group" aria-label={t("Formatter mode")} className="mt-5 inline-flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-white p-1">
-        {(["seller", "creator"] as const).map(option => (
+        {(["seller", "creator", "prompt"] as const).map(option => (
           <button key={option} type="button" aria-pressed={mode === option} onClick={() => {
             if (mode === option) return;
             setMode(option);
             setError("");
             setResults(previous => ({ data: null, hook: "", version: previous.version + 1 }));
           }} className={"rounded-md px-4 py-2 text-sm font-semibold " + (mode === option ? "bg-emerald-700 text-white" : "text-slate-700")}>
-            {option === "seller" ? t("Seller Mode") : t("Creator Mode")}
+            {option === "seller" ? t("Seller Mode") : option === "prompt" ? t("Prompt Generator") : t("Creator Mode")}
           </button>
         ))}
       </div>
@@ -302,6 +304,7 @@ export default function Formatter() {
         </div>
       </form>}
       {mode==='creator'&&<GeminiWriterPanel/>}
+      {mode==='prompt'&&<SeoPromptForm/>}
 
 
       {mode==="seller"&&proActive&&draft.name.trim()&&<div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-white p-4"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">Pro</span><button type="button" disabled={sendingShop||busy} onClick={sendToShop} className="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white disabled:opacity-50">{t(sendingShop?"Sending to My Shop…":"Send to My Shop")}</button></div>}

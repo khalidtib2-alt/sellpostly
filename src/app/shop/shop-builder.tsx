@@ -1,4 +1,8 @@
 "use client";
+import {saveShopDraft,publishShopDraft} from '../../lib/shop-publishing';
+import LookbookSettings from './lookbook-settings';
+import PublishControls,{type PublishState} from './publish-controls';
+import {lookbookPath} from './lookbook-data';
 import CategoryManager from './category-manager';
 import {activeCategory,addCustomCategory,categoryKey,categoryOptions,cleanCategory} from './category-data';
 import ProductPrice from './product-price';
@@ -53,6 +57,8 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
   const {t,language,setLanguage}=useLanguage();
   const [shop,setShop]=useState<Shop>(initialShop?validateShop(initialShop):{name:"",bio:"",phone:"",shopMode:"affiliate",shopTheme:"white",products:[]});
   const [shops,setShops]=useState<Shop[]>([]),[tier,setTier]=useState<'free'|'pro'>('free');
+  const [syncState,setSyncState]=useState<PublishState>('draft');
+  const publishedSnapshot=useRef('');
   const [publishedSlug,setPublishedSlug]=useState(publicSlug||''),[publishing,setPublishing]=useState(false);
   const [assignedHold,setAssignedHold]=useState(holdDays(initialShop?.escrowHoldDays));
   const [policyLoaded,setPolicyLoaded]=useState(!!initialShop);
@@ -104,7 +110,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
           if(workspace==='products'&&params.get("addTitle")){
             const destination=params.get("addDestination");initial=targetPendingShop(initial,params.get('addShopId')||undefined,destination==='affiliate'||destination==='personal'?destination:undefined,localStorage);if((destination==="affiliate"||destination==="personal")&&initial.shopMode!==destination)initial=switchCatalog(initial,destination,localStorage);
             setPreview(true);
-            const product:Product={id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),description:(params.get("addDescription")||"").slice(0,4000),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:initial.storeMode==='niche'?initial.nicheName||'Other':(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
+            const product:Product={createdAt:new Date().toISOString(),id:crypto.randomUUID(),name:params.get("addTitle")!.slice(0,120),price:(params.get("addPrice")||"").slice(0,50),description:(params.get("addDescription")||"").slice(0,4000),image:safeImage(params.get("addImage")||""),url:safeUrl(params.get("addUrl")||""),gender:normalizeGender(params.get("addGender")),category:initial.storeMode==='niche'?initial.nicheName||'Other':(params.get("addCategory")||"Top Deals").slice(0,80),source:"Other"};
             initial.products.push(product);
             setFilter(initial.storeMode==='niche'?'All':product.category);
             try {localStorage.setItem(shopKey,JSON.stringify(initial));}catch{setStatus("Could not save. Device storage may be full.");}
@@ -157,20 +163,12 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     window.addEventListener('message',message);window.addEventListener('storage',storage);window.addEventListener('focus',receive);receive();
     return()=>{window.removeEventListener('message',message);window.removeEventListener('storage',storage);window.removeEventListener('focus',receive);};
   },[loaded,shared]);
-  const unresolved=loaded&&!shared&&shop.shopMode==='affiliate'?shop.products.filter(p=>amazonAffiliateProduct(p)&&p.stockPhoto&&p.photoResolvedFor!==unbrandedQuery(p.identityOverride||p.name,p.category,p.gender)).map(p=>[p.id,p.image,p.name,p.category,p.gender].join('|')).join('~'):'';
-  useEffect(()=>{
-    if(!unresolved)return;const controller=new AbortController();
-    const products=shopRef.current.products.filter(p=>p.stockPhoto&&p.photoResolvedFor!==unbrandedQuery(p.identityOverride||p.name,p.category,p.gender));
-    async function assign(){
-      // Limit concurrent requests and ignore stale responses after a custom upload or catalog change.
-      for(const p of products){if(controller.signal.aborted)return;const query=unbrandedQuery(p.identityOverride||p.name,p.category,p.gender);
-        try{const choices=await resolvePhotos(query,controller.signal);let selected=choices[0]||defaultStock(query);try{await selectStock(selected,query);}catch{selected=defaultStock(query);}
-          if(controller.signal.aborted)return;
-          setShop(current=>current.shopMode!=='affiliate'?current:{...current,products:current.products.map(item=>item.id===p.id&&amazonAffiliateProduct(item)&&item.image===p.image&&item.name===p.name&&unbrandedQuery(item.identityOverride||item.name,item.category,item.gender)===query?{...item,image:selected.url,stockPhoto:selected,photoResolvedFor:query}:item)});
-        }catch{if(controller.signal.aborted)return;}
-      }
-    }void assign();return()=>controller.abort();
-  },[unresolved]);
+  useEffect(()=>{if(loaded&&!shared)setSyncState(publishedSnapshot.current===JSON.stringify(shop)?'published':'draft');},[shop,loaded,shared]);
+  function saveDraft(){setSyncState('saving');try{saveShopDraft(shopRef.current,localStorage);setShops(readShopList(localStorage));setSyncState('saved');}catch{setSyncState('error');}}
+  async function publishLive(){if(publishing)return;setPublishing(true);setSyncState('publishing');const current=shopRef.current;
+    try{const result=await publishShopDraft(current,localStorage);if(shopSelection(shopRef.current)!==shopSelection(current)){setSyncState('draft');return;}setPublishedSlug(result.slug);publishedSnapshot.current=JSON.stringify(current);setSyncState(shopRef.current===current?'published':'draft');}
+    catch{setSyncState('error');}finally{setPublishing(false);}
+  }
   async function share(product?:Product){
     if(publicSlug||snapshot){setShareTarget({url:product?cardShareUrl(shop.shopMode,product.id,publicSlug,snapshot):productShareUrl(publicSlug?storePath(publicSlug,shop.shopMode):'/shop?'+new URLSearchParams({s:snapshot!})),title:product?.name||shop.name,product:!!product});return;}
     try{
@@ -238,15 +236,16 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
 <header className="mb-8 flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-6">
 <div>{publicSlug&&verifiedStore&&<p className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-sm font-bold text-emerald-800"><span aria-hidden="true">✓</span>{t("Verified Store")}</p>}<div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white text-2xl font-black text-emerald-800">{shop.logo?<img src={shop.logo} alt={shop.name} className="max-h-full max-w-full object-contain"/>:(shop.name||"SP").trim().slice(0,2).toUpperCase()}</div><h1 className="text-4xl font-black">{workspace==='settings'?t('Seller Settings'):shop.name==="My Shop"||!shop.name?t("My Shop"):shop.name}</h1><p className="mt-3 whitespace-pre-line text-slate-600">{shop.bio}</p></div>
 {shared&&<div role="group" aria-label={t("Language")} className="flex gap-1 rounded-full border border-slate-300 bg-white p-1 text-slate-900">
-{(["en","fr","ar"] as const).map(value=><button type="button" key={value} lang={value} aria-pressed={language===value} onClick={()=>setLanguage(value)} className={language===value?"rounded-full bg-emerald-700 px-3 py-2 text-sm font-semibold text-white":"rounded-full px-3 py-2 text-sm font-semibold"}>{value==="ar"?"العربية":value.toUpperCase()}</button>)}
+{(["en","fr","es","ar"] as const).map(value=><button type="button" key={value} lang={value} aria-pressed={language===value} onClick={()=>setLanguage(value)} className={language===value?"rounded-full bg-emerald-700 px-3 py-2 text-sm font-semibold text-white":"rounded-full px-3 py-2 text-sm font-semibold"}>{value.toUpperCase()}</button>)}
 </div>}</header>
 {shared&&loaded&&<button type="button" className={button+" mb-5"} onClick={()=>void share()}>{t("Share Store")}</button>}
 {!shared&&shop.products.some(p=>isAmazonDestination(p.url))&&<aside role="status" className="mb-5 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm">{t(amazonImageNotice)}</aside>}
 {!loaded&&<p role="status">{t("Loading storefront…")}</p>}
-    {(shared||preview)&&loaded&&shop.shopMode==='affiliate'&&<aside className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5" aria-label={t('Affiliate Disclosure')}><p className="mb-2 text-sm font-bold">{t('Affiliate Disclosure')}</p><p className="text-sm leading-relaxed">{(()=>{const value=shop.affiliateDisclosure||disclosurePresets[0].text;const preset=disclosurePresets.find(p=>[p.text,translations[p.text].fr,translations[p.text].ar].some(candidate=>candidate===value));return preset?t(preset.text):value;})()}</p></aside>}
-    {(shared||preview)&&loaded&&<><StorefrontHero shop={shop} verified={verifiedStore}/><MainStoreLink shop={shop}/><StorePolicy shop={shop}/></>}
+    {(shared||preview)&&loaded&&shop.shopMode==='affiliate'&&<aside className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5" aria-label={t('Affiliate Disclosure')}><p className="mb-2 text-sm font-bold">{t('Affiliate Disclosure')}</p><p className="text-sm leading-relaxed">{(()=>{const value=shop.affiliateDisclosure||disclosurePresets[0].text;const preset=disclosurePresets.find(p=>[p.text,translations[p.text].fr,translations[p.text].es,translations[p.text].ar].some(candidate=>candidate===value));return preset?t(preset.text):value;})()}</p></aside>}
+    {(shared||preview)&&loaded&&<><StorefrontHero shop={shop} products={matches} filtered={activeFilter!=='All'||genderFilter!=='all'||!!search} verified={verifiedStore}/><MainStoreLink shop={shop}/><StorePolicy shop={shop}/></>}
     {workspace==='products'&&<label className="mb-4 block">{t("Search Products")}<input type="search" className={field} value={search} onChange={e=>setSearch(e.target.value)}/></label>}
     {!shared&&<nav className="mb-6 flex flex-wrap gap-3 font-semibold" aria-label={t('Seller Workspace')}><a className="rounded-lg border px-4 py-2" href="/shop">{t('Products & Preview')}</a><a className="rounded-lg border px-4 py-2" href="/settings">{t('Store & Payment Settings →')}</a><a className="rounded-lg border px-4 py-2" href="/studio">{t('Creator Studio')}</a></nav>}{!shared&&workspace==='settings'&&<section className="mb-6 rounded-xl border bg-white p-5"><h2 className="text-2xl font-bold">{t('Seller Settings')}</h2><p className="mt-3">{t(tier==='pro'?'Pro Plan':'Free Plan')}</p><a className="mt-3 inline-block underline" href="/shop?upgrade=pro">{t('Activate Pro License')}</a></section>}
+    {!shared&&loaded&&workspace==='products'&&<PublishControls state={syncState} busy={publishing} onDraft={saveDraft} onPublish={()=>void publishLive()}/>}
     {!shared&&workspace==='products'&&<div className="mb-6 flex flex-wrap gap-3">
       {!shared && <><button aria-pressed={!preview} className={button} onClick={()=>setPreview(false)}>{t("Builder")}</button><button aria-pressed={preview} className={button} onClick={()=>{setPreview(true);setAdding(false);}}>{t("Storefront Preview")}</button></>}
       <button className={button} disabled={!loaded} onClick={()=>void share()}>{t("Share Store")}</button>
@@ -289,7 +288,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       const get=(key:string)=>String(data.get(key)||"").trim();
 
 
-      const product:Product={aiGeneratedImage:draftAiImage,aiImagePrompt:draftAiPrompt,promoCaption:get("promoCaption"),keyHighlights:get("keyHighlights").split(/\n/).map(v=>v.trim()).filter(Boolean).slice(0,3),isDigital:draftDigital,digitalDeliveryNote:get("digitalDeliveryNote"),digitalDownloadUrl:get("digitalDownloadUrl"),promo_video_url:promoVideo(get("promo_video_url"))?.url||'',amazonImageBlocked:shop.shopMode==='affiliate'&&draftAmazonBlocked,stockPhoto:draftStock,unbrandedQuery:unbrandedQuery(get("name"),get("category"),get("gender")),photoResolvedFor:draftStock?unbrandedQuery(get("name"),get("category"),get("gender")):undefined,editorialCover:undefined,identityOverride,stock:get('stock')===''?undefined:Math.min(1000000,Math.max(0,Math.trunc(Number(get('stock'))))),catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),dealTag:get("dealTag").slice(0,80),badge:get("badge") as DealBadge,category:resolveCategory(get("category"))||"Top Deals",gender:normalizeGender(get("gender")),image:shop.shopMode==='affiliate'?affiliateImage(photo||safeImage(get("image")),get("category"),identityOverride||get("name"),editorCover,get('gender'),get('url'),draftAmazonBlocked):photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).filter(value=>value.trim()).map(value=>shop.shopMode==='affiliate'?affiliateImage(safeImage(value),get("category"),identityOverride||get("name"),undefined,get("gender"),get("url")):safeImage(value)).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
+      const product:Product={createdAt:editing?.createdAt||new Date().toISOString(),aiGeneratedImage:draftAiImage,aiImagePrompt:draftAiPrompt,promoCaption:get("promoCaption"),keyHighlights:get("keyHighlights").split(/\n/).map(v=>v.trim()).filter(Boolean).slice(0,3),isDigital:draftDigital,digitalDeliveryNote:get("digitalDeliveryNote"),digitalDownloadUrl:get("digitalDownloadUrl"),promo_video_url:promoVideo(get("promo_video_url"))?.url||'',amazonImageBlocked:shop.shopMode==='affiliate'&&draftAmazonBlocked,stockPhoto:draftStock,unbrandedQuery:unbrandedQuery(get("name"),get("category"),get("gender")),photoResolvedFor:draftStock?unbrandedQuery(get("name"),get("category"),get("gender")):undefined,editorialCover:undefined,identityOverride,stock:get('stock')===''?undefined:Math.min(1000000,Math.max(0,Math.trunc(Number(get('stock'))))),catalogMode:shop.shopMode,id:editing?.id || crypto.randomUUID(),name:get("name"),price:get("price"),compareAtPrice:get("compareAtPrice"),dealTag:get("dealTag").slice(0,80),badge:get("badge") as DealBadge,category:resolveCategory(get("category"))||"Top Deals",gender:normalizeGender(get("gender")),image:shop.shopMode==='affiliate'?affiliateImage(photo||safeImage(get("image")),get("category"),identityOverride||get("name"),editorCover,get('gender'),get('url'),draftAmazonBlocked):photo||safeImage(get("image")),url:safeUrl(get("url")),source:get("source"),images:get("images").split(/\n/).filter(value=>value.trim()).map(value=>shop.shopMode==='affiliate'?affiliateImage(safeImage(value),get("category"),identityOverride||get("name"),undefined,get("gender"),get("url")):safeImage(value)).filter(Boolean).slice(0,8),description:get("description").slice(0,4000)};
       if(shop.shopMode==='affiliate'&&(isAmazonCdnImage(get("image"))||get("images").split(/\n/).some(isAmazonCdnImage)))setStatus(amazonImageNotice);
       updateProducts(editing?shop.products.map(item=>item.id===editing.id?product:item):[...shop.products,product]);
       setEditing(null);
@@ -307,7 +306,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
       <label className="sm:col-span-2">{t("3 Key Highlights")}<textarea name="keyHighlights" className={field} rows={3} defaultValue={(editing?.keyHighlights||[]).join("\n")}/></label><label className="sm:col-span-2">{t("Social Promo Caption")}<textarea name="promoCaption" className={field} rows={3} maxLength={2000} defaultValue={editing?.promoCaption||""}/></label>
       <label className="sm:col-span-2">{t("Product Description")}<textarea className={field} name="description" rows={3} maxLength={4000} defaultValue={editing?.description||""}/></label>
       <label className="sm:col-span-2">{t("Additional Product Photos")}<textarea className={field} name="images" rows={3} maxLength={16000} defaultValue={(editing?.images||[]).join("\n")}/><span className="text-xs">{t("One image URL per line (up to 8).")}</span></label>
-      <label>{t("Source Badge")}<select className={field} name="source" defaultValue={editing?.source || "Other"}>{["Amazon","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c} value={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
+      <label>{t("Source Badge")}<select className={field} name="source" defaultValue={editing?.source || "Other"}>{["Amazon","Temu","AliExpress","Shopify","WhatsApp Direct","Other"].map(c=><option key={c} value={c}>{c==="Other"?t("Other"):c}</option>)}</select></label>
       <label className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white focus-within:ring-2 focus-within:ring-emerald-300">{t(shop.shopMode==='affiliate'?'Upload Custom Photo':'Upload Product Photo')}<input className="sr-only" type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{
         const file=e.target.files?.[0];if(!file)return;
         if(file.size>5000000){setStatus("Photo must be under 5 MB.");return;}
@@ -320,6 +319,7 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     
     {!shared&&<p className="mb-4 text-sm text-slate-600">{t("Sample products are demonstrations. Replace their details and links before sharing.")}</p>}
     <div hidden={shop.storeMode==='niche'} style={shop.storeMode==='niche'?{display:'none'}:undefined} className="mb-6 flex flex-wrap gap-2" role="group" aria-label={t("Category")}>{publicCategoryOptions.map(({name:c,count})=><button type="button" className={activeFilter===c?button:"rounded-lg border px-4 py-2"} key={c} onClick={()=>setFilter(c)} aria-pressed={activeFilter===c}>{label(c)}{count>0||!shopperView?" ("+count+")":""}</button>)}</div>
+    {loaded&&<a className="mb-4 inline-flex rounded-full border border-emerald-700 px-4 py-2 font-bold text-emerald-800" href={lookbookPath(publicSlug,shop.shopMode,snapshot)}>{t('Shop the Look')}</a>}
     <div role="group" aria-label={t("Gender / Audience")} className="mb-6 flex flex-wrap gap-2">
       {(["all","men","women","unisex","kids"] as const).map(value=><button type="button" key={value} aria-pressed={genderFilter===value} onClick={()=>setGenderFilter(value)} className={genderFilter===value?button:"rounded-lg border px-4 py-2"}>{t(value==="all"?"All":value==="men"?"Men":value==="women"?"Women":value==="kids"?"Kids":"Unisex")}</button>)}
     </div>
@@ -350,8 +350,9 @@ export default function ShopBuilder({isSharedBuyerView=false,initialShop,publicS
     {shareTarget&&<ShareModal {...shareTarget} onClose={()=>setShareTarget(null)}/>}
     {shop.shopMode==="personal"&&checkout&&<CryptoCheckout storeSlug={publicSlug} orderItems={checkout.items||[{id:checkout.product.id,quantity:1}]} product={checkout.product} orderDetails={checkout.details} shop={shop} onClose={()=>setCheckout(null)}/>}
     
-{shared&&<BuyerStoreFooter storeSlug={publicSlug}/>}
-  </>}<p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p></main>;
+{!shared&&loaded&&workspace==='products'&&<LookbookSettings shop={shop} onChange={setShop}/>}
+{shared&&<BuyerStoreFooter storeSlug={publicSlug} allowDisputes={shop.shopMode==='personal'}/>}
+  </>}{!shared&&loaded&&workspace==='products'&&<PublishControls state={syncState} busy={publishing} onDraft={saveDraft} onPublish={()=>void publishLive()}/>}<p role="status" className="my-4 text-emerald-800">{status&&t(status)}</p></main>;
 }
 
 

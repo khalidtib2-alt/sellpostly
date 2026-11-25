@@ -42,11 +42,11 @@ test('ten safe covers are full-bleed SVG scenes, auto-selected and independently
  assert.equal(affiliateImage('https://images-amazon.com/a.jpg','Other','Canon EOS R6 Mark II'),'https://images-amazon.com/a.jpg');assert.equal(safeImage('/studio-covers/../../unsafe.svg'),'');
  const corrected=validateShop({...raw,products:[{...raw.products[0],identityOverride:'Garmin Forerunner 265'}]});assert.equal(corrected.products[0].image,raw.products[0].image);
 });
-test('editor renders all cover controls and image-source links with translated helper copy',()=>{
+test('editor retains identity and image-source links without removed style-photo controls',()=>{
  for(const key of ['Detected:','Find Identical Compliant Image','Official Brand Media Kit','Free Licensed Photos (Unsplash)','Auto-select Cover','Editorial illustration','Upload Custom Photo'] as const){assert.ok(translations[key].fr);assert.match(translations[key].ar,/[\u0600-\u06ff]/);}
  const result=spawnSync(process.execPath,['--import','tsx','--input-type=module','-e',`
  import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';import assert from 'node:assert/strict';import Editor from './src/app/shop/affiliate-image-editor.tsx';import {LanguageProvider} from './src/app/language-context.tsx';
  const html=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(Editor,{title:'Sony WH-1000XM5 Wireless Headphones',category:'Tech & Gadgets',override:'',onOverride:()=>{},onSelect:()=>{},customImage:''})));
- assert.ok(html.includes('Sony WH-1000XM5'));assert.ok(html.includes('www.google.com/search'));assert.ok(html.includes('commons.wikimedia.org'));assert.ok(html.includes('unsplash.com/s/photos'));assert.equal((html.match(/aria-pressed=/g)||[]).length,2);assert.ok(html.includes('not the exact branded product'));
+ assert.ok(html.includes('Sony WH-1000XM5'));assert.ok(html.includes('www.google.com/search'));assert.ok(html.includes('commons.wikimedia.org'));assert.ok(html.includes('unsplash.com/s/photos'));assert.equal((html.match(/aria-pressed=/g)||[]).length,0);assert.ok(!html.includes('Next Similar Photo'));assert.ok(!html.includes('Representative style photo'));
  `],{cwd:process.cwd(),encoding:'utf8',timeout:60000});assert.equal(result.status,0,result.stderr||result.stdout);
 });

@@ -1,1 +1,3 @@
-export {POST,runtime} from '../import-product/route';
+export {POST} from '../import-product/route';
+
+export const runtime='nodejs';

@@ -44,7 +44,16 @@ test('crypto upgrade is private, exact-priced, atomic, idempotent and revocable'
   const third=await requestUpgrade({...input,tx_id:'0x'+'c'.repeat(64)},query);
   await decideUpgrade({id:third.id,action:'reject'},query);await assert.rejects(decideUpgrade({id:third.id,action:'approve'},query));
   assert.equal((await query('SELECT count(*)::int AS count FROM subscriptions',[]))[0].count,2);
- }finally{for(const key of ['NEXT_PUBLIC_ESCROW_WALLET','NEXT_PUBLIC_ESCROW_NETWORK','NEXT_PUBLIC_PRO_PRICE_USD','NEXT_PUBLIC_PRO_LIFETIME_PRICE_USD']){if(previous[key]===undefined)delete process.env[key];else process.env[key]=previous[key];}await pg.close();}
+  delete process.env.NEXT_PUBLIC_B2B_PLAN_PRICE;
+  const b2b=await requestUpgrade({...input,plan:'b2b',language:'es',amount_usd:'0.01',tx_id:'0x'+'d'.repeat(64)},query);
+  assert.equal(b2b.amount_usd,'49.00');
+  const agency=await decideUpgrade({id:b2b.id,action:'approve'},query);
+  const agencySub=(await query('SELECT expires_at FROM subscriptions WHERE owner_key=$1',[digest('sellpostly-license:'+agency.issued_license_key)]))[0];
+  assert.ok(new Date(agencySub.expires_at).getTime()>Date.now()+29*86400000);
+  assert.ok(new Date(agencySub.expires_at).getTime()<Date.now()+31*86400000);
+  process.env.NEXT_PUBLIC_B2B_PLAN_PRICE='59.95';
+  assert.equal(upgradeInput({...input,plan:'b2b'}).amount,'59.95');
+ }finally{for(const key of ['NEXT_PUBLIC_ESCROW_WALLET','NEXT_PUBLIC_ESCROW_NETWORK','NEXT_PUBLIC_PRO_PRICE_USD','NEXT_PUBLIC_PRO_LIFETIME_PRICE_USD','NEXT_PUBLIC_B2B_PLAN_PRICE']){if(previous[key]===undefined)delete process.env[key];else process.env[key]=previous[key];}await pg.close();}
 });
 test('upgrade validation and admin authorization fail closed; existing master keys still work',async()=>{
  const prior={...process.env};

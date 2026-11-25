@@ -19,6 +19,11 @@ export default function HomeContent() {
             <a className="rounded-lg border border-slate-300 bg-white px-5 py-3 font-semibold" href="/extension">{t("Get Chrome Extension")}</a>
           </div>
         </section>
+        <section className="mx-auto max-w-6xl px-5 py-12" aria-labelledby="business-audiences"><h2 id="business-audiences" className="max-w-3xl text-3xl font-bold">{t('Built for Creators, E-Commerce Brands & Agencies (B2B)')}</h2><div className="mt-6 grid gap-5 md:grid-cols-3">{([
+          ['Affiliate Creators','Curate partner deals, disclose affiliate links and share a focused storefront.'],
+          ['Shopify / WooCommerce Brands','Import verified product details and prepare consistent copy and media for your brand.'],
+          ['Social Commerce Agencies','Manage separate niche catalogs and prepare channel-ready content in one workspace.']
+        ] as const).map(([title,description])=><article key={title} className="rounded-2xl border bg-white p-6"><h3 className="text-lg font-bold">{t(title)}</h3><p className="mt-3 text-sm leading-relaxed text-slate-600">{t(description)}</p></article>)}</div><a className="mt-6 inline-flex rounded-xl bg-emerald-700 px-5 py-3 font-bold text-white" href="/pricing#brand-agency">{t('Explore Brand / Agency pricing')}</a></section>
         <section id="formatter" className="mx-auto max-w-6xl scroll-mt-6 px-5 py-14"><Formatter /></section>
         <UserGuide />
         <SocialConnect />

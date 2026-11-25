@@ -13,7 +13,7 @@ const links = [
  ["/studio","Creator Studio"], ["/settings","Seller Settings"],
  ["/how-it-works","How SellPostly Works"],
  ["/shop","My Shop"],
-  ["/prompt-generator", "Prompt Generator"], ["/guides", "Seller Guides"], ["/about", "About"], ["/contact", "Contact"],
+  ["/?tab=prompt#formatter", "Prompt Generator"], ["/guides", "Seller Guides"], ["/about", "About"], ["/contact", "Contact"],
   ["/privacy-policy", "Privacy Policy"], ["/terms", "Terms"],
 ] as const;
 
@@ -23,10 +23,10 @@ export function Header() {
   return <header className="border-b border-slate-200"><nav aria-label={t("Main navigation")} className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5">
     <Link aria-current={currentLink(pathname,"/")} href="/" className="text-xl font-black tracking-tight"><BrandLogo /></Link>
     <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-slate-700">
-      <Link aria-current={currentLink(pathname,"/studio")} href="/studio">{t("Creator Studio")}</Link><Link aria-current={currentLink(pathname,"/pricing")} href="/pricing">{t("Pricing")}</Link><Link href="/settings">{t("Seller Settings")}</Link><Link aria-current={currentLink(pathname,"/shop")} href="/shop">{t("My Shop")}</Link><Link aria-current={currentLink(pathname,"/#formatter")} href="/#formatter">{t("Post Formatter")}</Link><Link aria-current={currentLink(pathname,"/prompt-generator")} href="/prompt-generator">{t("Prompt Generator")}</Link><Link aria-current={currentLink(pathname,"/guides")} href="/guides">{t("Seller Guides")}</Link><Link aria-current={currentLink(pathname,"/extension")} href="/extension">{t("Chrome Extension")}</Link><Link aria-current={currentLink(pathname,"/how-it-works")} href="/how-it-works">{t("How SellPostly Works")}</Link><Link aria-current={currentLink(pathname,"/about")} href="/about">{t("About")}</Link><Link aria-current={currentLink(pathname,"/contact")} href="/contact">{t("Contact")}</Link>
+      <Link aria-current={currentLink(pathname,"/studio")} href="/studio">{t("Creator Studio")}</Link><Link aria-current={currentLink(pathname,"/pricing")} href="/pricing">{t("Pricing")}</Link><Link href="/settings">{t("Seller Settings")}</Link><Link aria-current={currentLink(pathname,"/shop")} href="/shop">{t("My Shop")}</Link><Link aria-current={currentLink(pathname,"/#formatter")} href="/#formatter">{t("Post Formatter")}</Link><Link aria-current={currentLink(pathname,"/prompt-generator")} href="/?tab=prompt#formatter">{t("Prompt Generator")}</Link><Link aria-current={currentLink(pathname,"/guides")} href="/guides">{t("Seller Guides")}</Link><Link aria-current={currentLink(pathname,"/extension")} href="/extension">{t("Chrome Extension")}</Link><Link aria-current={currentLink(pathname,"/how-it-works")} href="/how-it-works">{t("How SellPostly Works")}</Link><Link aria-current={currentLink(pathname,"/about")} href="/about">{t("About")}</Link><Link aria-current={currentLink(pathname,"/contact")} href="/contact">{t("Contact")}</Link>
     </div>
-    <div role="group" aria-label={language === "ar" ? "اللغة" : language === "fr" ? "Langue" : "Language"} className="inline-flex rounded-full bg-slate-100 p-1 text-sm font-bold">
-      {([["en", "EN"], ["fr", "FR"], ["ar", "العربية"]] as const).map(([code, label]) => (
+    <div role="group" aria-label={t("Language")} className="inline-flex rounded-full bg-slate-100 p-1 text-sm font-bold">
+      {([["en","EN"],["fr","FR"],["es","ES"],["ar","AR"]] as const).map(([code, label]) => (
         <button key={code} type="button" lang={code} aria-pressed={language === code} onClick={() => setLanguage(code)}
           className={"rounded-full px-3 py-1 " + (language === code ? "bg-emerald-700 text-white" : "text-slate-800")}>{label}</button>
       ))}

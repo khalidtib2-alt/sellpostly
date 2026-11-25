@@ -1,18 +1,20 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {b2bPlanPrice} from '../../lib/b2b-plan';
 import QRCode from 'qrcode';
 import {useLanguage} from '../language-context';
 import {escrowReady,escrowWallet} from './escrow-config';
 const storage='sellpostly-pro-upgrade-receipt';
 const monthly=process.env.NEXT_PUBLIC_PRO_PRICE_USD||'15';
+const b2b=b2bPlanPrice(process.env.NEXT_PUBLIC_B2B_PLAN_PRICE);
 const lifetime=process.env.NEXT_PUBLIC_PRO_LIFETIME_PRICE_USD||'';
 type Receipt={email:string;tx_id:string;receipt_token:string};
 type Status={status:string;issued_license_key?:string;amount_usd?:string};
-export default function ProCryptoUpgrade({onActivate}:{onActivate:(key:string)=>Promise<void>}){
+export default function ProCryptoUpgrade({onActivate,initialPlan='monthly'}:{onActivate:(key:string)=>Promise<void>;initialPlan?:'monthly'|'b2b'}){
  const {t,language}=useLanguage(),canvas=useRef<HTMLCanvasElement>(null);
- const [email,setEmail]=useState(''),[tx,setTx]=useState(''),[coin,setCoin]=useState('USDC'),[plan,setPlan]=useState('monthly');
+ const [email,setEmail]=useState(''),[tx,setTx]=useState(''),[coin,setCoin]=useState('USDC'),[plan,setPlan]=useState<string>(initialPlan);
  const [receipt,setReceipt]=useState<Receipt|null>(null),[status,setStatus]=useState<Status|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(false),[copied,setCopied]=useState(false),[duplicate,setDuplicate]=useState(false);
- const amount=plan==='lifetime'?lifetime:monthly;
+ const amount=plan==='b2b'?b2b:plan==='lifetime'?lifetime:monthly;
  useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(storage)||'null');if(saved&&typeof saved.email==='string'&&/^0x[0-9a-f]{64}$/.test(saved.tx_id)&&/^[a-f0-9]{64}$/.test(saved.receipt_token))setReceipt(saved);}catch{}},[]);
  useEffect(()=>{let active=true;if(escrowReady){const temp=document.createElement('canvas');QRCode.toCanvas(temp,escrowWallet,{width:192,margin:4}).then(()=>{if(active&&canvas.current){canvas.current.width=192;canvas.current.height=192;canvas.current.getContext('2d')?.drawImage(temp,0,0);}}).catch(()=>{});}return()=>{active=false;};},[receipt]);
  async function check(saved:Receipt){
@@ -30,7 +32,7 @@ export default function ProCryptoUpgrade({onActivate}:{onActivate:(key:string)=>
  <p className="my-2 text-sm text-slate-600">{t('Admin verifies your payment before issuing a Pro key. Monthly access lasts 30 days from approval.')}</p>
  {!escrowReady?<p role="status" className="rounded-lg bg-amber-50 p-3 text-amber-900">{t('Pro crypto checkout is unavailable. Use an existing license key or contact support.')}</p>:<>
  {!receipt&&<form onSubmit={submit} className="space-y-3">
- <label className="block">{t('Subscription Plan')}<select className={field} value={plan} onChange={e=>setPlan(e.target.value)}><option value="monthly">{t('Monthly')} — {monthly} USD</option>{lifetime&&<option value="lifetime">{t('Lifetime')} — {lifetime} USD</option>}</select></label>
+ <label className="block">{t('Subscription Plan')}<select className={field} value={plan} onChange={e=>setPlan(e.target.value)}><option value="b2b">{t('Brand / Agency Plan')} - {b2b} USD / {t('Monthly')}</option><option value="monthly">{t('Monthly')} — {monthly} USD</option>{lifetime&&<option value="lifetime">{t('Lifetime')} — {lifetime} USD</option>}</select></label>
  <div className="flex flex-wrap items-center gap-4"><canvas ref={canvas} role="img" aria-label={t('Polygon payment address QR code')} className="h-40 w-40 bg-white"/><div><p className="font-bold" dir="ltr">{amount} {coin} · Polygon</p><label className="block">{t('Coin')}<select value={coin} onChange={e=>setCoin(e.target.value)} className={field}><option>USDC</option><option>USDT</option></select></label></div></div>
  <p className="text-sm">{t('Send only USDC or USDT on Polygon to this address. The QR contains the address only; enter the amount and network in your wallet.')}</p>
  <code dir="ltr" className="block break-all rounded-lg bg-slate-100 p-3 text-xs">{escrowWallet}</code>

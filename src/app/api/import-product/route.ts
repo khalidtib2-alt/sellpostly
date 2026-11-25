@@ -1,3 +1,4 @@
+import {marketplaceSource,productUrlFallback} from '../../../lib/product-url-fallback';
 import { lookup } from "node:dns/promises";
 import { BlockList, isIP } from "node:net";
 import http from "node:http";
@@ -78,6 +79,7 @@ async function publicImageReference(value:string,base:string){
  try{const url=new URL(value,base),host=url.hostname.replace(/^\[|\]$/g,'');if(!['http:','https:'].includes(url.protocol)||url.username||url.password||(url.port&&!['80','443'].includes(url.port)))return '';const addresses=await Promise.race([lookup(host,{all:true}),new Promise<never>((_,reject)=>{const timer=setTimeout(()=>reject(Error('DNS timeout')),4000);timer.unref();})]);return addresses.length&&addresses.every(a=>publicAddress(a.address))?url.href:'';}catch{return '';}
 }
 export async function POST(request: Request) {
+  let fallback:ReturnType<typeof productUrlFallback>=null;
   try {
     if (Number(request.headers.get("content-length")) > 5000) throw Error("Too large");
     const reader=request.body?.getReader();
@@ -88,7 +90,11 @@ export async function POST(request: Request) {
     const {url}=JSON.parse(raw);
     if(typeof url!=="string" || url.length>2048) throw Error("Invalid URL");
 
-    const submitted=new URL(url);
+    const submitted=new URL(url),host=submitted.hostname.replace(/^\[|\]$/g,'');
+    if(!['http:','https:'].includes(submitted.protocol)||submitted.username||submitted.password||(submitted.port&&!['80','443'].includes(submitted.port))||host==='localhost'||host.endsWith('.localhost'))throw Error('Invalid URL');
+    const addresses=await Promise.race([lookup(host,{all:true}),new Promise<never>((_,reject)=>{const timer=setTimeout(()=>reject(Error('DNS timeout')),4000);timer.unref();})]);
+    if(!addresses.length||addresses.some(({address})=>!publicAddress(address)))throw Error('Private address');
+    fallback=productUrlFallback(url);
     const handle=submitted.pathname.match(/\/products\/([^/]+)/)?.[1];
     const homepage = submitted.pathname === "/" || submitted.pathname === "";
     if(handle || homepage) {
@@ -103,7 +109,7 @@ export async function POST(request: Request) {
           try {const asset=await download(new URL(imageUrl,response.url).href,true);image="data:"+asset.type+";base64,"+asset.bytes.toString("base64");} catch {}
         }
         const description=String(product.body_html||"").replace(/<\/(?:li|p|div|h[1-6])>|<br\s*\/?>/gi,"\n").split("\n").map(clean).filter(Boolean).slice(0,12).join("\n");
-        return Response.json({name:clean(product.title),price:clean(product.variants?.[0]?.price),currency:clean(product.currency||payload.currency||product.variants?.[0]?.priceCurrency),description,image},{headers:{"Cache-Control":"no-store"}});
+        return Response.json({source:"Shopify",name:clean(product.title),price:clean(product.variants?.[0]?.price),currency:clean(product.currency||payload.currency||product.variants?.[0]?.priceCurrency),description,image},{headers:{"Cache-Control":"no-store"}});
       } catch { if(homepage)return Response.json({error:"PRODUCT_URL_REQUIRED"},{status:400}); }
     }
     const page=await download(url);
@@ -134,8 +140,9 @@ export async function POST(request: Request) {
     }
     const name=clean(product?.name)||meta["og:title"]||"";
     if(!name) throw Error("No product details");
-    return Response.json({name,description:featureBullets || descriptionLines(product?.description||meta["og:description"]||meta.description||""),price:clean(offer.price??offer.lowPrice)||meta["product:price:amount"]||meta["og:price:amount"]||"",currency:clean(offer.priceCurrency)||meta["product:price:currency"]||meta["og:price:currency"]||"",image:imageData},{headers:{"Cache-Control":"no-store"}});
+    return Response.json({source:marketplaceSource(url),name,description:featureBullets || descriptionLines(product?.description||meta["og:description"]||meta.description||""),price:clean(offer.price??offer.lowPrice)||meta["product:price:amount"]||meta["og:price:amount"]||"",currency:clean(offer.priceCurrency)||meta["product:price:currency"]||meta["og:price:currency"]||"",image:imageData},{headers:{"Cache-Control":"no-store"}});
   } catch {
+    if(fallback)return Response.json(fallback,{headers:{"Cache-Control":"no-store"}});
     return Response.json({error:"IMPORT_FAILED"},{status:400});
   }
 }

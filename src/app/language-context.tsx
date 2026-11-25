@@ -38,7 +38,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         // Keep the selection in memory for this session.
       }
     },
-    t: (message: Message) => language === "en" ? message : (translations[message][language as keyof typeof translations[Message]] || message),
+    t: (message: Message) => language === "en" ? message : (translations[message]?.[language as keyof typeof translations[Message]] || message),
   }), [language]);
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
