@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
 import {lookShareAction} from '../src/app/shop/lookbook-share';
-import {lookbookImage,lookbookPhotoCredits} from '../src/app/shop/lookbook-data';
+import {lookbookImage} from '../src/app/shop/lookbook-data';
 import {translations} from '../src/app/translations';
 function client(script:string){const result=spawnSync(process.execPath,['--import','tsx','--input-type=module','-e',script],{encoding:'utf8',timeout:60000});assert.equal(result.status,0,result.stderr||result.stdout);}
 test('global shell has only requested primary links, four locales and a three-column legal footer',()=>{
@@ -34,10 +34,10 @@ test('lookbook hover and pin selection stay synchronized and gender switching ke
  await act(async()=>Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='Men').click());assert.ok(document.querySelector('.lookbook-products').textContent.includes('men-a'));assert.ok(!document.querySelector('.lookbook-products').textContent.includes('women-a'));await act(async()=>root.unmount());
  `);
 });
-test('model photos are bundled high-resolution JPEGs with source credits rather than SVG defaults',async()=>{
- for(const gender of ['women','men'] as const){assert.equal(lookbookImage(gender),'/lookbook/'+gender+'.jpg');const bytes=await readFile('public'+lookbookImage(gender));assert.equal(bytes.readUInt16BE(0),0xffd8);let dimensions:number[]=[];
+test('model defaults are bundled full-length editorial JPEGs with generated-image provenance',async()=>{
+ for(const gender of ['women','men'] as const){assert.equal(lookbookImage(gender),'/lookbook/'+gender+'-editorial.jpg');const bytes=await readFile('public'+lookbookImage(gender));assert.equal(bytes.readUInt16BE(0),0xffd8);let dimensions:number[]=[];
   for(let offset=2;offset<bytes.length-9;){const marker=bytes[offset+1];if([0xc0,0xc1,0xc2].includes(marker)){dimensions=[bytes.readUInt16BE(offset+7),bytes.readUInt16BE(offset+5)];break;}const length=bytes.readUInt16BE(offset+2);if(length<2)break;offset+=2+length;}
-  assert.ok(dimensions[0]>=2000&&dimensions[1]>=3000);assert.equal(new URL(lookbookPhotoCredits[gender].url).hostname,'www.pexels.com');
+  assert.ok(dimensions[0]>=1024&&dimensions[1]>=1536);assert.match(await readFile('public/lookbook/PHOTO-CREDITS.md','utf8'),/AI-generated/);
  }
  const jsx=await readFile('src/app/shop/lookbook.tsx','utf8');assert.match(jsx,/custom\[value\]\|\|shop.lookbookImages/);assert.match(jsx,/lookbook-products-grid/);assert.match(jsx,/NextImage/);
 });

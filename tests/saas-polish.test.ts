@@ -56,7 +56,7 @@ test('lookbook aliases, outfit overrides and product timestamps survive publishe
  const restored=await decodeShop(await encodeShop(original));assert.deepEqual(restored.lookbookImages,original.lookbookImages);assert.equal(restored.products[0].createdAt,'2026-01-01T00:00:00.000Z');
  const meta=lookbookMetadata('brand','affiliate',original,'es');assert.ok(String(meta.alternates.canonical).endsWith('/s/brand/affiliate/look'));assert.equal((meta.openGraph as any).url,meta.alternates.canonical);assert.match(String(meta.title),/Compra el look/);
  assert.equal(lookbookPath('brand','affiliate'),'/s/brand/affiliate/look');assert.equal(lookbookPath('brand','personal'),'/s/brand/look');
- for(const gender of ['women','men']){const photo=await readFile('public/lookbook/'+gender+'.jpg');assert.equal(photo.subarray(0,3).toString('hex'),'ffd8ff');assert.ok(photo.byteLength>100000);}
+ for(const gender of ['women','men']){const photo=await readFile('public/lookbook/'+gender+'-editorial.jpg');assert.equal(photo.subarray(0,3).toString('hex'),'ffd8ff');assert.ok(photo.byteLength>100000);}
 });
 test('rendered lookbook, filtered hero and affiliate footer keep shopping modes and safeguards separate',()=>{
  const script=`import React from 'react';import {renderToStaticMarkup as render} from 'react-dom/server';import assert from 'node:assert/strict';import {LanguageProvider} from './src/app/language-context.tsx';import Lookbook from './src/app/shop/lookbook.tsx';import Footer from './src/app/shop/buyer-store-footer.tsx';import {StorefrontHero} from './src/app/shop/storefront-templates.tsx';

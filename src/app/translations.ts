@@ -1,4 +1,9 @@
 export const translations = {
+  "Added to cart": {
+    "fr": "Ajouté au panier",
+    "es": "Añadido al carrito",
+    "ar": "تمت الإضافة إلى السلة"
+  },
   "Manage Categories": {
     "fr": "Gérer les catégories",
     "ar": "إدارة الفئات",
@@ -6893,6 +6898,51 @@ export const translations = {
     "fr": "Aperçu de story sociale 9:16",
     "es": "Vista previa de historia social 9:16",
     "ar": "معاينة قصة اجتماعية 9:16"
+  },
+  "Upper Body / Outerwear": {
+    "fr": "Haut / Veste et manteau",
+    "es": "Parte superior / Abrigos",
+    "ar": "الجزء العلوي / المعاطف"
+  },
+  "Lower Body / Bottoms": {
+    "fr": "Bas / Pantalon et jupe",
+    "es": "Parte inferior / Pantalones",
+    "ar": "الجزء السفلي / البناطيل"
+  },
+  "Accessories / Bag": {
+    "fr": "Accessoires / Sac",
+    "es": "Accesorios / Bolso",
+    "ar": "الإكسسوارات / الحقيبة"
+  },
+  "Footwear": {
+    "fr": "Chaussures",
+    "es": "Calzado",
+    "ar": "الأحذية"
+  },
+  "Daily curated look": {
+    "fr": "La sélection du jour",
+    "es": "El look del día",
+    "ar": "إطلالة اليوم المختارة"
+  },
+  "Rotates daily at midnight UTC": {
+    "fr": "Renouvelée chaque jour à minuit UTC",
+    "es": "Se renueva cada día a medianoche UTC",
+    "ar": "تتجدد يوميًا عند منتصف الليل بالتوقيت العالمي"
+  },
+  "Shuffle New Look": {
+    "fr": "Composer un autre look",
+    "es": "Crear otro look",
+    "ar": "اختيار إطلالة أخرى"
+  },
+  "Tap a glowing garment dot or a product card to explore the look.": {
+    "fr": "Touchez un point lumineux sur la tenue ou une fiche produit pour explorer le look.",
+    "es": "Toca un punto luminoso del conjunto o una tarjeta de producto para explorar el look.",
+    "ar": "اضغط على نقطة مضيئة على الملابس أو بطاقة منتج لاستكشاف الإطلالة."
+  },
+  "AI-created editorial styling inspiration. Models do not wear or endorse these products.": {
+    "fr": "Visuel éditorial créé par IA pour inspirer votre style. Les modèles ne portent ni ne recommandent ces produits.",
+    "es": "Inspiración editorial creada con IA. Los modelos no llevan ni recomiendan estos productos.",
+    "ar": "صورة تحريرية مولدة بالذكاء الاصطناعي للإلهام في تنسيق الأزياء. العارضون لا يرتدون هذه المنتجات ولا يروجون لها."
   }
 } as const;
 export type Message = keyof typeof translations;
