@@ -1,33 +1,23 @@
 'use client';
-import {useMemo,memo,type CSSProperties} from 'react';
-import {pieceAppearance,ringMesh,type OutfitPiece,type Ring} from '../../lib/mannequin-data';
-import {zoneLabels,type OutfitZone} from '../../lib/daily-look';
+import {useEffect,useState,memo,type CSSProperties} from 'react';
+import {photoGarmentPlacement,titleColor,type OutfitPiece} from '../../lib/mannequin-data';
+import {garmentCutout,type GarmentCutout} from '../../lib/garment-cutout';
+import {zoneLabels,outfitZones,type OutfitZone} from '../../lib/daily-look';
+import {editorialImage,editorialView,editorialViews} from './lookbook-data';
 import {useLanguage} from '../language-context';
-export type BodyPart={name:string;zone?:OutfitZone;x:number;y:number;z:number;rotate?:number;rings:Ring[];segments?:number};
-export function mannequinParts(gender:'women'|'men'):BodyPart[]{
- const shoulder=gender==='women'?44:49,waist=gender==='women'?31:37;
- return [
-  {name:'head',x:0,y:4,z:0,rings:[{y:0,x:1,z:1},{y:5,x:16,z:16},{y:18,x:22,z:20},{y:40,x:21,z:19},{y:56,x:12,z:13},{y:60,x:2,z:3}]},
-  {name:'neck',x:0,y:61,z:0,rings:[{y:0,x:10,z:10},{y:19,x:12,z:11}]},
-  {name:'torso',zone:'upper',x:0,y:79,z:0,rings:[{y:0,x:19,z:16},{y:13,x:shoulder,z:23},{y:68,x:waist,z:21},{y:132,x:waist+7,z:23}]},
-  ...[-1,1].map(side=>({name:'sleeve'+side,zone:'upper' as const,x:side*(shoulder-2),y:94,z:0,rotate:-side*10,rings:[{y:0,x:15,z:16},{y:68,x:12,z:13},{y:129,x:9,z:10}]})),
-  ...[-1,1].map(side=>({name:'hand'+side,x:side*67,y:221,z:0,rotate:-side*10,rings:[{y:0,x:8,z:8},{y:23,x:7,z:7},{y:28,x:2,z:3}]})),
-  {name:'waist',zone:'lower',x:0,y:208,z:0,rings:[{y:0,x:waist+7,z:23},{y:27,x:waist+8,z:24}]},
-  ...[-1,1].map(side=>({name:'trouser'+side,zone:'lower' as const,x:side*21,y:228,z:0,rings:[{y:0,x:21,z:23},{y:98,x:16,z:17},{y:196,x:14,z:14}]})),
-  ...[-1,1].map(side=>({name:'shoe'+side,zone:'footwear' as const,x:side*23,y:423,z:10,rings:[{y:0,x:13,z:19},{y:10,x:17,z:32},{y:25,x:17,z:34},{y:29,x:14,z:31}]})),
-  {name:'strap',zone:'accessory',x:1,y:89,z:27,rotate:-27,rings:[{y:0,x:3,z:2},{y:158,x:3,z:2}],segments:4},
-  {name:'bag',zone:'accessory',x:51,y:216,z:25,rings:[{y:0,x:16,z:9},{y:5,x:23,z:12},{y:49,x:23,z:12},{y:56,x:17,z:9}],segments:8}
- ];
+function LookbookMannequin({outfit,gender,active,onSelect,angle=0,dropZone,onDropProduct}:{outfit:OutfitPiece[];gender:'women'|'men';active:string;onSelect:(id:string)=>void;angle?:number;dropZone?:OutfitZone;onDropProduct?:(zone:OutfitZone,id:string)=>void}){
+ const {t}=useLanguage(),view=editorialView(angle),[textures,setTextures]=useState<Record<string,GarmentCutout>>({});
+ const identity=JSON.stringify(outfit.map(piece=>[piece.product.id,piece.product.image,piece.product.name]));
+ useEffect(()=>{let current=true;setTextures({});void Promise.all(outfit.map(async piece=>[piece.product.id,await garmentCutout(piece.product.image,piece.product.name)] as const)).then(results=>{if(current)setTextures(Object.fromEntries(results));});return()=>{current=false;};},[identity]);
+ const delta=((angle-view.angle+540)%360)-180;
+ return <div className="lookbook-real-model" data-gender={gender} data-view={view.key} style={{'--photo-yaw':Math.max(-9,Math.min(9,delta*.22))+'deg'} as CSSProperties}>
+  {editorialViews.map(item=><img key={item.key} src={editorialImage(gender,item.key)} alt={t('Editorial fashion inspiration')} aria-hidden={view.key!==item.key} className={'lookbook-real-photo '+(view.key===item.key?'is-visible':'')} loading={item.key==='front'?'eager':'lazy'} draggable={false}/>)}
+  {outfitZones.map(zone=>{const piece=outfit.find(item=>item.zone===zone),box=photoGarmentPlacement(zone,view.key),texture=piece?textures[piece.product.id]:undefined;return <button key={zone} type="button" className="lookbook-photo-garment" data-product-id={piece?.product.id} data-drop-zone={zone} data-active={!!piece&&active===piece.product.id} data-drop-active={dropZone===zone} data-zone={zone} aria-label={t(zoneLabels[zone])+(piece?': '+piece.product.name:'')} aria-pressed={!!piece&&active===piece.product.id} onClick={()=>piece&&onSelect(piece.product.id)} onDragOver={event=>{if(dropZone===zone){event.preventDefault();event.dataTransfer.dropEffect='copy';}}} onDrop={event=>{event.preventDefault();const id=event.dataTransfer.getData('application/x-sellpostly-product')||event.dataTransfer.getData('text/plain');if(id)onDropProduct?.(zone,id);}} style={{left:box.x+'%',top:box.y+'%',width:box.w+'%',height:box.h+'%'}}>
+   {piece&&<span className="lookbook-fabric-overlay" style={{backgroundColor:texture?.color||(piece?titleColor(piece.product.name):'#64748b')}}/>}
+   {texture?.src&&view.key!=='back'&&view.key!=='side'&&<img className="lookbook-garment-cutout" src={texture.src} alt="" draggable={false}/>}
+   <span className="lookbook-garment-hint">{t(zoneLabels[zone])}</span>
+  </button>;})}
+  <span className="lookbook-photo-rim" aria-hidden="true"/>
+ </div>;
 }
-function LookbookMannequin({outfit,gender,active,onSelect}:{outfit:OutfitPiece[];gender:'women'|'men';active:string;onSelect:(id:string)=>void}){
- const {t}=useLanguage(),parts=useMemo(()=>mannequinParts(gender).map(part=>({...part,faces:ringMesh(part.rings,part.segments)})),[gender]);
- return <div className="lookbook-avatar-world" data-gender={gender}>{parts.map(part=>{
-  const piece=part.zone?outfit.find(piece=>piece.zone===part.zone):undefined;
-  const appearance=pieceAppearance(piece?.product),selected=!!piece&&active===piece.product.id;
-  const props={className:'lookbook-avatar-part '+(part.zone?'lookbook-avatar-garment':''),style:{transform:`translate3d(${part.x}px,${part.y}px,${part.z}px) rotateZ(${part.rotate||0}deg)`} as CSSProperties,'data-product-id':piece?.product.id,'data-active':selected,'data-part':part.name};
-  const faces=part.faces.map((face,i)=><span key={i} className="lookbook-avatar-facet" aria-hidden="true" style={{width:face.width,height:face.height,transform:face.matrix,clipPath:face.clip,backgroundColor:part.zone?appearance.color:'#b5b4ac',backgroundImage:appearance.image&&part.zone?`linear-gradient(#00000012,#00000012),url(${JSON.stringify(appearance.image)})`:undefined,backgroundPosition:`${face.u*100}% center`,backgroundSize:'220% 100%',filter:`brightness(${selected?Math.min(1.2,face.shade+.25):face.shade})`}}/>);
-  return piece?<button key={part.name} type="button" {...props} aria-pressed={selected} aria-label={t(zoneLabels[piece.zone])+': '+piece.product.name} onClick={()=>onSelect(piece.product.id)}>{faces}</button>:<div key={part.name} {...props} aria-hidden="true">{faces}</div>;
- })}</div>;
-}
-
 export default memo(LookbookMannequin);

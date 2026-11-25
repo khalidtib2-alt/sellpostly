@@ -1,0 +1,66 @@
+{
+  "requests": [
+    {
+      "action": "prompt",
+      "topic": "Inclusive neighborhood routines",
+      "contentType": "article",
+      "language": "en",
+      "tone": "empathetic",
+      "length": "long",
+      "humanitarian": true,
+      "humanitarianNote": "Accessibility and community well-being",
+      "prompt": "",
+      "content": ""
+    },
+    {
+      "action": "write",
+      "topic": "Inclusive neighborhood routines",
+      "contentType": "article",
+      "language": "en",
+      "tone": "empathetic",
+      "length": "long",
+      "humanitarian": true,
+      "humanitarianNote": "Accessibility and community well-being",
+      "prompt": "Write a thoughtful, practical article.",
+      "content": ""
+    }
+  ],
+  "export": {
+    "copied": [
+      "# Community Guide\n\n**Helpful** ideas and [resources](https://example.com).",
+      "Community Guide\n\nHelpful ideas and resources (https://example.com)."
+    ],
+    "downloads": [
+      "Inclusive-neighborhood-routines-en.md",
+      "Inclusive-neighborhood-routines-en.txt"
+    ]
+  },
+  "cancelPreserved": true,
+  "reset": {
+    "prompt": "",
+    "content": "",
+    "tone": "professional",
+    "length": "medium",
+    "impact": false,
+    "count": 1
+  },
+  "reload": {
+    "tone": "empathetic",
+    "impact": true,
+    "content": "# Community Guide\n\n**Helpful** ideas and [resources](https://example.com)."
+  },
+  "persistedAcrossReload": true,
+  "languages": [
+    {
+      "language": "fr",
+      "dir": "ltr",
+      "labels": "Créateur de contenuTout effacerMots-clés / SujetType de contenuArticlePublication socialeScript vidéoLettre d’informationLangue de rédactionENFRالعربيةTonProfessionnelDécontractéPersuasifOptimisé pour le référencementEmpathique et engagéLongueurCourt (~300 mots)Moyen (~600 mots)Long (~1 000 mots et "
+    },
+    {
+      "language": "ar",
+      "dir": "rtl",
+      "labels": "منشئ المحتوىمسح الكلالكلمات المفتاحية / الموضوعنوع المحتوىمقالمنشور اجتماعيسيناريو فيديونشرة بريديةلغة الكتابةENFRالعربيةالنبرةاحترافيةودّيةإقناعيةمحسّنة لمحركات البحثمتعاطفة وهادفةالطولقصير (حوالي 300 كلمة)متوسط (حوالي 600 كلمة)طويل (حوالي 1,000 كلمة أو أكثر)تضمين ملاحظات إنسانية ومجتمعيةالمحور الم"
+    }
+  ],
+  "deleted": true
+}

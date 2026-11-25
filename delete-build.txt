@@ -1,0 +1,31 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 prebuild
+> npm run extension:configure
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 extension:configure
+> node scripts/configure-extension.mjs
+
+Extension public URL: https://sellpostly.vercel.app
+
+> sellpostly@1.0.0 build
+> next build --webpack
+
+Ôû▓ Next.js 16.4.5 (webpack)
+Ô£ô Running next.config.ts took 81ms
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 35.2s
+  Running TypeScript ...
+tests/delete-niche-shop.test.ts(21,139): error TS2345: Argument of type '{ products: { id: string; name: string; price: string; url: string; }[]; shopId: any; customSlug: any; isPrimary?: boolean; refundPolicy?: RefundPolicy; deliveryTimeframe?: string; ... 22 more ...; shopTheme: Surface; }' is not assignable to parameter of type 'Shop'.
+  Types of property 'products' are incompatible.
+    Type '{ id: string; name: string; price: string; url: string; }[]' is not assignable to type 'Product[]'.
+      Type '{ id: string; name: string; price: string; url: string; }' is missing the following properties from type 'Product': category, gender, image, source
+tests/delete-niche-shop.test.ts(27,50): error TS2345: Argument of type '{ products: { id: string; name: string; price: string; url: string; }[]; shopId: any; customSlug: any; isPrimary?: boolean; refundPolicy?: RefundPolicy; deliveryTimeframe?: string; ... 22 more ...; shopTheme: Surface; }' is not assignable to parameter of type 'Shop'.
+  Types of property 'products' are incompatible.
+    Type '{ id: string; name: string; price: string; url: string; }[]' is not assignable to type 'Product[]'.
+      Type '{ id: string; name: string; price: string; url: string; }' is missing the following properties from type 'Product': category, gender, image, source
+Failed to type check.
+

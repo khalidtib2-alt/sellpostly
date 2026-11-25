@@ -1,0 +1,10 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 start
+> next start -p 3030
+
+Ôû▓ Next.js 16.4.5
+- Local:         http://localhost:3030
+- Network:       http://10.212.192.64:3030
+Ô£ô Ready in 948ms
+Ô£ô Running next.config.ts took 123ms

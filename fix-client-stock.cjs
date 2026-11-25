@@ -1,0 +1,1 @@
+const fs=require('fs');for(const p of ['src/app/shop/shop-builder.tsx','src/app/shop/storefront-templates.tsx']){let s=fs.readFileSync(p,'utf8');s=s.replace(/^["']use client["'];\r?\n/m,'');fs.writeFileSync(p,'"use client";\n'+s);}

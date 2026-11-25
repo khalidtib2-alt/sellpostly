@@ -1,0 +1,66 @@
+Ô£ö guide includes 4 seller steps, 3 buyer steps, 4 audiences and 5 complete translated answers (3.3217ms)
+Ô£û rendered guide FAQ matches its JSON-LD exactly and all social icons have accessible labels (575.6642ms)
+Ô£ö social profile configuration validates domains and supplies functional sharing or guide fallbacks (1.3256ms)
+Ô£ö store metadata has canonical, OpenGraph and Twitter fields without payment, wallet or Amazon price leakage (1.4373ms)
+Ô£û public sitemap entries include both published catalogs and exclude suspended or unpublished shops (8448.5428ms)
+Ô£ö social preview renders a real 1200 by 630 PNG without fetching product photos (1775.4302ms)
+Ôä╣ tests 6
+Ôä╣ suites 0
+Ôä╣ pass 4
+Ôä╣ fail 2
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 13504.7977
+
+Ô£û failing tests:
+
+test at tests\guide-storefront-seo.test.ts:1:1644
+Ô£û rendered guide FAQ matches its JSON-LD exactly and all social icons have accessible labels (575.6642ms)
+  AssertionError [ERR_ASSERTION]: file:///C:/Users/pc/AppData/Local/Temp/SellPostly-Support-Studio-Preview/[eval1]:5
+   for(const q of data.mainEntity){assert.ok(html.includes(q.name.replaceAll('&','&amp;'))));assert.ok(q.acceptedAnswer.text.length>80);}
+                                                                                           ^
+  
+  SyntaxError: Unexpected token ')'
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.createModuleWrap (node:internal/modules/esm/loader:212:12)
+      at ModuleLoader.eval (node:internal/modules/esm/loader:250:23)
+      at node:internal/process/execution:81:24
+      at asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:11)
+  
+  Node.js v26.13.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\tests\guide-storefront-seo.test.ts:30:63)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\guide-storefront-seo.test.ts:7:2014
+Ô£û public sitemap entries include both published catalogs and exclude suspended or unpublished shops (8448.5428ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\tests\guide-storefront-seo.test.ts:49:58)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

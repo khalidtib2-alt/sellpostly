@@ -1,0 +1,23 @@
+[
+  {
+    "language": "en",
+    "dir": "ltr",
+    "status": "HTTP 400: Unknown name \"temperature\" at generationConfig.",
+    "attempts": "Google Model Attemptsgemini-2.5-flash — HTTP 400: Unknown name \"temperature\" at generationConfig.gemini-3.8-flash — HTTP 404: Model unavailable.",
+    "prompt": ""
+  },
+  {
+    "language": "fr",
+    "dir": "ltr",
+    "status": "HTTP 400: Unknown name \"temperature\" at generationConfig.",
+    "attempts": "Tentatives par modèle Googlegemini-2.5-flash — HTTP 400: Unknown name \"temperature\" at generationConfig.gemini-3.8-flash — HTTP 404: Model unavailable.",
+    "prompt": ""
+  },
+  {
+    "language": "ar",
+    "dir": "rtl",
+    "status": "HTTP 400: Unknown name \"temperature\" at generationConfig.",
+    "attempts": "محاولات نماذج Googlegemini-2.5-flash — HTTP 400: Unknown name \"temperature\" at generationConfig.gemini-3.8-flash — HTTP 404: Model unavailable.",
+    "prompt": ""
+  }
+]

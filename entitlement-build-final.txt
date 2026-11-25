@@ -1,0 +1,94 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 prebuild
+> npm run extension:configure
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 extension:configure
+> node scripts/configure-extension.mjs
+
+Extension public URL: https://sellpostly.vercel.app
+
+> sellpostly@1.0.0 build
+> next build --webpack
+
+Ôû▓ Next.js 16.4.5 (webpack)
+Ô£ô Running next.config.ts took 70ms
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 24.8s
+  Running TypeScript ...
+  Finished TypeScript in 12.3s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/46) ...
+Public storefront sitemap unavailable; static pages remain listed.
+  Generating static pages using 3 workers (11/46) 
+  Generating static pages using 3 workers (22/46) 
+  Generating static pages using 3 workers (34/46) 
+Ô£ô Generating static pages using 3 workers (46/46) in 5.5s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)                                                      Revalidate  Expire
+Ôöî Ôùï /
+Ôö£ Ôùï /_not-found
+Ôö£ Ôùï /about
+Ôö£ Ôùï /admin
+Ôö£ ãÆ /api/admin/orders/[id]
+Ôö£ ãÆ /api/admin/overview
+Ôö£ ãÆ /api/admin/payouts/[id]
+Ôö£ ãÆ /api/admin/pro-requests
+Ôö£ ãÆ /api/admin/seller-plans
+Ôö£ ãÆ /api/admin/shops/[id]
+Ôö£ ãÆ /api/admin/subscriptions
+Ôö£ ãÆ /api/affiliate/stock-photo
+Ôö£ ãÆ /api/db/init
+Ôö£ ãÆ /api/import-product
+Ôö£ ãÆ /api/orders
+Ôö£ ãÆ /api/orders/[id]/dispute
+Ôö£ ãÆ /api/orders/cod
+Ôö£ ãÆ /api/orders/peer
+Ôö£ ãÆ /api/pro/request
+Ôö£ ãÆ /api/pro/verify
+Ôö£ ãÆ /api/seller/dashboard
+Ôö£ ãÆ /api/seller/notifications
+Ôö£ ãÆ /api/seller/orders/[id]/fulfill
+Ôö£ ãÆ /api/seller/payouts
+Ôö£ ãÆ /api/shop
+Ôö£ ãÆ /api/shop/account
+Ôö£ ãÆ /api/shops
+Ôö£ ãÆ /api/tools/generate-copy
+Ôö£ ãÆ /api/tools/generate-product-image
+Ôö£ Ôùï /contact
+Ôö£ Ôùï /dashboard
+Ôö£ Ôùï /extension
+Ôö£ Ôùï /guides
+Ôö£   /guides/[slug]
+Ôöé Ôö£ ÔùÅ /guides/whatsapp-business-product-catalog-templates
+Ôöé Ôö£ ÔùÅ /guides/facebook-marketplace-high-converting-descriptions
+Ôöé Ôö£ ÔùÅ /guides/instagram-shopping-caption-hashtag-guide
+Ôöé Ôöö ÔùÅ [+2 more paths]
+Ôö£ Ôùï /how-it-works
+Ôö£ Ôùï /opengraph-image
+Ôö£ Ôùï /pricing
+Ôö£ Ôùï /privacy-policy
+Ôö£ Ôùï /prompt-generator
+Ôö£ Ôùï /robots.txt
+Ôö£ ãÆ /s/[slug]
+Ôö£ ãÆ /s/[slug]/[storeType]
+Ôö£ ãÆ /s/[slug]/[storeType]/opengraph-image
+Ôö£ ãÆ /s/[slug]/product/[productId]
+Ôö£ Ôùï /settings
+Ôö£ ãÆ /shop
+Ôö£ ãÆ /shop/p/[productId]
+Ôö£ Ôùï /sitemap.xml                                                         5m      1y
+Ôö£ Ôùï /studio
+Ôö£ Ôùï /terms
+Ôöö Ôùï /tools
+
+
+Ôùï  (Static)   prerendered as static content
+ÔùÅ  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ãÆ  (Dynamic)  server-rendered on demand
+

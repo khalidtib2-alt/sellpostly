@@ -1,0 +1,16 @@
+const fs=require('fs');const read=p=>fs.readFileSync(p,'utf8'),write=(p,s)=>fs.writeFileSync(p,s);
+let p='src/lib/order-service.ts',s=read(p);
+s=s.replace('SELECT id,catalog,escrow_hold_days,suspended FROM shops','SELECT id,coalesce(personal_catalog,catalog) AS catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,escrow_hold_days,suspended FROM shops');
+s=s.replace("if(shop.shopMode!=='personal')", "if(shop.shopMode!=='personal'||shop.escrowEnabled===false||shops[0].escrow_enabled===false)");
+s=s.replace('receiving_wallet:escrowWallet','receiving_wallet:escrowWallet,seller_wallet:shops[0].seller_usdc_wallet||shop.cryptoWallet||\'\'');
+s=s.replace('AND catalog=$7::jsonb','AND escrow_enabled=true AND coalesce(personal_catalog,catalog)=$7::jsonb');
+s=s.replace("tracking',$3::text,'delivery_notes',$4::text,'updated_at',now()))", "tracking',$3::text,'delivery_notes',$4::text,'carrier',$5::text,'status','shipped','updated_at',now())),status=CASE WHEN o.payment_method='COD' THEN 'fulfilled' ELSE o.status END");
+s=s.replace("o.status IN ('held','released')", "(o.status IN ('held','released') OR (o.payment_method='COD' AND o.status IN ('pending','fulfilled')))");
+s=s.replace("notes=text(raw.delivery_notes??'',4000,false);", "notes=text(raw.delivery_notes??'',4000,false),carrier=text(raw.carrier??'',100,false);");
+s=s.replace('[id,ownerKey,tracking,notes]', '[id,ownerKey,tracking,notes,carrier]');
+s=s.replace('ord AS (SELECT o.* FROM orders o JOIN owned s ON s.id=o.shop_id)', "all_ord AS (SELECT o.* FROM orders o JOIN owned s ON s.id=o.shop_id),\n ord AS (SELECT * FROM all_ord WHERE payment_method='CRYPTO')");
+s=s.replace("'details',details) ORDER BY created_at DESC,id) FROM ord)", "'details',details,'payment_method',payment_method,'escrow_status',escrow_status) ORDER BY created_at DESC,id) FROM all_ord)");write(p,s);
+p='src/lib/admin-service.ts';s=read(p);
+s=s.replace("'shop_name',s.name) ORDER BY o.created_at", "'shop_name',s.name,'seller_wallet',coalesce(nullif(o.details->>'seller_wallet',''),s.seller_usdc_wallet),'buyer_email',o.details->'buyer'->>'contact') ORDER BY o.created_at");
+s=s.replace("WHERE id=$1::uuid AND (\n ($2='verify'", "WHERE id=$1::uuid AND payment_method='CRYPTO' AND (\n ($2='verify'");write(p,s);
+p='src/app/api/admin/orders/[id]/route.ts';s=read(p).replace("if(result.status==='held')await notifyEvent('held',result.id);", "if(result.status==='held')await Promise.all([notifyEvent('held',result.id),notifyEvent('seller_held',result.id)]);if(result.status==='released')await notifyEvent('released',result.id);");write(p,s);

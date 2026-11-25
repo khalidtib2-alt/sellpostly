@@ -1,0 +1,139 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 test
+> node --conditions=react-server --import tsx --test tests/*.test.ts
+
+Ô£ö host-based Amazon and image recognition handles regions and rejects lookalikes (20.6913ms)
+Ô£ö disclosure column migrates idempotently, saves every preset/custom text and survives Personal publishing (6271.6917ms)
+Ô£ö public Amazon cards omit static price and discount while non-Amazon cards retain them; disclosure precedes hero (4113.7916ms)
+Ô£ö popup blocks Amazon images before display and worker bridges generic queries without raw CDN images (114.7479ms)
+Ô£ö Amazon restrictions apply only in Affiliate mode; ordinary affiliate and Personal images/prices survive saves and shares (78.7094ms)
+Ô£ö extension preserves merchant and Personal Amazon photos, strips only Affiliate CDN photos, and bridges CDN provenance (17.0984ms)
+Ô£ö public storefront HTML hides prices only for Amazon-related Affiliate cards (4473.5229ms)
+Ô£ö Polygon is the checkout default and incompatible receiving networks are not presented as Polygon (1.912ms)
+Ô£ö storefront disputes validate contact and store context and appear directly in admin review (6425.6896ms)
+Ô£ö public dispute route bounds request bodies before database access (49.0546ms)
+Ô£ö product and storefront reads share immediately persisted quantities; empty carts never resurrect legacy items (3.6047ms)
+Ô£ö cart handles invalid storage and limits stale quantities safely (0.7427ms)
+Ô£ö direct product checkout totals selected quantity exactly and sends original item ID (1.6844ms)
+Ô£ö checkout display uses two decimals without changing exact accounting values (2.0525ms)
+Ô£ö escrow configuration prefers the admin wallet and fails closed on invalid admin config (0.5285ms)
+Ô£ö active escrow exposes only locked platform addresses; direct wallet remains in the direct branch (16.0434ms)
+Ô£ö extension config builds use only the canonical public environment value (1110.7419ms)
+Ô£ö emails escape dynamic content, localize all templates and fail safely without sending (8.953ms)
+SellPostly notification unavailable; business update remains saved.
+Ô£ö all five notifications use committed database facts and deduplicate successful sends (10856.0191ms)
+Ô£ö canonical URLs reject previews and quick replies reject email contacts as phone numbers (52.6336ms)
+Ô£ö extension category and Kids audience survive the full storefront handoff and shared catalog (319.9714ms)
+Ô£ö admin-only hold assignment survives forged publishing and preserves order snapshots (9492.5705ms)
+Ô£ö force-release requests still require the strict admin header (584.8122ms)
+Ô£ö guide includes 4 seller steps, 3 buyer steps, 4 audiences and 5 complete translated answers (2.7542ms)
+Ô£ö rendered guide FAQ matches its JSON-LD exactly and all social icons have accessible labels (1075.1548ms)
+Ô£ö social profile configuration validates domains and supplies functional sharing or guide fallbacks (1.4577ms)
+Ô£ö store metadata has canonical, OpenGraph and Twitter fields without payment, wallet or Amazon price leakage (2.442ms)
+Ô£ö public sitemap entries include both published catalogs and exclude suspended or unpublished shops (10278.2732ms)
+Ô£ö social preview renders a real 1200 by 630 PNG without fetching product photos (3186.6865ms)
+Ô£ö main-store preference defaults on and survives snapshots without linking general stores (37.0139ms)
+Ô£ö public niche links resolve only matching same-owner published primary stores; toggle persists in database (11899.2285ms)
+Ô£ö global control states cover keyboard, disabled, selected, press and reduced motion; new copy is translated (25.51ms)
+Ô£ö crop presets preserve actual pixel aspect, stay in bounds and enforce export limits (5.1286ms)
+Ô£ö sharpness is a real local convolution that preserves alpha and border pixels (6.9854ms)
+Ô£ö QR URLs accept only canonical public Personal or Affiliate storefront links (0.8564ms)
+Ô£ö promo videos use trusted embed paths, reject injection and Amazon CDN links, and persist independently of affiliate price safeguards (97.8777ms)
+Ô£ö new media copy is translated and server rendering loads no player before buyer consent (2709.9696ms)
+Ô£ö Pro verification rejects dev key in production, validates master keys and Gumroad revocations (83.614ms)
+Ô£ö legacy shops default safely and preserve logo/hold settings (6.255ms)
+Ô£ö schema initializes twice, computes 5% commission, enforces holds and reserves payouts (12850.9941ms)
+Ô£ö production initialization and publishing reject unauthorized requests before database access (184.2245ms)
+Ô£ö decimal prices and buyer identifiers are normalized without floating point (50.9133ms)
+Ô£ö buyer and seller workflows enforce contact, ownership, holds and precise isolated balances (12590.1817ms)
+Ô£ö seller routes require a verified Pro identity before accessing the database (94.5907ms)
+Ô£ö admin authentication is strict in development and accepts only x-admin-key (9.2399ms)
+Ô£ö all admin routes reject unauthorized reads and writes before database access (425.9317ms)
+Ô£ö admin ledger transitions, store trust and subscription revocation are enforced in PostgreSQL (10172.5849ms)
+Ô£û legacy primary catalogs migrate intact; niche shops enforce global slugs, ownership, type and 10-shop Pro limit (7817.7957ms)
+Ô£ö independent drafts, settings, compressed links and exact-shop imports preserve catalog boundaries (101.6279ms)
+Ô£ö niche navigation, extension shop sync and new strings retain EN FR AR support (6.1544ms)
+Ô£ö payment configuration is whitelisted, safely linked, translated and preserved in share links (45.9896ms)
+Ô£ö all direct methods have zero escrow/commission; optional and required USDC are enforced server-side; migrations rerun safely (8992.8575ms)
+Ô£ö pricing displays the actual monthly upgrade amount and suppresses invalid configurations (3.7886ms)
+Ô£ö plan comparison and metadata cover requested capabilities in all languages and link to the real activation flow (16.0137ms)
+Ô£ö crypto upgrade is private, exact-priced, atomic, idempotent and revocable (8008.8989ms)
+Ô£ö upgrade validation and admin authorization fail closed; existing master keys still work (19.349ms)
+Ô£ö the homepage shortcut requires server verification of the currently saved Pro key (14.0204ms)
+Ô£ö local product handoff preserves the original photo, description and URL exactly once (31.1491ms)
+Ô£ö pending imports remain recoverable when catalog storage is full (3.4945ms)
+Ô£ö extension service worker opens only the trusted gated shop and passes long product fields directly without a URL payload (40.2055ms)
+Ô£ö extension permissions include storage for URL cleanup (4.3871ms)
+Ô£ö brand/model recognition strips sales filler without inventing an unknown model (43.0264ms)
+Ô£ö image search links carry exact identity and variation without unsafe navigation (1.6848ms)
+Ô£ö ten safe covers are full-bleed SVG scenes, auto-selected and independently persisted (193.6336ms)
+Ô£ö editor renders all cover controls and image-source links with translated helper copy (1220.6626ms)
+Ô£ö personal product routes safely encode IDs and preserve shared storefront snapshots (2.3914ms)
+Ô£ö carts persist only valid product quantities and retain exact checkout totals (2.5559ms)
+Ô£ö gallery photos survive validation and compressed links while unsafe URLs are removed (79.3176ms)
+Ô£ö generic queries remove brands/models by construction and agree in extension and website (62.1657ms)
+Ô£ö all required fallback categories have multiple genuine bundled JPEGs and source licenses (645.1954ms)
+Ô£ö imports assign representative photos, retain provenance in shared catalogs and preserve custom uploads (42.7405ms)
+Ô£ö photo endpoint is keyless-safe, fails over locally, sanitizes provider queries, and tracks Unsplash selections privately (21.0096ms)
+Ô£ö new photo controls and disclosure helper have French and Arabic translations (0.4926ms)
+Ô£ö specific footwear subtypes survive de-branding, round trips and strict fallback selection (13.876ms)
+Ô£ö mode switches archive inventories separately, restore them and never copy affiliate samples into personal stores (38.5743ms)
+Ô£ö validation and shared links exclude products tagged for the other catalog; untagged legacy items stay in their original mode (61.6742ms)
+Ô£ö social sharing encodes product URLs and text for all six destinations without executing injected schemes (2.3408ms)
+Ô£ö COD receipt and crypto checkout retain the same product quantity and exact total (2.7816ms)
+Ô£ö new checkout and share controls have French and Arabic translations (0.4055ms)
+Ô£ö buyer rendering enforces affiliate-only external CTA and personal product checkout/gallery controls (3289.1618ms)
+Ô£ö independent published catalogs, COD ledger isolation and buyer/seller lifecycle notifications (8285.4938ms)
+Ô£ö all Phase 2 messages localize and escape payment/tracking data (3.0203ms)
+Ô£ö payment save persists the Personal catalog without invoking sharing or navigation (31.4226ms)
+Ô£ö all image sources use the same contained 4:3 frame and fixed action slots (8.6495ms)
+Ô£ö the shared guide documents all current tools, payment methods, escrow and truthful Pro pricing (1.1824ms)
+Ô£ö localized metadata and structured data target commerce without unsupported free-store claims or private payment data (5.9233ms)
+Ô£ö hero, palette, surface and stock survive separate catalog switching and compressed links (73.4831ms)
+Ô£ö destination imports preserve affiliate tags and both catalogs, including repeated handoffs (27.4214ms)
+Ô£ö extension 1.0.4 bridges destination and stock, preserves affiliate URL parameters, and cleans personal links (22.5727ms)
+Ô£ö discounts reflect compatible prices and stock limits are enforced before checkout (10.3776ms)
+Ô£ö public views render distinct templates without affiliate cart/escrow leakage (3589.5694ms)
+Ô£ö studio demos are local photographic assets and survive saved/shared catalog validation (114.3349ms)
+Ô£ö legacy preview migration replaces exact old artwork and preserves seller photos (1.3116ms)
+Ô£ö support mail appears in localized receipts and reply-to without replacing verified sender (9.495ms)
+Ô£ö TRON receives structural and checksum validation and cannot request admin escrow (2.9972ms)
+Ô£ö digital-only classification handles legacy categories, explicit flags, mixed and empty carts; snapshots omit download secrets (49.928ms)
+Ô£ö TRON direct ledger, TxID deduplication and digital download authorization survive schema reruns (8900.2972ms)
+Ô£ö payment cards are vertical accessible switches and new checkout/editor copy is localized (133.8371ms)
+Ô£ö personal policies require explicit selection and delivery text; legacy records have no invented refund promise (88.6654ms)
+Ô£ö legacy personal checkout is blocked until policies are configured; public policy matches saved catalog (8499.1564ms)
+Ô£ö admin plan overrides are persistent, searchable and enforced without deleting primary shops, niche catalogs or orders (4461.7458ms)
+Ô£ö seller plan routes reject unauthenticated requests and all new trust labels are translated (60.9578ms)
+Ôä╣ tests 102
+Ôä╣ suites 0
+Ôä╣ pass 101
+Ôä╣ fail 1
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 82730.605
+
+Ô£û failing tests:
+
+test at tests\multi-shop.test.ts:1:753
+Ô£û legacy primary catalogs migrate intact; niche shops enforce global slugs, ownership, type and 10-shop Pro limit (7817.7957ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /SHOP_NOT_FOUND/. Input:
+  
+  'Error: STORE_POLICY_REQUIRED'
+  
+      at async TestContext.<anonymous> (C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\tests\multi-shop.test.ts:31:2)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: STORE_POLICY_REQUIRED
+        at saveNicheShop (C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\src\lib\multi-shop-service.ts:32:35)
+        at TestContext.<anonymous> (C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\tests\multi-shop.test.ts:31:23)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    expected: /SHOP_NOT_FOUND/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

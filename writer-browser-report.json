@@ -1,0 +1,33 @@
+{
+  "savedProduct": {
+    "title": "Saved Headphones",
+    "description": "Wireless connection",
+    "category": "Audio",
+    "price": "75 USD",
+    "tone": "",
+    "language": "en",
+    "destination": "personal",
+    "goal": "content"
+  },
+  "inlineEditAndCopy": true,
+  "languages": [
+    {
+      "language": "fr",
+      "dir": "ltr",
+      "prompt": "Consigne professionnelle modifiable",
+      "path": "/prompt-generator"
+    },
+    {
+      "language": "ar",
+      "dir": "rtl",
+      "prompt": "توجيه احترافي قابل للتعديل",
+      "path": "/prompt-generator"
+    }
+  ],
+  "homepageCreatorPanel": true,
+  "studio": {
+    "imageEditor": true,
+    "video": true,
+    "noGenerator": true
+  }
+}

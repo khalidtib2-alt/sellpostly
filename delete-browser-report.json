@@ -1,0 +1,28 @@
+{
+  "primaryProtected": true,
+  "cancelSafe": true,
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "label": "Supprimer la boutique spécialisée"
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "label": "حذف المتجر المتخصص"
+    },
+    {
+      "lang": "en",
+      "dir": "ltr",
+      "label": "Delete Niche Shop"
+    }
+  ],
+  "deleted": {
+    "requests": 1,
+    "path": "/settings",
+    "active": "Primary",
+    "draft": null,
+    "shops": 2
+  }
+}

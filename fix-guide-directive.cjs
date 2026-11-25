@@ -1,0 +1,1 @@
+const fs=require('fs');let s=fs.readFileSync('src/app/shop/shop-builder.tsx','utf8');s=s.replace(/^["']use client["'];\r?\n/m,'');fs.writeFileSync('src/app/shop/shop-builder.tsx','"use client";\n'+s);

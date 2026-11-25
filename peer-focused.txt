@@ -1,0 +1,10 @@
+Ô£ö payment configuration is whitelisted, safely linked, translated and preserved in share links (22.3795ms)
+Ô£ö all direct methods have zero escrow/commission; optional and required USDC are enforced server-side; migrations rerun safely (4480.7624ms)
+Ôä╣ tests 2
+Ôä╣ suites 0
+Ôä╣ pass 2
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 5315.1058

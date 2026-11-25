@@ -1,0 +1,15 @@
+const fs=require('fs'),zlib=require('zlib');
+(async()=>{const tabs=await fetch('http://127.0.0.1:9340/json/list').then(r=>r.json()),tab=tabs.find(t=>t.type==='page'),ws=new WebSocket(tab.webSocketDebuggerUrl);await new Promise(r=>ws.addEventListener('open',r,{once:true}));let id=0;const pending=new Map();ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){const p=pending.get(m.id);if(p){pending.delete(m.id);m.error?p.reject(Error(JSON.stringify(m.error))):p.resolve(m.result);}}});const call=(method,params={})=>new Promise((resolve,reject)=>{const n=++id;pending.set(n,{resolve,reject});ws.send(JSON.stringify({id:n,method,params}));});const evaluate=async expression=>{const r=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error((r.exceptionDetails.exception?.description||r.exceptionDetails.text)+' EXPRESSION '+expression);return r.result.value;};const until=async expression=>{const end=Date.now()+25000;while(Date.now()<end){if(await evaluate('Boolean(('+expression+'))'))return;await new Promise(r=>setTimeout(r,150));}throw Error('Timed out: '+expression);};
+
+
+
+
+
+
+await call('Page.enable');await call('Emulation.setDeviceMetricsOverride',{width:1280,height:1000,deviceScaleFactor:1,mobile:false});
+const report=[];
+for(const mode of ['personal','affiliate']){const shop={name:'Portrait Test',shopMode:mode,shopTheme:'slate',refundPolicy:'7_day',deliveryTimeframe:'2 days',products:[{id:'fashion',name:'Full-length Outfit',price:'75 USD',category:'Fashion',image:'/demo-products/backpack.svg',url:'https://example.com/deal'}]};await call('Page.navigate',{url:'http://127.0.0.1:3030/shop?s='+zlib.gzipSync(Buffer.from(JSON.stringify(shop))).toString('base64url')});await until("document.querySelector('.store-photo-frame img')");await new Promise(r=>setTimeout(r,700));const style=await evaluate("(()=>{const frame=document.querySelector('.store-card-visual'),image=document.querySelector('.store-photo-frame img'),r=frame.getBoundingClientRect(),s=getComputedStyle(image);return {width:r.width,height:r.height,fit:s.objectFit,position:s.objectPosition,padding:s.padding,background:getComputedStyle(image.parentElement).backgroundColor};})()");if(Math.abs(style.width/style.height-.75)>.002||style.fit!=='cover'||style.position!=='50% 0%'||style.padding!=='0px'||style.background==='rgb(255, 255, 255)')throw Error('Card style mismatch: '+JSON.stringify(style));
+if(mode==='personal'){await evaluate("document.querySelector('.store-quick-view').click()");await until("document.querySelector('dialog[open] img')");style.detail=await evaluate("getComputedStyle(document.querySelector('dialog[open] img')).objectFit");if(style.detail!=='contain')throw Error('Detail image cropped');}
+report.push({mode,...style});}
+fs.writeFileSync('portrait-browser-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));await call('Browser.close');
+})().catch(e=>{console.error(e.message);process.exit(1)});

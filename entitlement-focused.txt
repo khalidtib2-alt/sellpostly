@@ -1,0 +1,16 @@
+Ô£ö activating a real master Pro key on a Free account immediately unlocks POST /api/shops and persists entitlement without moving its primary shop (7226.4102ms)
+Ô£ö database Pro alone and cookie-carried valid licenses both resolve through the same account, with clear missing-auth errors (4988.2672ms)
+Ô£ö sync preserves revocation/expiry and ownership boundaries; an existing license cannot silently capture another account (2134.9509ms)
+Ô£ö activation and shop mutations forward both credentials; niche errors remain specific and localized (6.835ms)
+Ô£ö personal policies require explicit selection and delivery text; legacy records have no invented refund promise (91.202ms)
+Ô£ö legacy personal checkout is blocked until policies are configured; public policy matches saved catalog (6830.3642ms)
+Ô£ö admin plan overrides are persistent, searchable and enforced without deleting primary shops, niche catalogs or orders (4522.9836ms)
+Ô£ö seller plan routes reject unauthenticated requests and all new trust labels are translated (425.3717ms)
+Ôä╣ tests 8
+Ôä╣ suites 0
+Ôä╣ pass 8
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 15584.7939

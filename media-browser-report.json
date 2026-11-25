@@ -1,0 +1,45 @@
+{
+  "image": {
+    "width": 1200,
+    "height": 1200,
+    "bytes": "File Size Before / After: 138.7 KB / 1296.8 KB · Savings: -834.7%"
+  },
+  "exports": [
+    {
+      "type": "image/webp",
+      "bytes": 113520,
+      "header": "5249464668bb010057454250"
+    },
+    {
+      "type": "image/jpeg",
+      "bytes": 203368,
+      "header": "ffd8ffe000104a4649460001"
+    },
+    {
+      "type": "image/png",
+      "bytes": 1327957,
+      "header": "89504e470d0a1a0a0000000d"
+    }
+  ],
+  "video": {
+    "duration": "0.906138",
+    "width": 320
+  },
+  "frame": {
+    "width": 1000,
+    "height": 1500
+  },
+  "qr": {
+    "width": 1024,
+    "height": 1024
+  },
+  "handoff": {
+    "path": "/shop",
+    "query": "",
+    "title": "pexels-30428610",
+    "imageType": "data:image/webp;base64,",
+    "imageLength": 85239,
+    "destination": "personal"
+  },
+  "externalRequests": []
+}

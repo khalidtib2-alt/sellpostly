@@ -1,0 +1,131 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 test
+> node --conditions=react-server --import tsx --test tests/*.test.ts
+
+Ô£ö host-based Amazon and image recognition handles regions and rejects lookalikes (18.6342ms)
+Ô£ö disclosure column migrates idempotently, saves every preset/custom text and survives Personal publishing (7415.8166ms)
+Ô£ö public Amazon cards omit static price and discount while non-Amazon cards retain them; disclosure precedes hero (2179.4838ms)
+Ô£ö popup blocks Amazon images before display and worker bridges generic queries without raw CDN images (214.4747ms)
+Ô£ö Amazon restrictions apply only in Affiliate mode; ordinary affiliate and Personal images/prices survive saves and shares (144.4456ms)
+Ô£ö extension preserves merchant and Personal Amazon photos, strips only Affiliate CDN photos, and bridges CDN provenance (62.2374ms)
+Ô£ö public storefront HTML hides prices only for Amazon-related Affiliate cards (5678.9383ms)
+Ô£ö Polygon is the checkout default and incompatible receiving networks are not presented as Polygon (1.8108ms)
+Ô£ö storefront disputes validate contact and store context and appear directly in admin review (7176.3212ms)
+Ô£ö public dispute route bounds request bodies before database access (65.3165ms)
+Ô£ö product and storefront reads share immediately persisted quantities; empty carts never resurrect legacy items (3.2868ms)
+Ô£ö cart handles invalid storage and limits stale quantities safely (0.6312ms)
+Ô£ö direct product checkout totals selected quantity exactly and sends original item ID (1.5963ms)
+Ô£ö extension config builds use only the canonical public environment value (1444.3963ms)
+Ô£ö emails escape dynamic content, localize all templates and fail safely without sending (8.106ms)
+SellPostly notification unavailable; business update remains saved.
+Ô£ö all five notifications use committed database facts and deduplicate successful sends (7113.1928ms)
+Ô£ö canonical URLs reject previews and quick replies reject email contacts as phone numbers (22.2144ms)
+Ô£ö extension category and Kids audience survive the full storefront handoff and shared catalog (213.5905ms)
+Ô£ö admin-only hold assignment survives forged publishing and preserves order snapshots (7270.887ms)
+Ô£ö force-release requests still require the strict admin header (76.4308ms)
+Ô£ö guide includes 4 seller steps, 3 buyer steps, 4 audiences and 5 complete translated answers (2.9658ms)
+Ô£ö rendered guide FAQ matches its JSON-LD exactly and all social icons have accessible labels (1610.1573ms)
+Ô£ö social profile configuration validates domains and supplies functional sharing or guide fallbacks (1.3758ms)
+Ô£ö store metadata has canonical, OpenGraph and Twitter fields without payment, wallet or Amazon price leakage (1.3527ms)
+Ô£ö public sitemap entries include both published catalogs and exclude suspended or unpublished shops (6454.1171ms)
+Ô£ö social preview renders a real 1200 by 630 PNG without fetching product photos (2676.0215ms)
+Ô£ö Pro verification rejects dev key in production, validates master keys and Gumroad revocations (12.3914ms)
+Ô£ö legacy shops default safely and preserve logo/hold settings (4.116ms)
+Ô£ö schema initializes twice, computes 5% commission, enforces holds and reserves payouts (6794.0467ms)
+Ô£ö production initialization and publishing reject unauthorized requests before database access (164.6228ms)
+Ô£ö decimal prices and buyer identifiers are normalized without floating point (4.4259ms)
+Ô£ö buyer and seller workflows enforce contact, ownership, holds and precise isolated balances (7213.4533ms)
+Ô£ö seller routes require a verified Pro identity before accessing the database (72.5734ms)
+Ô£ö admin authentication is strict in development and accepts only x-admin-key (7.2463ms)
+Ô£ö all admin routes reject unauthorized reads and writes before database access (211.8506ms)
+Ô£ö admin ledger transitions, store trust and subscription revocation are enforced in PostgreSQL (9297.828ms)
+Ô£ö payment configuration is whitelisted, safely linked, translated and preserved in share links (50.6219ms)
+Ô£ö all direct methods have zero escrow/commission; optional and required USDC are enforced server-side; migrations rerun safely (10160.8112ms)
+Ô£ö crypto upgrade is private, exact-priced, atomic, idempotent and revocable (9900.2339ms)
+Ô£ö upgrade validation and admin authorization fail closed; existing master keys still work (79.0846ms)
+Ô£ö the homepage shortcut requires server verification of the currently saved Pro key (17.224ms)
+Ô£ö local product handoff preserves the original photo, description and URL exactly once (28.7135ms)
+Ô£ö pending imports remain recoverable when catalog storage is full (8.5887ms)
+Ô£ö extension service worker opens only the trusted gated shop and passes long product fields directly without a URL payload (67.3212ms)
+Ô£ö extension permissions include storage for URL cleanup (4.9263ms)
+Ô£ö brand/model recognition strips sales filler without inventing an unknown model (19.4941ms)
+Ô£ö image search links carry exact identity and variation without unsafe navigation (1.701ms)
+Ô£ö ten safe covers are full-bleed SVG scenes, auto-selected and independently persisted (199.2573ms)
+Ô£ö editor renders all cover controls and image-source links with translated helper copy (1449.6463ms)
+Ô£ö personal product routes safely encode IDs and preserve shared storefront snapshots (2.6627ms)
+Ô£ö carts persist only valid product quantities and retain exact checkout totals (2.6541ms)
+Ô£ö gallery photos survive validation and compressed links while unsafe URLs are removed (94.1706ms)
+Ô£ö generic queries remove brands/models by construction and agree in extension and website (99.5237ms)
+Ô£ö all required fallback categories have multiple genuine bundled JPEGs and source licenses (14.2432ms)
+Ô£ö imports assign representative photos, retain provenance in shared catalogs and preserve custom uploads (66.1141ms)
+Ô£ö photo endpoint is keyless-safe, fails over locally, sanitizes provider queries, and tracks Unsplash selections privately (21.4813ms)
+Ô£ö new photo controls and disclosure helper have French and Arabic translations (0.4873ms)
+Ô£ö specific footwear subtypes survive de-branding, round trips and strict fallback selection (20.4272ms)
+Ô£ö mode switches archive inventories separately, restore them and never copy affiliate samples into personal stores (28.1731ms)
+Ô£ö validation and shared links exclude products tagged for the other catalog; untagged legacy items stay in their original mode (160.1046ms)
+Ô£ö social sharing encodes product URLs and text for all six destinations without executing injected schemes (3.227ms)
+Ô£ö COD receipt and crypto checkout retain the same product quantity and exact total (2.3091ms)
+Ô£ö new checkout and share controls have French and Arabic translations (0.5119ms)
+Ô£û buyer rendering enforces affiliate-only external CTA and personal product checkout/gallery controls (4050.7854ms)
+Ô£ö independent published catalogs, COD ledger isolation and buyer/seller lifecycle notifications (8037.1739ms)
+Ô£ö all Phase 2 messages localize and escape payment/tracking data (7.286ms)
+Ô£ö hero, palette, surface and stock survive separate catalog switching and compressed links (154.8279ms)
+Ô£ö destination imports preserve affiliate tags and both catalogs, including repeated handoffs (7.8695ms)
+Ô£ö extension 1.0.4 bridges destination and stock, preserves affiliate URL parameters, and cleans personal links (50.8772ms)
+Ô£ö discounts reflect compatible prices and stock limits are enforced before checkout (8.9338ms)
+Ô£ö public views render distinct templates without affiliate cart/escrow leakage (4773.426ms)
+Ô£ö studio demos are local photographic assets and survive saved/shared catalog validation (207.9211ms)
+Ô£ö legacy preview migration replaces exact old artwork and preserves seller photos (1.1726ms)
+Ô£ö support mail appears in localized receipts and reply-to without replacing verified sender (6.8416ms)
+Ôä╣ tests 74
+Ôä╣ suites 0
+Ôä╣ pass 73
+Ôä╣ fail 1
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 51050.838
+
+Ô£û failing tests:
+
+test at tests\storefront-phase1.test.ts:1:3837
+Ô£û buyer rendering enforces affiliate-only external CTA and personal product checkout/gallery controls (4050.7854ms)
+  AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:111
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Pay with USDC
+      at file:///C:/Users/pc/AppData/Local/Temp/SellPostly-Support-Studio-Preview/[eval1]:14:119
+      at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
+      at async node:internal/modules/esm/loader:226:26
+      at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:223:20)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+  
+  Node.js v26.13.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\tests\storefront-phase1.test.ts:63:9)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

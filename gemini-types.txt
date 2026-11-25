@@ -1,0 +1,3 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+src/app/generation/copy-assistant.tsx(8,484): error TS1005: '}' expected.
+src/app/generation/product-image-generator.tsx(11,397): error TS1005: '}' expected.

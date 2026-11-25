@@ -1,0 +1,5 @@
+const fs=require('fs');const edit=(p,f)=>fs.writeFileSync(p,f(fs.readFileSync(p,'utf8')));
+edit('src/app/translations.ts',s=>s.replace('export const translations = {','export const translations = {\n"Search":{"fr":"Rechercher","ar":"بحث"},'));
+for(const p of ['src/lib/order-service.ts','src/lib/peer-order-service.ts','src/lib/cod-service.ts'])edit(p,s=>s.replace('FROM shops WHERE id=$1::uuid AND published=true AND suspended=false',"FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND (store_mode='general' OR seller_effective_plan(owner_key)='pro')"));
+edit('scripts/init-db.mjs',s=>s.replace("table_name IN ('shops','orders')", "table_name IN ('shops','orders','subscriptions')").replace("for(const [table,column] of [", "for(const [table,column] of [['subscriptions','plan_override'],['subscriptions','plan_changed_at'],"));
+edit('src/app/shop/shop-builder.tsx',s=>s.replace('if(active){const current=shopRef.current;', "if(active){setTier(settings.tier==='pro'?'pro':'free');const current=shopRef.current;"));

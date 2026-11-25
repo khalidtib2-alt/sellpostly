@@ -1,0 +1,1 @@
+src/lib/shop-auth.ts(6,169): error TS2304: Cannot find name 'freeOwner'.

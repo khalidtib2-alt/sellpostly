@@ -1,0 +1,52 @@
+{
+  "links": [
+    {
+      "mode": "personal",
+      "enabled": true,
+      "primary": "main-shop",
+      "link": "/s/main-shop/personal"
+    },
+    {
+      "mode": "affiliate",
+      "enabled": true,
+      "primary": "main-shop",
+      "link": "/s/main-shop/affiliate"
+    },
+    {
+      "mode": "personal",
+      "enabled": false,
+      "primary": "main-shop",
+      "link": null
+    },
+    {
+      "mode": "affiliate",
+      "enabled": true,
+      "link": null
+    }
+  ],
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "ring": "2px"
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "ring": "2px"
+    }
+  ],
+  "hover": {
+    "cursor": "pointer",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0 0 0 / 0) 0px 0px 0px 0px"
+  },
+  "pressed": "matrix(0.97541, 0, 0, 0.97541, 0, 0)",
+  "saved": "Added to Cart",
+  "preference": {
+    "enabled": false,
+    "url": "/shop",
+    "dialogs": 0,
+    "confirmation": true
+  },
+  "reducedMotion": "0s"
+}

@@ -32,8 +32,8 @@ test('turntable turns through front/side/back with buttons, mouse and touch; tap
  // The synthetic click following a drag must not buy/select a garment.
  await act(async()=>document.querySelector('[data-product-id="black"]').click());assert.equal(picked,'');await act(async()=>{event('pointerdown',10,'touch');event('pointerup',10,'touch');document.querySelector('[data-product-id="black"]').click();});assert.equal(picked,'black');
  await act(async()=>{event('pointerdown',10,'touch');event('pointermove',-190,'touch');event('pointerup',-190,'touch');});assert.match(viewport.style.getPropertyValue('--turntable-angle'),/245deg/);
- assert.equal(document.querySelectorAll('.lookbook-garment-zone').length,0);assert.ok(document.querySelector('[data-product-id="black"] .lookbook-avatar-facet').style.backgroundImage.includes('black.jpg'));
- outfit=[{zone:'upper',product:p('new','Green Jacket')}];await act(async()=>render());assert.ok(!document.querySelector('[data-product-id="black"]'));assert.ok(document.querySelector('[data-product-id="new"] .lookbook-avatar-facet').style.backgroundImage.includes('new.jpg'));await act(async()=>root.unmount());`);
+ assert.equal(document.querySelectorAll('.lookbook-garment-zone').length,0);assert.equal(document.querySelector('[data-product-id="black"] .lookbook-fabric-overlay').style.backgroundColor,'#202126');assert.ok(document.querySelector('.lookbook-real-photo.is-visible'));assert.ok(!document.querySelector('.lookbook-avatar-facet'));
+ outfit=[{zone:'upper',product:p('new','Green Jacket')}];await act(async()=>render());assert.ok(!document.querySelector('[data-product-id="black"]'));assert.ok(document.querySelector('[data-product-id="new"] .lookbook-fabric-overlay'));await act(async()=>root.unmount());`);
 });
 test('logo editor saves the current URL and renders/removes custom logos, with accessible monogram fallback',()=>{
  client(`import React,{act} from 'react';import {createRoot} from 'react-dom/client';import {parseHTML} from 'linkedom';import assert from 'node:assert/strict';import Editor from './src/app/shop/shop-logo-editor.tsx';import {LanguageProvider} from './src/app/language-context.tsx';

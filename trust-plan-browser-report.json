@@ -1,0 +1,39 @@
+{
+  "publicPolicy": {
+    "policy": true,
+    "timeframe": true
+  },
+  "checkout": {
+    "safety": true,
+    "otp": true,
+    "policy": true
+  },
+  "saved": {
+    "policy": "14_day",
+    "delivery": "Delivery in 3 days",
+    "dialogs": 0,
+    "path": "/shop"
+  },
+  "planPosts": [
+    {
+      "owner_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "plan": "pro"
+    },
+    {
+      "owner_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "plan": "free"
+    }
+  ],
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "manager": true
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "manager": true
+    }
+  ]
+}

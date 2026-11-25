@@ -1,0 +1,1 @@
+const fs=require('fs');let p='src/app/globals.css',s=fs.readFileSync(p,'utf8');s=s.replace('grid-template-columns:1fr;}@media(prefers-reduced-motion', 'grid-template-columns:1fr;}.boutique-trust-strip{justify-content:flex-start;gap:.8rem;}.store-collection-heading h2{font-size:1.6rem;}}\n@media(prefers-reduced-motion');fs.writeFileSync(p,s);

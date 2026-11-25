@@ -1,16 +1,15 @@
 import {wearableOutfit} from '../../lib/daily-look';
-import {mannequinParts} from './lookbook-mannequin';
-import {pieceAppearance,ringMesh,type OutfitPiece} from '../../lib/mannequin-data';
-/** Same mesh and active items as the DOM stage; unreadable remote images fall back to item colors. */
-export function paintMannequin(ctx:CanvasRenderingContext2D,outfit:OutfitPiece[],gender:'women'|'men',angle:number,images:Map<string,HTMLImageElement>){
- outfit=wearableOutfit(outfit);
- const radians=angle*Math.PI/180,cos=Math.cos(radians),sin=Math.sin(radians);
- const faces=mannequinParts(gender).flatMap(part=>{const piece=outfit.find(p=>p.zone===part.zone),appearance=pieceAppearance(piece?.product),rotate=(part.rotate||0)*Math.PI/180;
-  return ringMesh(part.rings,part.segments).map(face=>{const points=face.vertices.map(([x,y,z])=>{const px=x*Math.cos(rotate)-y*Math.sin(rotate)+part.x,py=x*Math.sin(rotate)+y*Math.cos(rotate)+part.y,pz=z+part.z;return {x:540+(px*cos+pz*sin)*2.35,y:240+py*2.35,z:-px*sin+pz*cos};});return {points,shade:face.shade,color:part.zone?appearance.color:'#b5b4ac',image:piece?images.get(piece.product.id):undefined};});
- }).sort((a,b)=>a.points.reduce((s,p)=>s+p.z,0)-b.points.reduce((s,p)=>s+p.z,0));
- ctx.save();ctx.fillStyle='#181b23';ctx.fillRect(90,215,900,1120);
- for(const face of faces){ctx.save();ctx.beginPath();face.points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=face.color;ctx.fill();
-  if(face.image){ctx.clip();const xs=face.points.map(p=>p.x),ys=face.points.map(p=>p.y);ctx.globalCompositeOperation='multiply';ctx.drawImage(face.image,Math.min(...xs),Math.min(...ys),Math.max(1,Math.max(...xs)-Math.min(...xs)),Math.max(1,Math.max(...ys)-Math.min(...ys)));ctx.globalCompositeOperation='source-over';}
-  ctx.fillStyle=`rgba(0,0,0,${1-face.shade})`;ctx.fill();ctx.restore();}
- ctx.restore();
+import {photoGarmentPlacement,type OutfitPiece} from '../../lib/mannequin-data';
+import {garmentCutout} from '../../lib/garment-cutout';
+import {editorialView} from './lookbook-data';
+/** Export the same illustrative photograph and safe cutouts, never a raw white card background. */
+export async function paintMannequin(ctx:CanvasRenderingContext2D,outfit:OutfitPiece[],gender:'women'|'men',angle:number,model:HTMLImageElement){
+ const view=editorialView(angle),scale=Math.min(900/model.width,1120/model.height),width=model.width*scale,height=model.height*scale,x=(1080-width)/2,y=215+(1120-height)/2;
+ ctx.drawImage(model,x,y,width,height);
+ for(const piece of wearableOutfit(outfit)){
+  const texture=await garmentCutout(piece.product.image,piece.product.name),box=photoGarmentPlacement(piece.zone,view.key),left=x+width*box.x/100,top=y+height*box.y/100,w=width*box.w/100,h=height*box.h/100;
+  ctx.save();ctx.globalAlpha=.22;ctx.globalCompositeOperation='color';ctx.fillStyle=texture.color;ctx.fillRect(left,top,w,h);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+  if(texture.src&&view.key!=='back'&&view.key!=='side'){const image=await new Promise<HTMLImageElement>((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(Error());image.src=texture.src;});const ratio=Math.min(w/image.width,h/image.height),iw=image.width*ratio,ih=image.height*ratio;ctx.drawImage(image,left+(w-iw)/2,top+(h-ih)/2,iw,ih);}
+  ctx.restore();
+ }
 }

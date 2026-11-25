@@ -1,0 +1,5 @@
+const fs=require('fs');const edit=(p,fn)=>fs.writeFileSync(p,fn(fs.readFileSync(p,'utf8')));
+edit('src/app/shop/unbranded-query.ts',s=>s.replace("\nif(category", "\n if(category"));
+let helper=fs.readFileSync('src/app/shop/unbranded-query.ts','utf8').replace('export function unbrandedQuery(title:string,category=', 'function unbrandedQuery(title,category=');fs.writeFileSync('chrome-extension/unbranded-query.js','"use strict";\n'+helper+'\nglobalThis.SellPostlyUnbrandedQuery=unbrandedQuery;\n');
+edit('src/app/translations.ts',s=>s.replace('} as const;',',"Pexels contributor":{"fr":"Contributeur Pexels","ar":"مساهم في Pexels"}\n} as const;'));
+for(const p of ['src/app/shop/affiliate-image-editor.tsx','src/app/shop/storefront-templates.tsx'])edit(p,s=>s.replace('{stockPhoto.photographer}',"{stockPhoto.photographer==='Pexels contributor'?t('Pexels contributor'):stockPhoto.photographer}").replace('{p.stockPhoto.photographer}',"{p.stockPhoto.photographer==='Pexels contributor'?t('Pexels contributor'):p.stockPhoto.photographer}"));

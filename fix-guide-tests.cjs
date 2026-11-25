@@ -1,0 +1,1 @@
+const fs=require('fs');let p='tests/guide-storefront-seo.test.ts',s=fs.readFileSync(p,'utf8');s=s.replace("q.name.replaceAll('&','&amp;'))));","q.name.replaceAll('&','&amp;')));").replace("const personal={...shop,shopMode:'personal'};", "const personal={...shop,shopMode:'personal',products:shop.products.map(p=>({...p,catalogMode:'personal'}))};");fs.writeFileSync(p,s);

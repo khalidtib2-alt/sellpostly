@@ -1,0 +1,14 @@
+Ô£ö AQ. and legacy keys are trimmed, header-only, and model fallbacks use the correct REST shapes (13.3757ms)
+Ô£ö quota/billing/auth diagnostics never echo provider secrets or retry billable errors (3.3988ms)
+Ô£ö all four crop corners keep the opposite anchor, image bounds and preset aspect ratio (0.4582ms)
+Ô£ö studio publishing targets the selected niche, upserts once and preserves existing product/payment data and Amazon rules (8.1991ms)
+Ô£ö slug changes enforce owner identity and validate URL paths without interpolating SQL (1.1756ms)
+Ô£ö workspace routes and localized UI keep settings out of products, tools redirect and extension short bridge (23.8182ms)
+Ôä╣ tests 6
+Ôä╣ suites 0
+Ôä╣ pass 6
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 950.6814

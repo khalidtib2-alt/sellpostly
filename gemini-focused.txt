@@ -1,0 +1,14 @@
+Ô£ö local copy and offline client fallback remain useful, editable and localized without invented specs (11.0573ms)
+Ô£ö Gemini copy uses the fixed Google model, keeps the key in a server header and falls back for bad JSON or provider errors (14.0729ms)
+Ô£ö studio image prompts use controlled text attributes, never brands, model codes, URLs or image parts (5.298ms)
+Ô£ö generation routes enforce origin, input size and rate limits while missing keys return honest fallbacks (42.7405ms)
+Ô£ö overlay cards stay in a corner with no empty-title bar; AI provenance survives handoffs without relaxing Amazon restrictions (16.0535ms)
+Ô£ö generation UI and privacy disclosures have French and Arabic translations (22.8895ms)
+Ôä╣ tests 6
+Ôä╣ suites 0
+Ôä╣ pass 6
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 1411.7807

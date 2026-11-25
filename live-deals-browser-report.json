@@ -1,0 +1,29 @@
+[
+  {
+    "language": "en",
+    "dir": "ltr",
+    "price": "Reference Price: 85 MAD145 MAD",
+    "original": "145 MAD",
+    "label": "Check Live Price",
+    "url": "https://temu.com/deal?affiliate=keep",
+    "tag": "Flash Deal • 4.6★"
+  },
+  {
+    "language": "fr",
+    "dir": "ltr",
+    "price": "Prix indicatif: 85 MAD145 MAD",
+    "original": "145 MAD",
+    "label": "Voir le prix actuel",
+    "url": "https://temu.com/deal?affiliate=keep",
+    "tag": "Flash Deal • 4.6★"
+  },
+  {
+    "language": "ar",
+    "dir": "rtl",
+    "price": "السعر المرجعي: 85 MAD145 MAD",
+    "original": "145 MAD",
+    "label": "تحقق من السعر الحالي",
+    "url": "https://temu.com/deal?affiliate=keep",
+    "tag": "Flash Deal • 4.6★"
+  }
+]

@@ -1,0 +1,11 @@
+const fs=require('fs');const edit=(p,fn)=>fs.writeFileSync(p,fn(fs.readFileSync(p,'utf8')));
+const notice=fs.readFileSync('src/app/shop/affiliate-compliance.ts','utf8').match(/export const amazonImageNotice='([^']+)'/)[1];
+edit('src/app/translations.ts',s=>s.replace('} as const;',','+JSON.stringify(notice)+':'+JSON.stringify({fr:'Les images Amazon ne peuvent pas être utilisées par lien direct. Importez votre photo, une image de presse autorisée ou conservez une photo représentative.',ar:'لا يمكن ربط صور منتجات أمازون مباشرة. ارفع صورتك أو صورة صحفية مرخّصة، أو احتفظ بصورة توضيحية مشابهة.'})+'\n} as const;'));
+edit('src/app/shop/shop-builder.tsx',s=>s.replace('editing[["name","price","category","image","url"][i] as keyof Product]','String(editing[["name","price","category","image","url"][i] as keyof Product]||"")'));
+// Remove candidates with clearly visible branding; replace them with screened source photographs.
+let pool=JSON.parse(fs.readFileSync('src/app/shop/stock-photo-pool.json','utf8'));
+const replacements={2456362:[13560373,'a-person-wearing-white-sneakers','Sandro Tavares'],4987534:[27128273,'close-up-of-child-shoes','José Martin Segura Benites'],20510015:[34030131,'minimalist-wireless-keyboard-and-mouse-setup','Pexels contributor']};
+const names={30428610:'Vladislav Anchuk',9371408:'Adrian Regeci',5022533:'Rishi',37117672:'Gizem Gökce',27174555:'José Martin Segura Benites',27100529:'José Martin Segura Benites',13869858:'Pexels contributor',15246346:'Cindy Bartillon',4349831:'Ketut Subiyanto',36040629:'Pew Nguyen',8155163:'Alesia Kozik',4793244:'Anete Lusina',7691110:'ROMAN ODINTSOV',7691168:'ROMAN ODINTSOV'};
+pool=pool.map(p=>{const id=p.id.split('-')[1];if(replacements[id]){const [next,slug,name]=replacements[id];return {...p,id:'pexels-'+next,url:'/stock-photos/pexels-'+next+'.jpg',pageUrl:'https://www.pexels.com/photo/'+slug+'-'+next+'/',photographer:name};}return {...p,photographer:names[id]||p.photographer};});
+fs.writeFileSync('src/app/shop/stock-photo-pool.json',JSON.stringify(pool,null,2)+'\n');
+fs.writeFileSync('public/stock-photos/SOURCES.json',JSON.stringify({license:'https://www.pexels.com/license/',checked:'2026-11-19',usage:'Representative category styles, not the exact branded product. No endorsement implied. Review source rights before reuse outside this app.',photos:pool},null,2)+'\n');

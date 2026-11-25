@@ -1,0 +1,47 @@
+{
+  "personal": {
+    "hero": true,
+    "categoryDisplay": "none",
+    "products": 1
+  },
+  "affiliate": {
+    "products": 1,
+    "cart": false
+  },
+  "import": {
+    "promo_video_url": "",
+    "amazonImageBlocked": false,
+    "unbrandedQuery": "men athletic sneakers",
+    "photoResolvedFor": "",
+    "identityOverride": "",
+    "catalogMode": "personal",
+    "images": [],
+    "description": "",
+    "badge": "none",
+    "compareAtPrice": "",
+    "gender": "unisex",
+    "id": "imported-niche-item",
+    "name": "Imported Sneaker",
+    "price": "75 USD",
+    "category": "Running Sneakers",
+    "image": "https://m.media-amazon.com/photo.jpg",
+    "url": "https://amazon.com/dp/B012345678",
+    "source": "Amazon"
+  },
+  "created": {
+    "name": "Watch Edit",
+    "count": 5
+  },
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "label": "Boutique activeBoutique personnelle principaleBoutique affil"
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "label": "المتجر النشطالمتجر الشخصي الأساسيمتجر العروض بالعمولة الأساس"
+    }
+  ]
+}

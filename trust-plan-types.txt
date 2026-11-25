@@ -1,0 +1,17 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+src/lib/cod-service.ts(18,165): error TS1005: ',' expected.
+src/lib/cod-service.ts(18,172): error TS1005: ',' expected.
+src/lib/cod-service.ts(18,211): error TS1005: ',' expected.
+src/lib/cod-service.ts(18,214): error TS1005: ',' expected.
+src/lib/order-service.ts(20,217): error TS1005: ',' expected.
+src/lib/order-service.ts(20,224): error TS1005: ',' expected.
+src/lib/order-service.ts(20,263): error TS1005: ',' expected.
+src/lib/order-service.ts(20,266): error TS1005: ',' expected.
+src/lib/peer-order-service.ts(19,153): error TS1005: ',' expected.
+src/lib/peer-order-service.ts(19,160): error TS1005: ',' expected.
+src/lib/peer-order-service.ts(19,199): error TS1005: ',' expected.
+src/lib/peer-order-service.ts(19,202): error TS1005: ',' expected.
+src/lib/public-storefront.ts(10,161): error TS1005: ',' expected.
+src/lib/public-storefront.ts(10,168): error TS1005: ',' expected.
+src/lib/public-storefront.ts(10,207): error TS1005: ',' expected.
+src/lib/public-storefront.ts(10,210): error TS1005: ',' expected.

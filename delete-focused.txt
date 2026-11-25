@@ -1,0 +1,12 @@
+Ô£ö niche deletion removes public catalog and frees a slot, protects primary/foreign shops, and preserves the transaction ledger (3547.7115ms)
+Ô£ö local deletion selects the matching primary, removes its draft and pending imports, and preserves other catalogs (7.9349ms)
+Ô£ö delete API rejects cross-origin and unsigned requests before touching the database; invalid shop IDs are rejected (46.7618ms)
+Ô£ö delete dialog and completion messages are translated and mounted only in seller settings (63.6453ms)
+Ôä╣ tests 4
+Ôä╣ suites 0
+Ôä╣ pass 4
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 4569.8401

@@ -1,0 +1,24 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 prebuild
+> npm run extension:configure
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 extension:configure
+> node scripts/configure-extension.mjs
+
+Extension public URL: https://sellpostly.vercel.app
+
+> sellpostly@1.0.0 build
+> next build --webpack
+
+Ôû▓ Next.js 16.4.5 (webpack)
+Ô£ô Running next.config.ts took 329ms
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 32.2s
+  Running TypeScript ...
+src/lib/shop-auth.ts(6,169): error TS2304: Cannot find name 'freeOwner'.
+Failed to type check.
+

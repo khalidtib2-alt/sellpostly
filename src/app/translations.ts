@@ -1,5 +1,9 @@
 export const translations = {
-  "Logo settings store": {"fr":"Boutique dont vous modifiez le logo","es":"Tienda cuyo logotipo quieres editar","ar":"المتجر المراد تعديل شعاره"},
+  "Logo settings store": {
+    "fr": "Boutique dont vous modifiez le logo",
+    "es": "Tienda cuyo logotipo quieres editar",
+    "ar": "المتجر المراد تعديل شعاره"
+  },
   "Explore today's catalog outfit in 360°. Select a garment to view its product details.": {
     "fr": "Explorez la tenue du jour à 360°. Sélectionnez un vêtement pour consulter sa fiche produit.",
     "es": "Explora el conjunto del día en 360°. Selecciona una prenda para ver sus detalles.",
@@ -7034,6 +7038,51 @@ export const translations = {
     "fr": "Chargement…",
     "es": "Cargando…",
     "ar": "جارٍ التحميل…"
+  },
+  "3/4 Left": {
+    "fr": "Trois-quarts gauche",
+    "es": "Tres cuartos izquierdo",
+    "ar": "ثلاثة أرباع من اليسار"
+  },
+  "3/4 Right": {
+    "fr": "Trois-quarts droit",
+    "es": "Tres cuartos derecho",
+    "ar": "ثلاثة أرباع من اليمين"
+  },
+  "Model angle": {
+    "fr": "Angle du modèle",
+    "es": "Ángulo del modelo",
+    "ar": "زاوية العارض"
+  },
+  "Generated model angles and garment overlays are illustrative, not a fit or back-detail guarantee.": {
+    "fr": "Les vues générées et les superpositions de vêtements sont illustratives. Elles ne garantissent ni la coupe ni les détails du dos.",
+    "es": "Los ángulos generados y las prendas superpuestas son ilustrativos. No garantizan el ajuste ni los detalles traseros.",
+    "ar": "زوايا العارض المولدة وطبقات الملابس توضيحية، ولا تضمن المقاس أو تفاصيل الجهة الخلفية."
+  },
+  "Wear on Model": {
+    "fr": "Essayer sur le modèle",
+    "es": "Probar en el modelo",
+    "ar": "تجربة على العارض"
+  },
+  "Drag to dress": {
+    "fr": "Glisser pour habiller",
+    "es": "Arrastra para vestir",
+    "ar": "اسحب لتنسيق الإطلالة"
+  },
+  "Choose a wearable garment from this collection.": {
+    "fr": "Choisissez un vêtement ou un accessoire portable de cette collection.",
+    "es": "Elige una prenda o un accesorio de esta colección.",
+    "ar": "اختر قطعة ملابس أو إكسسوارًا من هذه المجموعة."
+  },
+  "Outfit updated.": {
+    "fr": "Tenue mise à jour.",
+    "es": "Conjunto actualizado.",
+    "ar": "تم تحديث الإطلالة."
+  },
+  "Drop the item on its matching garment zone.": {
+    "fr": "Déposez l’article sur la zone de vêtement correspondante.",
+    "es": "Suelta el artículo en la zona de prenda correspondiente.",
+    "ar": "أفلت القطعة في منطقة الملابس المطابقة لها."
   }
 } as const;
 export type Message = keyof typeof translations;

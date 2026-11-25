@@ -1,0 +1,126 @@
+{
+  "export": {
+    "catalog": {
+      "version": 1,
+      "name": "Category Test",
+      "shopMode": "affiliate",
+      "categories": [
+        "Tech & Gadgets",
+        "Fashion",
+        "Home & Kitchen",
+        "Beauty",
+        "Fitness",
+        "Top Deals",
+        "Digital Product",
+        "Art",
+        "Sport",
+        "Other",
+        "Kitchen Finds",
+        "Unused",
+        "Fresh Finds"
+      ],
+      "customCategories": [
+        "Kitchen Finds",
+        "Unused",
+        "Fresh Finds"
+      ],
+      "products": [
+        {
+          "aiGeneratedImage": false,
+          "aiImagePrompt": "",
+          "promoCaption": "",
+          "keyHighlights": [],
+          "isDigital": false,
+          "promo_video_url": "",
+          "amazonImageBlocked": false,
+          "unbrandedQuery": "travel bag",
+          "photoResolvedFor": "",
+          "stockPhoto": {
+            "id": "pexels-13869858",
+            "query": "travel bag",
+            "url": "/stock-photos/pexels-13869858.jpg",
+            "provider": "Pexels",
+            "photographer": "Pexels contributor",
+            "pageUrl": "https://www.pexels.com/photo/a-black-backpack-on-white-surface-13869858/",
+            "licenseUrl": "https://www.pexels.com/license/"
+          },
+          "identityOverride": "",
+          "catalogMode": "affiliate",
+          "images": [],
+          "description": "",
+          "badge": "none",
+          "compareAtPrice": "",
+          "dealTag": "",
+          "gender": "unisex",
+          "id": "fashion",
+          "name": "Shirt",
+          "price": "19 MAD",
+          "category": "Fashion",
+          "image": "/stock-photos/pexels-13869858.jpg",
+          "url": "https://example.com/shirt",
+          "source": ""
+        },
+        {
+          "aiGeneratedImage": false,
+          "aiImagePrompt": "",
+          "promoCaption": "",
+          "keyHighlights": [],
+          "isDigital": false,
+          "promo_video_url": "",
+          "amazonImageBlocked": false,
+          "unbrandedQuery": "office technology",
+          "photoResolvedFor": "",
+          "stockPhoto": {
+            "id": "pexels-28396251",
+            "query": "office technology",
+            "url": "/stock-photos/pexels-28396251.jpg",
+            "provider": "Pexels",
+            "photographer": "Pexels contributor",
+            "pageUrl": "https://www.pexels.com/photo/minimalist-workspace-keyboard-and-mouse-setup-28396251/",
+            "licenseUrl": "https://www.pexels.com/license/"
+          },
+          "identityOverride": "",
+          "catalogMode": "affiliate",
+          "images": [],
+          "description": "",
+          "badge": "none",
+          "compareAtPrice": "",
+          "dealTag": "",
+          "gender": "unisex",
+          "id": "kitchen",
+          "name": "Vase",
+          "price": "29 MAD",
+          "category": "Kitchen Finds",
+          "image": "/stock-photos/pexels-28396251.jpg",
+          "url": "https://example.com/vase",
+          "source": ""
+        }
+      ]
+    },
+    "file": "category-test.json"
+  },
+  "resetAfterMove": true,
+  "resetAfterDelete": true,
+  "preview": [
+    "All (2)",
+    "Fashion (2)"
+  ],
+  "persisted": true,
+  "public": [
+    {
+      "language": "en",
+      "dir": "ltr",
+      "categories": "All (2)Fashion (2)"
+    },
+    {
+      "language": "fr",
+      "dir": "ltr",
+      "categories": "Tout (2)Mode (2)"
+    },
+    {
+      "language": "ar",
+      "dir": "rtl",
+      "categories": "الكل (2)الأزياء (2)"
+    }
+  ]
+}

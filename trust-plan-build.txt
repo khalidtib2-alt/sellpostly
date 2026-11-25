@@ -1,0 +1,25 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 prebuild
+> npm run extension:configure
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 extension:configure
+> node scripts/configure-extension.mjs
+
+Extension public URL: https://sellpostly.vercel.app
+
+> sellpostly@1.0.0 build
+> next build --webpack
+
+Ôû▓ Next.js 16.4.5 (webpack)
+Ô£ô Running next.config.ts took 258ms
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 12.7s
+  Running TypeScript ...
+src/app/admin/seller-plan-manager.tsx(9,822): error TS2345: Argument of type '"LoadingÔÇª" | "Search"' is not assignable to parameter of type '"Digital Product" | "USDC" | "Bank Transfer (IBAN / RIB)" | "Pay by Card (External Checkout)" | "PayPal" | "Payoneer" | "Wise" | "TRON (USDT-TRC20)" | "Cash on Delivery (COD)" | ... 1115 more ... | "Could not save payment settings. Check your license and connection."'.
+  Type '"Search"' is not assignable to type '"Digital Product" | "USDC" | "Bank Transfer (IBAN / RIB)" | "Pay by Card (External Checkout)" | "PayPal" | "Payoneer" | "Wise" | "TRON (USDT-TRC20)" | "Cash on Delivery (COD)" | ... 1115 more ... | "Could not save payment settings. Check your license and connection."'.
+Failed to type check.
+

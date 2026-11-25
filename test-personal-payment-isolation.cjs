@@ -1,0 +1,1 @@
+const fs=require('fs');let p='tests/peer-payments.test.ts',s=fs.readFileSync(p,'utf8');s=s.replace("const restored=await decodeShop", "assert.equal(validateShop({...shop,shopMode:'affiliate'}).payments,undefined);\n const restored=await decodeShop");fs.writeFileSync(p,s);

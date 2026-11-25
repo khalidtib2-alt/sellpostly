@@ -1,0 +1,21 @@
+[
+  {
+    "mode": "personal",
+    "width": 393.40625,
+    "height": 524.53125,
+    "fit": "cover",
+    "position": "50% 0%",
+    "padding": "0px",
+    "background": "rgb(30, 41, 59)",
+    "detail": "contain"
+  },
+  {
+    "mode": "affiliate",
+    "width": 391.40625,
+    "height": 521.875,
+    "fit": "cover",
+    "position": "50% 0%",
+    "padding": "0px",
+    "background": "rgb(30, 41, 59)"
+  }
+]

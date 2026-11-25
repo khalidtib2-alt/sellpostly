@@ -1,0 +1,1 @@
+const fs=require('fs');const p='src/app/sitemap.ts';let s=fs.readFileSync(p,'utf8');s=s.replace('export default async function sitemap()', '// Refresh published storefront URLs without requiring a new deployment.\nexport const revalidate=300;\nexport default async function sitemap()');fs.writeFileSync(p,s);

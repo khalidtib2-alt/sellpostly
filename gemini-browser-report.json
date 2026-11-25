@@ -1,0 +1,21 @@
+{
+  "tools": true,
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "helper": "marqueGénération à partir de texte uniquement : aucune image Amazon n’est extraite ni envoyée. Le résultat illustre un style générique, pas le produit de marque exact.Générer une photo studio sans marqueLa génération d’image est indisponible. Configurez GEMINI_API_KEY sur le serveur, réessayez plus tard ou copiez le prompt et importez votre propre photo.Prompt studio sans marqueCreate one realistic studio product photograph, landscape 4:3. Generic unbranded wireless headphones; color neutral tones; material plain unmarked surface; shape simple generic silhouette; audience unisex. Seamless neutral studio backdrop, soft diffused lighting, crisp realistic texture, entire item visible with generous margins. No brand names, logos, text, letters, labels, watermarks or recognizable trademark design motifs. Do not recreate an exact branded model or signature trade dress. Representative generic style only; no endorsement or affiliation. No reference images; text-only generation.Copier le prompt"
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "helper": "شر.النص الترويجيMeet your everyday essential.نسخ النص المُنشأإنشاء صور ستوديو دون علامات تجاريةإنشاء من النص فقط: لا تُستخرج صور Amazon ولا تُرفع. توضّح النتائج نمطًا عامًا وليست المنتج ذي العلامة التجارية نفسه.إنشاء صورة ستوديو دون علامة تجاريةإنشاء الصور غير متاح. اضبط GEMINI_API_KEY على الخادم أو حاول لاحقًا، أو انسخ التعليمات وارفع صورتك الخاصة.تعليمات ستوديو دون علامات تجاريةCreate one realistic studio product photograph, landscape 4:3. Generic unbranded wireless headphones; color neutral tones; material plain unmarked surface; shape simple generic silhouette; audience unisex. Seamless neutral studio backdrop, soft diffused lighting, crisp realistic texture, entire item visible with generous margins. No brand names, logos, text, letters, labels, watermarks or recognizable trademark design motifs. Do not recreate an exact branded model or signature trade dress. Representative generic style only; no endorsement or affiliation. No reference images; text-only generation.انسخ التعليمات"
+    },
+    {
+      "lang": "en",
+      "dir": "ltr",
+      "helper": "yday essential.Copy Generated TextUnbranded Studio Photo GeneratorText-only generation: no Amazon images are scraped or uploaded. Results illustrate a generic style, not the exact branded product.Generate Unbranded Studio PhotoImage generation is unavailable. Configure GEMINI_API_KEY on the server, try again later, or copy the prompt and upload your own photo.Brand-free Studio PromptCreate one realistic studio product photograph, landscape 4:3. Generic unbranded wireless headphones; color neutral tones; material plain unmarked surface; shape simple generic silhouette; audience unisex. Seamless neutral studio backdrop, soft diffused lighting, crisp realistic texture, entire item visible with generous margins. No brand names, logos, text, letters, labels, watermarks or recognizable trademark design motifs. Do not recreate an exact branded model or signature trade dress. Representative generic style only; no endorsement or affiliation. No reference images; text-only generation.Copy Prompt"
+    }
+  ],
+  "home": true
+}

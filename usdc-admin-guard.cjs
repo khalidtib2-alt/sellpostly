@@ -1,0 +1,1 @@
+const fs=require('fs');let p='src/lib/admin-service.ts',s=fs.readFileSync(p,'utf8');s=s.replace("if(action==='verify'){const order=await adminOrder(id,query);", "if(action==='verify'){const order=await adminOrder(id,query);if(order.coin!=='USDC')throw new ApiError('ESCROW_USDC_ONLY');");fs.writeFileSync(p,s);

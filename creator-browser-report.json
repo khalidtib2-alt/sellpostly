@@ -1,0 +1,48 @@
+{
+  "requests": [
+    {
+      "action": "prompt",
+      "topic": "Healthy small-space routines",
+      "contentType": "article",
+      "language": "en"
+    },
+    {
+      "action": "write",
+      "topic": "Healthy small-space routines",
+      "contentType": "article",
+      "language": "en",
+      "prompt": "My edited writing brief: use headings and practical examples."
+    }
+  ],
+  "export": {
+    "copied": [
+      "My edited writing brief: use headings and practical examples.",
+      "# Edited article\n\nReady to publish."
+    ],
+    "downloads": [
+      "Healthy-small-space-routines-en.md"
+    ]
+  },
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "prompt": "Consigne de rédaction"
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "prompt": "توجيه كتابة مقال"
+    }
+  ],
+  "failure": {
+    "notice": "لم يتم إعداد Gemini. اطلب من مسؤول الموقع ضبط GEMINI_API_KEY.",
+    "prompt": ""
+  },
+  "homepage": {
+    "textareas": 2,
+    "productField": false,
+    "legacyHook": false,
+    "selects": 2
+  }
+}

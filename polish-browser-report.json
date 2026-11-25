@@ -1,0 +1,110 @@
+{
+  "grids": [
+    {
+      "mode": "personal",
+      "cards": [
+        {
+          "width": 398.40625,
+          "height": 298.796875,
+          "buttonTop": 2111.890625,
+          "fit": "contain",
+          "padding": "16px",
+          "natural": [
+            180,
+            180
+          ]
+        },
+        {
+          "width": 398.40625,
+          "height": 298.796875,
+          "buttonTop": 2111.890625,
+          "fit": "contain",
+          "padding": "16px",
+          "natural": [
+            360,
+            100
+          ]
+        },
+        {
+          "width": 398.40625,
+          "height": 298.796875,
+          "buttonTop": 2111.890625,
+          "fit": "contain",
+          "padding": "16px",
+          "natural": [
+            100,
+            360
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "affiliate",
+      "cards": [
+        {
+          "width": 396.40625,
+          "height": 297.296875,
+          "buttonTop": 1983.890625,
+          "fit": "contain",
+          "padding": "16px",
+          "natural": [
+            180,
+            180
+          ]
+        },
+        {
+          "width": 396.40625,
+          "height": 297.296875,
+          "buttonTop": 1983.890625,
+          "fit": "contain",
+          "padding": "16px",
+          "natural": [
+            360,
+            100
+          ]
+        },
+        {
+          "width": 396.40625,
+          "height": 297.296875,
+          "buttonTop": 1983.890625,
+          "fit": "contain",
+          "padding": "16px",
+          "natural": [
+            900,
+            1600
+          ]
+        }
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "title": "Comment fonctionne SellPostly | Guide vendeurs, acheteurs et affiliation",
+      "og": "Comment fonctionne SellPostly | Guide vendeurs, acheteurs et affiliation",
+      "faq": "Quelle boutique choisir ?"
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "title": "كيف يعمل SellPostly | دليل البائع والمشتري والمتاجر التابعة",
+      "og": "كيف يعمل SellPostly | دليل البائع والمشتري والمتاجر التابعة",
+      "faq": "أي نوع متجر أختار؟"
+    }
+  ],
+  "paymentSave": {
+    "before": {
+      "href": "http://127.0.0.1:3030/shop",
+      "scroll": 1970
+    },
+    "after": {
+      "href": "http://127.0.0.1:3030/shop",
+      "scroll": 1970,
+      "openDialogs": 0,
+      "posts": 1,
+      "policy": "optional_for_buyer",
+      "message": "Payment settings saved."
+    }
+  }
+}

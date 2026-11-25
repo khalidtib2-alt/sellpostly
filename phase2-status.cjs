@@ -1,0 +1,2 @@
+const fs=require('fs');let p='src/app/dashboard/seller-dashboard.tsx',s=fs.readFileSync(p,'utf8').replace("['failed','Failed / Refunded']]", "['fulfilled','Shipped'],['failed','Failed / Refunded']]");fs.writeFileSync(p,s);
+p='src/app/shop/buyer-order-form.tsx';s=fs.readFileSync(p,'utf8').replace("result.status==='disputed'?'Disputed'", "result.status==='fulfilled'?'Shipped':result.status==='disputed'?'Disputed'");fs.writeFileSync(p,s);

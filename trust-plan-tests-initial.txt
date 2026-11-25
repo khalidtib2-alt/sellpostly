@@ -1,0 +1,117 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> sellpostly@1.0.0 test
+> node --conditions=react-server --import tsx --test tests/*.test.ts
+
+Ô£ö host-based Amazon and image recognition handles regions and rejects lookalikes (12.0508ms)
+Ô£ö disclosure column migrates idempotently, saves every preset/custom text and survives Personal publishing (5660.8463ms)
+Ô£ö public Amazon cards omit static price and discount while non-Amazon cards retain them; disclosure precedes hero (3338.2666ms)
+Ô£ö popup blocks Amazon images before display and worker bridges generic queries without raw CDN images (140.0558ms)
+Ô£ö Amazon restrictions apply only in Affiliate mode; ordinary affiliate and Personal images/prices survive saves and shares (87.8397ms)
+Ô£ö extension preserves merchant and Personal Amazon photos, strips only Affiliate CDN photos, and bridges CDN provenance (20.7878ms)
+Ô£ö public storefront HTML hides prices only for Amazon-related Affiliate cards (2230.6438ms)
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\src\lib\order-service.ts:20:216: ERROR: Expected ")" but found "general"
+    at failureErrorWithLog (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1752:15)
+    at C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1019:50
+    at responseCallbacks.<computed> (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:886:9)
+    at handleIncomingPacket (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:941:12)
+    at Socket.readFromStdout (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:864:7)
+    at Socket.emit (node:events:514:20)
+    at addChunk (node:internal/streams/readable:605:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:556:3)
+    at Readable.push (node:internal/streams/readable:436:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:194:23) {
+  name: 'TransformError'
+}
+
+Node.js v26.13.0
+Ô£û tests\buyer-disputes.test.ts (1034.0619ms)
+Ô£ö product and storefront reads share immediately persisted quantities; empty carts never resurrect legacy items (3.0379ms)
+Ô£ö cart handles invalid storage and limits stale quantities safely (1.4056ms)
+Ô£ö direct product checkout totals selected quantity exactly and sends original item ID (1.4599ms)
+Ô£ö checkout display uses two decimals without changing exact accounting values (18.3128ms)
+Ô£ö escrow configuration prefers the admin wallet and fails closed on invalid admin config (0.5137ms)
+Ô£ö active escrow exposes only locked platform addresses; direct wallet remains in the direct branch (44.8664ms)
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\src\lib\order-service.ts:20:216: ERROR: Expected ")" but found "general"
+    at failureErrorWithLog (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1752:15)
+    at C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1019:50
+    at responseCallbacks.<computed> (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:886:9)
+    at handleIncomingPacket (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:941:12)
+    at Socket.readFromStdout (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:864:7)
+    at Socket.emit (node:events:514:20)
+    at addChunk (node:internal/streams/readable:605:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:556:3)
+    at Readable.push (node:internal/streams/readable:436:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:194:23) {
+  name: 'TransformError'
+}
+
+Node.js v26.13.0
+Ô£û tests\emails-quick-replies.test.ts (1347.5229ms)
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\src\lib\order-service.ts:20:216: ERROR: Expected ")" but found "general"
+    at failureErrorWithLog (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1752:15)
+    at C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1019:50
+    at responseCallbacks.<computed> (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:886:9)
+    at handleIncomingPacket (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:941:12)
+    at Socket.readFromStdout (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:864:7)
+    at Socket.emit (node:events:514:20)
+    at addChunk (node:internal/streams/readable:605:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:556:3)
+    at Readable.push (node:internal/streams/readable:436:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:194:23) {
+  name: 'TransformError'
+}
+
+Node.js v26.13.0
+Ô£û tests\escrow-governance.test.ts (1790.6697ms)
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 1 error:
+C:\Users\pc\AppData\Local\Temp\SellPostly-Support-Studio-Preview\src\lib\public-storefront.ts:10:160: ERROR: Expected ")" but found "general"
+    at failureErrorWithLog (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1752:15)
+    at C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:1019:50
+    at responseCallbacks.<computed> (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:886:9)
+    at handleIncomingPacket (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:941:12)
+    at Socket.readFromStdout (C:\Users\pc\Documents\GitHub\sellpostly\node_modules\esbuild\lib\main.js:864:7)
+    at Socket.emit (node:events:514:20)
+    at addChunk (node:internal/streams/readable:605:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:556:3)
+    at Readable.push (node:internal/streams/readable:436:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:194:23) {
+  name: 'TransformError'
+}
+
+Node.js v26.13.0
+Ô£û tests\guide-storefront-seo.test.ts (1653.5368ms)
+Ô£ö main-store preference defaults on and survives snapshots without linking general stores (40.7005ms)
+Ô£ö public niche links resolve only matching same-owner published primary stores; toggle persists in database (6098.1308ms)
+Ô£ö global control states cover keyboard, disabled, selected, press and reduced motion; new copy is translated (7.8913ms)
+Ô£ö crop presets preserve actual pixel aspect, stay in bounds and enforce export limits (3.6308ms)
+Ô£ö sharpness is a real local convolution that preserves alpha and border pixels (0.5106ms)
+Ô£ö QR URLs accept only canonical public Personal or Affiliate storefront links (0.7219ms)
+Ô£ö promo videos use trusted embed paths, reject injection and Amazon CDN links, and persist independently of affiliate price safeguards (46.0252ms)
+Ô£ö new media copy is translated and server rendering loads no player before buyer consent (1110.1916ms)
+Ô£ö Pro verification rejects dev key in production, validates master keys and Gumroad revocations (13.3696ms)
+Ô£ö legacy shops default safely and preserve logo/hold settings (4.4145ms)
+Ô£ö schema initializes twice, computes 5% commission, enforces holds and reserves payouts (6597.2038ms)
+Ô£ö production initialization and publishing reject unauthorized requests before database access (184.5527ms)
+Ô£ö decimal prices and buyer identifiers are normalized without floating point (4.1596ms)
+Ô£û buyer and seller workflows enforce contact, ownership, holds and precise isolated balances (62.5254ms)
+Ô£û seller routes require a verified Pro identity before accessing the database (43.8308ms)

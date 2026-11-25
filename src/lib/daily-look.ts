@@ -15,6 +15,7 @@ export function garmentZone(product:Product):OutfitZone|undefined{
 }
 /** Non-wearable suggestions remain cards; never paint an appliance onto a garment. */
 export function wearableOutfit<T extends {zone:OutfitZone;product:Product}>(outfit:T[]){return outfit.filter(item=>garmentZone(item.product)===item.zone);}
+export function wearCatalogProduct(outfit:{zone:OutfitZone;product:Product}[],product:Product){const zone=garmentZone(product);if(!zone||product.isDigital||product.stock===0)return outfit;return outfitZones.flatMap(slot=>{const piece=slot===zone?{zone,product}:outfit.find(piece=>piece.zone===slot);return piece?[piece]:[];});}
 function hash(value:string){let h=2166136261;for(const char of value)h=Math.imul(h^char.charCodeAt(0),16777619);return h>>>0;}
 /** Stable across catalog ordering, locale and time zone; only the published catalog is passed in. */
 export function dailyOutfit(products:Product[],gender:'women'|'men',day:string,shuffle=0,identity='',mode?:'affiliate'|'personal'){

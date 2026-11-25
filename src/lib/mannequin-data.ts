@@ -2,6 +2,12 @@ import type {Product} from '../app/shop/shop-data';
 import {safeImage} from '../app/shop/shop-data';
 import type {OutfitZone} from './daily-look';
 export type OutfitPiece={zone:OutfitZone;product:Product};
+export function photoGarmentPlacement(zone:OutfitZone,view:string){
+ const front={upper:{x:25,y:17,w:50,h:37},lower:{x:32,y:49,w:36,h:43},footwear:{x:37,y:88,w:32,h:10},accessory:{x:57,y:38,w:18,h:18}};
+ const side={upper:{x:37,y:18,w:30,h:38},lower:{x:39,y:51,w:24,h:40},footwear:{x:37,y:89,w:33,h:9},accessory:{x:48,y:39,w:19,h:17}};
+ const box={...(view==='side'?side[zone]:front[zone])};if(view==='back'&&zone==='accessory')box.x=25;if(view==='right')box.x=100-box.x-box.w;
+ return box;
+}
 export function turntableAngle(value:number){return ((value%360)+360)%360;}
 export function titleColor(title:string){
  const text=title.toLowerCase();

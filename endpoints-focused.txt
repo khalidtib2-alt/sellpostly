@@ -1,0 +1,23 @@
+Ô£ö both public routes send the full fixed v1beta URL, trimmed AQ./legacy key header and correct request modalities (30.9174ms)
+Ô£ö image quota/billing failures return localized safe diagnostics and prompts while copy generation continues independently (24.0657ms)
+Ô£ö copy quota and empty upstream authentication errors keep useful fallback data without leaking Google response text (3.6263ms)
+Ô£ö local copy and offline client fallback remain useful, editable and localized without invented specs (7.5279ms)
+Ô£ö Gemini copy uses the fixed Google model, keeps the key in a server header and falls back for bad JSON or provider errors (10.5935ms)
+Ô£ö studio image prompts use controlled text attributes, never brands, model codes, URLs or image parts (4.7385ms)
+Ô£ö generation routes enforce origin, input size and rate limits while missing keys return honest fallbacks (36.5098ms)
+Ô£ö overlay cards stay in a corner with no empty-title bar; AI provenance survives handoffs without relaxing Amazon restrictions (10.992ms)
+Ô£ö generation UI and privacy disclosures have French and Arabic translations (17.7212ms)
+Ô£ö AQ. and legacy keys are trimmed, header-only, and model fallbacks use the correct REST shapes (33.8656ms)
+Ô£ö quota/billing/auth diagnostics never echo provider secrets or retry billable errors (7.4089ms)
+Ô£ö all four crop corners keep the opposite anchor, image bounds and preset aspect ratio (0.7939ms)
+Ô£ö studio publishing targets the selected niche, upserts once and preserves existing product/payment data and Amazon rules (14.4233ms)
+Ô£ö slug changes enforce owner identity and validate URL paths without interpolating SQL (1.2505ms)
+Ô£ö workspace routes and localized UI keep settings out of products, tools redirect and extension short bridge (40.8452ms)
+Ôä╣ tests 15
+Ôä╣ suites 0
+Ôä╣ pass 15
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 1877.8382

@@ -1,0 +1,12 @@
+Ô£ö personal policies require explicit selection and delivery text; legacy records have no invented refund promise (57.2383ms)
+Ô£ö legacy personal checkout is blocked until policies are configured; public policy matches saved catalog (4844.2056ms)
+Ô£ö admin plan overrides are persistent, searchable and enforced without deleting primary shops, niche catalogs or orders (3699.3905ms)
+Ô£ö seller plan routes reject unauthenticated requests and all new trust labels are translated (98.0591ms)
+Ôä╣ tests 4
+Ôä╣ suites 0
+Ôä╣ pass 4
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 9653.7572

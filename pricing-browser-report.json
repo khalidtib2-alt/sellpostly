@@ -1,0 +1,66 @@
+{
+  "languages": [
+    {
+      "lang": "fr",
+      "dir": "ltr",
+      "title": "Tarifs Gratuit et Pro | SellPostly",
+      "heading": "Deux boutiques pour commencer. Pro pour grandir.",
+      "plans": [
+        "Offre gratuite",
+        "Offre Pro"
+      ]
+    },
+    {
+      "lang": "ar",
+      "dir": "rtl",
+      "title": "أسعار الخطة المجانية وPro | SellPostly",
+      "heading": "ابدأ بمتجرين. توسّع مع Pro.",
+      "plans": [
+        "الخطة المجانية",
+        "خطة Pro"
+      ]
+    },
+    {
+      "lang": "en",
+      "dir": "ltr",
+      "title": "Free & Pro Pricing | SellPostly",
+      "heading": "Start with two stores. Grow with Pro.",
+      "plans": [
+        "Free Plan",
+        "Pro Plan"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "path": "/shop",
+      "query": "",
+      "dialog": true,
+      "license": true,
+      "crypto": true
+    },
+    {
+      "path": "/shop",
+      "query": "",
+      "dialog": true,
+      "license": true,
+      "crypto": true
+    },
+    {
+      "path": "/shop",
+      "query": "",
+      "dialog": false,
+      "license": false,
+      "crypto": false
+    }
+  ],
+  "navigation": {
+    "header": true,
+    "footer": true,
+    "prices": [
+      "$0",
+      "$15"
+    ],
+    "cta": "/shop?upgrade=pro"
+  }
+}

@@ -1,0 +1,12 @@
+Ô£ö TRON receives structural and checksum validation and cannot request admin escrow (3.1577ms)
+Ô£ö digital-only classification handles legacy categories, explicit flags, mixed and empty carts; snapshots omit download secrets (51.4425ms)
+Ô£ö TRON direct ledger, TxID deduplication and digital download authorization survive schema reruns (5176.4774ms)
+Ô£ö payment cards are vertical accessible switches and new checkout/editor copy is localized (86.698ms)
+Ôä╣ tests 4
+Ôä╣ suites 0
+Ôä╣ pass 4
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 6938.3355

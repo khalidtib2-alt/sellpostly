@@ -1,0 +1,11 @@
+Ô£ö legacy primary catalogs migrate intact; niche shops enforce global slugs, ownership, type and 10-shop Pro limit (3502.9717ms)
+Ô£ö independent drafts, settings, compressed links and exact-shop imports preserve catalog boundaries (47.1176ms)
+Ô£ö niche navigation, extension shop sync and new strings retain EN FR AR support (4.0663ms)
+Ôä╣ tests 3
+Ôä╣ suites 0
+Ôä╣ pass 3
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 4582.7639

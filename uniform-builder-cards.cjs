@@ -1,0 +1,1 @@
+const fs=require('fs');let p='src/app/shop/shop-builder.tsx',s=fs.readFileSync(p,'utf8');s=s.replace('product-image-frame h-52 w-full bg-slate-50 p-4','product-image-frame aspect-[4/3] w-full bg-slate-50').replace('max-h-full max-w-full w-auto h-auto object-contain ','h-full w-full object-contain p-4 ');fs.writeFileSync(p,s);

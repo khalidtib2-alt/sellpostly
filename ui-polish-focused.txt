@@ -1,0 +1,11 @@
+Ô£ö main-store preference defaults on and survives snapshots without linking general stores (41.1062ms)
+Ô£ö public niche links resolve only matching same-owner published primary stores; toggle persists in database (4702.0452ms)
+Ô£ö global control states cover keyboard, disabled, selected, press and reduced motion; new copy is translated (68.0982ms)
+Ôä╣ tests 3
+Ôä╣ suites 0
+Ôä╣ pass 3
+Ôä╣ fail 0
+Ôä╣ cancelled 0
+Ôä╣ skipped 0
+Ôä╣ todo 0
+Ôä╣ duration_ms 5672.4291
