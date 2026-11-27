@@ -5,14 +5,14 @@ import {spawnSync} from 'node:child_process';
 import {showcaseProducts,showcaseTitleFromUrl,showcaseImage} from '../src/app/home-showcase-data';
 import {translations} from '../src/app/translations';
 test('showcase uses distinct photographic merchandise and coherent sample offers in every locale',async()=>{
- assert.equal(new Set(showcaseProducts.map(p=>p.discount)).size,4);
- assert.equal(new Set(showcaseProducts.map(p=>p.reviews)).size,4);
+ assert.equal(new Set(showcaseProducts.map(p=>p.discount)).size,5);
+ assert.equal(new Set(showcaseProducts.map(p=>p.reviews)).size,6);
  for(const item of showcaseProducts){
   const image=await readFile('public'+item.image);assert.equal(image[0],255);assert.equal(image[1],216);assert.ok(image.length>30000);
   assert.equal(Math.round((1-Number(item.price.slice(1))/Number(item.original.slice(1)))*100),item.discount);
   for(const lang of ['fr','es','ar'] as const)assert.ok(translations[item.title][lang]);
  }
- for(const key of ['Verified curator · Demo','Considered essentials. Better discoveries.','{discount}% OFF','Live preview'] as const)for(const lang of ['fr','es','ar'] as const)assert.ok(translations[key][lang]);
+ for(const key of ['Verified curator · Demo','Considered essentials. Better discoveries.','{discount}% OFF','Live preview','Previous curated products','Next curated products'] as const)for(const lang of ['fr','es','ar'] as const)assert.ok(translations[key][lang]);
 });
 test('live URL preview decodes descriptive slugs without accepting script or data URLs',()=>{
  assert.equal(showcaseTitleFromUrl('https://brand.example/products/linen-weekend-bag'),'Linen weekend bag');
@@ -29,7 +29,11 @@ test('mounted showcase mirrors edits, updates imports, rejects stale responses a
  const root=createRoot(document.getElementById('root'));await act(async()=>root.render(React.createElement(LanguageProvider,null,React.createElement(Probe),React.createElement(Showcase))));
  const props=node=>node[Object.keys(node).find(k=>k.startsWith('__reactProps'))];
  const first=()=>document.querySelector('[data-showcase-product="0"]');
- assert.equal(document.querySelectorAll('.showcase-products article').length,4);assert.ok(document.querySelector('.showcase-curator').textContent.includes('Demo'));
+ assert.equal(document.querySelectorAll('.showcase-products article').length,3);assert.ok(document.querySelector('.showcase-curator').textContent.includes('Demo'));
+ assert.equal(document.querySelector('.showcase-url button').textContent,'Format');
+ const seen=new Set();for(let i=0;i<6;i++){seen.add(document.querySelector('.showcase-products article').getAttribute('data-showcase-product'));await act(async()=>document.querySelector('button[aria-label="Next curated products"]').click());}assert.equal(seen.size,6);assert.ok(first());
+ await act(async()=>document.querySelector('button[aria-label="Previous curated products"]').click());assert.equal(document.querySelector('.showcase-products article').getAttribute('data-showcase-product'),'5');
+
  const title=document.querySelector('.showcase-output input');await act(async()=>props(title).onChange({target:{value:'My Curated Weekend Bag'}}));assert.equal(first().querySelector('h3').textContent,'My Curated Weekend Bag');
  let calls=0,resolve;globalThis.fetch=()=>{calls++;return new Promise(r=>resolve=r);};const url=document.querySelector('.showcase-url input');
  await act(async()=>props(url).onChange({target:{value:'https://brand.example/products/linen-weekend-bag'}}));assert.equal(first().querySelector('h3').textContent,'Linen weekend bag');assert.equal(calls,0);assert.ok(first().textContent.includes('Check Live Price'));assert.equal(first().querySelector('.showcase-rating'),null);
@@ -38,7 +42,7 @@ test('mounted showcase mirrors edits, updates imports, rejects stale responses a
  assert.equal(first().querySelector('h3').textContent,'Linen Travel Tote');assert.equal(first().querySelector('img').getAttribute('src'),'https://cdn.example/tote.jpg');assert.ok(first().textContent.includes('59 USD'));
  await act(async()=>document.querySelector('form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true})));
  await act(async()=>props(title).onChange({target:{value:'My Latest Edit'}}));await act(async()=>resolve({ok:true,json:async()=>({name:'Stale import',price:'99'})}));assert.equal(first().querySelector('h3').textContent,'My Latest Edit');
- for(const lang of ['fr','es','ar']){await act(async()=>language.setLanguage(lang));assert.equal(document.documentElement.dir,lang==='ar'?'rtl':'ltr');assert.equal(document.querySelectorAll('.showcase-products article').length,4);}
+ for(const lang of ['fr','es','ar']){await act(async()=>language.setLanguage(lang));assert.equal(document.documentElement.dir,lang==='ar'?'rtl':'ltr');assert.equal(document.querySelectorAll('.showcase-products article').length,3);}
  await act(async()=>root.unmount());
  `],{cwd:process.cwd(),encoding:'utf8',timeout:60000});assert.equal(result.status,0,result.stderr||result.stdout);
 });

@@ -1,4 +1,8 @@
 export const translations = {
+  "Everyday Smartwatch": {fr:"Montre connectée du quotidien",es:"Reloj inteligente para cada día",ar:"ساعة ذكية للاستخدام اليومي"},
+  "Morning Coffee Essentials": {fr:"Les essentiels du café du matin",es:"Esenciales para el café de la mañana",ar:"أساسيات قهوة الصباح"},
+  "Previous curated products": {fr:"Sélection précédente",es:"Productos seleccionados anteriores",ar:"المنتجات المختارة السابقة"},
+  "Next curated products": {fr:"Sélection suivante",es:"Siguientes productos seleccionados",ar:"المنتجات المختارة التالية"},
   "City Weekender Backpack": {fr:"Sac à dos escapade urbaine",es:"Mochila urbana de fin de semana",ar:"حقيبة ظهر للرحلات الحضرية"},
   "Everyday Canvas High-Tops": {fr:"Baskets montantes en toile",es:"Zapatillas altas de lona",ar:"حذاء رياضي قماشي مرتفع"},
   "Studio Wireless Headphones": {fr:"Casque audio sans fil Studio",es:"Auriculares inalámbricos Studio",ar:"سماعات استوديو لاسلكية"},

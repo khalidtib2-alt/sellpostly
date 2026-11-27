@@ -376,3 +376,48 @@ nav a[aria-current='page'] {border-radius:.35rem;text-decoration:underline;text-
 @media(prefers-reduced-motion:reduce){.showcase-products article,.showcase-product-photo img{transition:none;}.showcase-products article:hover,.showcase-products article:focus-within,.showcase-products article:hover .showcase-product-photo img{transform:none;}}
 
 .showcase-price-row strong{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Compact split demo: content-sized panels, three visible picks, no stretched editor. */
+.home-showcase{align-items:start;}
+.showcase-formatter,.showcase-store{align-self:start;padding:16px;}
+.showcase-formatter .showcase-card-heading{margin-bottom:12px;}
+.showcase-url .saas-primary{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:8px 12px;background:#4f46e5;color:#fff;font-size:13px;white-space:nowrap;}
+.showcase-url input{min-height:40px;}
+.showcase-editor{flex:none;min-height:0;grid-template-columns:145px minmax(0,1fr);gap:14px;margin-top:14px;align-items:start;}
+.showcase-tabs{gap:5px;}
+.showcase-tabs button{font-size:13px;padding:10px 8px;min-height:44px;}
+.showcase-output{padding-top:0;}
+.showcase-output label{margin-bottom:10px;font-size:13px;}
+.showcase-output input,.showcase-output textarea{margin-top:5px;padding:8px 10px;font-size:16px;line-height:1.45;}
+.showcase-output textarea{min-height:84px;}
+.showcase-copy{min-height:36px;padding:7px 10px;font-size:13px;}
+.showcase-status{margin-top:12px;min-height:0;font-size:12px;line-height:1.5;}
+.showcase-store .showcase-card-heading{flex-wrap:nowrap;padding-bottom:10px;margin-bottom:9px;gap:8px;}
+.showcase-store .showcase-card-heading h2{font-size:17px;}
+.showcase-store-eyebrow{font-size:11px;}
+.showcase-store-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.showcase-curator{font-size:10px;padding:4px 7px;}
+.showcase-carousel-controls{display:flex;align-items:center;gap:7px;}
+.showcase-carousel-controls button{display:grid;place-items:center;width:30px;height:30px;cursor:pointer;border:1px solid #ffffff30;border-radius:7px;background:#ffffff0a;color:#fff;transition:background .15s ease;}
+.showcase-carousel-controls button:hover{background:#4f46e5;}
+.showcase-carousel-controls button:active{transform:scale(.96);}
+.showcase-carousel-controls button:focus-visible{outline:2px solid #a5b4fc;outline-offset:2px;}
+.showcase-carousel-controls>span{font-size:11px;color:#cbd5e1;min-width:30px;text-align:center;}
+.showcase-store-intro{font-size:12px;margin-bottom:12px;}
+.showcase-products{grid-template-columns:minmax(0,1fr);gap:10px;}
+.showcase-products>article:nth-child(n+2){display:none;}
+.showcase-product-photo{height:clamp(160px,38vw,220px);}
+.showcase-product-photo>span{font-size:10px;padding:4px 6px;top:8px;inset-inline-start:8px;}
+.showcase-product-details{grid-template-rows:2.9em 18px 24px 38px;padding:10px;gap:5px;font-size:13px;}
+.showcase-product-details h3{font-size:13px;}
+.showcase-rating{font-size:10px;gap:3px;white-space:nowrap;}
+.showcase-stars{display:inline-flex;gap:0;color:#fbbf24;}
+.showcase-price-row{gap:6px;}
+.showcase-price-row strong{font-size:16px;}
+.showcase-price-row del{font-size:11px;}
+.showcase-product-details .showcase-deal{font-size:12px;min-height:38px;padding:5px;gap:3px;background:#4f46e5;color:white;}
+.showcase-deal svg{flex-shrink:0;}
+.showcase-demo-note{font-size:11px;line-height:1.5;margin-top:12px;}
+@media(min-width:640px){.showcase-products{grid-template-columns:repeat(3,minmax(0,1fr));}.showcase-products>article:nth-child(n+2){display:flex;}.showcase-product-photo{height:clamp(118px,10vw,138px);}}
+@media(max-width:640px){.showcase-editor{grid-template-columns:112px minmax(0,1fr);gap:10px;min-height:0;}.showcase-tabs{border-inline-end:1px solid #eef0f5;padding-inline-end:7px;}.showcase-tabs button{font-size:12px;padding:9px 5px;gap:4px;}.showcase-tabs button svg{width:13px;}.showcase-store-actions{gap:5px;}.showcase-store .showcase-card-heading h2{font-size:16px;}.showcase-url .saas-primary{padding-inline:10px;}.showcase-curator{font-size:9px;}}
+@media(prefers-reduced-motion:reduce){.showcase-carousel-controls button{transition:none;}.showcase-carousel-controls button:active{transform:none;}}
