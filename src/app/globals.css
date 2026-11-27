@@ -337,3 +337,12 @@ nav a[aria-current='page'] {border-radius:.35rem;text-decoration:underline;text-
 .product-related{margin-top:64px;}.product-related>h2{font-size:28px;font-weight:850;margin-bottom:24px;}.product-related article{padding:16px;border:1px solid var(--border,#cbd5e1);border-radius:20px;display:flex;flex-direction:column;gap:12px;background:var(--card,#fff);}.product-related-photo{aspect-ratio:4/3;background:#f1f5f9;border-radius:12px;display:grid;place-items:center;overflow:hidden;padding:14px;}.product-related-photo img{height:100%;width:100%;object-fit:contain;}.product-related h3{font-size:16px;font-weight:800;}.product-related-cta{margin-top:auto;font-weight:800;color:var(--accent,#059669);text-decoration:underline;text-underline-offset:3px;}
 @media(min-width:1024px){.product-sales-panel{position:sticky;top:24px;}.product-mobile-cta{display:none;}}@media(max-width:640px){.product-hero-card .product-image-frame{min-height:300px;}.social-share-buttons button{flex:1 0 110px;}.product-related>h2{font-size:24px;}}
 @media(prefers-reduced-motion:reduce){.product-primary-cta:active{transform:none;}}
+
+/* Comparison UI stays separate from the downloadable canvas. */
+.studio-checker{background-color:#fff;background-image:conic-gradient(#e2e8f0 25%,transparent 0 50%,#e2e8f0 0 75%,transparent 0);background-size:20px 20px;}
+.studio-comparison{position:relative;max-width:100%;touch-action:pan-y;isolation:isolate;}
+.studio-comparison:has(.studio-comparison-divider){touch-action:none;cursor:ew-resize;}
+.studio-comparison-before{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.studio-comparison-divider{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 4px #0f172a;transform:translateX(-50%);pointer-events:none;}
+.studio-comparison-label{position:absolute;top:8px;left:8px;padding:3px 6px;border-radius:5px;background:#0f172acc;color:white;font-size:12px;pointer-events:none;}
+.studio-comparison-label-after{left:auto;right:8px;}
