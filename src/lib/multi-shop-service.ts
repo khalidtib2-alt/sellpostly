@@ -1,4 +1,5 @@
 import 'server-only';
+import {catalogAdditions,selectedCatalogItems} from './external-catalog-products';
 import {storePolicyReady} from '../app/shop/store-policy-data';
 import {validTronChecksum} from './tron-validation';
 import {db} from './db';
@@ -13,7 +14,7 @@ export async function listSellerShops(owner:string,query:Query=runShopQuery){
  for(const row of rows){for(const mode of (row.store_mode==='niche'?[row.shop_type]:['personal','affiliate']) as ShopMode[]){
  const catalog=row[mode+'_catalog']||((row.catalog?.shopMode||'affiliate')===mode?row.catalog:null)||{name:row.name||'',bio:'',products:[]};
  const mainCatalog=primary&&(primary[mode+'_catalog']||primary.catalog);
- shops.push(validateShop({...catalog,logo:catalog.logo??row.logo,mainStoreSlug:row.store_mode==='niche'&&mainCatalog?.shopMode===mode?primary?.slug:undefined,shopMode:mode,shopId:row.id,customSlug:row.slug,storeMode:row.store_mode||'general',nicheName:row.niche_name||'',escrowHoldDays:row.escrow_hold_days,...(mode==='affiliate'?{affiliateDisclosure:row.affiliate_disclosure??catalog.affiliateDisclosure}:{cryptoWallet:row.seller_usdc_wallet||catalog.cryptoWallet,sellerEmail:row.seller_email||catalog.sellerEmail,codEnabled:row.cod_enabled,escrowEnabled:row.escrow_enabled})}));
+ shops.push(validateShop({...catalog,logo:catalog.logo??row.logo,mainStoreSlug:row.store_mode==='niche'&&mainCatalog?.shopMode===mode?primary?.slug:undefined,shopMode:mode,shopId:row.id,customSlug:row.published===false?undefined:row.slug,storeMode:row.store_mode||'general',nicheName:row.niche_name||'',escrowHoldDays:row.escrow_hold_days,...(mode==='affiliate'?{affiliateDisclosure:row.affiliate_disclosure??catalog.affiliateDisclosure}:{cryptoWallet:row.seller_usdc_wallet||catalog.cryptoWallet,sellerEmail:row.seller_email||catalog.sellerEmail,codEnabled:row.cod_enabled,escrowEnabled:row.escrow_enabled})}));
  }}return shops;
 }
 export const CREATE_NICHE_SQL=`INSERT INTO shops(owner_key,slug,name,logo,catalog,affiliate_catalog,personal_catalog,store_mode,shop_type,niche_name,affiliate_disclosure,seller_usdc_wallet,seller_email,cod_enabled,escrow_enabled)
@@ -22,8 +23,13 @@ export const CREATE_NICHE_SQL=`INSERT INTO shops(owner_key,slug,name,logo,catalo
 export async function createNicheShop(owner:string,value:unknown,query:Query=runShopQuery){
  const raw=value as Record<string,unknown>;
  if(!raw||!validShopSlug(raw.customSlug)||!['personal','affiliate'].includes(String(raw.shopMode))||typeof raw.name!=='string'||!raw.name.trim()||typeof raw.nicheName!=='string'||!raw.nicheName.trim())throw new ShopError('INVALID_NICHE_SHOP');
- const shop=validateShop({...raw,shopId:undefined,storeMode:'niche',products:[],escrowEnabled:false,codEnabled:false,payments:{USDC_DIRECT:{enabled:false},COD:{enabled:false}}});
- try{const rows=await query(CREATE_NICHE_SQL,[owner,shop.customSlug,shop.name,JSON.stringify(shop),shop.shopMode,shop.nicheName]);if(!rows[0])throw new ShopError('PRO_REQUIRED',403);return {...shop,shopId:rows[0].id,customSlug:rows[0].slug};}
+ let imported;
+ if (raw.externalCatalog !== undefined) {
+  try { imported=catalogAdditions([],selectedCatalogItems(raw.externalCatalog),raw.shopMode as ShopMode); }
+  catch { throw new ShopError('INVALID_ITEMS'); }
+ }
+ const shop=validateShop({...raw,shopId:undefined,storeMode:'niche',products:imported?.products || [],escrowEnabled:false,codEnabled:false,payments:{USDC_DIRECT:{enabled:false},COD:{enabled:false}}});
+ try{const rows=await query(CREATE_NICHE_SQL,[owner,shop.customSlug,shop.name,JSON.stringify(shop),shop.shopMode,shop.nicheName]);if(!rows[0])throw new ShopError('PRO_REQUIRED',403);return {...shop,shopId:rows[0].id,customSlug:rows[0].slug,...(imported?{catalogImport:{importedCount:imported.importedCount,skippedCount:imported.skippedCount}}:{})};}
  catch(e){const err=e as {code?:string;message?:string};if(err.code==='23505')throw new ShopError('SLUG_UNAVAILABLE',409);if(err.message?.includes('NICHE_LIMIT_REACHED'))throw new ShopError('NICHE_LIMIT_REACHED',409);throw e;}
 }
 export async function saveNicheShop(owner:string,value:Shop,query:Query=runShopQuery){

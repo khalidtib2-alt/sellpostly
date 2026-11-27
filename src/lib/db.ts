@@ -70,5 +70,5 @@ export async function requestPayout(identity:ProIdentity,shopId:string,amount:st
 }
 
 export async function sellerShopSettings(owner:string,query:Query=async(sql,parameters)=>await db().query(sql,parameters)){
- const rows=await query("SELECT id,slug,escrow_hold_days,affiliate_disclosure,affiliate_catalog,personal_catalog,seller_usdc_wallet,seller_email,cod_enabled,escrow_enabled FROM shops WHERE owner_key=$1 AND store_mode='general'",[owner]);return rows[0]||{escrow_hold_days:7};
+ const rows=await query("SELECT id,CASE WHEN published THEN slug END AS slug,escrow_hold_days,affiliate_disclosure,affiliate_catalog,personal_catalog,seller_usdc_wallet,seller_email,cod_enabled,escrow_enabled FROM shops WHERE owner_key=$1 AND store_mode='general'",[owner]);return rows[0]||{escrow_hold_days:7};
 }
