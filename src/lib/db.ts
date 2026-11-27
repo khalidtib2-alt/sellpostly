@@ -6,24 +6,34 @@ import {validTronChecksum} from './tron-validation';
 import { neon } from '@neondatabase/serverless';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import {migrateSchema} from '../db/migrate-schema.mjs';
 import {validWallet} from '../app/shop/crypto-data';
 import { randomBytes } from 'node:crypto';
 import type { Query } from "./order-service";
 import type { ProIdentity } from './pro-auth';
 import { validateShop, type Shop,type ShopMode } from '../app/shop/shop-data';
-export function db(){
-  if(!process.env.DATABASE_URL)throw Error('DATABASE_NOT_CONFIGURED');
-  return neon(process.env.DATABASE_URL);
+let readiness: {url:string; promise:Promise<void>} | undefined;
+
+export function ensureDbReady(): Promise<void> {
+  const url = process.env.DATABASE_URL;
+  if (!url) return Promise.reject(Error('DATABASE_NOT_CONFIGURED'));
+  if (readiness?.url === url) return readiness.promise;
+  const promise = readFile(path.join(process.cwd(),'src/db/schema.sql'),'utf8')
+    .then(async schema => { await migrateSchema(neon(url),schema); })
+    .catch(error => { if (readiness?.promise === promise) readiness = undefined; throw error; });
+  readiness = {url,promise};
+  return promise;
 }
-export async function initializeDatabase(){
-  const schema=await readFile(path.join(process.cwd(),'src/db/schema.sql'),'utf8');
-  const sql=db();
-  // Fixed repository-owned statements only; no request text is executed as SQL.
-  const statements=schema.split(/^[ \t]*-- statement-breakpoint[ \t]*\r?$/m).map(value=>value.trim()).filter(Boolean);
-  await sql.transaction(statements.map(statement=>sql.query(statement)),{isolationLevel:'Serializable'});
+
+export async function db() {
+  await ensureDbReady();
+  return neon(process.env.DATABASE_URL!);
 }
+
+export const initializeDatabase = ensureDbReady;
+
 export async function recordSubscription(identity:ProIdentity){
-  const sql=db();
+  const sql=await db();
   await sql`INSERT INTO subscriptions(owner_key,provider) VALUES(${identity.ownerKey},${identity.provider}) ON CONFLICT(owner_key) DO UPDATE SET provider=CASE WHEN subscriptions.provider='free' THEN subscriptions.provider ELSE excluded.provider END,verified_at=now()`;
 }
 export const PUBLISH_SHOP_SQL=`INSERT INTO shops(owner_key,slug,name,logo,catalog,affiliate_catalog,personal_catalog,seller_usdc_wallet,seller_email,cod_enabled,escrow_enabled,affiliate_disclosure)
@@ -40,7 +50,7 @@ export async function publishShop(identity:ProIdentity,value:unknown){
     const {saveNicheShop}=await import('./multi-shop-service');
     const saved=await saveNicheShop(identity.ownerKey,shop);return saved.slug;
   }
-  const sql=db();
+  const sql=await db();
   const slug='store-'+randomBytes(9).toString('hex');
   const results=await sql.transaction([
     sql`INSERT INTO subscriptions(owner_key,provider) VALUES(${identity.ownerKey},${identity.provider}) ON CONFLICT(owner_key) DO UPDATE SET provider=CASE WHEN subscriptions.provider='free' THEN subscriptions.provider ELSE excluded.provider END,verified_at=now()`,
@@ -49,7 +59,7 @@ export async function publishShop(identity:ProIdentity,value:unknown){
   if(!results[1][0])throw Error("PRO_REQUIRED");
   return String(results[1][0].slug);
 }
-export async function publicShop(slug:string,query:Query=async(sql,parameters)=>await db().query(sql,parameters),mode?:ShopMode):Promise<(Shop & {verified:boolean;suspended:boolean})|null>{
+export async function publicShop(slug:string,query:Query=async(sql,parameters)=>await (await db()).query(sql,parameters),mode?:ShopMode):Promise<(Shop & {verified:boolean;suspended:boolean})|null>{
   if(!/^[a-z0-9][a-z0-9-]{2,63}$/.test(slug))return null;
   const rows=await query(`SELECT id,slug,logo,store_mode,shop_type,niche_name,affiliate_disclosure,catalog,affiliate_catalog,personal_catalog,seller_usdc_wallet,cod_enabled,escrow_enabled,verified,suspended,escrow_hold_days,
  (SELECT p.slug FROM shops p WHERE shops.store_mode='niche' AND p.owner_key=shops.owner_key AND p.store_mode='general' AND p.published=true AND p.suspended=false AND (CASE WHEN shops.shop_type='personal' THEN coalesce(p.personal_catalog,p.catalog) ELSE coalesce(p.affiliate_catalog,p.catalog) END)->>'shopMode'=shops.shop_type LIMIT 1) AS main_store_slug FROM shops WHERE slug=$1 AND deleted_at IS NULL AND published=true AND (store_mode='general' OR seller_effective_plan(owner_key)='pro') LIMIT 1`,[slug]);
@@ -60,15 +70,15 @@ export async function publicShop(slug:string,query:Query=async(sql,parameters)=>
   return {...shop,products:shop.products.map(publicDigitalProduct),mainStoreSlug:row.store_mode==='niche'?row.main_store_slug||undefined:undefined,shopId:row.id,customSlug:row.slug,storeMode:row.store_mode==='niche'?'niche':'general',nicheName:row.niche_name||'',...(shop.shopMode==='affiliate'?{affiliateDisclosure:row.affiliate_disclosure??shop.affiliateDisclosure}:{}),...(shop.shopMode==='personal'?{cryptoWallet:row.seller_usdc_wallet||shop.cryptoWallet,codEnabled:row.cod_enabled??shop.codEnabled,escrowEnabled:row.escrow_enabled??shop.escrowEnabled}:{}),escrowHoldDays:row.escrow_hold_days,verified:row.verified===true,suspended:row.suspended===true};
 }
 export async function createPendingOrder(shopId:string,grossAmount:string,coin:'USDC'|'USDT',network:string,details:unknown){
-  const sql=db();
+  const sql=await db();
   const rows=await sql`INSERT INTO orders(shop_id,gross_amount,coin,network,details) VALUES(${shopId}::uuid,${grossAmount}::numeric,${coin},${network},${JSON.stringify(details)}::jsonb) RETURNING id,gross_amount,commission_amount,net_amount,escrow_hold_days,status`;
   return rows[0];
 }
 export async function requestPayout(identity:ProIdentity,shopId:string,amount:string,coin:'USDC'|'USDT',network:string,wallet:string){
-  const sql=db();
+  const sql=await db();
   return sql`SELECT request_seller_payout(${shopId}::uuid,${identity.ownerKey},${amount}::numeric,${coin},${network},${wallet}) AS id`;
 }
 
-export async function sellerShopSettings(owner:string,query:Query=async(sql,parameters)=>await db().query(sql,parameters)){
+export async function sellerShopSettings(owner:string,query:Query=async(sql,parameters)=>await (await db()).query(sql,parameters)){
  const rows=await query("SELECT id,CASE WHEN published THEN slug END AS slug,escrow_hold_days,affiliate_disclosure,affiliate_catalog,personal_catalog,seller_usdc_wallet,seller_email,cod_enabled,escrow_enabled FROM shops WHERE owner_key=$1 AND store_mode='general'",[owner]);return rows[0]||{escrow_hold_days:7};
 }

@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {db} from './db';
 import {sendEmail,emailAddress,type EmailData,type EmailKind} from './email';
 import type {Query} from './order-service';
-const run:Query=async(sql,args)=>await db().query(sql,args);
+const run:Query=async(sql,args)=>await (await db()).query(sql,args);
 // Called only after the business update commits. No notification failure escapes.
 export async function notifyEvent(kind:EmailKind,id:string,query:Query=run,request:typeof fetch=fetch){
  if(!process.env.RESEND_API_KEY?.trim())return;
@@ -31,4 +31,3 @@ export async function notifyEvent(kind:EmailKind,id:string,query:Query=run,reque
   else if(result==='failed')console.warn('SellPostly notification delivery failed; business update remains saved.');
  }catch{console.warn('SellPostly notification unavailable; business update remains saved.');}
 }
-

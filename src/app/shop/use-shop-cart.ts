@@ -2,13 +2,14 @@
 import {useCallback,useEffect,useRef,useState,type SetStateAction} from 'react';
 import {cartStorageKey,legacyCartStorageKey,normalizeCart} from './product-links';
 import {readCart,writeCart,cartChangedEvent} from './cart-storage';
+import {catalogCartKeys} from './cart-data';
 import type {Shop} from './shop-data';
 export function useShopCart(shop:Shop,slug?:string,snapshot?:string,ready=true){
  const cartSlug=slug||(!snapshot&&shop.storeMode==='niche'?shop.customSlug||shop.shopId:undefined);
  const key=cartStorageKey(cartSlug,snapshot),legacy=legacyCartStorageKey(cartSlug,snapshot);
  const [cart,setState]=useState<Record<string,number>>({});
  const current=useRef({key:'',cart:{} as Record<string,number>});
- const ids=JSON.stringify(shop.products.map(p=>p.id));
+ const ids=JSON.stringify(catalogCartKeys(shop.products));
  useEffect(()=>{
   if(!ready)return;
   const hydrate=()=>{const next=readCart(localStorage,key,JSON.parse(ids),legacy,current.current.key===key?current.current.cart:{});current.current={key,cart:next};setState(next);};

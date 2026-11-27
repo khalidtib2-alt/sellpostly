@@ -5,7 +5,7 @@ import {validTronChecksum} from './tron-validation';
 import {db} from './db';
 import type {Query} from './order-service';
 import {validateShop,type Shop,type ShopMode} from '../app/shop/shop-data';
-export const runShopQuery:Query=async(sql,args)=>await db().query(sql,args);
+export const runShopQuery:Query=async(sql,args)=>await (await db()).query(sql,args);
 export class ShopError extends Error{constructor(message:string,public status=400){super(message);}}
 export function validShopSlug(value:unknown):value is string{return typeof value==='string'&&/^[a-z0-9][a-z0-9-]{2,63}$/.test(value);}
 export async function listSellerShops(owner:string,query:Query=runShopQuery){

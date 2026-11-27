@@ -9,5 +9,5 @@ export async function POST(request:Request){try{
  const identity=await shopIdentity(request);if(!identity)return Response.json({error:'AUTH_REQUIRED'},{status:401});
  const text=await request.text();if(text.length>550000)return Response.json({error:'LOGO_TOO_LARGE'},{status:413});
  let value:unknown;try{value=JSON.parse(text);}catch{return Response.json({error:'INVALID_SHOP_LOGO'},{status:400});}
- return Response.json(await saveShopLogo(identity.ownerKey,value,(sql,args)=>db().query(sql,args)),{headers:{'Cache-Control':'no-store'}});
+ return Response.json(await saveShopLogo(identity.ownerKey,value,async(sql,args)=>(await db()).query(sql,args)),{headers:{'Cache-Control':'no-store'}});
  }catch(error){return shopFailure(error);}}

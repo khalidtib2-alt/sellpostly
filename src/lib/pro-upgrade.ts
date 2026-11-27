@@ -6,7 +6,7 @@ import { db } from './db';
 import {validWallet} from '../app/shop/crypto-data';
 import { ApiError,object,text,txId,uuid } from './order-validation';
 import type { Query } from './order-service';
-const run:Query=async(sql,args)=>await db().query(sql,args);
+const run:Query=async(sql,args)=>await (await db()).query(sql,args);
 export const digest=(value:string)=>createHash('sha256').update(value).digest('hex');
 export function upgradePrice(plan:string){
  if(plan==='b2b')return b2bPlanPrice(process.env.NEXT_PUBLIC_B2B_PLAN_PRICE);
@@ -48,4 +48,3 @@ export async function decideUpgrade(value:unknown,query:Query=run){
  const rows=await query("UPDATE pro_upgrade_requests SET status='rejected' WHERE id=$1::uuid AND status='pending' RETURNING id,status",[id]);
  if(!rows.length)throw new ApiError('TRANSITION_NOT_ALLOWED',409);return rows[0];
 }
-

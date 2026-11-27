@@ -1,4 +1,5 @@
-"use client";
+
+import type {OrderItem} from './inventory-data';
 import StorePolicy from './store-policy';
 import BuyerSafety from './buyer-safety';
 import {storePolicyReady} from './store-policy-data';
@@ -13,7 +14,7 @@ import { escrowWallet, escrowNetwork, escrowReady, holdDays } from "./escrow-con
 import { checkoutAmount } from './checkout-amount';
 import { stableAmount } from "./crypto-data";
 
-export default function CryptoCheckout({ product, shop, onClose, orderDetails = "", storeSlug, orderItems=[] }: {storeSlug?:string;orderItems?:{id:string;quantity:number}[];product:Product;shop:Shop;onClose:()=>void;orderDetails?:string}){
+export default function CryptoCheckout({ product, shop, onClose, orderDetails = "", storeSlug, orderItems=[] }: {storeSlug?:string;orderItems?:OrderItem[];product:Product;shop:Shop;onClose:()=>void;orderDetails?:string}){
   const {t}=useLanguage();
   const parsedPayment=stableAmount(product.price),payment=parsedPayment?.coin==='USDT'?null:parsedPayment;
   const [coin,setCoin]=useState("USDC");

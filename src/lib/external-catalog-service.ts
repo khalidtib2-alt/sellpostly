@@ -39,9 +39,13 @@ export async function commitExternalCatalog(
     const updated = await query(`UPDATE shops SET ${column}=$3::jsonb,
       catalog=CASE WHEN coalesce(catalog->>'shopMode','affiliate')=$6 OR catalog='{}'::jsonb THEN $3::jsonb ELSE catalog END,
       updated_at=now() WHERE id=$1::uuid AND owner_key=$2 AND deleted_at IS NULL
-      AND ${column} IS NOT DISTINCT FROM $4::jsonb AND catalog IS NOT DISTINCT FROM $5::jsonb RETURNING id`,
+      AND ${column} IS NOT DISTINCT FROM $4::jsonb AND catalog IS NOT DISTINCT FROM $5::jsonb RETURNING ${column} AS saved_catalog`,
     [id,owner,JSON.stringify(next),row[column] == null ? null : JSON.stringify(row[column]),JSON.stringify(row.catalog),targetMode]);
-    if (updated.length) return {...result,products,shopId:id};
+    if (updated.length) {
+      const importedIds = new Set(products.map(product => product.id));
+      const saved = validateShop(updated[0].saved_catalog).products.filter(product => importedIds.has(product.id));
+      return {...result,products:saved,shopId:id};
+    }
   }
   throw new ShopError('IMPORT_CONFLICT',409);
 }

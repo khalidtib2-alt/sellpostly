@@ -11,6 +11,7 @@
     "extension:configure": "node scripts/configure-extension.mjs",
     "prebuild": "node scripts/remove-image-generator.mjs && npm run extension:configure",
     "db:init": "node scripts/init-db.mjs",
+    "db:migrate": "node scripts/migrate-db.mjs",
     "pretest": "node scripts/remove-image-generator.mjs"
   },
   "type": "module",

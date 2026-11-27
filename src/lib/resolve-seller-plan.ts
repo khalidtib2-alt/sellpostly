@@ -15,7 +15,7 @@ export function sellerCredential(request:Request,header:'x-pro-key'|'x-shop-key'
 }
 type Dependencies={query?:Query;verifyKey?:(key:string)=>Promise<ProIdentity|null>};
 export async function resolveSellerPlan(request:Request,deps:Dependencies={}){
- const query=deps.query||((sql,args)=>db().query(sql,args)),key=sellerCredential(request,'x-pro-key'),token=sellerCredential(request,'x-shop-key');
+ const query=deps.query||(async(sql,args)=>(await db()).query(sql,args)),key=sellerCredential(request,'x-pro-key'),token=sellerCredential(request,'x-shop-key');
  const raw=key?await (deps.verifyKey||verifyProKey)(key):null;
  if(!deps.query&&!process.env.DATABASE_URL)return raw?{...raw,tier:'pro' as const}:null;
  const session=/^[a-f0-9]{64}$/i.test(token)?(await query("SELECT owner_key,provider FROM subscriptions WHERE owner_key=$1 AND provider='free' AND status='active'",[freeOwner(token)]))[0]:undefined;

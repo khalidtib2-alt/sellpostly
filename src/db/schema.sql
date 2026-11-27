@@ -407,6 +407,7 @@ $$;
 CREATE OR REPLACE FUNCTION enforce_shop_limit() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE account_status text;
 BEGIN
+ IF TG_OP='UPDATE' AND pg_trigger_depth()>1 THEN RETURN NEW; END IF;
  SELECT status INTO account_status FROM subscriptions WHERE owner_key=NEW.owner_key FOR UPDATE;
  IF TG_OP='INSERT' AND (NOT FOUND OR account_status<>'active') THEN RAISE EXCEPTION 'ACTIVE_ACCOUNT_REQUIRED'; END IF;
  IF TG_OP='UPDATE' AND (NEW.owner_key<>OLD.owner_key OR NEW.store_mode<>OLD.store_mode OR NEW.shop_type IS DISTINCT FROM OLD.shop_type) THEN RAISE EXCEPTION 'SHOP_IDENTITY_IMMUTABLE'; END IF;
@@ -429,3 +430,231 @@ ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_language_check CHECK (lan
 ALTER TABLE pro_upgrade_requests DROP CONSTRAINT IF EXISTS pro_upgrade_requests_language_check;
 -- statement-breakpoint
 ALTER TABLE pro_upgrade_requests ADD CONSTRAINT pro_upgrade_requests_language_check CHECK (language IN ('en','fr','es','ar'));
+
+-- statement-breakpoint
+CREATE TABLE IF NOT EXISTS stock_movements (
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ shop_id uuid NOT NULL REFERENCES shops(id),
+ product_id text NOT NULL,
+ product_name text NOT NULL,
+ variant_id text NOT NULL DEFAULT '',
+ variant_label text NOT NULL DEFAULT '',
+ sku text NOT NULL DEFAULT '',
+ delta integer NOT NULL,
+ reason text NOT NULL CHECK (reason IN ('initial','order','restock','return','adjustment')),
+ note text NOT NULL DEFAULT '',
+ order_id uuid REFERENCES orders(id),
+ created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS stock_movements_shop_date ON stock_movements(shop_id,created_at DESC,id DESC);
+CREATE INDEX IF NOT EXISTS stock_movements_product ON stock_movements(shop_id,product_id,variant_id);
+CREATE UNIQUE INDEX IF NOT EXISTS stock_movements_order_line ON stock_movements(order_id,product_id,variant_id,reason) WHERE order_id IS NOT NULL;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION inventory_rows(product jsonb) RETURNS TABLE(variant_id text, variant_label text, sku text, stock integer)
+LANGUAGE sql IMMUTABLE AS $$
+ SELECT variant->>'id',concat_ws(' / ',nullif(variant->>'size',''),nullif(variant->>'color','')),coalesce(variant->>'sku',''),(variant->>'stockCount')::integer
+ FROM jsonb_array_elements(coalesce(product->'variants','[]'::jsonb)) variant
+ UNION ALL
+ SELECT '','','',(product->>'stock')::integer WHERE jsonb_typeof(product->'stock')='number' AND jsonb_array_length(coalesce(product->'variants','[]'::jsonb))=0
+$$;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION reconcile_personal_inventory() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE
+ previous jsonb; incoming jsonb; product jsonb; saved jsonb; products jsonb := '[]'; edit jsonb; revision integer; change record;
+ wrote_inventory boolean; expected_revision integer;
+BEGIN
+ IF pg_trigger_depth()>1 THEN RETURN NEW; END IF;
+ incoming := coalesce(NEW.personal_catalog,CASE WHEN NEW.catalog->>'shopMode'='personal' THEN NEW.catalog END);
+ IF incoming IS NULL THEN RETURN NEW; END IF;
+ IF TG_OP='UPDATE' THEN
+  previous := coalesce(OLD.personal_catalog,CASE WHEN OLD.catalog->>'shopMode'='personal' THEN OLD.catalog END);
+  IF incoming IS NOT DISTINCT FROM previous THEN RETURN NEW; END IF;
+ END IF;
+ FOR product IN SELECT value FROM jsonb_array_elements(coalesce(incoming->'products','[]')) LOOP
+  SELECT value INTO saved FROM jsonb_array_elements(coalesce(previous->'products','[]')) WHERE value->>'id'=product->>'id' LIMIT 1;
+  edit := product->'inventoryEdit';
+  expected_revision := coalesce((product->>'inventoryVersion')::integer,0);
+  revision := coalesce((saved->>'inventoryVersion')::integer,0);
+  -- Only explicit, versioned inventory edits may replace quantities from a shop draft.
+  wrote_inventory := saved IS NULL OR (edit->>'id' IS NOT NULL AND edit->>'id' IS DISTINCT FROM coalesce(saved->>'inventoryMutation',saved->'inventoryEdit'->>'id'));
+  product := product-'inventoryEdit'-'inventoryVersion'-'inventoryMutation';
+  IF wrote_inventory THEN
+   IF saved IS NOT NULL AND expected_revision<>revision THEN
+    RAISE EXCEPTION 'INVENTORY_CONFLICT';
+   END IF;
+   IF saved IS NOT NULL AND EXISTS (
+    SELECT 1 FROM inventory_rows(saved) before_row
+    WHERE NOT EXISTS (SELECT 1 FROM inventory_rows(product) after_row WHERE after_row.variant_id=before_row.variant_id)
+     AND EXISTS (SELECT 1 FROM stock_movements m WHERE m.shop_id=NEW.id AND m.product_id=product->>'id' AND m.variant_id=before_row.variant_id AND m.reason='order'
+      AND NOT EXISTS (SELECT 1 FROM stock_movements r WHERE r.order_id=m.order_id AND r.product_id=m.product_id AND r.variant_id=m.variant_id AND r.reason='return'))
+   ) THEN RAISE EXCEPTION 'INVENTORY_IN_USE'; END IF;
+   FOR change IN SELECT coalesce(a.variant_id,b.variant_id) AS variant_id,coalesce(a.variant_label,b.variant_label) AS variant_label,
+    coalesce(a.sku,b.sku) AS sku,coalesce(a.stock,0)-coalesce(b.stock,0) AS delta,b.variant_id IS NULL AS is_initial
+    FROM inventory_rows(product) a FULL JOIN inventory_rows(saved) b USING(variant_id)
+    WHERE a.variant_id IS NULL OR b.variant_id IS NULL OR a.stock<>b.stock
+   LOOP
+    INSERT INTO stock_movements(shop_id,product_id,product_name,variant_id,variant_label,sku,delta,reason,note)
+    VALUES(NEW.id,product->>'id',product->>'name',change.variant_id,change.variant_label,change.sku,change.delta,
+     CASE WHEN change.is_initial THEN 'initial' WHEN edit->>'reason'='restock' AND change.delta>0 THEN 'restock' ELSE 'adjustment' END,coalesce(edit->>'note',''));
+   END LOOP;
+   product := product||jsonb_build_object('inventoryVersion',revision+1);
+   IF edit->>'id' IS NOT NULL THEN product := product||jsonb_build_object('inventoryMutation',edit->>'id'); END IF;
+  ELSE
+   product := product-'variants'-'stock'||(SELECT coalesce(jsonb_object_agg(key,value),'{}') FROM jsonb_each(saved) WHERE key IN ('stock','variants','inventoryVersion','inventoryMutation'));
+  END IF;
+  products := products||jsonb_build_array(product);
+ END LOOP;
+ IF EXISTS (
+  SELECT 1 FROM stock_movements m WHERE m.shop_id=NEW.id AND m.reason='order'
+   AND NOT EXISTS (SELECT 1 FROM jsonb_array_elements(products) p WHERE p->>'id'=m.product_id)
+   AND NOT EXISTS (SELECT 1 FROM stock_movements r WHERE r.order_id=m.order_id AND r.product_id=m.product_id AND r.variant_id=m.variant_id AND r.reason='return')
+ ) THEN RAISE EXCEPTION 'INVENTORY_IN_USE'; END IF;
+ INSERT INTO stock_movements(shop_id,product_id,product_name,variant_id,variant_label,sku,delta,reason)
+ SELECT NEW.id,p->>'id',p->>'name',i.variant_id,i.variant_label,i.sku,-i.stock,'adjustment'
+ FROM jsonb_array_elements(coalesce(previous->'products','[]')) p
+ CROSS JOIN LATERAL inventory_rows(p) i
+ WHERE i.stock<>0 AND NOT EXISTS (SELECT 1 FROM jsonb_array_elements(products) active WHERE active->>'id'=p->>'id');
+ incoming := jsonb_set(incoming,'{products}',products);
+ NEW.personal_catalog := incoming;
+ IF NEW.catalog->>'shopMode'='personal' THEN NEW.catalog := incoming; END IF;
+ RETURN NEW;
+END;
+$$;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION initialize_personal_inventory() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+ INSERT INTO stock_movements(shop_id,product_id,product_name,variant_id,variant_label,sku,delta,reason,note)
+ SELECT NEW.id,p->>'id',p->>'name',i.variant_id,i.variant_label,i.sku,i.stock,'initial',coalesce(p->'inventoryEdit'->>'note','')
+ FROM jsonb_array_elements(coalesce(coalesce(NEW.personal_catalog,CASE WHEN NEW.catalog->>'shopMode'='personal' THEN NEW.catalog END)->'products','[]')) p
+ CROSS JOIN LATERAL inventory_rows(p) i;
+ RETURN NEW;
+END;
+$$;
+-- statement-breakpoint
+DROP TRIGGER IF EXISTS shop_personal_inventory_insert ON shops;
+CREATE TRIGGER shop_personal_inventory_insert AFTER INSERT ON shops FOR EACH ROW EXECUTE FUNCTION initialize_personal_inventory();
+DROP TRIGGER IF EXISTS shop_personal_inventory ON shops;
+CREATE TRIGGER shop_personal_inventory BEFORE UPDATE OF catalog,personal_catalog ON shops FOR EACH ROW EXECUTE FUNCTION reconcile_personal_inventory();
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION move_order_inventory() RETURNS trigger LANGUAGE plpgsql AS $$
+DECLARE
+ inventory_catalog jsonb; line record; product jsonb; variant jsonb; stock_change integer; available integer;
+ product_index integer; variant_index integer; returning_stock boolean := TG_OP='UPDATE';
+ reason text := CASE WHEN TG_OP='UPDATE' THEN 'return' ELSE 'order' END;
+ movement_note text;
+BEGIN
+ IF returning_stock THEN
+  IF NOT (
+   (NEW.status IN ('cancelled','refunded') AND OLD.status NOT IN ('cancelled','refunded'))
+   OR (NEW.details ? 'inventory_returned_at' AND NOT (OLD.details ? 'inventory_returned_at'))
+  ) THEN RETURN NEW; END IF;
+  IF NOT EXISTS (SELECT 1 FROM stock_movements WHERE order_id=NEW.id AND stock_movements.reason='order') THEN RETURN NEW; END IF;
+  movement_note := coalesce(NEW.details->>'inventory_return_note', NEW.details->'admin_actions'->-1->>'note','');
+ ELSE
+  IF NEW.status IN ('cancelled','refunded') OR jsonb_typeof(NEW.details->'items') IS DISTINCT FROM 'array'
+    OR jsonb_array_length(NEW.details->'items')=0 THEN RETURN NEW; END IF;
+  movement_note := '';
+ END IF;
+ -- The shop row serializes reservations and returns. Both the order and ledger roll back on failure.
+ SELECT coalesce(personal_catalog,catalog) INTO inventory_catalog FROM shops WHERE id=NEW.shop_id FOR NO KEY UPDATE;
+ IF inventory_catalog->>'shopMode' IS DISTINCT FROM 'personal' THEN RETURN NEW; END IF;
+ FOR line IN
+  SELECT input->>'id' AS product_id,coalesce(input->>'variantId','') AS variant_id,(input->>'quantity')::integer AS quantity
+  FROM jsonb_array_elements(CASE WHEN returning_stock THEN '[]' ELSE NEW.details->'items' END) input
+  UNION ALL
+  SELECT m.product_id,m.variant_id,-m.delta FROM stock_movements m WHERE returning_stock AND m.order_id=NEW.id AND m.reason='order'
+   AND NOT EXISTS (SELECT 1 FROM stock_movements r WHERE r.order_id=m.order_id AND r.product_id=m.product_id AND r.variant_id=m.variant_id AND r.reason='return')
+ LOOP
+  SELECT value,(ord-1)::integer INTO product,product_index FROM jsonb_array_elements(coalesce(inventory_catalog->'products','[]')) WITH ORDINALITY p(value,ord)
+   WHERE p.value->>'id'=line.product_id LIMIT 1;
+  IF product IS NULL OR line.quantity IS NULL OR line.quantity<1 THEN RAISE EXCEPTION 'OUT_OF_STOCK'; END IF;
+  IF line.variant_id<>'' THEN
+   SELECT value,(ord-1)::integer INTO variant,variant_index FROM jsonb_array_elements(coalesce(product->'variants','[]')) WITH ORDINALITY v(value,ord)
+    WHERE v.value->>'id'=line.variant_id LIMIT 1;
+   IF variant IS NULL THEN RAISE EXCEPTION 'OUT_OF_STOCK'; END IF;
+   available := (variant->>'stockCount')::integer;
+  ELSE
+   IF jsonb_array_length(coalesce(product->'variants','[]'))>0 THEN RAISE EXCEPTION 'OUT_OF_STOCK'; END IF;
+   variant := NULL;
+   available := (product->>'stock')::integer;
+   IF available IS NULL THEN CONTINUE; END IF;
+  END IF;
+  stock_change := CASE WHEN returning_stock THEN line.quantity ELSE -line.quantity END;
+  IF available+stock_change<0 THEN RAISE EXCEPTION 'OUT_OF_STOCK'; END IF;
+  IF available+stock_change>1000000 THEN RAISE EXCEPTION 'INVENTORY_LIMIT'; END IF;
+  IF variant IS NOT NULL THEN
+   product := jsonb_set(product,ARRAY['variants',variant_index::text,'stockCount'],to_jsonb(available+stock_change));
+   available := (SELECT sum((v->>'stockCount')::integer)::integer FROM jsonb_array_elements(product->'variants') v);
+  ELSE
+   available := available+stock_change;
+  END IF;
+  product := (product-'inventoryEdit')||jsonb_build_object('stock',available,'inventoryVersion',coalesce((product->>'inventoryVersion')::integer,0)+1);
+  inventory_catalog := jsonb_set(inventory_catalog,ARRAY['products',product_index::text],product);
+  INSERT INTO stock_movements(shop_id,product_id,product_name,variant_id,variant_label,sku,delta,reason,note,order_id)
+  VALUES(NEW.shop_id,line.product_id,product->>'name',line.variant_id,
+   concat_ws(' / ',nullif(variant->>'size',''),nullif(variant->>'color','')),coalesce(variant->>'sku',''),stock_change,reason,movement_note,NEW.id);
+ END LOOP;
+ UPDATE shops SET personal_catalog=inventory_catalog,catalog=CASE WHEN catalog->>'shopMode'='personal' THEN inventory_catalog ELSE catalog END,
+  updated_at=now() WHERE id=NEW.shop_id AND coalesce(personal_catalog,catalog) IS DISTINCT FROM inventory_catalog;
+ RETURN NEW;
+END;
+$$;
+-- statement-breakpoint
+DROP TRIGGER IF EXISTS order_stock_movements ON orders;
+CREATE TRIGGER order_stock_movements AFTER INSERT OR UPDATE OF status,details ON orders FOR EACH ROW EXECUTE FUNCTION move_order_inventory();
+
+-- statement-breakpoint
+INSERT INTO stock_movements(shop_id,product_id,product_name,variant_id,variant_label,sku,delta,reason)
+SELECT s.id,p->>'id',p->>'name',i.variant_id,i.variant_label,i.sku,i.stock,'initial'
+FROM shops s
+CROSS JOIN LATERAL jsonb_array_elements(coalesce(coalesce(s.personal_catalog,CASE WHEN s.catalog->>'shopMode'='personal' THEN s.catalog END)->'products','[]')) p
+CROSS JOIN LATERAL inventory_rows(p) i
+WHERE s.deleted_at IS NULL AND p->>'id' IS NOT NULL AND p->>'name' IS NOT NULL AND NOT EXISTS (
+ SELECT 1 FROM stock_movements m WHERE m.shop_id=s.id AND m.product_id=p->>'id' AND m.variant_id=i.variant_id
+);
+
+-- statement-breakpoint
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS source text NOT NULL DEFAULT 'storefront' CHECK (source IN ('storefront','manual'));
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_amount numeric(20,6) NOT NULL DEFAULT 0 CHECK (shipping_amount>=0);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS discount_amount numeric(20,6) NOT NULL DEFAULT 0 CHECK (discount_amount>=0);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS invoice_number text;
+CREATE SEQUENCE IF NOT EXISTS shop_invoice_number_seq;
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION next_shop_invoice_number(order_date timestamptz) RETURNS text LANGUAGE sql VOLATILE AS $$
+ SELECT 'INV-'||to_char(order_date AT TIME ZONE 'UTC','YYYY')||'-'||CASE WHEN number<10000 THEN lpad(number::text,4,'0') ELSE number::text END
+ FROM nextval('shop_invoice_number_seq') number
+$$;
+-- statement-breakpoint
+UPDATE orders SET invoice_number=next_shop_invoice_number(created_at) WHERE invoice_number IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS orders_invoice_number ON orders(invoice_number);
+CREATE INDEX IF NOT EXISTS orders_shop_created ON orders(shop_id,created_at DESC);
+-- statement-breakpoint
+CREATE OR REPLACE FUNCTION assign_shop_invoice() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+ NEW.invoice_number := next_shop_invoice_number(NEW.created_at);
+ RETURN NEW;
+END;
+$$;
+-- statement-breakpoint
+DROP TRIGGER IF EXISTS order_invoice_number ON orders;
+CREATE TRIGGER order_invoice_number BEFORE INSERT ON orders FOR EACH ROW EXECUTE FUNCTION assign_shop_invoice();
+-- statement-breakpoint
+CREATE TABLE IF NOT EXISTS shop_customer_profiles (
+ shop_id uuid NOT NULL REFERENCES shops(id),
+ customer_key uuid NOT NULL,
+ tags text[] NOT NULL DEFAULT '{}',
+ delivery_note text NOT NULL DEFAULT '',
+ updated_at timestamptz NOT NULL DEFAULT now(),
+ PRIMARY KEY (shop_id,customer_key),
+ CHECK (tags <@ ARRAY['vip','repeat','confirm']::text[])
+);
+-- statement-breakpoint
+CREATE TABLE IF NOT EXISTS storefront_visits (
+ shop_id uuid NOT NULL REFERENCES shops(id),
+ visitor_id uuid NOT NULL,
+ visit_day date NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')::date,
+ PRIMARY KEY (shop_id,visit_day,visitor_id)
+);
+
+-- statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS orders_manual_receipt_request ON orders(shop_id,(details->>'request_id')) WHERE source='manual';

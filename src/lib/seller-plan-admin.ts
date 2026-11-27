@@ -2,7 +2,7 @@ import 'server-only';
 import {db} from './db';
 import {ApiError,object,text} from './order-validation';
 import type {Query} from './order-service';
-const run:Query=async(sql,args)=>db().query(sql,args);
+const run:Query=async(sql,args)=>(await db()).query(sql,args);
 export async function sellerAccounts(search='',query:Query=run){
  const value=search.trim().slice(0,120);
  return query(`SELECT s.owner_key,s.email,s.status,s.provider,s.plan_override,s.plan_changed_at,seller_effective_plan(s.owner_key) AS plan,

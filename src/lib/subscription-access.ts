@@ -2,7 +2,7 @@ import 'server-only';
 import { db } from './db';
 import type { ProIdentity } from './pro-auth';
 import type { Query } from './order-service';
-const run:Query=async(sql,parameters)=>await db().query(sql,parameters);
+const run:Query=async(sql,parameters)=>await (await db()).query(sql,parameters);
 export async function ensureActiveSubscription(identity:ProIdentity,query:Query=run){
  if(identity.provider==='crypto')return cryptoSubscriptionActive(identity.ownerKey,query);
  const rows=await query(`INSERT INTO subscriptions(owner_key,provider) VALUES($1,$2)

@@ -2,7 +2,7 @@ import 'server-only';
 import { db } from './db';
 import { ApiError,object,text,uuid,network,txId } from './order-validation';
 import type { Query } from './order-service';
-const run:Query=async(sql,parameters)=>await db().query(sql,parameters);
+const run:Query=async(sql,parameters)=>await (await db()).query(sql,parameters);
 export const ADMIN_OVERVIEW_SQL=`WITH buckets AS (SELECT coin,network FROM orders WHERE payment_method='CRYPTO' UNION SELECT coin,network FROM payout_requests),
  balances AS (SELECT b.coin,b.network,
  (SELECT coalesce(sum(gross_amount),0)::text FROM orders WHERE coin=b.coin AND network=b.network AND status IN ('held','released','disputed')) AS total_gmv,
@@ -85,4 +85,3 @@ export async function updateSubscription(value:unknown,query:Query=run){
  const rows=await query(`UPDATE subscriptions SET status=CASE $2 WHEN 'activate' THEN 'active' ELSE 'revoked' END WHERE owner_key=$1 RETURNING owner_key,provider,status,verified_at`,[owner,action]);
  if(!rows.length)throw new ApiError('RECORD_NOT_FOUND',404);return rows[0];
 }
-

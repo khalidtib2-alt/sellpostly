@@ -12,7 +12,7 @@ import { escrowWallet,escrowNetwork,escrowReady } from '../app/shop/escrow-confi
 import { validWallet } from '../app/shop/crypto-data';
 export type Row=Record<string,any>;
 export type Query=(sql:string,parameters:unknown[])=>Promise<Row[]>;
-const run:Query=async(sql,parameters)=>await db().query(sql,parameters);
+const run:Query=async(sql,parameters)=>await (await db()).query(sql,parameters);
 export async function submitOrder(value:unknown,query:Query=run){
  const raw=object(value);if(containsCardData(raw))throw new ApiError('CARD_DATA_NOT_ALLOWED');if(raw.coin!=='USDC')throw new ApiError('ESCROW_USDC_ONLY');const slug=text(raw.slug,64),selectedCoin=coin(raw.coin),net=network(raw.network),tx=txId(raw.tx_id,net);
  if(!escrowReady||net!==escrowNetwork)throw new ApiError('ESCROW_UNAVAILABLE',503);
@@ -25,10 +25,10 @@ export async function submitOrder(value:unknown,query:Query=run){
  const priced=priceItems(shop.products,raw.items,selectedCoin);
  const phone=buyer.phone===undefined||buyer.phone===''?'':buyerPhone(buyer.phone);if(buyer.phone&&!phone)throw new ApiError('INVALID_CONTACT');
  const delivery=deliverySnapshot(priced.items.map(item=>({product:shop.products.find(p=>p.id===item.id)!,quantity:item.quantity})));
- const details={...delivery,store_name:shop.name,language:locale(raw.language),items:priced.items,buyer:{name,contact:buyerContact,phone},delivery_note:!delivery.digital_only&&typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet,escrow_governance:'usdc_only',seller_wallet:shops[0].seller_usdc_wallet||shop.cryptoWallet||''};
+ const details={...delivery,...(raw.visitorId?{visitor_id:uuid(raw.visitorId)}:{}),store_name:shop.name,language:locale(raw.language),items:priced.items,buyer:{name,contact:buyerContact,phone,...(buyer.city?{city:text(buyer.city,100,false)}:{})},delivery_note:!delivery.digital_only&&typeof raw.delivery_note==='string'?text(raw.delivery_note,400,false):'',receiving_wallet:escrowWallet,escrow_governance:'usdc_only',seller_wallet:shops[0].seller_usdc_wallet||shop.cryptoWallet||''};
  // INSERT SELECT also checks the catalog has not changed during price calculation.
  const rows=await query(`INSERT INTO orders(shop_id,gross_amount,coin,network,tx_id,details)
- SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND (store_mode='general' OR seller_effective_plan(owner_key)='pro') AND escrow_enabled=true AND coalesce(personal_catalog,catalog)=$7::jsonb
+ SELECT id,$2::numeric,$3,$4,$5,$6::jsonb FROM shops WHERE id=$1::uuid AND published=true AND suspended=false AND (store_mode='general' OR seller_effective_plan(owner_key)='pro') AND escrow_enabled=true AND coalesce(personal_catalog,catalog)=$7::jsonb FOR NO KEY UPDATE
  RETURNING id,gross_amount::text,coin,network,status,escrow_status,escrow_hold_days,created_at`,
  [shops[0].id,priced.gross,selectedCoin,net,tx,JSON.stringify(details),JSON.stringify(shops[0].catalog)]);
  if(!rows.length)throw new ApiError('CATALOG_CHANGED',409);
@@ -90,4 +90,3 @@ export const DASHBOARD_SQL=`WITH owned AS (SELECT id,slug,name,escrow_hold_days 
  coalesce((SELECT json_agg(json_build_object('id',id,'gross_amount',gross_amount::text,'commission_amount',commission_amount::text,'net_amount',net_amount::text,'coin',coin,'network',network,'status',status,'tx_id',tx_id,'escrow_hold_days',escrow_hold_days,'escrow_release_at',escrow_release_at,'force_released_at',force_released_at,'payment_verified_at',payment_verified_at,'created_at',created_at,'details',details,'payment_method',payment_method,'escrow_status',escrow_status) ORDER BY created_at DESC,id) FROM all_ord),'[]') AS orders,
  coalesce((SELECT json_agg(json_build_object('id',id,'amount',amount::text,'coin',coin,'network',network,'wallet',wallet,'status',status,'tx_id',tx_id,'created_at',created_at) ORDER BY created_at DESC,id) FROM pay),'[]') AS payouts`;
 export async function dashboard(ownerKey:string,query:Query=run,shopId?:string){if(shopId&&!/^[0-9a-f-]{36}$/i.test(shopId))throw new ApiError('SHOP_NOT_FOUND',404);return (await query(DASHBOARD_SQL,[ownerKey,shopId||null]))[0];}
-
