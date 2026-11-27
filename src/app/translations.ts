@@ -1,4 +1,12 @@
 export const translations = {
+  "City Weekender Backpack": {fr:"Sac à dos escapade urbaine",es:"Mochila urbana de fin de semana",ar:"حقيبة ظهر للرحلات الحضرية"},
+  "Everyday Canvas High-Tops": {fr:"Baskets montantes en toile",es:"Zapatillas altas de lona",ar:"حذاء رياضي قماشي مرتفع"},
+  "Studio Wireless Headphones": {fr:"Casque audio sans fil Studio",es:"Auriculares inalámbricos Studio",ar:"سماعات استوديو لاسلكية"},
+  "Daily Skincare Ritual": {fr:"Rituel de soin quotidien",es:"Ritual diario de cuidado facial",ar:"مجموعة العناية اليومية بالبشرة"},
+  "Verified curator · Demo": {fr:"Sélection vérifiée · Démo",es:"Selección verificada · Demo",ar:"منسّق موثوق · عرض تجريبي"},
+  "Considered essentials. Better discoveries.": {fr:"Des essentiels choisis avec soin. De belles découvertes.",es:"Esenciales bien elegidos. Grandes descubrimientos.",ar:"أساسيات مختارة بعناية. اكتشافات أجمل."},
+  "{discount}% OFF": {fr:"−{discount} %",es:"−{discount} %",ar:"خصم {discount}٪"},
+  "Live preview": {fr:"Aperçu en direct",es:"Vista previa en vivo",ar:"معاينة مباشرة"},
   "Remove Product Photo": {fr:"Retirer la photo",es:"Quitar foto",ar:"إزالة صورة المنتج"},
   "Instant Cutout (<1s)": {fr:"Détourage instantané (<1 s)",es:"Recorte instantáneo (<1 s)",ar:"قص فوري (أقل من ثانية)"},
   "AI Cutout (Complex Backgrounds)": {fr:"Détourage IA (fonds complexes)",es:"Recorte con IA (fondos complejos)",ar:"قص بالذكاء الاصطناعي (خلفيات معقدة)"},
