@@ -1,5 +1,5 @@
 /** Edge-connected color removal. Enclosed regions are deliberately preserved. */
-export function instantCutout(data:Uint8ClampedArray,width:number,height:number,tolerance=32){
+export function instantCutout(data:Uint8ClampedArray,width:number,height:number,tolerance=16){
  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width*height>1280*1280||data.length!==width*height*4)throw new Error('Invalid cutout dimensions');
  const result=new Uint8ClampedArray(data),count=width*height;
  const bins=new Map<number,{n:number;r:number;g:number;b:number}>();
@@ -11,15 +11,14 @@ export function instantCutout(data:Uint8ClampedArray,width:number,height:number,
  for(const bin of bins.values())if(!dominant||bin.n>dominant.n)dominant=bin;
  if(!dominant)return result;
  const r=dominant.r/dominant.n,g=dominant.g/dominant.n,b=dominant.b/dominant.n;
- const t=Math.max(0,Math.min(100,Number.isFinite(tolerance)?tolerance:32)),feather=12,limit=3*(t+feather)**2;
+ const t=Math.max(0,Math.min(100,Number.isFinite(tolerance)?tolerance:16)),feather=6,limit=3*(t+feather)**2;
  const seen=new Uint8Array(count),queue=new Uint32Array(count);let head=0,tail=0;
- const visit=(p:number)=>{if(seen[p])return;seen[p]=1;const i=p*4,dr=data[i]-r,dg=data[i+1]-g,db=data[i+2]-b,d=dr*dr+dg*dg+db*db;if(data[i+3]===0||d<=limit){queue[tail++]=p;const a=Math.max(0,Math.min(1,(Math.sqrt(d/3)-t)/feather));result[i+3]=Math.round(data[i+3]*a*a*(3-2*a));}};
+ const edge=3*Math.max(2,Math.min(8,t/4))**2;
+ const visit=(p:number,from=-1)=>{if(seen[p])return;const i=p*4,dr=data[i]-r,dg=data[i+1]-g,db=data[i+2]-b,d=dr*dr+dg*dg+db*db;if(d>limit&&data[i+3]!==0){seen[p]=2;return;}if(from>=0&&data[i+3]!==0){const j=from*4,rr=data[i]-data[j],gg=data[i+1]-data[j+1],bb=data[i+2]-data[j+2];if(rr*rr+gg*gg+bb*bb>edge)return;const ahead=p+(p-from);if(ahead>=0&&ahead<count&&(p-from===width||p-from===-width||Math.floor(ahead/width)===Math.floor(p/width))){const k=ahead*4,ar=data[k]-data[j],ag=data[k+1]-data[j+1],ab=data[k+2]-data[j+2];if(ar*ar+ag*ag+ab*ab>edge*2.25)return;}}if(data[i+3]===0||d<=limit){seen[p]=1;queue[tail++]=p;const a=Math.max(0,Math.min(1,(Math.sqrt(d/3)-t)/feather));result[i+3]=Math.round(data[i+3]*a*a*(3-2*a));}};
  for(let x=0;x<width;x++){visit(x);visit((height-1)*width+x);}
  for(let y=0;y<height;y++){visit(y*width);visit(y*width+width-1);}
- while(head<tail){const p=queue[head++],x=p%width;if(x>0)visit(p-1);if(x<width-1)visit(p+1);if(p>=width)visit(p-width);if(p+width<count)visit(p+width);}
- // A narrow alpha-only feather avoids hard cutout edges without changing RGB.
- const alpha=new Uint8Array(count);for(let p=0;p<count;p++)alpha[p]=result[p*4+3];
- for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){const p=y*width+x;if(alpha[p]===0)continue;const sum=alpha[p-1]+alpha[p+1]+alpha[p-width]+alpha[p+width];if(sum<alpha[p]*4)result[p*4+3]=Math.round((alpha[p]*4+sum)/8);}
+ while(head<tail){const p=queue[head++],x=p%width;if(x>0)visit(p-1,p);if(x<width-1)visit(p+1,p);if(p>=width)visit(p-width,p);if(p+width<count)visit(p+width,p);}
+ // Feather only reached background pixels. Protected product pixels retain exact RGBA.
  return result;
 }
 export function instantCutoutSize(width:number,height:number){const scale=Math.min(1,1280/Math.max(width,height));return {width:Math.max(1,Math.round(width*scale)),height:Math.max(1,Math.round(height*scale))};}

@@ -38,6 +38,6 @@ test('source picker handles global image paste, preset selection and listener cl
  document.createElement=original;
  const second=createRoot(document.getElementById('root'));await act(async()=>second.render(React.createElement(LanguageProvider,null,React.createElement(Editor,{unified:true}))));
  const canvas=document.querySelector('canvas');await act(async()=>Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='Expand / Zoom').click());assert.ok(document.querySelector('.studio-editor-expanded'));assert.ok(document.querySelector('.lg\\\\:col-span-8'));
- await act(async()=>Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='Crop Original').click());assert.equal(document.querySelector('.studio-preview-panes').getAttribute('data-view'),'crop');assert.equal(document.querySelector('canvas'),canvas);await act(async()=>second.unmount());
+ await act(async()=>Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='Interactive Crop Box').click());assert.equal(document.querySelector('.studio-preview-panes').getAttribute('data-view'),'crop');assert.equal(document.querySelector('canvas'),canvas);await act(async()=>second.unmount());
  `],{cwd:process.cwd(),encoding:'utf8',timeout:60000});assert.equal(result.status,0,result.stderr||result.stdout);
 });

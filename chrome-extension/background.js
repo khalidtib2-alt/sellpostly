@@ -7,25 +7,27 @@ function cleanProductLink(value){
  u.hash="";return u.href;
  }catch{return "";}
 }
-function prepareProduct(value){
+function prepareProduct(value,allowImageOnly=false){
  if(!value||typeof value!=="object")throw Error("INVALID_PRODUCT");
  const text=(v,n)=>typeof v==="string"?v.trim().slice(0,n):"";
- const title=text(value.title||value.name,120);if(!title)throw Error("INVALID_PRODUCT");
+ const title=text(value.title||value.name,120);if(!title&&!allowImageOnly)throw Error("INVALID_PRODUCT");
  const destination=["affiliate","personal"].includes(value.destination)?value.destination:undefined,category=text(value.category,80)||"Top Deals";
  const url=destination==="affiliate"?(()=>{try{const u=new URL(value.url);return ["http:","https:"].includes(u.protocol)?u.href:"";}catch{return "";}})():cleanProductLink(value.url);
- let image=typeof value.image==="string"&&(SellPostlyAffiliate.isStudio(value.image)||/^https?:\/\//i.test(value.image))?value.image.slice(0,20000):"";
+ const incomingImage=value.image||value.img||value.src||value.productImage;
+ let image=typeof incomingImage==='string'&&incomingImage.length<=(allowImageOnly?12000000:1400000)&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(incomingImage)?incomingImage:typeof incomingImage==='string'&&(SellPostlyAffiliate.isStudio(incomingImage)||/^https?:\/\//i.test(incomingImage))?incomingImage.slice(0,20000):'';
+ if(!title&&!image)throw Error("INVALID_PRODUCT");
  const amazonImageBlocked=false;
 
  return {targetShopId:typeof value.targetShopId==='string'&&/^[0-9a-f-]{36}$/i.test(value.targetShopId)?value.targetShopId:undefined,amazonImageBlocked,unbrandedQuery:SellPostlyUnbrandedQuery(title,category,value.gender),destination,stock:Number.isInteger(value.stock)&&value.stock>=0?Math.min(value.stock,1000000):undefined,id:crypto.randomUUID(),title,price:text(value.price,50),description:text(value.description||value.features,240),image,url,category,gender:["men","women","kids"].includes(value.gender)?value.gender:"unisex",source:/amazon\./i.test(url)?"Amazon":/aliexpress\./i.test(url)?"AliExpress":"Other"};
 }
 async function sendProduct(value,studio=false){
- const product=prepareProduct(value),base=await SellPostlyFrontend.resolve();
+ const product=prepareProduct(value,studio),base=await SellPostlyFrontend.resolve();
  const path=studio?'/studio':'/shop';const tab=await chrome.tabs.create({url:new URL(path,base).href});if(!tab.id)throw Error("TAB_UNAVAILABLE");
  for(let attempt=0;attempt<30;attempt++){
   try{
-   const result=await chrome.scripting.executeScript({target:{tabId:tab.id},args:[product,base,studio],func:(item,origin,studio)=>{
+   const result=await chrome.scripting.executeScript({target:{tabId:tab.id},world:'MAIN',args:[product,base,studio],func:(item,origin,studio)=>{
     if(location.origin!==origin||location.pathname!==(studio?"/studio":"/shop"))return false;
-    try{localStorage.setItem(studio?"sellpostly_pending_studio_item":"sellpostly_pending_shop_item",JSON.stringify(item));window.postMessage({type:studio?"SELLPOSTLY_STUDIO_IMPORT":"SELLPOSTLY_PRODUCT_IMPORT",product:item},origin);return true;}catch{return false;}
+    try{const key=studio?'sellpostly_pending_studio_item':'sellpostly_pending_shop_item';let saved=false;try{localStorage.setItem(key,JSON.stringify(item));saved=true;}catch{try{sessionStorage.setItem(key,JSON.stringify(item));saved=true;}catch{}}if(studio)window.__SELLPOSTLY_PENDING_STUDIO_IMPORT__=item;window.postMessage({type:studio?'SELLPOSTLY_STUDIO_IMPORT':'SELLPOSTLY_PRODUCT_IMPORT',product:item},origin);return studio||saved;}catch{return false;}
    }});
    if(result?.[0]?.result===true)return;
   }catch{}

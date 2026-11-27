@@ -16,10 +16,10 @@ test('flood fill preserves enclosed white product details and existing transpare
  for(let y=15;y<25;y++)for(let x=15;x<25;x++){const i=(y*40+x)*4;p[i]=p[i+1]=p[i+2]=255;}
  p[3]=0;const out=instantCutout(p,40,40);assert.equal(out[3],0);assert.equal(out[(20*40+20)*4+3],255);
 });
-test('tolerance changes edge-connected cleanup and soft feather retains partial alpha',()=>{
- const p=picture(40,40,255);for(let y=8;y<32;y++)for(let x=8;x<32;x++){const i=(y*40+x)*4;p[i]=p[i+1]=p[i+2]=220;}
- const low=instantCutout(p,40,40,10),high=instantCutout(p,40,40,45),soft=instantCutout(p,40,40,30);
- assert.equal(low[(20*40+20)*4+3],255);assert.equal(high[(20*40+20)*4+3],0);assert.ok(soft[(20*40+20)*4+3]>0&&soft[(20*40+20)*4+3]<255);
+test('tolerance changes gradual background cleanup without crossing product edges',()=>{
+ const p=picture(80,40,255);for(let y=0;y<40;y++)for(let x=0;x<80;x++){const i=(y*80+x)*4;p[i]=p[i+1]=p[i+2]=255-Math.floor(x/2);}
+ const low=instantCutout(p,80,40,10),high=instantCutout(p,80,40,45);
+ assert.equal(low[(20*80+70)*4+3],255);assert.equal(high[(20*80+70)*4+3],0);
 });
 test('cutout resolution is bounded, handles tiny/transparent images and rejects unsafe buffers',()=>{
  assert.deepEqual(instantCutoutSize(4000,2000),{width:1280,height:640});assert.deepEqual(instantCutoutSize(300,600),{width:300,height:600});

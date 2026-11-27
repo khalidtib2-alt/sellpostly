@@ -1,4 +1,7 @@
 export const translations = {
+  "Image ready to edit.": {fr:"Image prête à être modifiée.",es:"Imagen lista para editar.",ar:"الصورة جاهزة للتعديل."},
+  "Interactive Crop Box": {fr:"Cadre de recadrage interactif",es:"Marco de recorte interactivo",ar:"إطار قص تفاعلي"},
+  "Drag inside to move. Drag any corner or edge to resize.": {fr:"Faites glisser l’intérieur pour déplacer le cadre, ou un coin ou un bord pour le redimensionner.",es:"Arrastra el interior para mover el marco, o una esquina o borde para cambiar su tamaño.",ar:"اسحب داخل الإطار لتحريكه، أو اسحب أي زاوية أو حافة لتغيير حجمه."},
   "Edit in Studio": {fr:"Modifier dans Studio",es:"Editar en Studio",ar:"تعديل في الاستوديو"},
   "Edited Preview": {fr:"Aperçu modifié",es:"Vista editada",ar:"معاينة الصورة المعدلة"},
   "Crop Original": {fr:"Recadrer l’original",es:"Recortar original",ar:"قص الصورة الأصلية"},
