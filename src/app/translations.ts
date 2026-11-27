@@ -1,4 +1,10 @@
 export const translations = {
+  "Remove Product Photo": {fr:"Retirer la photo",es:"Quitar foto",ar:"إزالة صورة المنتج"},
+  "Instant Cutout (<1s)": {fr:"Détourage instantané (<1 s)",es:"Recorte instantáneo (<1 s)",ar:"قص فوري (أقل من ثانية)"},
+  "AI Cutout (Complex Backgrounds)": {fr:"Détourage IA (fonds complexes)",es:"Recorte con IA (fondos complejos)",ar:"قص بالذكاء الاصطناعي (خلفيات معقدة)"},
+  "Tolerance": {fr:"Tolérance",es:"Tolerancia",ar:"درجة التسامح"},
+  "Instant cutout failed. Upload a local photo and try again.": {fr:"Le détourage a échoué. Importez une photo locale et réessayez.",es:"No se pudo recortar. Sube una foto local y vuelve a intentarlo.",ar:"تعذر القص الفوري. ارفع صورة من جهازك وحاول مجددًا."},
+  "Instant cutout works offline on uniform backgrounds. Adjust tolerance to protect pale products. AI downloads only when requested; complex scenes may need manual editing.": {fr:"Le détourage instantané fonctionne hors ligne sur les fonds uniformes. Réglez la tolérance pour préserver les produits clairs. L’IA se télécharge uniquement sur demande ; les scènes complexes peuvent nécessiter des retouches manuelles.",es:"El recorte instantáneo funciona sin conexión con fondos uniformes. Ajusta la tolerancia para proteger productos claros. La IA solo se descarga cuando la solicitas; las escenas complejas pueden necesitar retoques manuales.",ar:"يعمل القص الفوري دون اتصال للخلفيات الموحدة. اضبط درجة التسامح للحفاظ على المنتجات الفاتحة. يُنزّل نموذج الذكاء الاصطناعي عند طلبه فقط؛ وقد تحتاج المشاهد المعقدة إلى تعديل يدوي."},
   "Remove Background": {fr:"Supprimer l’arrière-plan",es:"Eliminar fondo",ar:"إزالة الخلفية"},
   "Restore Original": {fr:"Restaurer l’original",es:"Restaurar original",ar:"استعادة الأصل"},
   "Compare Before / After": {fr:"Comparer avant / après",es:"Comparar antes / después",ar:"مقارنة قبل وبعد"},
