@@ -421,3 +421,20 @@ nav a[aria-current='page'] {border-radius:.35rem;text-decoration:underline;text-
 @media(min-width:640px){.showcase-products{grid-template-columns:repeat(3,minmax(0,1fr));}.showcase-products>article:nth-child(n+2){display:flex;}.showcase-product-photo{height:clamp(118px,10vw,138px);}}
 @media(max-width:640px){.showcase-editor{grid-template-columns:112px minmax(0,1fr);gap:10px;min-height:0;}.showcase-tabs{border-inline-end:1px solid #eef0f5;padding-inline-end:7px;}.showcase-tabs button{font-size:12px;padding:9px 5px;gap:4px;}.showcase-tabs button svg{width:13px;}.showcase-store-actions{gap:5px;}.showcase-store .showcase-card-heading h2{font-size:16px;}.showcase-url .saas-primary{padding-inline:10px;}.showcase-curator{font-size:9px;}}
 @media(prefers-reduced-motion:reduce){.showcase-carousel-controls button{transition:none;}.showcase-carousel-controls button:active{transform:none;}}
+
+/* Studio-only large preview; homepage demo sizing remains independent. */
+.studio-editor .studio-preview-panes>div{min-width:0;}
+.studio-editor .studio-preview-panes[data-view=after]>div:first-child,.studio-editor .studio-preview-panes[data-view=crop]>div:last-child{display:none;}
+.studio-editor .studio-canvas-frame{min-height:260px;align-items:center;}
+.studio-editor .studio-preview-canvas{max-height:min(540px,65dvh);}
+.studio-editor-expanded .studio-preview-canvas{max-height:min(620px,75dvh);}
+.studio-editor [aria-pressed=true]{box-shadow:0 0 0 2px #6366f1;}
+.studio-sources button,.studio-sources label{cursor:pointer;}
+.studio-sources button[aria-pressed=true]{box-shadow:0 0 0 2px #6366f1;}
+.studio-sources button:hover{filter:brightness(.96);}
+.studio-sources button:active{transform:scale(.985);}
+.studio-sources button:disabled{cursor:wait;}
+@media(min-width:1024px){.studio-editor .studio-preview-canvas{max-height:540px;}.studio-editor-expanded .studio-preview-canvas{max-height:620px;}}
+@media(prefers-reduced-motion:reduce){.studio-sources button:active{transform:none;}}
+
+.studio-editor .studio-comparison .studio-preview-canvas{width:100%;height:auto;max-height:none;}
